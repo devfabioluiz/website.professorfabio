@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Concepções de Estado</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav {
+        background-color: #333;
+        color: white;
+        padding: 1rem;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+      }
+
+      nav ul li {
+        position: relative;
+        margin-right: 20px;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem;
+        display: block;
+      }
+
+      nav ul li ul {
+        position: absolute;
+        background-color: #444;
+        display: none;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        top: 100%;
+        left: 0;
+        min-width: 150px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      nav ul li ul li {
+        margin: 0;
+      }
+
+      nav ul li ul li a {
+        padding: 0.5rem;
+      }
+
+      nav ul li:hover ul {
+        display: block;
+      }
+
+      nav ul li a:hover,
+      nav ul li ul li a:hover {
+        background-color: #555;
+      }
+
+      main {
+        margin-top: 80px;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <a href="#">Filosofia</a>
+          <ul>
+            <li><a href="./filosofia/aula1.html">Aula 1</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">Sociologia</a>
+          <ul>
+            <li><a href="./sociologia/aula1.html">Aula 1</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <h1>1º Trimestre</h1>
+      <h2 id="aula1">Aula 1</h2>
+      <p>
+        <strong>Concepção de Estado na visão de diferentes filósofos.</strong>
+      </p>
+    </main>
+  </body>
+</html>
