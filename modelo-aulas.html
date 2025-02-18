@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 de Filosofia do Primeiro Trimestre</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <script>
+      function gerarVersaoImpressao() {
+        // Clona o conteúdo do body atual
+        const conteudoOriginal = document.body.cloneNode(true);
+
+        // Remove todas as classes e estilos
+        const elementos = conteudoOriginal.querySelectorAll("*");
+        elementos.forEach((elemento) => {
+          elemento.removeAttribute("class");
+          elemento.removeAttribute("style");
+        });
+
+        const botao = conteudoOriginal.querySelectorAll("button");
+        botao.forEach((elemento) => {
+          elemento.style.display = "none";
+        });
+
+        // Cria uma nova janela para a versão de impressão
+        const janelaImpressao = window.open("", "_blank");
+        janelaImpressao.document.write(`
+          <html>
+            <head>
+              <title>Versão para Impressão</title>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            </head>
+            <body>
+              ${conteudoOriginal.innerHTML}
+            </body>
+          </html>
+        `);
+        janelaImpressao.document.close();
+        janelaImpressao.focus();
+        janelaImpressao.print();
+        janelaImpressao.close();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>1º Trimestre</h1>
+    <h2>Aula XX de XXXX</h2>
+    <h3>tema</h3>
+
+    <h4>subtitulo</h4>
+    <p>texto</p>
+
+    <h3>Questões</h3>
+
+    <div class="question">questao</div>
+
+    <h3>Atividade para Casa</h3>
+
+    <div class="question activity">
+      <b> PERGUNTA </b>
+    </div>
+
+    <button onclick="gerarVersaoImpressao()">
+      Gerar Versão para Impressão
+    </button>
+  </body>
+</html>

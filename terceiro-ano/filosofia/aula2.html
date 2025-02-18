@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 de Filosofia do Primeiro Trimestre</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <script>
+      function gerarVersaoImpressao() {
+        // Clona o conteúdo do body atual
+        const conteudoOriginal = document.body.cloneNode(true);
+
+        // Remove todas as classes e estilos
+        const elementos = conteudoOriginal.querySelectorAll("*");
+        elementos.forEach((elemento) => {
+          elemento.removeAttribute("class");
+          elemento.removeAttribute("style");
+        });
+
+        const botao = conteudoOriginal.querySelectorAll("button");
+        botao.forEach((elemento) => {
+          elemento.style.display = "none";
+        });
+
+        // Cria uma nova janela para a versão de impressão
+        const janelaImpressao = window.open("", "_blank");
+        janelaImpressao.document.write(`
+          <html>
+            <head>
+              <title>Versão para Impressão</title>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            </head>
+            <body>
+              ${conteudoOriginal.innerHTML}
+            </body>
+          </html>
+        `);
+        janelaImpressao.document.close();
+        janelaImpressao.focus();
+        janelaImpressao.print();
+        janelaImpressao.close();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>1º Trimestre</h1>
+    <h2>Aula 2 de Filosofia</h2>
+    <h3>Leia os Textos abaixo</h3>
+
+    <h4>TEXTO 1</h4>
+    <p>
+      [...] “O Imperador será o elo entre os 27 estados brasileiros porque não é
+      vinculado a nenhum partido político”, diz Fábio Ladércio Soares,
+      engenheiro civil de 39 anos, editor de mídias sociais do Movimento
+      Monarquista de Londrina (MML). “Por isso mesmo, em todos os momentos da
+      vida nacional, e principalmente diante de uma crise institucional como a
+      atual, quando um partido político tenta derrubar o outro, o Imperador será
+      a força de união, de Norte a Sul, de Leste a Oeste”. Além disso, diz
+      Fábio, um rei poderia moralizar o Legislativo. “Ele equilibrará a crise
+      com o uso do Poder Moderador. Além do mais, é a eterna vigilância sobre
+      deputados e senadores. Esta é a mágica da monarquia parlamentarista.”
+      [...]
+    </p>
+
+    <p align="right">
+      Disponível em:
+      https://www.gazetadopovo.com.br/politica/republica/por-que-tanta-gente-quer-a-volta-da-monarquia-no-brasil-5nte9wsbyvuo9ywa6ricylfi8
+    </p>
+
+    <h4>TEXTO 2</h4>
+    <p>
+      [...] “Feito isto, à multidão assim unida numa só pessoa se chama Estado,
+      em latim civitas. É esta a geração daquele grande Leviatã, ou antes (para
+      falar em termos mais reverentes) daquele Deus Mortal, ao qual devemos,
+      abaixo do Deus Imortal, nossa paz e defesa. Pois graças a esta autoridade
+      que lhe é dada por cada indivíduo no Estado, é-lhe conferido o uso de
+      tamanho poder e força que o terror assim inspirado o torna capaz de
+      conformar as vontades de todos eles, no sentido da paz em seu próprio
+      país, e ela ajuda mútua contra os inimigos estrangeiros. É nele que
+      consiste a essência do Estado, a qual pode ser assim definida: uma pessoa
+      de cujos atos uma grande multidão, mediante pactos recíprocos uns com os
+      outros, foi instituída por cada um como autora, de modo a ela poder usar a
+      força e os recursos de todos, da maneira que considerar conveniente, para
+      assegurar a paz e a defesa comum.” [...]
+    </p>
+
+    <p align="right">
+      HOBBES, Thomas. Leviatã ou matéria, forma e poder de Estado eclesiástico e
+      civil. 2ª ed. São Paulo: Abril Cultural, 1983, p. 105-106.
+    </p>
+
+    <h4>TEXTO 3</h4>
+    <p>
+      [...] O contrato social é poderosíssima construção conceitual e
+      institucional da tradição ocidental. Com diferenças de pormenor, revela a
+      intuição de que abdicamos de nossa liberdade originária, em troca da
+      segurança que a vida em sociedade propiciaria. Para uns, a renúncia se
+      daria em favor de um soberano absoluto; para outros, em prol de um governo
+      democraticamente constituído. Contemporaneamente, no núcleo da teoria do
+      contrato social radica a ideia de que um governo legítimo seria produto
+      artificial de um acordo voluntário acertado em agentes morais detentores
+      de liberdade de escolha. É muita metafísica.
+    </p>
+    <p>
+      Na visão dos pós-modernos, quando os havia, o contrato social seria uma
+      grande narrativa, que apenas qualificaria uma estratégia política que
+      justificaria mecanismos de dominação. Na abordagem feminista o contrato
+      social matizaria dominação masculina; neste sentido, melhor falarmos em
+      contrato sexual. Para Carole Pateman o contratualismo ignora um pacto não
+      escrito, não codificado e místico, que se dá entre os sexos; a soberania,
+      em sentido mais irônico, seria a hipocrisia organizada [...]
+    </p>
+
+    <p align="right">
+      Disponível em:
+      https://www.conjur.com.br/2019-dez-15/embargos-culturais-contrato-social-fonte-angustias-sigmund-freud
+    </p>
+
+    <h4>TEXTO 4</h4>
+    <p>
+      [...] A política é, por sua própria natureza, tendenciosa a favor da
+      intervenção e do planejamento. Mesmo em sua versão “minarquista” ou
+      “vigilante noturno”, a política é baseada na ideia de que algumas decisões
+      devem ser tomadas coercitivamente e impostas a minorias relutantes – ou
+      mesmo maiorias, dependendo do caso. Isso é contrário ao princípio que
+      observamos na vida privada todos os dias: o consentimento de ambas as
+      partes é necessário para que uma transação ocorra. O Estado nunca fica
+      “limitado” no longo ou mesmo no médio prazo, como vimos por nós mesmos, e
+      em pouco tempo ele se espalha pela sociedade civil. Uma vez arraigado em
+      alguma área da vida social que antes era administrada por meios
+      voluntários, as pessoas se acostumam com o novo papel do Estado, chegando
+      a considerá-lo indispensável. O espírito de cooperação espontânea e
+      voluntária, portanto, atrofia e morre. Isso, por sua vez, é citado como
+      justificativa para ainda mais interferência do Estado, e o ciclo continua
+      [...]
+    </p>
+
+    <p align="right">
+      Disponível em:
+      https://mises.org.br/artigos/3157/o-problema-com-a-constituicao-e-o-contrato-social
+    </p>
+
+    <button onclick="gerarVersaoImpressao()">
+      Gerar Versão para Impressão
+    </button>
+  </body>
+</html>
