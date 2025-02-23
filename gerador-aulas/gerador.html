@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerador de HTML</title>
+    <link rel="stylesheet" href="../estilos/estilos-gerador-aulas.css" />
+  </head>
+  <body>
+    <h1>Gerador de HTML com Múltiplos Tópicos</h1>
+    <form id="mainForm">
+      <div id="topicsContainer">
+        <!-- O primeiro formulário de tópicos é inicializado aqui -->
+        <div class="topic">
+          <label for="title">Título:</label><br />
+          <input type="text" name="title" required /><br /><br />
+
+          <label for="subtitle">Subtítulo:</label><br />
+          <input type="text" name="subtitle" required /><br /><br />
+
+          <label for="content">Conteúdo:</label><br />
+          <textarea name="content" rows="5" required></textarea><br /><br />
+        </div>
+      </div>
+      <button type="button" id="addTopicButton">Inserir Mais Tópicos</button
+      ><br /><br />
+      <button type="submit">Gerar HTML</button>
+    </form>
+    <script src="../scripts/gerador-aula.js"></script>
+  </body>
+</html>
