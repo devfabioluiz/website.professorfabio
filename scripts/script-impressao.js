@@ -13,14 +13,8 @@ function gerarVersaoImpressao() {
 
   // Remove os elementos com os IDs 'texto-leitura' e 'question-container'
   const textoLeitura = conteudoOriginal.querySelector("#texto-leitura");
-  const questionContainer = conteudoOriginal.querySelector(
-    "#question-container"
-  );
   if (textoLeitura) {
     textoLeitura.remove();
-  }
-  if (questionContainer) {
-    questionContainer.remove();
   }
 
   // Remove IDs, classes e estilos de todos os outros elementos
