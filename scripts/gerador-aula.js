@@ -60,10 +60,10 @@ mainForm.addEventListener("submit", function (event) {
       <h3>Questões</h3>
       <div class="question">Adicione as questões aqui...</div>
 
-      <h3>Atividade para Casa</h3>
-      <h4>NÃO COPIAR as perguntas</h4>
+      <h3>Atividades para fazer em casa</h3>
+      <h4>Escrever APENAS a resposta</h4>
       <div class="question activity">
-        <b>Pergunta da atividade para casa...</b>
+        <b>Pergunta da Atividades para fazer em casa...</b>
       </div>
 
       <div class="print-button">
