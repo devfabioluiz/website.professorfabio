@@ -61,14 +61,20 @@ mainForm.addEventListener("submit", function (event) {
       <div class="question">Adicione as questões aqui...</div>
 
       <h3>Atividades para fazer em casa</h3>
-      <h4>Escrever APENAS a resposta</h4>
+      <h4>Escreva apenas a resposta</h4>
       <div class="question activity">
         <b>Pergunta da Atividades para fazer em casa...</b>
       </div>
 
       <div class="print-button">
-        <button onclick="gerarVersaoImpressao()">Imprimir</button>
+        <button onclick="gerarVersaoImpressao()">Imprimir versão simplificada</button>
       </div>
+      <div class="button-container">
+        <button class="voltar-button" onclick="window.history.back()">
+          Voltar
+        </button>
+      </div>
+      
     </body>
     </html>
   `;

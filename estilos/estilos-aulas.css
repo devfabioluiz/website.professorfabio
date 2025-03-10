@@ -118,6 +118,36 @@ strong {
   color: #0073e6;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.voltar-button {
+  color: #007bff;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.voltar-button:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+.citacao {
+  text-align: right;
+  font-size: 9px;
+}
+
 .print-button {
   margin: 20px 0;
   text-align: center;
