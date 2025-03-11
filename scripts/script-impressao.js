@@ -11,10 +11,16 @@ function gerarVersaoImpressao() {
     });
   }
 
-  // Remove os elementos com os IDs 'texto-leitura' e 'question-container'
+  // Remove os elementos com os IDs 'texto-leitura' e 'question-container-casa'
   const textoLeitura = conteudoOriginal.querySelector("#texto-leitura");
+  const questoesAula = conteudoOriginal.querySelector(
+    "#question-container-aula"
+  );
   if (textoLeitura) {
     textoLeitura.remove();
+  }
+  if (questoesAula) {
+    questoesAula.remove();
   }
 
   // Remove IDs, classes e estilos de todos os outros elementos
