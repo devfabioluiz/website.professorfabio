@@ -153,14 +153,22 @@ strong {
   text-align: center;
 }
 
-button {
+.btn-pdf,
+.btn-print {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn-pdf {
+  background-color: red;
+}
+
+.btn-print {
+  background-color: #007bff;
 }
 
 button:hover {
