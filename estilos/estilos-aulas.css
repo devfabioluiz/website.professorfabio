@@ -139,22 +139,35 @@ strong {
   margin: 0;
 }
 
+.imprimir-simplificado-button,
 .voltar-button {
-  color: #007bff;
   background: none;
   border: none;
-  text-decoration: underline;
   cursor: pointer;
   font-size: 16px;
   padding: 10px 20px;
+  margin: 0 20px 0 0;
   transition: all 0.3s ease;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.voltar-button:hover {
+.voltar-button {
+  color: #002fff;
+  text-decoration: underline;
+}
+
+.imprimir-simplificado-button {
+  color: #007bff;
+}
+
+.imprimir-simplificado-button:hover {
+  background-color: #0056b3;
   color: #fff;
-  text-decoration: none;
-  transform: scale(1.05);
+}
+
+.voltar-button:hover {
+  background-color: #0021b3;
+  color: #fff;
 }
 
 .citacao {
@@ -183,10 +196,6 @@ strong {
 
 .btn-print {
   background-color: #007bff;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 .alert-container {
