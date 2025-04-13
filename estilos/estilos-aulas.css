@@ -139,34 +139,39 @@ strong {
   margin: 0;
 }
 
-.imprimir-simplificado-button,
-.voltar-button {
+.btn-print-simplificado,
+.btn-voltar {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 16px;
   padding: 10px 20px;
-  margin: 0 20px 0 0;
+  margin-top: 20px;
   transition: all 0.3s ease;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.voltar-button {
+.btn-voltar {
   color: #002fff;
   text-decoration: underline;
 }
 
-.imprimir-simplificado-button {
+.btn-print-simplificado {
   color: #007bff;
 }
 
-.imprimir-simplificado-button:hover {
+.btn-print-simplificado:hover {
   background-color: #0056b3;
   color: #fff;
 }
 
-.voltar-button:hover {
-  background-color: #0021b3;
+.btn-print:hover {
+  background-color: #fff;
+  color: #0056b3;
+}
+
+.btn-voltar:hover {
+  background-color: #007bff;
   color: #fff;
 }
 
@@ -175,12 +180,6 @@ strong {
   font-size: 9px;
 }
 
-.print-button {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.btn-pdf,
 .btn-print {
   padding: 10px 20px;
   font-size: 16px;
@@ -188,10 +187,6 @@ strong {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.btn-pdf {
-  background-color: red;
 }
 
 .btn-print {

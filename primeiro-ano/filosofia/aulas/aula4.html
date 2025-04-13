@@ -8,21 +8,13 @@
     <link rel="stylesheet" href="../../../estilos/estilos-aulas.css" />
   </head>
   <body>
-    <div class="container">
+    <header>
       <h1>Aula 4</h1>
       <h4 style="text-align: center">2º Trimestre</h4>
       <h4 style="text-align: center">Filosofia</h4>
       <h4 style="text-align: center">Lógica Aristotélica e Formal</h4>
-
-      <div class="alert-container">
-        <div class="alert">
-          <div class="alert-text">
-            <p>⚠️ Esta é a versão mais recente e atualizada da aula</p>
-            <b> 📅 Data de atualização: 05/04/2025 </b>
-          </div>
-        </div>
-      </div>
-
+    </header>
+    <div class="container">
       <div class="texto-imprimir">
         <h2>Texto para Copiar ou Imprimir</h2>
 
@@ -358,23 +350,21 @@
           </ol>
         </div>
       </div>
-
-      <div class="print-button">
-        <button onclick="gerarVersaoImpressao()">
+    </div>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <button class="btn-print-simplificado" onclick="gerarVersaoImpressao()">
           Imprimir versão simplificada
-        </button>
-        <button
-          style="background-color: red; display: none"
-          onclick="window.print()"
-        >
-          Gerar PDF
         </button>
       </div>
       <div class="button-container">
-        <button class="voltar-button" onclick="window.history.back()">
+        <button class="btn-voltar" onclick="window.history.back()">
           Voltar
         </button>
       </div>
-    </div>
+    </footer>
   </body>
 </html>

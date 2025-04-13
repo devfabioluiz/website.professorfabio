@@ -15,12 +15,12 @@
     </style>
   </head>
   <body>
+    <header>
+      <h1>Orientações das Avaliações</h1>
+      <h4 style="text-align: center">Sociologia</h4>
+      <h4 style="text-align: center">2º ano</h4>
+    </header>
     <div class="container">
-      <h4 class="text-center">
-        Orientações das Avaliações de Sociologia - 2º ano
-      </h4>
-      <h4 class="text-center">1º Trimestre</h4>
-
       <div class="alert-container">
         <div class="alert">
           <div class="alert-text">
@@ -183,13 +183,21 @@
         </ul>
       </div>
     </div>
-    <div class="print-button">
-      <button onclick="window.print()">Imprimir</button>
-    </div>
-    <div class="button-container">
-      <button class="voltar-button" onclick="window.history.back()">
-        Voltar
-      </button>
-    </div>
+    <!-- FOOTER -->
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <button class="btn-print-simplificado" onclick="gerarVersaoImpressao()">
+          Imprimir versão simplificada
+        </button>
+      </div>
+      <div class="button-container">
+        <button class="btn-voltar" onclick="window.history.back()">
+          Voltar
+        </button>
+      </div>
+    </footer>
   </body>
 </html>

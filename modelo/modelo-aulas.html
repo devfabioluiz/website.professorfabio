@@ -1,19 +1,75 @@
-<head id="head-container">
-  <!-- O conteúdo do cabeçalho será carregado dinamicamente -->
-</head>
-<body>
-  <div id="header-container">
-    <!-- O conteúdo do cabeçalho será carregado dinamicamente -->
-  </div>
-  <div class="container">
-    <div class="texto-imprimir">
-      <h2>Texto para Copiar ou Imprimir</h2>
-      <b>Subtitulo</b>
-      <p>Conteúdo do texto</p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula X/Xº Tri - Xº ano - Disciplina</title>
+    <link rel="stylesheet" href="../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <h1>Aula XX / XXº Trimestre</h1>
+      <h4 style="text-align: center">Disciplina</h4>
+      <h4 style="text-align: center">tema</h4>
+    </header>
+
+    <!-- CONTEUDO -->
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2>Texto para Copiar ou Imprimir</h2>
+        <b>Subtitulo</b>
+        <p>Conteudo do texto</p>
+      </div>
+
+      <div id="texto-leitura">
+        <h2>Texto para Leitura - Não copiar</h2>
+        <b>Subtitulo</b>
+        <p>Conteudo do texto</p>
+      </div>
+
+      <div id="question-container-aula">
+        <h2>Questões para fazer em aula</h2>
+        <h4>NÃO COPIAR a pergunta</h4>
+        <div class="question">
+          <b>Pergunta</b>
+        </div>
+      </div>
+
+      <div id="question-container-casa">
+        <h2>Questões para fazer em casa</h2>
+        <h4>copiar ou marcar APENAS a alternativa que achar correta</h4>
+
+        <div class="question activity">
+          <p>Questão XX</p>
+          <b>ENEM XXXX</b>
+          <p>Texto da Pergunta</p>
+          <b>Pergunta</b>
+          <ol type="A">
+            <li>Opção 1</li>
+            <li>Opção 2</li>
+            <li>Opção 3</li>
+            <li>Opção 4</li>
+          </ol>
+        </div>
+      </div>
     </div>
-  </div>
-  <div id="footer-container">
-    <!-- O conteúdo do rodapé será carregado dinamicamente -->
-  </div>
-  <script src="./scripts/includes.js"></script>
-</body>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <button class="btn-print-simplificado" onclick="gerarVersaoImpressao()">
+          Imprimir versão simplificada
+        </button>
+      </div>
+      <div class="button-container">
+        <button class="btn-voltar" onclick="window.history.back()">
+          Voltar
+        </button>
+      </div>
+    </footer>
+  </body>
+</html>
