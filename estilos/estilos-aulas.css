@@ -210,6 +210,17 @@ strong {
   font-size: 16px;
 }
 
+.livro {
+  background-color: #00cec9;
+  color: #2d3436;
+  border: 1px solid #00b894;
+  border-radius: 8px;
+  padding: 5px 14px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  font-size: 16px;
+}
+
 .mb15 {
   margin-bottom: 15px;
 }
