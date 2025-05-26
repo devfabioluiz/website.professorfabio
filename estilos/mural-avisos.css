@@ -1,0 +1,113 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  color: #333;
+}
+
+header {
+  background-color: #fff;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.mural-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mural-item {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.mural-item:hover {
+  transform: translateY(-5px);
+}
+
+.mural-item h3 {
+  margin: 0 0 10px;
+  color: #007bff;
+}
+
+.mural-item p {
+  margin: 0;
+  color: #555;
+}
+
+.legenda {
+  margin: 20px auto;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+  border-color: red;
+  color: #3498db;
+  border-radius: 8px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legenda span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legenda span::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legenda .branco::before {
+  background-color: #fff;
+  border: 1px solid black;
+}
+
+.legenda .vermelho::before {
+  background-color: #e74c3c;
+  border: 1px solid black;
+}
+
+.legenda .verde::before {
+  background-color: #27ae60;
+  border: 1px solid black;
+}
+
+.legenda .amarelo::before {
+  background-color: #f39c12;
+  border: 1px solid black;
+}
+
+.legenda .roxo::before {
+  background-color: #8e44ad;
+}
+
+.legenda .azul::before {
+  background-color: #2e86de;
+  border: 1px solid black;
+}
+
+.legenda .rosa::before {
+  background-color: #fc427b;
+}
+
+.legenda .cinza::before {
+  background-color: #aaa69d;
+}
+
+.legenda .verde-claro::before {
+  background-color: #55e6c1;
+}
