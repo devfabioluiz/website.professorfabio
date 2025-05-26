@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 de React - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Introdução ao React</h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">Introdução aos componentes do React</h2>
+        <p>
+          No React, um componente é um pedaço de código reutilizável que
+          representa uma parte da interface do usuário, ajudando a dividir a
+          interface do usuário em partes menores e mais gerenciáveis.
+        </p>
+
+        <h4 class="titulo-h4">Tipos de componentes do React</h4>
+        <p>
+          <b>Componentes de Classe:</b> Usa a sintaxe da classe JavaScript e tem
+          acesso ao estado e ao ciclo de vida.
+        </p>
+        <pre>
+<code class="language-javascript">
+import React, { Component } from 'react';
+
+class HelloWorld extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, World!</h1>
+      </div>
+    );
+  }
+}
+
+export default HelloWorld;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">Criando um componente funcional</h4>
+        <p>
+          <b>Componentes Funcionais:</b> São funções JavaScript simples que
+          retornam JSX. Com o React Hooks, eles podem gerenciar o estado e os
+          efeitos colaterais.
+        </p>
+        <pre>
+<code class="language-javascript">
+import React from 'react';
+
+const HelloWorld = () => {
+  return (
+    <div>
+      <h1>Hello, World!</h1>
+    </div>
+  );
+};
+
+export default HelloWorld;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">O que são Props?</h4>
+        <p>
+          <b>Props</b> (abreviação de "properties") são uma forma de passar
+          dados de um componente pai para um componente filho em React.
+        </p>
+        <pre>
+<code class="language-javascript">
+import React from 'react';
+
+const Saudacao = (props) => {
+  return (
+    <div>
+      <h1>Olá, {props.nome}!</h1>
+    </div>
+  );
+};
+
+export default Saudacao;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">O que são estados?</h4>
+        <p>
+          <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
+          do tempo em um componente React.
+        </p>
+        <pre>
+<code class="language-javascript">
+import React, { useState } from 'react';
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+  const incrementar = () => {
+    setContador(contador + 1);
+  };
+
+  return (
+    <div>
+      <h1>Contador: {contador}</h1>
+      <button onClick={incrementar}>Incrementar</button>
+    </div>
+  );
+};
+
+export default Contador;
+</code>
+        </pre>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-voltar" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

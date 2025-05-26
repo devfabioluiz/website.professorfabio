@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 de JS Intermediário - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">Orientação a Objetos</h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2>Introdução à Orientação a Objetos</h2>
+        <p>
+          A Orientação a Objetos (OO) é um paradigma de programação que organiza
+          o código em entidades chamadas <b>objetos</b>, que encapsulam dados
+          (propriedades) e comportamentos (métodos). Em JavaScript, o suporte à
+          OO é implementado com a introdução de classes a partir do ECMAScript 6
+          (ES6), simplificando a criação de estruturas baseadas em objetos.
+        </p>
+
+        <h4>Classe</h4>
+        <p>
+          Uma <b>classe</b> é um modelo para criar objetos. Ela define as
+          propriedades e métodos que os objetos terão.
+        </p>
+        <pre class="question activity">
+        <code>
+        class Animal {
+            constructor(name, species) {
+                this.name = name; 
+                this.species = species;
+            }
+
+            describe() {
+                return `${this.name} é um ${this.species}.`;
+            }
+        }
+        </code>
+        </pre>
+        <h4>Objeto</h4>
+        <p>
+          Um <b>objeto</b> é uma instância de uma classe, representando uma
+          entidade concreta baseada na classe.
+        </p>
+        <pre class="question activity">
+<code>
+var dog = new Animal('Rex', 'cachorro');
+console.log(dog.describe()); // Rex é um cachorro.
+</code>
+        </pre>
+
+        <h4>Propriedades e Métodos</h4>
+        <p>
+          As <b>propriedades</b> armazenam informações do objeto, enquanto os
+          <b>métodos</b> definem os comportamentos.
+        </p>
+        <pre class="question activity">
+<code>
+class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+}
+
+var calc = new Calculator();
+console.log(calc.add(5, 3)); // 8
+</code>
+        </pre>
+
+        <h4>Herança</h4>
+        <p>
+          A <b>herança</b> permite que uma classe reutilize propriedades e
+          métodos de outra classe, promovendo a reutilização de código.
+        </p>
+        <pre class="question activity">
+<code>
+class Mammal extends Animal {
+  constructor(name, species, isDomestic) {
+    super(name, species);
+    this.isDomestic = isDomestic;
+  }
+
+  mammalInfo() {
+    return `${this.name} é um ${this.species} e é ${this.isDomestic ? 'domesticado' : 'selvagem'}.`;
+  }
+}
+
+var cat = new Mammal('Mimi', 'gato', true);
+console.log(cat.mammalInfo()); // Mimi é um gato e é domesticado.
+</code>
+        </pre>
+
+        <h4>Polimorfismo</h4>
+        <p>
+          O <b>polimorfismo</b> permite que métodos em classes filhas redefinam
+          o comportamento dos métodos herdados da classe pai.
+        </p>
+        <pre class="question activity">
+<code>
+class Bird extends Animal {
+  describe() {
+    return `${this.name} é um pássaro da espécie ${this.species}.`;
+  }
+}
+
+var parrot = new Bird('Loro', 'papagaio');
+console.log(parrot.describe()); // Loro é um pássaro da espécie papagaio.
+</code>
+        </pre>
+
+        <h4>Exemplo Completo</h4>
+        <p>
+          Veja um sistema que gerencia veículos com classes especializadas para
+          carros e motos.
+        </p>
+        <pre class="question activity">
+<code>
+class Vehicle {
+  constructor(make, model, year) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+  }
+
+  getDetails() {
+    return `${this.year} ${this.make} ${this.model}`;
+  }
+}
+
+class Car extends Vehicle {
+  constructor(make, model, year, doors) {
+    super(make, model, year);
+    this.doors = doors;
+  }
+
+  getDetails() {
+    return `${super.getDetails()} com ${this.doors} portas.`;
+  }
+}
+
+class Motorcycle extends Vehicle {
+  constructor(make, model, year, type) {
+    super(make, model, year);
+    this.type = type;
+  }
+
+  getDetails() {
+    return `${super.getDetails()} que é uma moto do tipo ${this.type}.`;
+  }
+}
+
+var myCar = new Car('Toyota', 'Corolla', 2022, 4);
+var myBike = new Motorcycle('Honda', 'CBR', 2021, 'esportiva');
+
+console.log(myCar.getDetails()); // 2022 Toyota Corolla com 4 portas.
+console.log(myBike.getDetails()); // 2021 Honda CBR que é uma moto do tipo esportiva.
+</code>
+        </pre>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-voltar" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>
