@@ -70,9 +70,9 @@ mainForm.addEventListener("submit", function (event) {
         <button onclick="gerarVersaoImpressao()">Imprimir versão simplificada</button>
       </div>
       <div class="button-container">
-        <button class="indice-button" href="../../indice-primeiro.html">
+         <a class="btn-indice" href="../../indice-primeiro.html">
           Ir para índice
-        </button>
+        </a>
       </div>
       
     </body>
