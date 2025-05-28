@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 de React - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Child e Parent Components</h4>
+    </header>
+    <div class="container">
+        <h2 class="titulo-h2">
+          Interação entre componentes pai e filho (Child and Parent Components)
+        </h2>
+        <p>
+          No React, os componentes pai podem passar dados para filhos por meio
+          de props. Os componentes filhos podem notificar os pais sobre eventos
+          passando retornos de chamada como props.
+        </p>
+        <h4 class="titulo-h4">Exemplo prático</h4>
+        <pre>
+<code class="language-javascript">
+import React, { useState } from 'react';
+
+const Child = ({ onButtonClick }) => (
+  <button onClick={onButtonClick}>Click me!</button>
+);
+
+const Parent = () => {
+  const [message, setMessage] = useState('No interaction yet');
+
+  const handleClick = () => {
+    setMessage('Button was clicked!');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{message}&lt;/h1&gt;
+      &lt;Child onButtonClick={handleClick}/&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Parent;
+</code>
+        </pre>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

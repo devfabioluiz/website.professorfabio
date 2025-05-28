@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - JavaScript Intermediário</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">Objetos Date e String</h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">O que é o Objeto <code>Date</code>?</h2>
+        <p>
+          O objeto <code>Date</code> em JavaScript é usado para trabalhar com
+          datas e horários. Ele permite criar, manipular e formatar datas
+          facilmente.
+        </p>
+
+        <h3 class="titulo-h3">
+          Principais Métodos do Objeto <code>Date</code>
+        </h3>
+        <ul>
+          <li>
+            <code>new Date()</code>: Cria uma nova instância de
+            <code>Date</code>.
+          </li>
+          <li><code>getDate()</code>: Retorna o dia do mês (1-31).</li>
+          <li><code>getMonth()</code>: Retorna o mês (0-11).</li>
+          <li><code>getFullYear()</code>: Retorna o ano completo.</li>
+          <li>
+            <code>getDay()</code>: Retorna o dia da semana (0-6, onde 0 é
+            domingo).
+          </li>
+          <li><code>getHours()</code>: Retorna a hora (0-23).</li>
+          <li><code>getMinutes()</code>: Retorna os minutos (0-59).</li>
+          <li><code>getSeconds()</code>: Retorna os segundos (0-59).</li>
+          <li>
+            <code>getTime()</code>: Retorna o timestamp em milissegundos desde
+            1º de janeiro de 1970.
+          </li>
+          <li>
+            <code>toDateString()</code>: Retorna uma string legível com a data.
+          </li>
+          <li><code>toISOString()</code>: Retorna a data em formato ISO.</li>
+        </ul>
+
+        <h4 class="titulo-h4">Exemplo com <code>Date</code></h4>
+        <pre>
+<code class="language-javascript">
+const agora = new Date();
+console.log(agora.toDateString()); // "Tue May 28 2025"
+console.log(agora.getFullYear()); // 2025
+console.log(agora.getMonth()); // 4 (maio, pois começa em 0)
+console.log(agora.getTime()); // Timestamp em milissegundos
+</code>
+        </pre>
+
+        <h2 class="titulo-h2">O que é o Objeto <code>String</code>?</h2>
+        <p>
+          O objeto <code>String</code> em JavaScript representa uma sequência de
+          caracteres e fornece métodos para manipular e formatar texto.
+        </p>
+
+        <h3 class="titulo-h3">
+          Principais Métodos do Objeto <code>String</code>
+        </h3>
+        <ul>
+          <li><code>length</code>: Retorna o comprimento da string.</li>
+          <li>
+            <code>charAt()</code>: Retorna o caractere em uma posição
+            específica.
+          </li>
+          <li>
+            <code>indexOf()</code>: Retorna o índice da primeira ocorrência de
+            um valor.
+          </li>
+          <li>
+            <code>slice()</code>: Extrai uma parte da string e retorna como uma
+            nova string.
+          </li>
+          <li>
+            <code>substring()</code>: Similar a <code>slice()</code>, mas não
+            aceita índices negativos.
+          </li>
+          <li>
+            <code>toUpperCase()</code>: Converte a string para letras
+            maiúsculas.
+          </li>
+          <li>
+            <code>toLowerCase()</code>: Converte a string para letras
+            minúsculas.
+          </li>
+          <li>
+            <code>split()</code>: Divide a string em um array de substrings.
+          </li>
+          <li>
+            <code>replace()</code>: Substitui uma parte da string por outra.
+          </li>
+          <li>
+            <code>trim()</code>: Remove espaços em branco do início e fim da
+            string.
+          </li>
+        </ul>
+
+        <h4 class="titulo-h4">Exemplo com <code>String</code></h4>
+        <pre>
+<code class="language-javascript">
+const texto = "  Olá, mundo!  ";
+console.log(texto.trim()); // "Olá, mundo!"
+console.log(texto.toUpperCase()); // "  OLÁ, MUNDO!  "
+console.log(texto.slice(2, 6)); // "lá,"
+console.log(texto.split(" ")); // ["", "", "Olá,", "mundo!", "", ""]
+</code>
+        </pre>
+
+        <h3 class="titulo-h3">
+          Diferenças entre Métodos de <code>String</code>
+        </h3>
+        <p>
+          Métodos como <code>slice</code> e <code>substring</code> são
+          semelhantes, mas têm comportamentos distintos com índices negativos.
+          Enquanto <code>slice</code> aceita índices negativos,
+          <code>substring</code> os converte para zero.
+        </p>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

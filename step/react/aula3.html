@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 de React - IT Step</title>
+    <title>Aula 3 de React - IT Step</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -13,101 +13,57 @@
   </head>
   <body>
     <header>
-      <h1>Aula 2</h1>
+      <h1>Aula 3</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Introdução ao React</h4>
+      <h4 style="text-align: center">Props e States</h4>
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h2 class="titulo-h2">O que são PropTypes?</h2>
+        <h4 class="titulo-h4">O que são Props?</h4>
         <p>
-          PropTypes são uma maneira de verificar os tipos de propriedades (props) nos componentes do React. Eles ajudam a garantir que os componentes recebam os dados corretamente.
+          <b>Props</b> (abreviação de "properties") são uma forma de passar
+          dados de um componente pai para um componente filho em React.
         </p>
-        <h4 class="titulo-h4">Exemplo de PropTypes</h4>
         <pre>
 <code class="language-javascript">
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const Greeting = ({ name, age, isStudent }) => (
-  <div>
-    <h1>Hello, {name}!</h1>
-    <p>Age: {age}</p>
-    <p>{isStudent ? 'You are a student.' : 'You are not a student.'}</p>
-  </div>
-);
-
-Greeting.propTypes = {
-  name: PropTypes.string.isRequired,
-  age: PropTypes.number.isRequired,
-  isStudent: PropTypes.bool,
-};
-
-Greeting.defaultProps = {
-  isStudent: false,
-};
-
-export default Greeting;
-</code>
-        </pre>
-
-        <h2 class="titulo-h2">O que são Hooks?</h2>
-        <p>
-          Hooks são funções especiais que permitem que você use recursos do React, como estado e ciclo de vida, em componentes funcionais.
-        </p>
-        <h4 class="titulo-h4">Exemplo de Hooks</h4>
-        <pre>
-<code class="language-javascript">
-import React, { useState, useEffect } from 'react';
-
-const Timer = () => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    document.title = `Count: ${count}`;
-  }, [count]);
-
+const Saudacao = (props) => {
   return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Olá, {props.nome}!&lt;h1&gt;
+    &lt;/div&gt;
   );
 };
 
-export default Timer;
+export default Saudacao;
 </code>
         </pre>
 
-        <h2 class="titulo-h2">Interação entre componentes pai e filho</h2>
+        <h4 class="titulo-h4">O que são estados (states)?</h4>
         <p>
-          No React, os componentes pai podem passar dados para filhos por meio de props. Os componentes filhos podem notificar os pais sobre eventos passando retornos de chamada como props.
+          <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
+          do tempo em um componente React.
         </p>
-        <h4 class="titulo-h4">Exemplo prático</h4>
         <pre>
 <code class="language-javascript">
 import React, { useState } from 'react';
 
-const Child = ({ onButtonClick }) => (
-  <button onClick={onButtonClick}>Click me!</button>
-);
-
-const Parent = () => {
-  const [message, setMessage] = useState('No interaction yet');
-
-  const handleClick = () => {
-    setMessage('Button was clicked!');
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+  const incrementar = () => {
+    setContador(contador + 1);
   };
 
   return (
-    <div>
-      <h1>{message}</h1>
-      <Child onButtonClick={handleClick} />
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+      &lt;button onClick={incrementar}&gt;Incrementar&lt;/button&gt;
+    &lt;/div&gt;
   );
 };
 
-export default Parent;
+export default Contador;
 </code>
         </pre>
       </div>
@@ -118,7 +74,7 @@ export default Parent;
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
       <div class="button-container">
-        <a class="btn-voltar" href="../indice-step.html">Ir para o índice</a>
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
   </body>

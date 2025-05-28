@@ -15,11 +15,11 @@
     <header>
       <h1>Aula 2</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Introdução ao React</h4>
+      <h4 style="text-align: center">Tipos de Componentes</h4>
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h2 class="titulo-h2">Introdução aos componentes do React</h2>
+        <h2 class="titulo-h2">Tipos de Componentes</h2>
         <p>
           No React, um componente é um pedaço de código reutilizável que
           representa uma parte da interface do usuário, ajudando a dividir a
@@ -32,22 +32,22 @@
           acesso ao estado e ao ciclo de vida.
         </p>
         <pre>
-<code class="language-javascript">
+<code>
 import React, { Component } from 'react';
 
 class HelloWorld extends Component {
   render() {
     return (
-      <div>
-        <h1>Hello, World!</h1>
-      </div>
+      &lt;div&gt;
+        &lt;h1&gt;Hello, World!&lt;/h1&gt;
+      &lt;/div&gt;
     );
   }
 }
 
 export default HelloWorld;
 </code>
-        </pre>
+</pre>
 
         <h4 class="titulo-h4">Criando um componente funcional</h4>
         <p>
@@ -61,9 +61,9 @@ import React from 'react';
 
 const HelloWorld = () => {
   return (
-    <div>
-      <h1>Hello, World!</h1>
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Hello, World!&lt;/h1&gt;
+    &lt;/div&gt;
   );
 };
 
@@ -82,9 +82,9 @@ import React from 'react';
 
 const Saudacao = (props) => {
   return (
-    <div>
-      <h1>Olá, {props.nome}!</h1>
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Olá, {props.nome}!&lt;/h1&gt;
+    &lt;/div&gt;
   );
 };
 
@@ -108,10 +108,8 @@ const Contador = () => {
   };
 
   return (
-    <div>
-      <h1>Contador: {contador}</h1>
-      <button onClick={incrementar}>Incrementar</button>
-    </div>
+    &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+    &lt;button onClick={incrementar}&gt;Incrementar!&lt;/button&gt;
   );
 };
 
@@ -126,7 +124,7 @@ export default Contador;
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
       <div class="button-container">
-        <a class="btn-voltar" href="../indice-step.html">Ir para o índice</a>
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
   </body>

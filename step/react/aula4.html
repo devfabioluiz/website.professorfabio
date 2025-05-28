@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 de React - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Hooks</h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">O que são Hooks?</h2>
+        <p>
+          Hooks são funções especiais que permitem que você use recursos do
+          React, como estado e ciclo de vida, em componentes funcionais. Eles foram introduzidos no React 16.8 e eliminaram a necessidade de usar componentes de classe para gerenciar estado ou ciclos de vida.
+        </p>
+
+        <h3 class="titulo-h3">Por que usar Hooks?</h3>
+        <ul>
+          <li>Permitem usar estado e outras funcionalidades do React em componentes funcionais.</li>
+          <li>Facilitam o compartilhamento de lógica entre componentes.</li>
+          <li>Reduzem a complexidade dos componentes ao evitar o uso de classes.</li>
+        </ul>
+
+        <h3 class="titulo-h3">Principais Hooks</h3>
+        <ul>
+          <li><code>useState</code>: Gerencia estado local em componentes funcionais.</li>
+          <li><code>useEffect</code>: Manipula efeitos colaterais, como requisições de dados ou manipulação do DOM.</li>
+          <li><code>useContext</code>: Acessa valores do contexto de forma mais simples.</li>
+          <li><code>useReducer</code>: Gerencia estados complexos usando um padrão semelhante ao Redux.</li>
+          <li><code>useRef</code>: Permite criar referências mutáveis que sobrevivem entre renderizações.</li>
+        </ul>
+
+        <h4 class="titulo-h4">Exemplo: Contador com <code>useState</code></h4>
+        <pre>
+<code class="language-javascript">
+import React, { useState } from 'react';
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+
+  return (
+    <div>
+      <h1>Contador: {contador}</h1>
+      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
+      <button onClick={() => setContador(contador - 1)}>Decrementar</button>
+    </div>
+  );
+};
+
+export default Contador;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">Exemplo: Requisição com <code>useEffect</code></h4>
+        <pre>
+<code class="language-javascript">
+import React, { useState, useEffect } from 'react';
+
+const ListaUsuarios = () => {
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(data => setUsuarios(data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Usuários</h1>
+      <ul>
+        {usuarios.map(usuario => (
+          <li key={usuario.id}>{usuario.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default ListaUsuarios;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">Exemplo: Referências com <code>useRef</code></h4>
+        <pre>
+<code class="language-javascript">
+import React, { useRef } from 'react';
+
+const InputFoco = () => {
+  const inputRef = useRef(null);
+
+  const focarInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" placeholder="Digite algo" />
+      <button onClick={focarInput}>Focar no Input</button>
+    </div>
+  );
+};
+
+export default InputFoco;
+</code>
+        </pre>
+
+        <h3 class="titulo-h3">Dicas para Hooks</h3>
+        <ul>
+          <li>Sempre chame Hooks no topo da função do componente.</li>
+          <li>Não use Hooks dentro de loops, condições ou funções aninhadas.</li>
+          <li>Use dependências corretamente no <code>useEffect</code> para evitar comportamentos inesperados.</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -15,109 +15,104 @@
     <header>
       <h1>Aula 1</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Introdução ao React</h4>
+      <h4 style="text-align: center">O que é o React e montando o ambiente</h4>
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h2 class="titulo-h2">Introdução aos componentes do React</h2>
+        <h2 class="titulo-h2">O que é React?</h2>
         <p>
-          No React, um componente é um pedaço de código reutilizável que
-          representa uma parte da interface do usuário, ajudando a dividir a
-          interface do usuário em partes menores e mais gerenciáveis.
+          React é uma biblioteca JavaScript para construção de interfaces de
+          usuário. Criado pelo Facebook, ele utiliza um conceito de componentes
+          para facilitar o desenvolvimento, manutenção e escalabilidade de
+          aplicações.
         </p>
 
-        <h4 class="titulo-h4">Tipos de componentes do React</h4>
+        <h2 class="titulo-h2">Arquitetura do React</h2>
         <p>
-          <b>Componentes de Classe:</b> Usa a sintaxe da classe JavaScript e tem
-          acesso ao estado e ao ciclo de vida.
+          A arquitetura do React é baseada no conceito de componentes
+          reutilizáveis. Uma aplicação React geralmente segue a seguinte
+          estrutura de pastas:
         </p>
+        <h4 class="titulo-h4">Estrutura de Pastas</h4>
         <pre>
-<code class="language-javascript">
-import React, { Component } from 'react';
-
-class HelloWorld extends Component {
-  render() {
-    return (
-      <div>
-        <h1>Hello, World!</h1>
-      </div>
-    );
-  }
-}
-
-export default HelloWorld;
+<code class="language-bash">
+my-react-app/
+├── public/           # Arquivos estáticos
+├── src/              # Código fonte da aplicação
+│   ├── components/   # Componentes reutilizáveis
+│   ├── pages/        # Páginas da aplicação
+│   ├── assets/       # Arquivos de mídia e estilos
+│   ├── App.jsx       # Componente principal
+│   └── index.jsx     # Ponto de entrada da aplicação
+├── package.json      # Configuração do projeto
+└── vite.config.js    # Configuração do Vite
 </code>
         </pre>
 
-        <h4 class="titulo-h4">Criando um componente funcional</h4>
-        <p>
-          <b>Componentes Funcionais:</b> São funções JavaScript simples que
-          retornam JSX. Com o React Hooks, eles podem gerenciar o estado e os
-          efeitos colaterais.
-        </p>
+        <h4 class="titulo-h4">Exemplo de Componente</h4>
         <pre>
 <code class="language-javascript">
 import React from 'react';
 
-const HelloWorld = () => {
-  return (
-    <div>
-      <h1>Hello, World!</h1>
-    </div>
-  );
-};
+const Welcome = ({ name }) => (
+  <div>
+    <h1>Bem-vindo, {name}!</h1>
+  </div>
+);
 
-export default HelloWorld;
+export default Welcome;
 </code>
         </pre>
 
-        <h4 class="titulo-h4">O que são Props?</h4>
+        <h2 class="titulo-h2">Configurando o Ambiente com Vite</h2>
         <p>
-          <b>Props</b> (abreviação de "properties") são uma forma de passar
-          dados de um componente pai para um componente filho em React.
+          O Vite é uma ferramenta moderna para construção de aplicações web. Ele
+          oferece uma experiência de desenvolvimento rápida e simples.
         </p>
-        <pre>
-<code class="language-javascript">
-import React from 'react';
-
-const Saudacao = (props) => {
-  return (
-    <div>
-      <h1>Olá, {props.nome}!</h1>
-    </div>
-  );
-};
-
-export default Saudacao;
+        <h4 class="titulo-h4">Passo a Passo</h4>
+        <ol>
+          <li>
+            <strong>Instale o Node.js:</strong> Certifique-se de que o Node.js
+            está instalado em sua máquina.
+          </li>
+          <li>
+            <strong>Crie o projeto:</strong>
+            <pre>
+<code class="language-bash">
+npm create vite@latest my-react-app --template react
 </code>
-        </pre>
-
-        <h4 class="titulo-h4">O que são estados?</h4>
+            </pre>
+          </li>
+          <li>
+            <strong>Acesse a pasta do projeto:</strong>
+            <pre>
+<code class="language-bash">
+cd my-react-app
+</code>
+            </pre>
+          </li>
+          <li>
+            <strong>Instale as dependências:</strong>
+            <pre>
+<code class="language-bash">
+npm install
+</code>
+            </pre>
+          </li>
+          <li>
+            <strong>Inicie o servidor de desenvolvimento:</strong>
+            <pre>
+<code class="language-bash">
+npm run dev
+</code>
+            </pre>
+          </li>
+        </ol>
         <p>
-          <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
-          do tempo em um componente React.
+          Após seguir esses passos, você poderá acessar sua aplicação no
+          navegador pelo endereço exibido no terminal (geralmente
+          <code>http://localhost:5173</code>).
         </p>
-        <pre>
-<code class="language-javascript">
-import React, { useState } from 'react';
-
-const Contador = () => {
-  const [contador, setContador] = useState(0);
-  const incrementar = () => {
-    setContador(contador + 1);
-  };
-
-  return (
-    <div>
-      <h1>Contador: {contador}</h1>
-      <button onClick={incrementar}>Incrementar</button>
-    </div>
-  );
-};
-
-export default Contador;
-</code>
-        </pre>
       </div>
     </div>
 
@@ -126,7 +121,7 @@ export default Contador;
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
       <div class="button-container">
-        <a class="btn-voltar" href="../indice-step.html">Ir para o índice</a>
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
   </body>
