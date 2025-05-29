@@ -50,11 +50,11 @@ const Contador = () => {
   const [contador, setContador] = useState(0);
 
   return (
-    <div>
-      <h1>Contador: {contador}</h1>
-      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
-      <button onClick={() => setContador(contador - 1)}>Decrementar</button>
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+      &lt;button onClick={() => setContador(contador + 1)}>Incrementar&lt;/button&gt;
+      &lt;button onClick={() => setContador(contador - 1)}>Decrementar&lt;/button&gt;
+    &lt;/div&gt;
   );
 };
 
@@ -77,14 +77,14 @@ const ListaUsuarios = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Usuários</h1>
-      <ul>
+    &lt;div&gt;
+      &lt;h1&gt;Usuários&lt;/h1&gt;
+      &lt;ul&gt;
         {usuarios.map(usuario => (
-          <li key={usuario.id}>{usuario.name}</li>
+          &lt;li key={usuario.id}>{usuario.name}&lt;/li&gt;
         ))}
-      </ul>
-    </div>
+      &lt;/ul&gt;
+    &lt;/div&gt;
   );
 };
 
@@ -105,10 +105,10 @@ const InputFoco = () => {
   };
 
   return (
-    <div>
-      <input ref={inputRef} type="text" placeholder="Digite algo" />
-      <button onClick={focarInput}>Focar no Input</button>
-    </div>
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Digite algo" /&gt;
+      &lt;button onClick={focarInput}>Focar no Input&lt;/button&gt;
+    &lt;/div&gt;
   );
 };
 
