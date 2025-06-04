@@ -3,130 +3,203 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 4 - JS Intermediário</title>
-    <script src="../../../scripts/script-impressao.js"></script>
-    <link rel="stylesheet" href="../../../../estilos/estilos-aulas.css" />
+    <title>
+      POO em JavaScript: Encapsulamento, Classes Abstratas e Interfaces
+    </title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
     <header>
-      <h1>Aula 1</h1>
-      <h4 style="text-align: center">JavaScript Intermediário</h4>
-      <h4 style="text-align: center">Funções</h4>
+      <h1>POO em JavaScript</h1>
+      <h4 style="text-align: center">JavaScript Avançado</h4>
+      <h4 style="text-align: center">
+        Encapsulamento, Classes Abstratas e Interfaces
+      </h4>
     </header>
     <div class="container">
-      <div id="texto-modulo-2">
-        <h3>Escopo de Variáveis e a Palavra-chave <code>this</code></h3>
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">Encapsulamento em JavaScript</h2>
         <p>
-          O escopo de variáveis refere-se à acessibilidade de variáveis em
-          diferentes partes do código. Em JavaScript, existem três tipos
-          principais de escopo:
+          O encapsulamento é um dos pilares fundamentais da Programação
+          Orientada a Objetos que consiste em esconder os detalhes internos de
+          implementação de um objeto, expondo apenas uma interface pública para
+          interação.
         </p>
-        <ul>
-          <li>
-            <b>Global:</b> Variáveis declaradas fora de qualquer função ou
-            bloco.
-          </li>
-          <li>
-            <b>De função:</b> Variáveis declaradas dentro de uma função só podem
-            ser acessadas dentro dela.
-          </li>
-          <li>
-            <b>De bloco:</b> Variáveis declaradas com <code>let</code> ou
-            <code>const</code> dentro de um bloco (<code>{}</code>).
-          </li>
-        </ul>
-        <p>
-          A palavra-chave <code>this</code> representa o objeto ao qual a função
-          atual pertence. Seu valor depende de onde e como a função foi chamada:
-        </p>
-        <ul>
-          <li>
-            Em um método de objeto, <code>this</code> refere-se ao objeto pai.
-          </li>
-          <li>
-            Em uma função regular, <code>this</code> é <code>undefined</code> no
-            modo estrito ou o objeto global fora dele.
-          </li>
-          <li>
-            Em funções de seta, <code>this</code> é herdado do contexto lexical.
-          </li>
-        </ul>
 
-        <h3>Recursão</h3>
+        <h3 class="titulo-h3">Como implementar encapsulamento em JavaScript</h3>
         <p>
-          Recursão é a técnica onde uma função chama a si mesma para resolver
-          problemas dividindo-os em subproblemas menores. Um exemplo clássico é
-          o cálculo do fatorial:
+          JavaScript não possui modificadores de acesso como
+          <code>private</code>, <code>protected</code> e
+          <code>public</code> como em outras linguagens, mas podemos simular
+          encapsulamento de várias formas:
         </p>
-        <pre>
-          <code>
-function fatorial(n) {
-  if (n === 0) return 1;
-  return n * fatorial(n - 1);
-}
-          </code>
-        </pre>
-        <p>
-          A recursão requer uma condição de parada para evitar loops infinitos e
-          estouro de pilha.
-        </p>
-      </div>
 
-      <div id="texto-modulo-5">
-        <h2>ECMAScript</h2>
-        <p>
-          ECMAScript é a especificação padrão para JavaScript, criada pela ECMA
-          International em 1997. Suas principais edições trouxeram recursos
-          como:
-        </p>
-        <ul>
-          <li>ES5 (2009): Estrito, JSON nativo, métodos array.</li>
-          <li>
-            ES6 (2015): Funções de seta, classes, <code>let</code> e
-            <code>const</code>, entre outros.
-          </li>
-        </ul>
+        <h4 class="titulo-h4">1. Convenção com underscore (_)</h4>
+        <pre><code class="language-javascript">
+class ContaBancaria {
+  constructor(saldo) {
+    this._saldo = saldo; // _ indica que é "privado" (convenção)
+  }
 
-        <h3>Funções de Seta (Arrow Function)</h3>
-        <p>
-          Funções de seta introduzem uma sintaxe curta para escrever funções.
-          Além disso, elas não têm seu próprio <code>this</code>, herdando do
-          contexto ao redor.
-        </p>
-        <pre>
-          <code>
-const soma = (a, b) => a + b;
-console.log(soma(2, 3)); // 5
-          </code>
-        </pre>
+  depositar(valor) {
+    this._saldo += valor;
+  }
 
-        <h3>Módulos e Classes</h3>
-        <p>
-          Módulos permitem organizar o código em arquivos separados, exportando
-          e importando recursos:
-        </p>
-        <pre>
-          <code>
-// arquivo.js
-export const mensagem = "Olá, Módulo!";
-export function saudacao() {
-  return "Bem-vindo!";
+  getSaldo() {
+    return this._saldo;
+  }
 }
 
-// main.js
-import { mensagem, saudacao } from './arquivo.js';
-console.log(mensagem); // "Olá, Módulo!"
-          </code>
-        </pre>
+const conta = new ContaBancaria(1000);
+console.log(conta._saldo); // Ainda acessível (apenas convenção)
+        </code></pre>
+
+        <h4 class="titulo-h4">2. Usando Symbols</h4>
+        <pre><code class="language-javascript">
+const saldoSymbol = Symbol('saldo');
+
+class ContaBancaria {
+  constructor(saldo) {
+    this[saldoSymbol] = saldo;
+  }
+
+  depositar(valor) {
+    this[saldoSymbol] += valor;
+  }
+
+  getSaldo() {
+    return this[saldoSymbol];
+  }
+}
+
+const conta = new ContaBancaria(1000);
+console.log(conta[saldoSymbol]); // Acessível se tiver a referência do Symbol
+        </code></pre>
+
+        <h4 class="titulo-h4">3. Usando WeakMaps (mais privacidade)</h4>
+        <pre><code class="language-javascript">
+const privado = new WeakMap();
+
+class ContaBancaria {
+  constructor(saldo) {
+    privado.set(this, { saldo });
+  }
+
+  depositar(valor) {
+    const dados = privado.get(this);
+    dados.saldo += valor;
+  }
+
+  getSaldo() {
+    return privado.get(this).saldo;
+  }
+}
+
+const conta = new ContaBancaria(1000);
+console.log(conta.saldo); // undefined (realmente privado)
+        </code></pre>
+
+        <h4 class="titulo-h4">4. Campos privados em classes (ES2022)</h4>
+        <pre><code class="language-javascript">
+class ContaBancaria {
+  #saldo; // Campo privado
+
+  constructor(saldo) {
+    this.#saldo = saldo;
+  }
+
+  depositar(valor) {
+    this.#saldo += valor;
+  }
+
+  get saldo() {
+    return this.#saldo;
+  }
+}
+
+const conta = new ContaBancaria(1000);
+console.log(conta.#saldo); // Erro de sintaxe (realmente privado)
+console.log(conta.saldo); // Acessível via getter
+        </code></pre>
+
+        <h3 class="titulo-h3">Vantagens do Encapsulamento</h3>
+        <ul>
+          <li>
+            <strong>Proteção de dados:</strong> Impede modificações diretas em
+            atributos internos
+          </li>
+          <li>
+            <strong>Flexibilidade:</strong> Permite alterar a implementação sem
+            afetar quem usa a classe
+          </li>
+          <li>
+            <strong>Controle de acesso:</strong> Pode validar valores antes de
+            atribuí-los
+          </li>
+          <li>
+            <strong>Manutenibilidade:</strong> Reduz acoplamento entre
+            componentes
+          </li>
+        </ul>
+
+        <h3 class="titulo-h3">Exemplo Completo com Encapsulamento</h3>
+        <pre><code class="language-javascript">
+class Produto {
+  #nome;
+  #preco;
+  #desconto;
+
+  constructor(nome, preco) {
+    this.#nome = nome;
+    this.#preco = preco;
+    this.#desconto = 0;
+  }
+
+  get nome() {
+    return this.#nome;
+  }
+
+  get preco() {
+    return this.#preco - (this.#preco * this.#desconto);
+  }
+
+  set desconto(novoDesconto) {
+    if (novoDesconto >= 0 && novoDesconto <= 0.5) {
+      this.#desconto = novoDesconto;
+    } else {
+      throw new Error('Desconto deve estar entre 0 e 50%');
+    }
+  }
+
+  detalhes() {
+    return `${this.#nome} - R$ ${this.preco.toFixed(2)} ${this.#desconto > 0 ? `(${this.#desconto * 100}% off)` : ''}`;
+  }
+}
+
+const notebook = new Produto('Notebook', 3000);
+notebook.desconto = 0.2;
+console.log(notebook.detalhes()); // "Notebook - R$ 2400.00 (20% off)"
+        </code></pre>
+
+        <!-- Seções anteriores sobre Classes Abstratas e Interfaces -->
+        <h2 class="titulo-h2">Classes Abstratas e Interfaces em JavaScript</h2>
+
+        <!-- ... (conteúdo anterior sobre classes abstratas e interfaces) ... -->
       </div>
     </div>
-    <div class="button-container">
-      <button class="btn-print" onclick="window.print()">Imprimir</button>
-    </div>
-    <div class="button-container">
-      <a class="btn-indice" href="../../indice-terceiro.html">
-        Ir para índice
-      </a>
-    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
   </body>
 </html>

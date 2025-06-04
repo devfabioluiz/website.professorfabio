@@ -1,0 +1,14 @@
+1) Crie um componente chamado Placar do Jogo
+2) Nesse componente o cronômetro da partida
+vai até o minuto 90, será feito a contagem tal
+como o componente Timer está na aula4, no pdf
+3) Terá um botão para fazer o intervalo e ele vai
+parar a contagem em 15minutos e depois volta de
+onde estava
+4) Haverá um botão para dar acrescimos de 5 min a partir do minuto 90, ou seja, a partida somente
+poderá, se houver acréscimos, chegar aos 95 min
+5) Monte o placar e coloque um botão para aumentar
+numero de gols de cada equipe
+6) Não esqueça de colocar seu componente no App
+
+Dicas: Leia as aulas 2 até 4 dos PDF's no logbook

@@ -50,11 +50,11 @@ const Contador = () => {
   const [contador, setContador] = useState(0);
 
   return (
-    <div>
-      <h1>Contador: {contador}</h1>
-      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
-      <button onClick={() => setContador(contador - 1)}>Decrementar</button>
-    </div>
+    &lt;div&gt;
+      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+      &lt;button onClick={() => setContador(contador + 1)}>Incrementar&lt;/button&gt;
+      &lt;button onClick={() => setContador(contador - 1)}>Decrementar&lt;/button&gt;
+    &lt;/div&gt;
   );
 };
 
@@ -67,61 +67,24 @@ export default Contador;
 <code class="language-javascript">
 import React, { useState, useEffect } from 'react';
 
-const ListaUsuarios = () => {
-  const [usuarios, setUsuarios] = useState([]);
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+
+function Timer() {
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(data => setUsuarios(data));
-  }, []);
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+  });
 
-  return (
-    <div>
-      <h1>Usuários</h1>
-      <ul>
-        {usuarios.map(usuario => (
-          <li key={usuario.id}>{usuario.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+  return  &lt;h1&gt;Isso está se repetindo {count} vezes!&lt;/h1&gt;;
+}
 
-export default ListaUsuarios;
+export default Timer;
 </code>
         </pre>
-
-        <h4 class="titulo-h4">Exemplo: Referências com <code>useRef</code></h4>
-        <pre>
-<code class="language-javascript">
-import React, { useRef } from 'react';
-
-const InputFoco = () => {
-  const inputRef = useRef(null);
-
-  const focarInput = () => {
-    inputRef.current.focus();
-  };
-
-  return (
-    <div>
-      <input ref={inputRef} type="text" placeholder="Digite algo" />
-      <button onClick={focarInput}>Focar no Input</button>
-    </div>
-  );
-};
-
-export default InputFoco;
-</code>
-        </pre>
-
-        <h3 class="titulo-h3">Dicas para Hooks</h3>
-        <ul>
-          <li>Sempre chame Hooks no topo da função do componente.</li>
-          <li>Não use Hooks dentro de loops, condições ou funções aninhadas.</li>
-          <li>Use dependências corretamente no <code>useEffect</code> para evitar comportamentos inesperados.</li>
-        </ul>
       </div>
     </div>
 

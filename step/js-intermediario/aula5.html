@@ -1,0 +1,127 @@
+ <title>Aula 5 - JS Intermediário</title>
+    <script src="../../../scripts/script-impressao.js"></script>
+    <link rel="stylesheet" href="../../../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">Funções</h4>
+    </header>
+    <div class="container">
+      <div id="texto-modulo-2">
+        <h3>Escopo de Variáveis e a Palavra-chave <code>this</code></h3>
+        <p>
+          O escopo de variáveis refere-se à acessibilidade de variáveis em
+          diferentes partes do código. Em JavaScript, existem três tipos
+          principais de escopo:
+        </p>
+        <ul>
+          <li>
+            <b>Global:</b> Variáveis declaradas fora de qualquer função ou
+            bloco.
+          </li>
+          <li>
+            <b>De função:</b> Variáveis declaradas dentro de uma função só podem
+            ser acessadas dentro dela.
+          </li>
+          <li>
+            <b>De bloco:</b> Variáveis declaradas com <code>let</code> ou
+            <code>const</code> dentro de um bloco (<code>{}</code>).
+          </li>
+        </ul>
+        <p>
+          A palavra-chave <code>this</code> representa o objeto ao qual a função
+          atual pertence. Seu valor depende de onde e como a função foi chamada:
+        </p>
+        <ul>
+          <li>
+            Em um método de objeto, <code>this</code> refere-se ao objeto pai.
+          </li>
+          <li>
+            Em uma função regular, <code>this</code> é <code>undefined</code> no
+            modo estrito ou o objeto global fora dele.
+          </li>
+          <li>
+            Em funções de seta, <code>this</code> é herdado do contexto lexical.
+          </li>
+        </ul>
+
+        <h3>Recursão</h3>
+        <p>
+          Recursão é a técnica onde uma função chama a si mesma para resolver
+          problemas dividindo-os em subproblemas menores. Um exemplo clássico é
+          o cálculo do fatorial:
+        </p>
+        <pre>
+          <code>
+function fatorial(n) {
+  if (n === 0) return 1;
+  return n * fatorial(n - 1);
+}
+          </code>
+        </pre>
+        <p>
+          A recursão requer uma condição de parada para evitar loops infinitos e
+          estouro de pilha.
+        </p>
+      </div>
+
+      <div id="texto-modulo-5">
+        <h2>ECMAScript</h2>
+        <p>
+          ECMAScript é a especificação padrão para JavaScript, criada pela ECMA
+          International em 1997. Suas principais edições trouxeram recursos
+          como:
+        </p>
+        <ul>
+          <li>ES5 (2009): Estrito, JSON nativo, métodos array.</li>
+          <li>
+            ES6 (2015): Funções de seta, classes, <code>let</code> e
+            <code>const</code>, entre outros.
+          </li>
+        </ul>
+
+        <h3>Funções de Seta (Arrow Function)</h3>
+        <p>
+          Funções de seta introduzem uma sintaxe curta para escrever funções.
+          Além disso, elas não têm seu próprio <code>this</code>, herdando do
+          contexto ao redor.
+        </p>
+        <pre>
+          <code>
+const soma = (a, b) => a + b;
+console.log(soma(2, 3)); // 5
+          </code>
+        </pre>
+
+        <h3>Módulos e Classes</h3>
+        <p>
+          Módulos permitem organizar o código em arquivos separados, exportando
+          e importando recursos:
+        </p>
+        <pre>
+          <code>
+// arquivo.js
+export const mensagem = "Olá, Módulo!";
+export function saudacao() {
+  return "Bem-vindo!";
+}
+
+// main.js
+import { mensagem, saudacao } from './arquivo.js';
+console.log(mensagem); // "Olá, Módulo!"
+          </code>
+        </pre>
+      </div>
+    </div>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+    <div class="button-container">
+      <a class="btn-indice" href="../../indice-terceiro.html">
+        Ir para índice
+      </a>
+    </div>
+  </body>
+</html>
