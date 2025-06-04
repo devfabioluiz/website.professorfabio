@@ -1,15 +1,19 @@
- <title>Aula 5 - JS Intermediário</title>
-    <script src="../../../scripts/script-impressao.js"></script>
-    <link rel="stylesheet" href="../../../../estilos/estilos-aulas.css" />
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 - JS Intermediário</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
   </head>
   <body>
     <header>
       <h1>Aula 5</h1>
       <h4 style="text-align: center">JavaScript Intermediário</h4>
-      <h4 style="text-align: center">Funções</h4>
+      <h4 style="text-align: center">EcmaScript, Módulos e Funções</h4>
     </header>
     <div class="container">
-      <div id="texto-modulo-2">
+      <div id="texto-imprimir">
         <h3>Escopo de Variáveis e a Palavra-chave <code>this</code></h3>
         <p>
           O escopo de variáveis refere-se à acessibilidade de variáveis em
@@ -67,7 +71,7 @@ function fatorial(n) {
         </p>
       </div>
 
-      <div id="texto-modulo-5">
+      <div id="texto-imprimir">
         <h2>ECMAScript</h2>
         <p>
           ECMAScript é a especificação padrão para JavaScript, criada pela ECMA
@@ -94,23 +98,101 @@ const soma = (a, b) => a + b;
 console.log(soma(2, 3)); // 5
           </code>
         </pre>
-
-        <h3>Módulos e Classes</h3>
+      </div>
+      <div class="texto-imprimir">
+        <h3>Diferença entre Arrow Function e Função Normal</h3>
         <p>
-          Módulos permitem organizar o código em arquivos separados, exportando
-          e importando recursos:
+          Funções em JavaScript podem ser declaradas de diferentes formas, sendo
+          as mais comuns a função normal e a arrow function. Ambas possuem
+          diferenças importantes em sintaxe e comportamento.
         </p>
+
+        <h3>Sintaxe</h3>
+        <p>
+          A principal diferença inicial é a forma como as funções são escritas:
+        </p>
+        <ul>
+          <li>
+            <b>Função Normal:</b> É escrita com a palavra-chave
+            <code>function</code>:
+          </li>
+        </ul>
         <pre>
           <code>
-// arquivo.js
-export const mensagem = "Olá, Módulo!";
-export function saudacao() {
-  return "Bem-vindo!";
+function soma(a, b) {
+  return a + b;
 }
+console.log(soma(2, 3)); // Saída: 5
+          </code>
+        </pre>
+        <ul>
+          <li>
+            <b>Arrow Function:</b> Usa uma sintaxe mais curta, com
+            <code>=></code>:
+          </li>
+        </ul>
+        <pre>
+          <code>
+const soma = (a, b) => a + b;
+console.log(soma(2, 3)); // Saída: 5
+          </code>
+        </pre>
 
-// main.js
-import { mensagem, saudacao } from './arquivo.js';
-console.log(mensagem); // "Olá, Módulo!"
+        <h3>Comportamento do <code>this</code></h3>
+        <p>
+          O comportamento do <code>this</code> é uma das principais diferenças:
+        </p>
+        <ul>
+          <li>
+            <b>Função Normal:</b> O <code>this</code> é dinâmico, dependendo do
+            contexto em que a função foi chamada.
+          </li>
+        </ul>
+        <pre>
+          <code>
+const obj = {
+  valor: 10,
+  funcaoNormal: function () {
+    return this.valor;
+  },
+};
+console.log(obj.funcaoNormal()); // Saída: 10
+          </code>
+        </pre>
+        <ul>
+          <li>
+            <b>Arrow Function:</b> O <code>this</code> é léxico, herdando o
+            contexto onde a função foi definida.
+          </li>
+        </ul>
+        <pre>
+          <code>
+const obj = {
+  valor: 10,
+  arrowFunction: () => {
+    return this.valor;
+  },
+};
+console.log(obj.arrowFunction()); // Saída: undefined
+          </code>
+        </pre>
+
+        <h3>Uso como Construtor</h3>
+        <p>Apenas funções normais podem ser usadas como construtores:</p>
+        <pre>
+          <code>
+// Função Normal
+function Pessoa(nome) {
+  this.nome = nome;
+}
+const pessoa1 = new Pessoa("João");
+console.log(pessoa1.nome); // Saída: João
+
+// Arrow Function
+const Pessoa = (nome) => {
+  this.nome = nome;
+};
+const pessoa1 = new Pessoa("João"); // Erro: Pessoa não é um construtor
           </code>
         </pre>
       </div>
@@ -119,9 +201,7 @@ console.log(mensagem); // "Olá, Módulo!"
       <button class="btn-print" onclick="window.print()">Imprimir</button>
     </div>
     <div class="button-container">
-      <a class="btn-indice" href="../../indice-terceiro.html">
-        Ir para índice
-      </a>
+      <a class="btn-indice" href="../indice-step.html"> Ir para índice </a>
     </div>
   </body>
 </html>

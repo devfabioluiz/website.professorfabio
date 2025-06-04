@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 4 de React - IT Step</title>
+    <title>Aula 5 de React - IT Step</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -13,49 +13,144 @@
   </head>
   <body>
     <header>
-      <h1>Aula 4</h1>
+      <h1>Aula 5</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Child e Parent Components</h4>
+      <h4 style="text-align: center">
+        Passagem de dados e Iteração sobre arrays
+      </h4>
     </header>
     <div class="container">
-        <h2 class="titulo-h2">
-          Interação entre componentes pai e filho (Child and Parent Components)
-        </h2>
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">Passagem de Dados no React</h2>
         <p>
-          No React, os componentes pai podem passar dados para filhos por meio
-          de props. Os componentes filhos podem notificar os pais sobre eventos
-          passando retornos de chamada como props.
+          A comunicação entre componentes no React é fundamental para construir
+          aplicações dinâmicas. Aqui veremos como passar dados de um componente
+          pai para um filho e vice-versa.
         </p>
-        <h4 class="titulo-h4">Exemplo prático</h4>
+
+        <h3 class="titulo-h3">1. Passando Dados do Pai para o Filho</h3>
+        <p>
+          A passagem de dados do pai para o filho é realizada por meio de props
+          (propriedades). Veja o exemplo abaixo:
+        </p>
         <pre>
-<code class="language-javascript">
-import React, { useState } from 'react';
+<code class="language-javascript">import React from 'react';
 
-const Child = ({ onButtonClick }) => (
-  <button onClick={onButtonClick}>Click me!</button>
-);
+function Child({ message }) {
+  return &lt;p&gt;{message}&lt;/p&gt;;
+}
 
-const Parent = () => {
-  const [message, setMessage] = useState('No interaction yet');
-
-  const handleClick = () => {
-    setMessage('Button was clicked!');
-  };
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;{message}&lt;/h1&gt;
-      &lt;Child onButtonClick={handleClick}/&gt;
-    &lt;/div&gt;
-  );
-};
+function Parent() {
+  return &lt;Child message="Olá, do componente Pai!" /&gt;;
+}
 
 export default Parent;
 </code>
         </pre>
+
+        <h4 class="titulo-h4">Vantagens</h4>
+        <ul>
+          <li>Simples e direto para componentes hierárquicos.</li>
+          <li>
+            Propriedades podem ser usadas como valores estáticos ou dinâmicos.
+          </li>
+        </ul>
+
+        <h4 class="titulo-h4">Desvantagens</h4>
+        <ul>
+          <li>
+            Torna-se complexo em hierarquias profundas (pode ser resolvido com
+            Context API ou bibliotecas de gerenciamento de estado).
+          </li>
+        </ul>
+
+        <h3 class="titulo-h3">2. Passando Dados do Filho para o Pai</h3>
+        <p>
+          Para enviar dados do filho para o pai, o pai deve passar uma função
+          como prop para o filho. O filho pode chamar essa função com os dados
+          desejados.
+        </p>
+        <pre>
+<code class="language-javascript">import React, { useState } from 'react';
+
+function Child({ sendDataToParent }) {
+  return (
+    &lt;button onClick={() => sendDataToParent('Dados do Filho')}&gt;Enviar&lt;button&gt;
+  );
+}
+
+function Parent() {
+  const [data, setData] = useState('');
+
+  const handleDataFromChild = (childData) => {
+    setData(childData);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Dados recebidos: {data}&lt;/p&gt;
+      &lt;Child sendDataToParent={handleDataFromChild} /&gt;;
+    &lt;/div&gt;
+  );
+}
+
+export default Parent;
+</code>
+        </pre>
+
+        <h4 class="titulo-h4">Vantagens</h4>
+        <ul>
+          <li>Permite que o pai reaja a eventos do filho.</li>
+          <li>Flexível para construir interações dinâmicas.</li>
+        </ul>
+
+        <h4 class="titulo-h4">Desvantagens</h4>
+        <ul>
+          <li>Requer mais configuração do que a passagem pai para filho.</li>
+        </ul>
+
+        <h2>Iteração sobre arrays</h2>
+        <p>
+          O método <code>map</code> é usado para iterar e renderizar
+          dinamicamente listas de itens no React.
+        </p>
+        <div class="example">
+          <h3>Exemplo:</h3>
+          <pre>
+<code>
+import React from 'react';
+
+function ItemList() {
+  const items = ['React', 'Vue', 'Angular'];
+
+  return (
+     &lt;ul&gt;
+      {items.map((item, index) => (
+        &lt;li key={index}&gt;{item}&lt;/li&gt
+      ))}
+     &lt;/ul&gt;
+  );
+}
+
+export default ItemList;
+</code>
+    </pre>
+        </div>
+      </div>
+      <div id="question-container-aula">
+        <h2>Exercício para fazer em aula</h2>
+        <div class="question">
+          <b
+            >Crie dois componentes (Pai e Filho) e implemente as duas formas de
+            comunicação vistas nesta aula.</b
+          >
+          <a
+            href="https://github.com/devfabioluiz/aulasReact/tree/main/my-app/src/components/Aula%203"
+            >Siga este modelo</a
+          >
+        </div>
       </div>
     </div>
-
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
