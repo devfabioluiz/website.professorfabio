@@ -36,11 +36,11 @@
         <pre>
 <code class="language-javascript">import React from 'react';
 
-function Child({ message }) {
+const Child = ({ message }) => {
   return &lt;p&gt;{message}&lt;/p&gt;;
 }
 
-function Parent() {
+const Parent = () => {
   return &lt;Child message="Olá, do componente Pai!" /&gt;;
 }
 
@@ -73,13 +73,13 @@ export default Parent;
         <pre>
 <code class="language-javascript">import React, { useState } from 'react';
 
-function Child({ sendDataToParent }) {
+Child = ({ sendDataToParent }) => {
   return (
     &lt;button onClick={() => sendDataToParent('Dados do Filho')}&gt;Enviar&lt;button&gt;
   );
 }
 
-function Parent() {
+Parent = () => {
   const [data, setData] = useState('');
 
   const handleDataFromChild = (childData) => {
@@ -120,7 +120,7 @@ export default Parent;
 <code>
 import React from 'react';
 
-function ItemList() {
+const ItemList = () => {
   const items = ['React', 'Vue', 'Angular'];
 
   return (

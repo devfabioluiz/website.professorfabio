@@ -27,7 +27,7 @@
 <code>
 import React, { useState } from 'react';
 
-function FormWithValidation() {
+const FormWithValidation = () => {
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [errors, setErrors] = useState({ name: '', email: '' });
 
@@ -94,7 +94,7 @@ export default FormWithValidation;
 <code>
 import React, { useState } from 'react';
 
-function ParentForm() {
+const ParentForm = () => {
   const [parentData, setParentData] = useState('');
 
   return (
@@ -106,7 +106,7 @@ function ParentForm() {
   );
 }
 
-function ChildForm({ onFormSubmit }) {
+const ChildForm = ({ onFormSubmit }) => {
   const [childData, setChildData] = useState('');
 
   const handleSubmit = (e) => {

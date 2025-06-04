@@ -22,23 +22,45 @@
         <h2 class="titulo-h2">O que são Hooks?</h2>
         <p>
           Hooks são funções especiais que permitem que você use recursos do
-          React, como estado e ciclo de vida, em componentes funcionais. Eles foram introduzidos no React 16.8 e eliminaram a necessidade de usar componentes de classe para gerenciar estado ou ciclos de vida.
+          React, como estado e ciclo de vida, em componentes funcionais. Eles
+          foram introduzidos no React 16.8 e eliminaram a necessidade de usar
+          componentes de classe para gerenciar estado ou ciclos de vida.
         </p>
 
         <h3 class="titulo-h3">Por que usar Hooks?</h3>
         <ul>
-          <li>Permitem usar estado e outras funcionalidades do React em componentes funcionais.</li>
+          <li>
+            Permitem usar estado e outras funcionalidades do React em
+            componentes funcionais.
+          </li>
           <li>Facilitam o compartilhamento de lógica entre componentes.</li>
-          <li>Reduzem a complexidade dos componentes ao evitar o uso de classes.</li>
+          <li>
+            Reduzem a complexidade dos componentes ao evitar o uso de classes.
+          </li>
         </ul>
 
         <h3 class="titulo-h3">Principais Hooks</h3>
         <ul>
-          <li><code>useState</code>: Gerencia estado local em componentes funcionais.</li>
-          <li><code>useEffect</code>: Manipula efeitos colaterais, como requisições de dados ou manipulação do DOM.</li>
-          <li><code>useContext</code>: Acessa valores do contexto de forma mais simples.</li>
-          <li><code>useReducer</code>: Gerencia estados complexos usando um padrão semelhante ao Redux.</li>
-          <li><code>useRef</code>: Permite criar referências mutáveis que sobrevivem entre renderizações.</li>
+          <li>
+            <code>useState</code>: Gerencia estado local em componentes
+            funcionais.
+          </li>
+          <li>
+            <code>useEffect</code>: Manipula efeitos colaterais, como
+            requisições de dados ou manipulação do DOM.
+          </li>
+          <li>
+            <code>useContext</code>: Acessa valores do contexto de forma mais
+            simples.
+          </li>
+          <li>
+            <code>useReducer</code>: Gerencia estados complexos usando um padrão
+            semelhante ao Redux.
+          </li>
+          <li>
+            <code>useRef</code>: Permite criar referências mutáveis que
+            sobrevivem entre renderizações.
+          </li>
         </ul>
 
         <h4 class="titulo-h4">Exemplo: Contador com <code>useState</code></h4>
@@ -62,7 +84,9 @@ export default Contador;
 </code>
         </pre>
 
-        <h4 class="titulo-h4">Exemplo: Requisição com <code>useEffect</code></h4>
+        <h4 class="titulo-h4">
+          Exemplo: Requisição com <code>useEffect</code>
+        </h4>
         <pre>
 <code class="language-javascript">
 import React, { useState, useEffect } from 'react';
@@ -70,7 +94,7 @@ import React, { useState, useEffect } from 'react';
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
-function Timer() {
+const Timer = () => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
