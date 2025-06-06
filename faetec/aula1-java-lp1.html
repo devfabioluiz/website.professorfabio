@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estruturas de Dados em Java - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula de Java</h1>
+      <h4 style="text-align: center">Estruturas de Dados Homogêneas</h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">O que são Estruturas de Dados Homogêneas?</h2>
+        <p>
+          Em Java, as estruturas de dados homogêneas são usadas para armazenar
+          vários elementos do mesmo tipo. Elas são comumente implementadas
+          usando arrays, que podem ser unidimensionais (vetores) ou
+          bidimensionais (matrizes).
+        </p>
+
+        <h2 class="titulo-h2">1. Variáveis Compostas Unidimensionais (Vetores)</h2>
+        <p>
+          Um vetor é uma lista linear de elementos, todos do mesmo tipo,
+          acessados por um índice.
+        </p>
+
+        <h4 class="titulo-h4">Declaração e Inicialização</h4>
+        <pre><code class="language-java">
+// Declaração de um vetor de inteiros
+int[] vetor;
+// Alocação de memória para 5 elementos
+vetor = new int[5];
+// Inicialização
+vetor[0] = 10;
+vetor[1] = 20;
+vetor[2] = 30;
+vetor[3] = 40;
+vetor[4] = 50;
+// Declaração e inicialização em uma linha
+int[] vetor2 = {1, 2, 3, 4, 5};
+        </code></pre>
+
+        <h4 class="titulo-h4">Acessando Elementos</h4>
+        <pre><code class="language-java">
+System.out.println(vetor[0]); // Saída: 10
+        </code></pre>
+
+        <h4 class="titulo-h4">Iterando Sobre um Vetor</h4>
+        <pre><code class="language-java">
+for (int i = 0; i &lt; vetor.length; i++) {
+    System.out.println(vetor[i]);
+}
+// Usando um loop for-each
+for (int valor : vetor) {
+    System.out.println(valor);
+}
+        </code></pre>
+
+        <h2 class="titulo-h2">2. Variáveis Compostas Bidimensionais (Matrizes)</h2>
+        <p>
+          Uma matriz é um array de arrays, com elementos organizados em linhas e colunas.
+        </p>
+
+        <h4 class="titulo-h4">Declaração e Inicialização</h4>
+        <pre><code class="language-java">
+// Declaração de uma matriz 3x3
+int[][] matriz;
+// Alocação de memória
+matriz = new int[3][3];
+// Inicialização
+matriz[0][0] = 1;
+matriz[0][1] = 2;
+matriz[0][2] = 3;
+matriz[1][0] = 4;
+matriz[1][1] = 5;
+matriz[1][2] = 6;
+matriz[2][0] = 7;
+matriz[2][1] = 8;
+matriz[2][2] = 9;
+// Declaração e inicialização em uma linha
+int[][] matriz2 = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+        </code></pre>
+
+        <h4 class="titulo-h4">Acessando Elementos</h4>
+        <pre><code class="language-java">
+System.out.println(matriz[1][2]); // Saída: 6
+        </code></pre>
+
+        <h4 class="titulo-h4">Iterando Sobre uma Matriz</h4>
+        <pre><code class="language-java">
+for (int i = 0; i &lt; matriz.length; i++) {
+    for (int j = 0; j &lt; matriz[i].length; j++) {
+        System.out.print(matriz[i][j] + " ");
+    }
+    System.out.println();
+}
+        </code></pre>
+
+        <h2 class="titulo-h2">3. Método de Pesquisa Sequencial</h2>
+        <p>
+          A pesquisa sequencial percorre cada elemento de um array para verificar se ele é igual ao valor
+          desejado. É uma abordagem simples e útil para arrays desordenados.
+        </p>
+
+        <h4 class="titulo-h4">Implementação em Vetor</h4>
+        <pre><code class="language-java">
+public class PesquisaSequencial {
+    public static int buscaSequencial(int[] array, int valor) {
+        for (int i = 0; i &lt; array.length; i++) {
+            if (array[i] == valor) {
+                return i; // Retorna o índice do elemento encontrado
+            }
+        }
+        return -1; // Retorna -1 se o elemento não for encontrado
+    }
+
+    public static void main(String[] args) {
+        int[] vetor = {10, 20, 30, 40, 50};
+        int valorProcurado = 30;
+        int resultado = buscaSequencial(vetor, valorProcurado);
+
+        if (resultado != -1) {
+            System.out.println("Valor encontrado no índice: " + resultado);
+        } else {
+            System.out.println("Valor não encontrado.");
+        }
+    }
+}
+        </code></pre>
+
+        <h4 class="titulo-h4">Implementação em Matriz</h4>
+        <pre><code class="language-java">
+public class PesquisaEmMatriz {
+    public static int[] buscaSequencial(int[][] matriz, int valor) {
+        for (int i = 0; i &lt; matriz.length; i++) {
+            for (int j = 0; j &lt; matriz[i].length; j++) {
+                if (matriz[i][j] == valor) {
+                    return new int[]{i, j}; // Retorna as coordenadas do valor encontrado
+                }
+            }
+        }
+        return null; // Retorna null se o valor não for encontrado
+    }
+
+    public static void main(String[] args) {
+        int[][] matriz = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        };
+        int valorProcurado = 5;
+        int[] resultado = buscaSequencial(matriz, valorProcurado);
+
+        if (resultado != null) {
+            System.out.println("Valor encontrado na posição: [" + resultado[0] + "][" + resultado[1] + "]");
+        } else {
+            System.out.println("Valor não encontrado.");
+        }
+    }
+}
+        </code></pre>
+
+        <h2 class="titulo-h2">Considerações Finais</h2>
+        <ul>
+          <li>Vetores são mais simples e úteis para dados lineares.</li>
+          <li>Matrizes são adequadas para representar estruturas em grade, como tabelas.</li>
+          <li>A pesquisa sequencial é prática, mas pode ser ineficiente para grandes conjuntos de dados.</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>
