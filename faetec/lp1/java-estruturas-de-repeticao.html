@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAETEC - LP1 - Estruturas de Repetição</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <!-- <h1>Aula 1</h1> -->
+      <h4 style="text-align: center">2º Trimestre</h4>
+      <h4 style="text-align: center">1º ano</h4>
+      <h4 style="text-align: center">LP1</h4>
+      <h4 style="text-align: center">Tema: Estruturas de Repetição em Java</h4>
+    </header>
+
+    <!-- CONTEUDO -->
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2>Texto para Copiar ou Imprimir</h2>
+        <b
+          >Estruturas de repetição em Java: `do`, `do-while`, `for`, e
+          `while`</b
+        >
+        <p>
+          As estruturas de repetição são fundamentais na programação para
+          executar blocos de código várias vezes com base em uma condição ou em
+          um número específico de iterações. Vamos explorar cada uma dessas
+          estruturas em Java.
+        </p>
+      </div>
+
+      <div id="texto-leitura">
+        <h2>Texto para Leitura - Não copiar</h2>
+        <b>Estruturas de repetição em Java</b>
+        <p>
+          1. <b>`while`</b>: Repetir enquanto uma condição for verdadeira.
+          Exemplo:
+        </p>
+        <pre><code>
+int contador = 1;
+while (contador <= 5) {
+    System.out.println("Contador: " + contador);
+    contador++;
+}
+        </code></pre>
+        <p>2. <b>`do-while`</b>: Garante execução mínima. Exemplo:</p>
+        <pre><code>
+int contador = 1;
+do {
+    System.out.println("Contador: " + contador);
+    contador++;
+} while (contador <= 5);
+        </code></pre>
+        <p>3. <b>`for`</b>: Ideal para iterações conhecidas. Exemplo:</p>
+        <pre><code>
+for (int i = 1; i <= 5; i++) {
+    System.out.println("Iteração: " + i);
+}
+        </code></pre>
+        <p>4. <b>`for-each`</b>: Iterar coleções. Exemplo:</p>
+        <pre><code>
+String[] frutas = {"Maçã", "Banana", "Laranja"};
+for (String fruta : frutas) {
+    System.out.println("Fruta: " + fruta);
+}
+        </code></pre>
+      </div>
+
+      <div id="question-container-aula">
+        <h2>Questões para fazer em aula</h2>
+        <h4>NÃO COPIAR a pergunta</h4>
+        <div class="question">
+          <b>Explique a diferença entre `while` e `do-while`.</b>
+        </div>
+      </div>
+
+      <div id="question-container-casa">
+        <h2>Questões para fazer em casa</h2>
+        <h4>copiar ou marcar APENAS a alternativa que achar correta</h4>
+        <div class="question activity">
+          <p>Questão 1</p>
+          <p>
+            Qual das opções abaixo garante execução mínima do bloco de código?
+          </p>
+          <b>Escolha a alternativa correta:</b>
+          <ol type="A">
+            <li>`while`</li>
+            <li>`do-while`</li>
+            <li>`for`</li>
+            <li>`for-each`</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-faetec.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAETEC - Redes - Servidores</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <!-- <h1>Aula 2</h1> -->
+      <h4 style="text-align: center">2º Trimestre</h4>
+      <h4 style="text-align: center">2º ano</h4>
+      <h4 style="text-align: center">Redes de Computadores</h4>
+      <h4 style="text-align: center">Tema: Servidores em Redes</h4>
+    </header>
+
+    <!-- CONTEUDO -->
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2>Servidores</h2>
+        <p>
+          Um servidor é um computador ou sistema que fornece recursos, dados,
+          serviços ou programas para outros computadores, chamados clientes, por
+          meio de uma rede. A arquitetura cliente-servidor é um dos modelos mais
+          comuns na computação de redes, em que o servidor centraliza serviços e
+          o cliente faz solicitações.
+        </p>
+
+        <b>Tipos de Servidores</b>
+        <p>
+          1. <b>Servidor de Arquivos:</b> Armazena, gerencia e compartilha
+          arquivos entre os usuários.<br />
+          Exemplo: Um servidor que centraliza documentos em uma empresa,
+          permitindo acesso controlado aos funcionários.
+        </p>
+        <p>
+          2. <b>Servidor Web:</b> Hospeda sites e aplicativos web, entregando
+          conteúdo via HTTP ou HTTPS.<br />
+          Exemplo: Servidores Apache ou Nginx que alimentam milhões de sites na
+          internet.
+        </p>
+        <p>
+          3. <b>Servidor de E-mail:</b> Gerencia o envio, recebimento e
+          armazenamento de e-mails.<br />
+          Exemplo: Servidores como Microsoft Exchange e Postfix.
+        </p>
+        <p>
+          4. <b>Servidor de Banco de Dados:</b> Centraliza o armazenamento e a
+          manipulação de dados.<br />
+          Exemplo: Servidores MySQL, PostgreSQL ou Microsoft SQL Server.
+        </p>
+        <p>
+          5. <b>Servidor DNS:</b> Converte nomes de domínio em endereços IP.<br />
+          Exemplo: O DNS público do Google (8.8.8.8).
+        </p>
+        <p>
+          6. <b>Servidor Proxy:</b> Atua como intermediário entre o cliente e
+          outros servidores, controlando e monitorando o tráfego.<br />
+          Exemplo: Proxy Squid usado para filtrar conteúdo e armazenar cache.
+        </p>
+      </div>
+
+      <div id="texto-imprimir">
+        <h2>Funcionamento de um Servidor</h2>
+        <p>
+          1. <b>Recepção de Solicitações:</b> O servidor aguarda solicitações de
+          clientes.<br />
+          2. <b>Processamento:</b> Analisa a solicitação e executa a tarefa
+          correspondente.<br />
+          3. <b>Resposta:</b> Envia a resposta ao cliente, como um arquivo,
+          página web ou resultado de uma consulta.
+        </p>
+        <p>
+          Exemplo prático: Imagine uma empresa que utiliza um servidor para
+          gerenciar seus arquivos. Quando um funcionário deseja acessar um
+          documento, ele utiliza um computador cliente para se conectar ao
+          servidor, autenticar-se (com um login e senha) e fazer o download ou
+          upload do documento. O servidor garante segurança, backup e controle
+          de acesso.
+        </p>
+      </div>
+
+      <div id="question-container-aula">
+        <h2>Questões para fazer em aula</h2>
+        <h4>NÃO COPIAR a pergunta</h4>
+        <div class="question">
+          <b>Pergunta:</b> Explique o papel de um servidor proxy em uma rede
+          corporativa, destacando como ele pode melhorar a segurança e o
+          desempenho.
+        </div>
+      </div>
+
+      <div id="question-container-casa">
+        <h2>Questões para fazer em casa</h2>
+        <h4>Copiar ou marcar APENAS a alternativa que achar correta</h4>
+        <div class="question activity">
+          <p><b>Questão 1:</b></p>
+          <p>Qual dos seguintes é um exemplo de servidor de banco de dados?</p>
+          <ol type="A">
+            <li>Apache</li>
+            <li>MySQL</li>
+            <li>Postfix</li>
+            <li>Nginx</li>
+          </ol>
+        </div>
+        <div class="question activity">
+          <p><b>Questão 2:</b></p>
+          <p>O servidor DNS é responsável por:</p>
+          <ol type="A">
+            <li>Fornecer endereços IP para os clientes</li>
+            <li>Hospedar sites na internet</li>
+            <li>Armazenar e-mails</li>
+            <li>Compartilhar arquivos na rede</li>
+          </ol>
+        </div>
+        <div class="question activity">
+          <p><b>Questão 3:</b></p>
+          <p>Qual é uma vantagem de usar um servidor em uma rede?</p>
+          <ol type="A">
+            <li>Reduz a necessidade de autenticação de usuários</li>
+            <li>Centraliza recursos e facilita o gerenciamento</li>
+            <li>Elimina completamente falhas de segurança</li>
+            <li>Dispensa a necessidade de backups</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-faetec.html">Ir para índice</a>
+      </div>
+    </footer>
+  </body>
+</html>
