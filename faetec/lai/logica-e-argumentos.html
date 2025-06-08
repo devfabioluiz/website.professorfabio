@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lógica e Argumentos</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>Aula 8</h1>
+        <h4 style="text-align: center">React</h4>
+        <h4 style="text-align: center">Formulários em React</h4>
+      </header>
+      <h1>Validade de Argumento Válido/Inválido</h1>
+      <p>
+        Um argumento é uma sequência de proposições onde algumas (as premissas)
+        supostamente suportam ou justificam a veracidade de outra (a conclusão).
+        Um argumento é considerado válido se, e somente se, é impossível que as
+        premissas sejam verdadeiras e a conclusão seja falsa ao mesmo tempo.
+      </p>
+
+      <h2>Exemplo de argumento válido:</h2>
+      <ul>
+        <li>Premissa 1: Todos os humanos são mortais.</li>
+        <li>Premissa 2: Sócrates é humano.</li>
+        <li>Conclusão: Logo, Sócrates é mortal.</li>
+      </ul>
+
+      <h2>Exemplo de argumento inválido:</h2>
+      <ul>
+        <li>Premissa 1: Todos os gatos são mamíferos.</li>
+        <li>Premissa 2: Meu cão é um mamífero.</li>
+        <li>Conclusão: Logo, meu cão é um gato.</li>
+      </ul>
+
+      <h1>Argumento Dedutivo e Indutivo</h1>
+      <p>
+        <strong>Dedutivo:</strong> A conclusão deriva necessária e logicamente
+        das premissas. Se as premissas forem verdadeiras, a conclusão também
+        será verdadeira.
+      </p>
+      <p>
+        <strong>Indutivo:</strong> A conclusão é provável, mas não necessária,
+        com base nas premissas. A generalização é feita a partir de observações
+        específicas.
+      </p>
+
+      <h1>Lógica Proposicional</h1>
+      <p>
+        A lógica proposicional é o estudo de proposições e suas relações por
+        meio de operadores lógicos.
+      </p>
+
+      <h2>Princípios da Lógica Proposicional:</h2>
+      <ul>
+        <li>
+          <strong>Identidade:</strong> Uma proposição é verdadeira ou falsa, mas
+          não ambos.
+        </li>
+        <li>
+          <strong>Não-Contradição:</strong> Nenhuma proposição pode ser
+          verdadeira e falsa simultaneamente.
+        </li>
+        <li>
+          <strong>Terceiro Excluído:</strong> Uma proposição é verdadeira ou
+          falsa; não há outra alternativa.
+        </li>
+      </ul>
+
+      <h1>Operações Básicas e Tabela Verdade</h1>
+      <h2>E (Conjunção):</h2>
+      <table border="1">
+        <tr>
+          <th>P</th>
+          <th>Q</th>
+          <th>P ∧ Q</th>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>V</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>F</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>V</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>F</td>
+          <td>F</td>
+        </tr>
+      </table>
+
+      <h2>OU (Disjunção):</h2>
+      <table border="1">
+        <tr>
+          <th>P</th>
+          <th>Q</th>
+          <th>P ∨ Q</th>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>V</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>F</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>V</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>F</td>
+          <td>F</td>
+        </tr>
+      </table>
+
+      <h2>Não (Negação):</h2>
+      <table border="1">
+        <tr>
+          <th>P</th>
+          <th>¬P</th>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>V</td>
+        </tr>
+      </table>
+
+      <h1>Exercícios de Fixação</h1>
+      <ol>
+        <li>Construa a tabela verdade para (P ∧ Q) ∨ ¬P.</li>
+        <li>
+          Determine se a fórmula (P ∨ Q) ∧ (¬Q) é uma tautologia, contradição ou
+          contingente.
+        </li>
+      </ol>
+
+      <h1>Cálculo Proposicional Clássico</h1>
+      <h2>Adaga de Quine (↓):</h2>
+      <table border="1">
+        <tr>
+          <th>P</th>
+          <th>Q</th>
+          <th>P ↓ Q</th>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>V</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>F</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>V</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>F</td>
+          <td>V</td>
+        </tr>
+      </table>
+
+      <h2>Traço de Sheffer (∥):</h2>
+      <table border="1">
+        <tr>
+          <th>P</th>
+          <th>Q</th>
+          <th>P ∥ Q</th>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>V</td>
+          <td>F</td>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>F</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>V</td>
+          <td>V</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>F</td>
+          <td>V</td>
+        </tr>
+      </table>
+
+      <h1>Lógica Silogística</h1>
+      <h2>Quantificadores:</h2>
+      <ul>
+        <li>Existencial (∃): Algum.</li>
+        <li>Universal (∀): Todo.</li>
+      </ul>
+
+      <h2>Quatro Formas:</h2>
+      <ul>
+        <li>A: Universal afirmativa (Todo S é P).</li>
+        <li>E: Universal negativa (Nenhum S é P).</li>
+        <li>I: Particular afirmativa (Algum S é P).</li>
+        <li>O: Particular negativa (Algum S não é P).</li>
+      </ul>
+    </main>
+  </body>
+</html>
