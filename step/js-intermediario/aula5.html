@@ -1,110 +1,207 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 5 - JS Intermediário</title>
+    <title>Evolução do ECMAScript</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
   </head>
   <body>
     <header>
       <h1>Aula 5</h1>
       <h4 style="text-align: center">JavaScript Intermediário</h4>
-      <h4 style="text-align: center">EcmaScript, Módulos e Funções</h4>
+      <h4 style="text-align: center">
+        EcmaScript (parte 1 - Definição, Versões e Arrow Function)
+      </h4>
     </header>
-    <div class="container">
-      <div id="texto-imprimir">
-        <h3>Escopo de Variáveis e a Palavra-chave <code>this</code></h3>
+    <main class="container">
+      <h2>ECMAScript</h2>
+      <section>
         <p>
-          O escopo de variáveis refere-se à acessibilidade de variáveis em
-          diferentes partes do código. Em JavaScript, existem três tipos
-          principais de escopo:
+          O ECMAScript (ES) é a especificação que define as linguagens de
+          script, como o JavaScript. Ele tem evoluído desde sua criação em 1997
+          para incluir novos recursos e funcionalidades que atendem às demandas
+          dos desenvolvedores modernos. Abaixo, apresento a evolução do
+          ECMAScript, destacando suas principais versões e inovações.
+        </p>
+      </section>
+
+      <h3>ECMAScript 1 (1997)</h3>
+      <section>
+        <ul>
+          <li>Primeira versão da linguagem.</li>
+          <li>
+            Definiu a base do JavaScript, como tipos de dados, estruturas de
+            controle, objetos padrão (como <code>Object</code>,
+            <code>Array</code>, e <code>Date</code>) e funções.
+          </li>
+        </ul>
+      </section>
+
+      <h3>ECMAScript 2 (1998)</h3>
+      <section>
+        <ul>
+          <li>
+            Pequenas alterações para alinhar o ECMAScript ao padrão
+            internacional ISO/IEC 16262.
+          </li>
+          <li>Sem grandes mudanças para desenvolvedores.</li>
+        </ul>
+      </section>
+
+      <h3>ECMAScript 3 (1999)</h3>
+      <section>
+        <ul>
+          <li>Tornou o JavaScript mais robusto e amplamente utilizado.</li>
+          <li>
+            <strong>Novidades:</strong>
+            <ul>
+              <li>
+                Suporte a expressões regulares (veremos em aulas posteriores)
+              </li>
+              <li>
+                Controle de exceções com
+                <code>try/catch (veremos em aulas posteriores)</code>.
+              </li>
+              <li>Melhor manipulação de strings.</li>
+              <li>
+                Adição do modo estrito (strict mode). (veremos em aulas
+                posteriores)
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <h3>ECMAScript 4 (Cancelado)</h3>
+      <section>
+        <p>
+          A proposta para esta versão era ambiciosa, incluindo tipagem estática
+          e classes complexas, mas acabou sendo abandonada devido à falta de
+          consenso.
+        </p>
+      </section>
+
+      <h3>ECMAScript 5 (2009)</h3>
+      <section>
+        <ul>
+          <li>
+            Foco na melhoria de performance e na padronização do JavaScript.
+          </li>
+          <li>
+            <strong>Novidades:</strong>
+            <ul>
+              <li>
+                Suporte ao modo estrito (<code>"use strict"</code>). (veremos em
+                aulas posteriores)
+              </li>
+              <li>
+                Métodos úteis como <code>Array.prototype.map</code>,
+                <code>filter</code>, <code>forEach</code>, e
+                <code>reduce</code>.
+              </li>
+              <li>
+                Propriedades imutáveis com <code>Object.defineProperty</code>.
+              </li>
+              <li>JSON nativo para manipulação de dados.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <h3>ECMAScript 6 (2015)</h3>
+      <section>
+        <p>
+          Um marco na evolução do JavaScript, introduzindo recursos modernos.
         </p>
         <ul>
           <li>
-            <b>Global:</b> Variáveis declaradas fora de qualquer função ou
-            bloco.
-          </li>
-          <li>
-            <b>De função:</b> Variáveis declaradas dentro de uma função só podem
-            ser acessadas dentro dela.
-          </li>
-          <li>
-            <b>De bloco:</b> Variáveis declaradas com <code>let</code> ou
-            <code>const</code> dentro de um bloco (<code>{}</code>).
+            <strong>Novidades:</strong>
+            <ul>
+              <li>Sintaxe de classes (<code>class</code>).</li>
+              <li>
+                Declaração de variáveis com <code>let</code> e
+                <code>const</code>.
+              </li>
+              <li>Arrow functions (<code>=></code>).</li>
+              <li>Template literals (strings interpoladas com crases).</li>
+              <li>Destructuring (<code>const {x, y} = obj</code>).</li>
+              <li>Módulos (<code>import/export</code>).</li>
+              <li>Promises para programação assíncrona.</li>
+              <li>Operador spread/rest (<code>...</code>).</li>
+            </ul>
           </li>
         </ul>
         <p>
-          A palavra-chave <code>this</code> representa o objeto ao qual a função
-          atual pertence. Seu valor depende de onde e como a função foi chamada:
+          Veremos a seguir a explicação detalhada dessas mudanças tão
+          significativas no JavaScript
         </p>
+      </section>
+
+      <h3>ECMAScript 7 (2016)</h3>
+      <section>
+        <li>Operador de Exponenciação (<code>**</code>)</li>
+        <p>Uma forma simplificada de calcular potências.</p>
+        <pre><code class="language-javascript">console.log(2 ** 3); // 8</code></pre>
+
+        <li>Método <code>Array.prototype.includes</code></li>
+        <p>Verifica se um valor está presente em um array.</p>
+        <pre><code class="language-javascript">
+const numeros = [1, 2, 3];
+console.log(numeros.includes(2)); // true
+console.log(numeros.includes(4)); // false
+            </code></pre>
+      </section>
+
+      <h3>ECMAScript 8 (2017)</h3>
+      <section>
+        <li><code>Object.values</code> e <code>Object.entries</code></li>
+        <p>
+          <strong>Object.values</strong>: Retorna os valores de um objeto.
+          <strong>Object.entries</strong>: Retorna pares chave-valor como
+          arrays.
+        </p>
+        <pre><code class="language-javascript">
+const pessoa = { nome: "Maria", idade: 25 };
+console.log(Object.values(pessoa)); // ["Maria", 25]
+console.log(Object.entries(pessoa)); // [["nome", "Maria"], ["idade", 25]]
+            </code></pre>
+
+        <li><code>String.prototype.padStart</code> e <code>padEnd</code></li>
+        <p>Adiciona preenchimento no início ou no final de uma string.</p>
+        <pre><code class="language-javascript">
+console.log("5".padStart(3, "0")); // "005"
+console.log("5".padEnd(3, "-")); // "5--"
+            </code></pre>
+
+        <li><code>async/await (veremos em aulas posteriores)</code></li>
+      </section>
+
+      <h3>ECMAScript 9 (2018)</h3>
+      <section>
         <ul>
+          <li>Rest/Spread em Objetos (veremos em aulas posteriores)</li>
+
+          <li>Promise.prototype.finally (veremos em aulas posteriores)</li>
+
           <li>
-            Em um método de objeto, <code>this</code> refere-se ao objeto pai.
-          </li>
-          <li>
-            Em uma função regular, <code>this</code> é <code>undefined</code> no
-            modo estrito ou o objeto global fora dele.
-          </li>
-          <li>
-            Em funções de seta, <code>this</code> é herdado do contexto lexical.
+            Iteração Assíncrona (<code>for await...of</code>) (veremos em aulas
+            posteriores)
           </li>
         </ul>
+      </section>
 
-        <h3>Recursão</h3>
-        <p>
-          Recursão é a técnica onde uma função chama a si mesma para resolver
-          problemas dividindo-os em subproblemas menores. Um exemplo clássico é
-          o cálculo do fatorial:
-        </p>
-        <pre>
-          <code>
-function fatorial(n) {
-  if (n === 0) return 1;
-  return n * fatorial(n - 1);
-}
-          </code>
-        </pre>
-        <p>
-          A recursão requer uma condição de parada para evitar loops infinitos e
-          estouro de pilha.
-        </p>
-      </div>
-
-      <div id="texto-imprimir">
-        <h2>ECMAScript</h2>
-        <p>
-          ECMAScript é a especificação padrão para JavaScript, criada pela ECMA
-          International em 1997. Suas principais edições trouxeram recursos
-          como:
-        </p>
-        <ul>
-          <li>ES5 (2009): Estrito, JSON nativo, métodos array.</li>
-          <li>
-            ES6 (2015): Funções de seta, classes, <code>let</code> e
-            <code>const</code>, entre outros.
-          </li>
-        </ul>
-
-        <h3>Funções de Seta (Arrow Function)</h3>
-        <p>
-          Funções de seta introduzem uma sintaxe curta para escrever funções.
-          Além disso, elas não têm seu próprio <code>this</code>, herdando do
-          contexto ao redor.
-        </p>
-        <pre>
-          <code>
-const soma = (a, b) => a + b;
-console.log(soma(2, 3)); // 5
-          </code>
-        </pre>
-      </div>
-      <div class="texto-imprimir">
-        <h3>Diferença entre Arrow Function e Função Normal</h3>
+      <h2>Arrow Function</h2>
+      <section class="texto-imprimir">
         <p>
           Funções em JavaScript podem ser declaradas de diferentes formas, sendo
           as mais comuns a função normal e a arrow function. Ambas possuem
           diferenças importantes em sintaxe e comportamento.
+        </p>
+        <p>
+          Funções de seta introduzem uma sintaxe curta para escrever funções.
+          Além disso, elas não têm seu próprio <code>this</code>, herdando do
+          contexto ao redor.
         </p>
 
         <h3>Sintaxe</h3>
@@ -195,13 +292,35 @@ const Pessoa = (nome) => {
 const pessoa1 = new Pessoa("João"); // Erro: Pessoa não é um construtor
           </code>
         </pre>
+      </section>
+
+      <h3>Explicação sobre o this</h3>
+      <section>
+        <p>
+          A palavra-chave <code>this</code> representa o objeto ao qual a função
+          atual pertence. Seu valor depende de onde e como a função foi chamada:
+        </p>
+        <ul>
+          <li>
+            Em um método de objeto, <code>this</code> refere-se ao objeto pai.
+          </li>
+          <li>
+            Em uma função regular, <code>this</code> é <code>undefined</code> no
+            modo estrito ou o objeto global fora dele.
+          </li>
+          <li>
+            Em funções de seta, <code>this</code> é herdado do contexto lexical.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
-    </div>
-    <div class="button-container">
-      <button class="btn-print" onclick="window.print()">Imprimir</button>
-    </div>
-    <div class="button-container">
-      <a class="btn-indice" href="../indice-step.html"> Ir para índice </a>
-    </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Princípios SOLID</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">
+        Introdução à Orientação a Objetos (parte 4 - Princípios SOLID)
+      </h4>
+    </header>
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2 class="titulo-h2">O que é SOLID?</h2>
+        <p>
+          SOLID é um acrônimo criado por Michael Feathers, após observar que cinco princípios da orientação a objetos e design de código — Criados por Robert C. Martin (a.k.a. Uncle Bob) e abordados no artigo The Principles of OOD — poderiam se encaixar nesta palavra.
+        </p>
+
+        <h3 class="titulo-h3">S.O.L.I.D: Os 5 princípios da POO</h3>
+        <ul>
+          <li>S — Single Responsiblity Principle (Princípio da responsabilidade única)</li>
+          <li>O — Open-Closed Principle (Princípio Aberto-Fechado)</li>
+          <li>L — Liskov Substitution Principle (Princípio da substituição de Liskov)</li>
+          <li>I — Interface Segregation Principle (Princípio da Segregação da Interface)</li>
+          <li>D — Dependency Inversion Principle (Princípio da inversão da dependência)</li>
+        </ul>
+        <p>Esses princípios ajudam o programador a escrever códigos mais limpos, separando responsabilidades, diminuindo acoplamentos, facilitando na refatoração e estimulando o reaproveitamento do código.</p>
+
+        <h3 class="titulo-h3">1. SRP — Single Responsibility Principle:</h3>
+        <p>Princípio da Responsabilidade Única — Uma classe deve ter um, e somente um, motivo para mudar.</p>
+        <p>Esse princípio declara que uma classe deve ser especializada em um único assunto e possuir apenas uma responsabilidade dentro do software, ou seja, a classe deve ter uma única tarefa ou ação para executar.</p>
+        <p>Quando estamos aprendendo programação orientada a objetos, sem sabermos, damos a uma classe mais de uma responsabilidade e acabamos criando classes que fazem de tudo — God Class*. Num primeiro momento isso pode parecer eficiente, mas como as responsabilidades acabam se misturando, quando há necessidade de realizar alterações nessa classe, será difícil modificar uma dessas responsabilidades sem comprometer as outras. Toda alteração acaba sendo introduzida com um certo nível de incerteza em nosso sistema — principalmente se não existirem testes automatizados!</p>
+        <p><em>*God Class — Classe Deus: Na programação orientada a objetos, é uma classe que sabe demais ou faz demais.</em></p>
+        <p><em>Nota: Os exemplos desse artigo foram escritos usando a linguagem PHP, porém, são facilmente compreendidos por qualquer pessoa que já teve contato com programação orientada a objetos, independente da linguagem.</em></p>
+
+        <h4 class="titulo-h4">Exemplo prático do SRP:</h4>
+        <p>A classe Order viola o SRP porque realiza 3 tipos distintos de tarefas. Além de lidar com as informações do pedido, ela também é responsável pela exibição e manipulação dos dados. Lembre-se, o princípio da responsabilidade única preza que uma classe deve ter um, e somente um, motivo para mudar.</p>
+        <p>A violação do Single Responsibility Principle pode gerar alguns problemas, sendo eles:</p>
+        <ul>
+          <li>Falta de coesão — uma classe não deve assumir responsabilidades que não são suas;</li>
+          <li>Alto acoplamento — Mais responsabilidades geram um maior nível de dependências, deixando o sistema engessado e frágil para alterações;</li>
+          <li>Dificuldades na implementação de testes automatizados — É difícil de "mockar" esse tipo de classe;</li>
+          <li>Dificuldades para reaproveitar o código;</li>
+        </ul>
+        <p>Aplicando o SRP na classe Order, podemos refatorar o código da seguinte forma:</p>
+        <pre><code class="language-php">
+// Código refatorado aplicando SRP
+class Order {
+  // Lida apenas com dados do pedido
+}
+
+class OrderView {
+  // Lida apenas com exibição do pedido
+}
+
+class OrderRepository {
+  // Lida apenas com persistência do pedido
+}
+        </code></pre>
+        <p>Perceba no exemplo acima que agora temos 3 classes, cada uma cuidando da sua responsabilidade.</p>
+        <p>O princípio da responsabilidade única não se limita somente a classes, ele também pode ser aplicado em métodos e funções, ou seja, tudo que é responsável por executar uma ação, deve ser responsável por apenas aquilo que se propõe a fazer.</p>
+        <p>Considero o SRP um dos princípios mais importantes, ele acaba sendo a base para outros princípios e padrões porque aborda temas como acoplamento e coesão, características que todo código orientado a objetos deveria ter.</p>
+        <p>Aplicando esse princípio, automaticamente você estará escrever um código mais limpo e de fácil manutenção!</p>
+
+        <h3 class="titulo-h3">2. OCP — Open-Closed Principle:</h3>
+        <p>Princípio Aberto-Fechado — Objetos ou entidades devem estar abertos para extensão, mas fechados para modificação, ou seja, quando novos comportamentos e recursos precisam ser adicionados no software, devemos estender e não alterar o código fonte original.</p>
+
+        <h4 class="titulo-h4">Exemplo prático do OCP:</h4>
+        <p>Em um sistema hipotético de RH, temos duas classes que representam os contratos de trabalhos dos funcionários de uma pequena empresa, contratados e estágiários. Além de uma classe para processar a folha de pagamento.</p>
+        <pre><code class="language-php">
+// Código violando OCP
+class ContratoCLT {
+    calcularSalario() {
+    // implementação
+  }
+}
+
+class ContratoEstagio {
+    calcularBolsa() {
+    // implementação
+  }
+}
+
+class FolhaDePagamento {
+    calcular($funcionario) {
+    if ($funcionario instanceof ContratoCLT) {
+      return $funcionario->calcularSalario();
+    } elseif ($funcionario instanceof ContratoEstagio) {
+      return $funcionario->calcularBolsa();
+    }
+  }
+}
+        </code></pre>
+        <p>A classe FolhaDePagamento precisa verificar o funcionário para aplicar a regra de negócio correta na hora do pagamento. Supondo que a empresa cresceu e resolveu trabalhar com funcionários PJ, obviamente seria necessário modificar essa classe! Sendo assim, estaríamos quebrando o princípio Open-Closed do SOLID.</p>
+        <p>Qual o problema de se alterar a classe FolhaDePagamento?</p>
+        <p>Não seria mais fácil apenas acrescentar mais um IF e verificar o novo tipo de funcionário PJ aplicando as respectivas regras? Sim, e provavelmente essa seria a solução que programadores menos experientes iriam fazer. Mas, esse é exatamente o problema! Alterar uma classe já existente para adicionar um novo comportamento, corremos um sério risco de introduzir bugs em algo que já estava funcionando.</p>
+        <p>Lembre-se: OCP preza que uma classe deve estar fechada para alteração e aberta para extensão.</p>
+        <p>Como adicionamos um novo comportamento sem alterar o código fonte já existente?</p>
+        <p>O guru Uncle Bob resumiu a solução em uma frase:</p>
+        <p><em>"Separate extensible behavior behind an interface, and flip the dependencies."</em></p>
+        <p>Em tradução direta, seria:</p>
+        <p><em>"Separe o comportamento extensível por trás de uma interface e inverta as dependências."</em></p>
+        <p>O que devemos fazer é concentrar nos aspectos essências do contexto, abstraindo-os para uma interface. Se as abstrações são bem definidas, logo o software estará aberto para extensão.</p>
+
+        <h4 class="titulo-h4">Aplicando OCP na prática</h4>
+        <p>Voltando para o nosso exemplo, podemos concluir que o contexto que estamos lidando é a remuneração dos contratos de trabalho, aplicando as premissas de se isolar o comportamento extensível atrás de uma interface, podemos criar uma interface com o nome Remuneravel contendo o método remuneracao(), e fazer com que nossas classes de contrato de trabalho implementem essa interface. Além disso, iremos colocar as regras de calculo de remuneração para suas respectivas classes, dentro do método remuneracao(), fazendo com que a classe FolhaDePagamento dependa somente da interface Remuneravel que iremos criar.</p>
+        <pre><code class="language-php">
+// Código refatorado aplicando OCP
+interface Remuneravel {
+    remuneracao();
+}
+
+class ContratoCLT implements Remuneravel {
+    remuneracao() {
+    // implementação
+  }
+}
+
+class ContratoEstagio implements Remuneravel {
+    remuneracao() {
+    // implementação
+  }
+}
+
+class ContratoPJ implements Remuneravel {
+    remuneracao() {
+    // implementação
+  }
+}
+
+class FolhaDePagamento {
+    calcular(Remuneravel $funcionario) {
+    return $funcionario->remuneracao();
+  }
+}
+        </code></pre>
+        <p>Agora a classe FolhaDePagamento não precisa mais saber quais métodos chamar para calcular. Ela será capaz de calcular o pagamento corretamente de qualquer novo tipo de funcionário que seja criado no futuro (ContratoPJ) — desde que ele implemente a interface Remuneravel — sem qualquer necessidade de alteração do seu código fonte. Dessa forma, acabamos de implementar o princípio de Aberto-Fechado do SOLID em nosso código!</p>
+        <p>Open-Closed Principle também é base para o padrão de projeto Strategy. Particularmente esse é o princípio que eu mais admiro, a sua principal vantagem é a facilidade na adição de novos requisitos, diminuindo as chances de introduzir novos bugs — ou bugs de menor expressão — pois o novo comportamento fica isolado, e o que estava funcionando provavelmente continuara funcionando.</p>
+
+        <h3 class="titulo-h3">3. LSP— Liskov Substitution Principle:</h3>
+        <p>Princípio da substituição de Liskov — Uma classe derivada deve ser substituível por sua classe base.</p>
+        <p>O princípio da substituição de Liskov foi introduzido por Barbara Liskov em sua conferência "Data abstraction" em 1987. A definição formal de Liskov diz que:</p>
+        <p><em>"Se para cada objeto o1 do tipo S há um objeto o2 do tipo T de forma que, para todos os programas P definidos em termos de T, o comportamento de P é inalterado quando o1 é substituído por o2 então S é um subtipo de T"</em></p>
+        <p>Um exemplo mais simples e de fácil compreensão dessa definição. Seria:</p>
+        <p><em>se S é um subtipo de T, então os objetos do tipo T, em um programa, podem ser substituídos pelos objetos de tipo S sem que seja necessário alterar as propriedades deste programa. — Wikipedia.</em></p>
+        <p>Para facilitar o entendimento, veja esse princípio na prática neste simples exemplo:</p>
+        <pre><code class="language-php">
+class A {
+    getNome() {
+    return "Classe A";
+  }
+}
+
+class B extends A {
+    getNome() {
+    return "Classe B";
+  }
+}
+
+ imprimeNome(A $objeto) {
+  echo $objeto->getNome();
+}
+
+$obj1 = new A();
+$obj2 = new B();
+
+imprimeNome($obj1); // "Classe A"
+imprimeNome($obj2); // "Classe B"
+        </code></pre>
+        <p>Estamos passando como parâmetro tanto a classe pai como a classe derivada e o código continua funcionando da forma esperada.</p>
+        <p>Exemplos de violação do LSP:</p>
+        <ul>
+          <li>Sobrescrever/implementar um método que não faz nada;</li>
+          <li>Lançar uma exceção inesperada;</li>
+          <li>Retornar valores de tipos diferentes da classe base;</li>
+        </ul>
+        <p>Para não violar o Liskov Substitution Principle, além de estruturar muito bem as suas abstrações, em alguns casos, você precisara usar a injeção de dependência e também usar outros princípios do SOLID, como por exemplo, o Open-Closed Principle e o Interface Segregation Principle — será abordado no próximo tópico.</p>
+        <p>Seguir o LSP nos permite usar o polimorfismo com mais confiança. Podemos chamar nossas classes derivadas referindo-se à sua classe base sem preocupações com resultados inesperados.</p>
+
+        <h3 class="titulo-h3">4. ISP — Interface Segregation Principle:</h3>
+        <p>Princípio da Segregação da Interface — Uma classe não deve ser forçada a implementar interfaces e métodos que não irão utilizar.</p>
+        <p>Esse princípio basicamente diz que é melhor criar interfaces mais específicas ao invés de termos uma única interface genérica.</p>
+
+        <h4 class="titulo-h4">Vamos ver o ISP na prática através de códigos:</h4>
+        <p>Em um cenário fictício para criação de um game de animais, teremos algumas aves que serão tratadas como personagens dentro do jogo. Sendo assim, criaremos uma interface Aves para abstrair o comportamento desses animais, depois faremos que nossas classes implementem essa interface, veja:</p>
+        <pre><code class="language-php">
+// Violando ISP
+interface Aves {
+    setLocalizacao($latitude, $longitude);
+    setAltitude($altitude);
+    renderizar();
+}
+
+class Pinguim implements Aves {
+    setLocalizacao($latitude, $longitude) {
+    // faz alguma coisa
+  }
+  
+    setAltitude($altitude) {
+    // Pinguins não voam!
+    // método não faz nada aqui
+  }
+  
+    renderizar() {
+    // faz alguma coisa
+  }
+}
+        </code></pre>
+        <p>Percebam que ao criar a interface Aves, atribuímos comportamentos genéricos e isso acabou forçando a classe Pinguim a implementar o método setAltitude()do qual ela não deveria ter, pois pinguins não voam! Dessa forma, estamos violando o Interface Segregation Principle — E o LSP também!</p>
+        <p>Para resolver esse problema, devemos criar interfaces mais específicas, veja:</p>
+        <pre><code class="language-php">
+// Aplicando ISP
+interface Aves {
+    setLocalizacao($latitude, $longitude);
+    renderizar();
+}
+
+interface AvesQueVoam extends Aves {
+    setAltitude($altitude);
+}
+
+class Pinguim implements Aves {
+    setLocalizacao($latitude, $longitude) {
+    // faz alguma coisa
+  }
+  
+    renderizar() {
+    // faz alguma coisa
+  }
+}
+
+class Aguia implements AvesQueVoam {
+    setLocalizacao($latitude, $longitude) {
+    // faz alguma coisa
+  }
+  
+    setAltitude($altitude) {
+    // faz alguma coisa
+  }
+  
+    renderizar() {
+    // faz alguma coisa
+  }
+}
+        </code></pre>
+        <p>No exemplo acima, retiramos o método setAltitude() da interface Aves e adicionamos em uma interface derivada AvesQueVoam. Isso nos permitiu isolar os comportamentos das aves de maneira correta dentro do jogo, respeitando o princípio da segregação das interfaces.</p>
+        <p>Poderíamos melhorar ainda mais esse exemplo, criando uma interface Renderizavel pra abstrair esse comportamento, mas o foco aqui é explicar o conceito e não desenvolver o game, então vamos para o próximo princípio.</p>
+
+        <h3 class="titulo-h3">5. DIP — Dependency Inversion Principle:</h3>
+        <p>Princípio da Inversão de Dependência — Dependa de abstrações e não de implementações.</p>
+        <p>De acordo com Uncle Bob, esse princípio pode ser definido da seguinte forma:</p>
+        <ol>
+          <li>Módulos de alto nível não devem depender de módulos de baixo nível. Ambos devem depender da abstração.</li>
+          <li>Abstrações não devem depender de detalhes. Detalhes devem depender de abstrações.</li>
+        </ol>
+        <p>No contexto da programação orientada a objetos, é comum que as pessoas confundam a Inversão de Dependência com a Injeção de Dependência, porém são coisas distintas, mas que relacionam entre si com um proposito em comum, deixar o código desacoplado.</p>
+        <p><em>Importante: Inversão de Dependência não é igual a Injeção de Dependência, fique ciente disso! A Inversão de Dependência é um princípio (Conceito) e a Injeção de Dependência é um padrão de projeto (Design Pattern).</em></p>
+
+        <h4 class="titulo-h4">Vamos entender tudo isso na prática através de exemplos:</h4>
+        <pre><code class="language-php">
+// Violando DIP
+class MySQLConnection {
+    connect() {
+    // lógica de conexão
+  }
+}
+
+class PasswordReminder {
+  private $dbConnection;
+  
+    __construct() {
+    $this->dbConnection = new MySQLConnection();
+  }
+}
+        </code></pre>
+        <p>Para recuperar a senha, a classe PasswordReminder, precisa conectar na base de dados, por tanto, ela cria um instancia da classe MySQLConnection em seu método construtor para realizar as respectivas operações.</p>
+        <p>Nesse pequeno trecho de código temos um alto nível de acoplamento, isso acontece porque a classe PasswordReminder tem a responsabilidade de criar uma instância da classe MySQLConnection! Se quiséssemos reaproveitar essa classe em outro sistema, teriamos obrigatoriamente de levar a classe MySQLConnection junto, portanto, temos um forte acoplamento aqui.</p>
+        <p>Para resolver esse problema de acoplamento, podemos refatorar nosso código da seguinte forma. Veja:</p>
+        <pre><code class="language-php">
+// Aplicando Injeção de Dependência mas ainda violando DIP
+class MySQLConnection {
+    connect() {
+    // lógica de conexão
+  }
+}
+
+class PasswordReminder {
+  private $dbConnection;
+  
+    __construct(MySQLConnection $dbConnection) {
+    $this->dbConnection = $dbConnection;
+  }
+}
+        </code></pre>
+        <p>Com o código refatorado, a criação do objeto MySQLConnection deixa de ser uma responsabilidade da classe PasswordReminder, a classe de conexão com o banco de dados virou uma dependência que deve ser injetada via método construtor. Olha o que apareceu para nós: Injeção de Dependência!</p>
+        <p>Apesar de termos usado a injeção de dependência para melhorar o nível de acoplamento do nosso código, ele ainda viola o princípio da inversão de dependência! — lembre-se, um não é igual ao outro.</p>
+        <p>Além de violar o DIP, se você prestar atenção na forma que o exemplo foi codificado irá perceber que ele também viola o Open-Closed Principle. Por exemplo, se precisarmos alterar o banco de dados de MySQL para Oracle teríamos que editar a classe PasswordReminder.</p>
+        <p>Por que nosso exemplo refatorado viola o Dependency Inversion Principle?</p>
+        <p>Porque estamos dependendo de uma implementação e não de uma abstração, simples assim.</p>
+        <p>De acordo com a definição do DIP, um módulo de alto nível não deve depender de módulos de baixo nível, ambos devem depender da abstração. Então, a primeira coisa que precisamos fazer é identificar no nosso código qual é o módulo de alto nível e qual é o módulo de baixo nível. Módulo de alto nível é um módulo que depende de outros módulos.</p>
+        <p>No nosso exemplo ,PasswordReminder depende da classe MySQLConnection. Sendo assim, PasswordReminder é o módulo de alto nível e MySQLConnection é o módulo de baixo nível. Mas, MySQLConnection é uma implementação e não uma abstração!</p>
+
+        <h4 class="titulo-h4">Como refatoramos nosso exemplo para utilizar o DIP?</h4>
+        <p>Se tratando de POO, você já ouviu aquela frase:</p>
+        <p><em>"Programe para uma interface e não para uma implementação."</em></p>
+        <p>Pois bem, é exatamente o que iremos fazer, criar uma interface!</p>
+        <pre><code class="language-php">
+interface DBConnectionInterface {
+      connect();
+}
+        </code></pre>
+        <p>Agora, vamos refatorar nosso exemplo fazendo que nossos módulos de alto e baixo nível dependam da abstração proposta pela interface que acabamos de criar. Veja:</p>
+        <pre><code class="language-php">
+// Aplicando DIP corretamente
+interface DBConnectionInterface {
+    connect();
+}
+
+class MySQLConnection implements DBConnectionInterface {
+    connect() {
+    // lógica de conexão
+  }
+}
+
+class OracleConnection implements DBConnectionInterface {
+    connect() {
+    // lógica de conexão
+  }
+}
+
+class PasswordReminder {
+  private $dbConnection;
+  
+    __construct(DBConnectionInterface $dbConnection) {
+    $this->dbConnection = $dbConnection;
+  }
+}
+        </code></pre>
+        <p>Perfeito! Agora a classe PasswordReminder não tem a mínima ideia de qual banco de dados a aplicação irá utilizar. Dessa forma, não estamos mais violando o DIP, ambas as classes estão desacopladas e dependendo de uma abstração. Além disso, estamos favorecendo a reusabilidade do código e como "bônus" também estamos respeitando o SRP e o OCP.</p>
+
+        <h3 class="titulo-h3">Conclusão</h3>
+        <p>A sistemática dos princípios SOLID tornam o software mais robusto, escalável e flexível, deixando-o tolerante a mudanças, facilitando a implementação de novos requisitos para a evolução e manutenção do sistema.</p>
+        <p>Levando em consideração algumas experiências vividas ao longo da minha história no mundo da tecnologia, acredito que os princípios SOLID, juntamente com algumas técnicas e boas praticas de Clean Code, são fatores essenciais que todos os desenvolvedores deveriam aplicar em seus códigos.</p>
+        <p>Pode ser um pouco assustador no início usar todos esses princípios — nem sempre conseguiremos aplicar todos em nosso projeto — mas com a prática e constância, aos poucos vamos adquirindo a experiência necessária para escrever códigos cada vez mais maduros, os princípios SOLID servem como guias pra isso.</p>
+      </div>
+      <article>
+        <b>
+            Fonte:
+        </b>
+        https://medium.com/desenvolvendo-com-paixao/o-que-%C3%A9-solid-o-guia-completo-para-voc%C3%AA-entender-os-5-princ%C3%ADpios-da-poo-2b937b3fc530</article>
+    </div>
+    
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript: Testes de Unidade</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">Testes de Unidade</h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>Conceitos e Importância</h2>
+        <h3>Conceitos:</h3>
+        <ul>
+          <li>
+            <strong>Unidade:</strong> Menor parte funcional do código que pode
+            ser testada, como uma função ou método.
+          </li>
+          <li>
+            <strong>Teste Automatizado:</strong> Código que verifica o
+            comportamento de outro código automaticamente.
+          </li>
+          <li>
+            <strong>Frameworks de Teste:</strong> Ferramentas que ajudam a
+            organizar, executar e relatar testes.
+          </li>
+        </ul>
+        <h3>Importância:</h3>
+        <ul>
+          <li>
+            <strong>Confiabilidade:</strong> Reduz erros e garante que
+            alterações futuras não quebrem funcionalidades existentes.
+          </li>
+          <li>
+            <strong>Manutenibilidade:</strong> Facilita a refatoração e a adição
+            de novas funcionalidades.
+          </li>
+          <li>
+            <strong>Documentação:</strong> Serve como documentação viva,
+            descrevendo como o código deve se comportar.
+          </li>
+          <li>
+            <strong>Velocidade:</strong> Identifica problemas rapidamente,
+            economizando tempo no desenvolvimento.
+          </li>
+        </ul>
+
+        <h2>Ferramentas de Teste</h2>
+        <ul>
+          <li>
+            <strong>Mocha:</strong> Framework para organizar e executar testes.
+          </li>
+          <li>
+            <strong>Jest:</strong> Framework completo para JavaScript, ideal
+            para aplicações React.
+          </li>
+          <li>
+            <strong>Chai:</strong> Biblioteca de asserções, usada junto com
+            frameworks como Mocha.
+          </li>
+          <li><strong>Sinon:</strong> Biblioteca para mocks, stubs e spies.</li>
+          <li>
+            <strong>QUnit:</strong> Usado para testes de aplicações baseadas em
+            jQuery.
+          </li>
+          <li>
+            <strong>Karma:</strong> Executor de testes que roda em navegadores
+            reais.
+          </li>
+        </ul>
+
+        <h2>Exemplo Prático: Teste de Unidade</h2>
+        <h3>Código a ser Testado</h3>
+        <pre><code>// math.js
+function soma(a, b) {
+    return a + b;
+}
+module.exports = soma;
+</code></pre>
+
+        <h3>Configuração</h3>
+        <ol>
+          <li>
+            Instale o Jest (ou outra ferramenta):
+            <pre><code>npm install jest --save-dev</code></pre>
+          </li>
+          <li>
+            Adicione um script no <code>package.json</code>:
+            <pre><code>{
+  "scripts": {
+      "test": "jest"
+  }
+}</code></pre>
+          </li>
+        </ol>
+
+        <h3>Escrevendo o Teste</h3>
+        <pre><code>// math.test.js
+const soma = require('./math');
+
+test('Deve somar 2 e 3 e retornar 5', () => {
+    expect(soma(2, 3)).toBe(5);
+});
+
+test('Deve retornar um número negativo ao somar -5 e 2', () => {
+    expect(soma(-5, 2)).toBe(-3);
+});
+</code></pre>
+
+        <h3>Executando o Teste</h3>
+        <pre><code>npm test</code></pre>
+        <p><strong>Saída esperada:</strong></p>
+        <pre><code>
+PASS  ./math.test.js
+✓ Deve somar 2 e 3 e retornar 5 (Xms)
+✓ Deve retornar um número negativo ao somar -5 e 2 (Xms)
+</code></pre>
+
+        <h2>Teste com Mocking e Spying</h2>
+        <p>
+          <strong>Mocks e spies</strong> ajudam a simular o comportamento de
+          funções ou serviços externos.
+        </p>
+        <h3>Exemplo</h3>
+        <p>Simulando uma função que faz uma chamada API:</p>
+        <pre><code>// api.js
+function fetchUser(id) {
+    return fetch(`https://api.example.com/users/${id}`)
+        .then((response) => response.json());
+}
+module.exports = fetchUser;
+</code></pre>
+
+        <p><strong>Teste com Mock:</strong></p>
+        <pre><code>const fetchUser = require('./api');
+
+jest.mock('./api', () => ({
+    fetchUser: jest.fn(() => Promise.resolve({ id: 1, name: "John Doe" }))
+}));
+
+test('Deve retornar o usuário correto', async () => {
+    const user = await fetchUser(1);
+    expect(user).toEqual({ id: 1, name: "John Doe" });
+});
+</code></pre>
+
+        <h2>Boas Práticas</h2>
+        <ul>
+          <li>
+            <strong>Nomenclatura:</strong> Use nomes claros para os testes.
+          </li>
+          <li>
+            <strong>Unidade Isolada:</strong> Evite dependências externas (use
+            mocks ou spies).
+          </li>
+          <li>
+            <strong>Automatização:</strong> Configure testes no pipeline CI/CD.
+          </li>
+          <li>
+            <strong>Cobertura:</strong> Utilize ferramentas como Istanbul para
+            verificar a cobertura de código.
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulários em React</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+     <header>
+      <h1>Aula 8</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">
+        Formulários em React
+      </h4>
+    </header>
+    <main class="container">
+      <div class="texto-impirmir">
+        <h1>Formulários em React</h1>
+        <p>
+          Os formulários no React permitem capturar dados do usuário. Eles podem
+          ser controlados ou não controlados, dependendo de como o estado do
+          formulário é gerenciado.
+        </p>
+
+        <h2>Formulário com Validadores</h2>
+        <p>
+          Adicione validação para garantir que os dados inseridos pelos usuários
+          atendam aos critérios exigidos.
+        </p>
+        <div class="example">
+          <h3>Exemplo:</h3>
+          <pre>
+<code>
+import React, { useState } from 'react';
+
+const FormWithValidation = () => {
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [errors, setErrors] = useState({ name: '', email: '' });
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = 'Nome é obrigatório';
+    if (!formData.email) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      alert('Formulário enviado!');
+    }
+  };
+
+  return (
+    &lt;form;onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;label&gt;
+          Nome:
+          &lt;input
+            type="text"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            /&gt;
+        &lt;/label&gt;
+        {errors.name && &lt;span&gt;{errors.name}&lt;/span&gt;}
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;
+          Email:
+          &lt;input
+            type="email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            /&gt;
+        &lt;/label&gt;
+        {errors.email && &lt;span&gt;{errors.email}&lt;/span&gt;}
+      &lt;/div&gt;
+      &lt;button type="submit">Enviar&lt;button&gt;
+    </form>
+  );
+}
+
+export default FormWithValidation;
+</code>
+    </pre>
+        </div>
+
+        <h2>Passar Dados de um Formulário para Outro</h2>
+        <p>Use props para passar dados entre componentes pai e filho.</p>
+        <div class="example">
+          <h3>Exemplo:</h3>
+          <pre>
+<code>
+import React, { useState } from 'react';
+
+const ParentForm = () => {
+  const [parentData, setParentData] = useState('');
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Formulário Pai&lt;/h1&gt;
+      &lt;ChildForm onFormSubmit={(data) => setParentData(data)} /&gt;
+      &lt;h2&gt;Dados Recebidos do Filho: {parentData}&lt;/h2&gt;
+    &lt;/div&gt;
+  );
+}
+
+const ChildForm = ({ onFormSubmit }) => {
+  const [childData, setChildData] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onFormSubmit(childData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        value={childData}
+        onChange={(e) => setChildData(e.target.value)}
+        placeholder="Digite algo"
+      /&gt;
+      &lt;button type="submit">Enviar ao Pai&lt;button&gt;
+    </form>
+  );
+}
+
+export default ParentForm;
+</code>
+    </pre>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

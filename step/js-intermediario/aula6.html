@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ECMAScript (parte 2)</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">
+        EcmaScript (parte 2 - Variáveis, Template Literal e Módulos)
+      </h4>
+    </header>
+    <main class="container">
+      <h2>Variáveis (var, let e const)</h2>
+      <section>
+        <p>
+          No JavaScript, <code>let</code>, <code>const</code> e
+          <code>var</code> são usados para declarar variáveis. Embora todos
+          sejam utilizados para o mesmo propósito, eles possuem diferenças
+          importantes em como funcionam. Vamos entender cada um deles em
+          detalhe.
+        </p>
+
+        <h3><code>var</code></h3>
+        <h3>Características:</h3>
+        <ul>
+          <li>Declarado com a palavra-chave <code>var</code>.</li>
+          <li>
+            <strong>Escopo de função</strong>: A variável existe apenas dentro
+            da função onde foi declarada.
+          </li>
+          <li>
+            Suporta <strong>hoisting</strong>: Variáveis declaradas com
+            <code>var</code> são "movidas" para o topo de seu escopo durante a
+            execução, mas seu valor inicial será <code>undefined</code>.
+          </li>
+          <li>Pode ser redeclarada e alterada no mesmo escopo.</li>
+        </ul>
+
+        <h3>Exemplo 1: Escopo com <code>var</code></h3>
+        <pre><code>function exemploVar() {
+    if (true) {
+        var mensagem = "Olá, mundo!";
+    }
+    console.log(mensagem); // Funciona porque o escopo de var é a função
+}
+
+exemploVar();</code></pre>
+
+        <h3>Exemplo 2: Hoisting com <code>var</code></h3>
+        <pre><code>console.log(nome); // undefined (não dá erro, mas a variável ainda não tem valor)
+var nome = "Maria";
+console.log(nome); // Maria</code></pre>
+
+        <h2><code>let</code></h2>
+        <h3>Características:</h3>
+        <ul>
+          <li>Declarado com a palavra-chave <code>let</code>.</li>
+          <li>
+            <strong>Escopo de bloco</strong>: Existe apenas dentro do bloco
+            <code>{}</code> onde foi definida.
+          </li>
+          <li>
+            Não suporta hoisting no mesmo sentido que <code>var</code>: você não
+            pode usar a variável antes de declará-la.
+          </li>
+          <li>
+            Não pode ser redeclarada no mesmo escopo, mas seu valor pode ser
+            alterado.
+          </li>
+        </ul>
+
+        <h3>Exemplo 1: Escopo de bloco com <code>let</code></h3>
+        <pre><code>function exemploLet() {
+    if (true) {
+        let mensagem = "Olá, mundo!";
+        console.log(mensagem); // Funciona aqui
+    }
+    // console.log(mensagem); // Erro: mensagem não está definida fora do bloco
+}
+
+exemploLet();</code></pre>
+
+        <h3>Exemplo 2: Tentativa de redeclaração</h3>
+        <pre><code>let nome = "Maria";
+// let nome = "João"; // Erro: nome já foi declarado
+nome = "João"; // Isso funciona porque estamos apenas atualizando o valor
+console.log(nome); // João</code></pre>
+
+        <h2><code>const</code></h2>
+        <h3>Características:</h3>
+        <ul>
+          <li>Declarado com a palavra-chave <code>const</code>.</li>
+          <li>
+            <strong>Escopo de bloco</strong>: Assim como <code>let</code>,
+            existe apenas dentro do bloco <code>{}</code> onde foi definida.
+          </li>
+          <li>Deve ser inicializada na declaração.</li>
+          <li>
+            Não pode ter seu valor reatribuído (imutável), mas objetos e arrays
+            podem ser modificados em seus conteúdos internos.
+          </li>
+        </ul>
+
+        <h3>Exemplo 1: Constantes imutáveis</h3>
+        <pre><code>const pi = 3.14;
+// pi = 3.15; // Erro: Não é possível reatribuir um valor a uma constante
+console.log(pi); // 3.14</code></pre>
+
+        <h3>Exemplo 2: Modificação de objetos e arrays</h3>
+        <pre><code>const pessoa = { nome: "Maria" };
+pessoa.nome = "João"; // Isso é permitido
+console.log(pessoa.nome); // João
+
+const numeros = [1, 2, 3];
+numeros.push(4); // Isso também é permitido
+console.log(numeros); // [1, 2, 3, 4]</code></pre>
+
+        <ul>
+          <li>
+            Variáveis declaradas com <code>var</code> são elevadas com valor
+            inicial <code>undefined</code>.
+          </li>
+          <li>
+            Variáveis declaradas com <code>let</code> e
+            <code>const</code> também sofrem hoisting, mas ficam em uma "zona
+            morta temporal" (temporal dead zone) até serem inicializadas.
+          </li>
+          <li>
+            Funções declaradas com <code>function</code> são completamente
+            elevadas (declaração e corpo).
+          </li>
+        </ul>
+
+        <h4>Exemplo com <code>var</code></h4>
+        <pre>
+        <code>
+console.log(nome); // undefined (a declaração foi elevada, mas não o valor)
+var nome = "Maria";
+console.log(nome); // Maria
+        </code>
+    </pre>
+
+        <h4>Exemplo com <code>let</code> e <code>const</code></h4>
+        <pre>
+        <code>
+// console.log(nome); // Erro: Cannot access 'nome' before initialization
+let nome = "João";
+console.log(nome); // João
+        </code>
+    </pre>
+
+        <h4>Exemplo com funções</h4>
+        <pre>
+        <code>
+saudar(); // Funciona porque a função é elevada
+function saudar() {
+    console.log("Olá!");
+}
+        </code>
+    </pre>
+      </section>
+
+      <h3>Explicação sobre Hoisting em JavaScript</h3>
+      <section>
+        <p>
+          <strong>Hoisting</strong> é o comportamento do JavaScript de "elevar"
+          declarações de variáveis, funções e classes para o topo do escopo
+          (função ou global) durante a fase de compilação.
+        </p>
+        <p>
+          No entanto, <strong>apenas as declarações são elevadas</strong>, e não
+          as atribuições de valor. Isso pode levar a comportamentos inesperados
+          se o hoisting não for bem compreendido.
+        </p>
+      </section>
+
+      <h2>Módulos em JavaScript</h2>
+      <section>
+        <p>
+          Módulos permitem dividir o código em arquivos separados, cada um com
+          sua funcionalidade específica. Isso facilita a manutenção e a
+          reutilização do código.
+        </p>
+        <p>
+          Os módulos foram introduzidos no ES6 (ES2015) e utilizam as
+          palavras-chave
+          <strong><code>export</code></strong> e
+          <strong><code>import</code></strong
+          >.
+        </p>
+
+        <h4>Exemplo Básico</h4>
+        <h5>Arquivo <code>saudacoes.js</code>:</h5>
+        <pre>
+        <code>
+export const saudacao = "Olá, mundo!";
+export function saudar(nome) {
+    return `Olá, ${nome}!`;
+}
+        </code>
+    </pre>
+        <h5>Arquivo <code>main.js</code>:</h5>
+        <pre>
+        <code>
+import { saudacao, saudar } from './saudacoes.js';
+
+console.log(saudacao); // Olá, mundo!
+console.log(saudar("Maria")); // Olá, Maria!
+        </code>
+    </pre>
+
+        <h4>Tipos de Exportação</h4>
+        <h5>Exportação Nomeada</h5>
+        <pre>
+        <code>
+export const nome = "João";
+export function ola() {
+    return "Olá!";
+}
+        </code>
+    </pre>
+        <h5>Exportação Default</h5>
+        <pre>
+        <code>
+export default function ola() {
+    return "Olá!";
+}
+        </code>
+    </pre>
+        <h5>No arquivo de importação:</h5>
+        <pre>
+        <code>
+import ola from './arquivo.js';
+console.log(ola()); // Olá!
+        </code>
+    </pre>
+      </section>
+
+      <h2>Template Literals em JavaScript</h2>
+      <section>
+        <p>
+          Template literals (ou template strings) são uma maneira de criar
+          strings no JavaScript, introduzidas no ES6. Eles permitem:
+        </p>
+        <ul>
+          <li>Interpolação de variáveis.</li>
+          <li>Quebras de linha mais simples.</li>
+          <li>Inclusão de expressões diretamente dentro da string.</li>
+        </ul>
+        <p>
+          Eles utilizam <strong>backticks</strong> (<code>`</code>) em vez de
+          aspas (<code>'</code> ou <code>"</code>).
+        </p>
+
+        <h4>Interpolação de Variáveis</h4>
+        <pre>
+        <code>
+const nome = "Maria";
+const mensagem = `Olá, ${nome}! Como você está?`;
+console.log(mensagem); // Olá, Maria! Como você está?
+        </code>
+    </pre>
+
+        <h4>Quebras de Linha</h4>
+        <pre>
+        <code>
+const mensagem = `Essa é uma mensagem
+com múltiplas
+linhas.`;
+console.log(mensagem);
+/*
+Essa é uma mensagem
+com múltiplas
+linhas.
+*/
+        </code>
+    </pre>
+
+        <h4>Inclusão de Expressões</h4>
+        <pre>
+        <code>
+const a = 5;
+const b = 10;
+console.log(`A soma de ${a} e ${b} é ${a + b}.`); // A soma de 5 e 10 é 15.
+        </code>
+    </pre>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>
