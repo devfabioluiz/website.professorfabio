@@ -15,11 +15,34 @@
     <header>
       <h1>Aula 3</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Props e States</h4>
+      <h4 style="text-align: center">Fragments, Props e States</h4>
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h4 class="titulo-h4">O que são Props?</h4>
+        <h2>React Fragments</h2>
+        <p>
+          React Fragments permitem agrupar múltiplos elementos JSX sem criar
+          elementos extras no DOM, evitando "divs" desnecessárias.
+        </p>
+        <p>Exemplo usando Fragment shorthand:</p>
+        <div class="example">
+          <h3>Exemplo:</h3>
+          <pre><code>
+import React from 'react';
+
+function Lista() {
+  return (
+    &lt;&gt;
+      &lt;li&gt;Item 1&lt;/li&gt;
+      &lt;li&gt;Item 2&lt;/li&gt;
+      &lt;li&gt;Item 3&lt;/li&gt;
+    &lt;/&gt;
+  );
+}
+          </code></pre>
+        </div>
+
+        <h2>Props</h2>
         <p>
           <b>Props</b> (abreviação de "properties") são uma forma de passar
           dados de um componente pai para um componente filho em React.
@@ -40,7 +63,7 @@ export default Saudacao;
 </code>
         </pre>
 
-        <h4 class="titulo-h4">O que são estados (states)?</h4>
+        <h2>Estados (states)</h2>
         <p>
           <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
           do tempo em um componente React.

@@ -19,115 +19,291 @@
         operações matemáticas.
       </p>
 
-      <h3>Propriedades do Math</h3>
-      <ul>
-        <li><code>Math.PI</code>: Representa o valor de π (3.14159...).</li>
-        <pre><code>console.log(Math.PI); // 3.141592653589793</code></pre>
-
-        <li><code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).</li>
-        <pre><code>console.log(Math.E); // 2.718281828459045</code></pre>
-      </ul>
-
-      <h3>Métodos Comuns do Math</h3>
-      <ul>
-        <li>
-          <strong>Arredondamentos</strong>:
-          <pre><code>console.log(Math.round(4.5)); // 5
-console.log(Math.ceil(4.2)); // 5
-console.log(Math.floor(4.8)); // 4</code></pre>
-        </li>
-
-        <li>
-          <strong>Potência e Raiz Quadrada</strong>:
-          <pre><code>console.log(Math.pow(2, 3)); // 8
-console.log(Math.sqrt(16)); // 4</code></pre>
-        </li>
-
-        <li>
-          <strong>Máximo e Mínimo</strong>:
-          <pre><code>console.log(Math.max(10, 20, 30)); // 30
-console.log(Math.min(10, 20, 30)); // 10</code></pre>
-        </li>
-
-        <li>
-          <strong>Números Aleatórios</strong>:
-          <pre><code>console.log(Math.random()); // Exemplo: 0.823
-console.log(Math.random() * 10); // Exemplo: 8.23</code></pre>
-        </li>
-
-        <li>
-          <strong>Trigonometria</strong>:
-          <pre><code>console.log(Math.sin(Math.PI / 2)); // 1
-console.log(Math.cos(Math.PI)); // -1</code></pre>
-        </li>
-      </ul>
-
-      <h2>Objeto Array</h2>
+      <h4>Propriedades do Math</h4>
       <p>
-        O objeto <code>Array</code> armazena coleções de elementos, como
+        <code>Math.PI</code>: Representa o valor de π (3.14159...).
+      </p>
+      <pre><code>console.log(Math.PI); // 3.141592653589793</code></pre>
+
+        <p>
+          <code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).
+        </p>
+        <pre><code>console.log(Math.E); // 2.718281828459045</code></pre>
+
+        <h4>Arredondamentos</h4>
+<pre><code>console.log(Math.round(4.5)); // 5
+console.log(Math.ceil(4.2)); // 5
+console.log(Math.floor(4.8)); // 4
+</code></pre>
+
+        <h4>Potência e Raiz Quadrada</h4>
+<pre><code>console.log(Math.pow(2, 3)); // 8
+console.log(Math.sqrt(16)); // 4
+</code></pre>
+
+        <h4>Máximo e Mínimo</h4>
+<pre><code>console.log(Math.max(10, 20, 30)); // 30
+console.log(Math.min(10, 20, 30)); // 10
+</code></pre>
+
+        <h4>Números Aleatórios</h4>
+<pre><code>console.log(Math.random()); // Exemplo: 0.823
+console.log(Math.random() * 10); // Exemplo: 8.23
+</code></pre>
+        <h4>Trigonometria</h4>
+<pre><code>console.log(Math.sin(Math.PI / 2)); // 1
+console.log(Math.cos(Math.PI)); // -1</code></pre>
+
+      <h2>Array</h2>
+      <p>
+        O <code>Array</code> armazena coleções de elementos, como
         números, strings e objetos.
       </p>
 
-      <h3>Criação de Arrays</h3>
-      <ul>
-        <li>
+      <h4>Criação de Arrays</h4>
+        <p>
           Com colchetes:
           <pre><code>const numeros = [1, 2, 3];
 console.log(numeros); // [1, 2, 3]</code></pre>
-        </li>
-        <li>
+        </p>
+        <p>
           Com o construtor:
-          <pre><code>const letras = new Array('a', 'b', 'c');
+<pre><code>const letras = new Array('a', 'b', 'c');
 console.log(letras); // ["a", "b", "c"]</code></pre>
-        </li>
-      </ul>
+        </p>
 
-      <h3>Métodos Comuns de Arrays</h3>
-      <ul>
-        <li>
-          <strong>Adicionar/Remover Elementos</strong>:
+      <h4>Adicionar/Remover Elementos (push e pop)</h4>
           <pre><code>const frutas = ["maçã", "banana"];
 frutas.push("laranja"); // ["maçã", "banana", "laranja"]
 frutas.pop(); // ["maçã", "banana"]</code></pre>
-        </li>
 
-        <li>
-          <strong>Ordenação</strong>:
-          <pre><code>const numeros = [3, 1, 2];
+      <h4>Ordenação (sort e reverse)</h4>
+<pre><code>const numeros = [3, 1, 2];
 numeros.sort(); // [1, 2, 3]
 numeros.reverse(); // [3, 2, 1]</code></pre>
-        </li>
 
-        <li>
-          <strong>Buscar Elementos</strong>:
-          <pre><code>const frutas = ["maçã", "banana"];
+        <h4>Buscar Elemento (indexOf e includes)</h4>
+<pre><code>const frutas = ["maçã", "banana"];
 console.log(frutas.indexOf("banana")); // 1
 console.log(frutas.includes("laranja")); // false</code></pre>
-        </li>
 
-        <li>
-          <strong>Iteração</strong>:
-          <pre><code>const numeros = [1, 2, 3];
-numeros.forEach((numero) => console.log(numero * 2));
-// 2, 4, 6</code></pre>
-        </li>
+        <h4>Iteração (for, for...in, for...of e forEach)</h4>
+        <p>
+          O JavaScript oferece diversas formas de iterar sobre arrays, objetos
+          ou outros iteráveis. Aqui estão as principais: <code>for</code>, 
+          <code>for...in</code>, <code>for...of</code>, e <code>forEach</code>. 
+          Cada uma delas tem usos específicos.
+        </p>
 
-        <li>
-          <strong>Transformar Arrays</strong>:
+        <h3>for</h3>
+        <p>
+          O laço <code>for</code> é a forma mais básica e flexível de iterar. 
+          Ele permite controle total sobre o início, fim e incremento do laço. 
+        </p>
+        <p>
+          Útil para iteração em arrays ou listas e controlar totalmente o índice
+        </p>
+        <pre>
+<code>
+for (let i = 0; i &lt; 5; i++) {
+  console.log(i); // Imprime 0, 1, 2, 3, 4
+}
+</code>
+        </pre>
+
+        <h3>for...in</h3>
+        <p>
+          O laço <code>for...in</code> é usado para iterar sobre as chaves de um 
+          objeto ou os índices de um array.
+        </p>
+        <p>
+          Útil para iterar sobre as propriedades de um objeto.
+        </p>
+        <p>
+          <strong>Não recomendado para arrays</strong>, pois pode incluir propriedades herdadas.
+        </p>
+        <pre>
+<code>
+const obj = { a: 1, b: 2, c: 3 };
+
+for (const key in obj) {
+  console.log(\`\${key}: \${obj[key]}\`);
+}
+// Imprime:
+// a: 1
+// b: 2
+// c: 3
+</code>
+        </pre>
+
+        <h3>for...of</h3>
+        <p>
+          O laço <code>for...of</code> é usado para iterar sobre elementos de 
+          objetos iteráveis (arrays, strings, sets, maps, etc.).
+        </p>
+        <p>
+          Útil para iterar diretamente sobre os valores de arrays ou strings.
+        </p>
+        <pre>
+<code>
+const arr = ["a", "b", "c"];
+
+for (const value of arr) {
+  console.log(value); // Imprime "a", "b", "c"
+}
+</code>
+        </pre>
+
+        <h3>forEach</h3>
+        <p>
+          O método <code>forEach</code> é usado para iterar sobre arrays, 
+          executando uma função callback para cada elemento. É mais legível para funções simples.
+        </p>
+        <pre>
+<code>
+const arr = [1, 2, 3];
+
+arr.forEach((value, index) => {
+  console.log(\`Index: \${index}, Value: \${value}\`);
+});
+// Imprime:
+// Index: 0, Value: 1
+// Index: 1, Value: 2
+// Index: 2, Value: 3
+</code>
+        </pre>
+
+        <h3>Considerações de Uso (for, for...in, for...of e forEach)</h3>
+        <ul>
+          <li>
+            Use <code>for</code> quando precisar de controle total sobre o laço.
+          </li>
+          <li>
+            Use <code>for...in</code> apenas para objetos. Não é recomendado 
+            para arrays.
+          </li>
+          <li>
+            Use <code>for...of</code> para iterar sobre valores de iteráveis.
+          </li>
+          <li>
+            Use <code>forEach</code> para operações simples em arrays, mas lembre-se 
+            de que ele não suporta <code>break</code> ou <code>continue</code>.
+          </li>
+        </ul>
+      </div>
+
+        <h4>Transformar Arrays </h4>
+        <p>
+          O método <code>map()</code> cria um novo array aplicando uma função de transformação a cada elemento de um array existente, sem alterar o array original. Não altera o array original. Logo, retorna um novo array. 
+        </p>
+        <p>
+          Estrutura: Recebe três argumentos:
+            <ul>
+              <li><code>element</code>: O elemento atual sendo processado.</li>
+              <li><code>index</code>: O índice do elemento atual.</li>
+              <li><code>array</code>: O array original.</li>
+            </ul>
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <pre>
+<code>
+const numbers = [1, 2, 3, 4, 5];
+
+// Transformar cada número multiplicando por 2
+const doubled = numbers.map(num => num * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+</code>
+        </pre>
+
+        <h5>Exemplo 2</h5>
+        <pre>
+<code>
+const names = ["Alice", "Bob", "Charlie"];
+
+// Transformar cada nome em caixa alta
+const upperCaseNames = names.map(name => name.toUpperCase());
+console.log(upperCaseNames); // ["ALICE", "BOB", "CHARLIE"]
+</code>
+        </pre>
+
+        <h5>Exemplo 3</h5>
+        <pre>
+<code>
+const users = [
+  { id: 1, name: "Alice", age: 25 },
+  { id: 2, name: "Bob", age: 30 },
+  { id: 3, name: "Charlie", age: 35 }
+];
+
+// Extraindo apenas os nomes
+const userNames = users.map(user => user.name);
+console.log(userNames); // ["Alice", "Bob", "Charlie"]
+</code>
+        </pre>
+
+        <h5>Exemplo 4 (Usando index)</h5>
+        <pre>
+<code>
+const numbers = [10, 20, 30, 40, 50];
+
+// Adicionar o índice ao valor de cada número
+const indexedNumbers = numbers.map((num, index) => num + index);
+console.log(indexedNumbers); // [10, 21, 32, 43, 54]
+</code>
+        </pre>
+
+        <h5>Exemplo 5</h5>
+        <pre>
+<code>
+const items = ["apple", "banana", "cherry"];
+
+// Transformar cada item em um objeto
+const itemObjects = items.map((item, index) => ({
+  id: index + 1,
+  name: item
+}));
+console.log(itemObjects);
+// [
+//   { id: 1, name: "apple" },
+//   { id: 2, name: "banana" },
+//   { id: 3, name: "cherry" }
+// ]
+</code>
+        </pre>
+
+        <h5>Exemplo 6</h5>
           <pre><code>const numeros = [1, 2, 3];
 const dobrados = numeros.map((n) => n * 2); // [2, 4, 6]
 const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
-        </li>
+
+        <p>
+          
+            Observação:
+          
+          O <code>map()</code> não retorna valores explicitamente.
+        </p>
+        <p>
+          Caso queira usar map() sem necessidade de transformar dados, prefira <code>forEach()</code> para casos sem retorno.
+        </p>
+            <pre>
+<code>
+const result = [1, 2, 3].map(num => {
+  num * 2; // Sem retorno explícito
+});
+console.log(result); // [undefined, undefined, undefined]
+</code>
+            </pre>
 
         <li>
-          <strong>Reduzir o Array</strong>:
+          Reduzir o Array
           <pre><code>const numeros = [1, 2, 3];
 const soma = numeros.reduce((acum, atual) => acum + atual, 0);
 console.log(soma); // 6</code></pre>
         </li>
 
         <li>
-          <strong>Clonar ou Combinar Arrays</strong>:
+          Clonar ou Combinar Arrays
           <pre><code>const numeros = [1, 2, 3];
 const clonados = [...numeros]; // [1, 2, 3]
 const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
