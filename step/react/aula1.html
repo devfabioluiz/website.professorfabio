@@ -34,7 +34,8 @@
           estrutura de pastas:
         </p>
         <h4 class="titulo-h4">Estrutura de Pastas</h4>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-bash">
 my-react-app/
 ├── public/           # Arquivos estáticos
@@ -48,9 +49,11 @@ my-react-app/
 └── vite.config.js    # Configuração do Vite
 </code>
         </pre>
+        </div>
 
         <h4 class="titulo-h4">Exemplo de Componente</h4>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 import React from 'react';
 
@@ -63,6 +66,8 @@ const Welcome = ({ name }) => (
 export default Welcome;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2 class="titulo-h2">Configurando o Ambiente com Vite</h2>
         <p>
@@ -77,35 +82,47 @@ export default Welcome;
           </li>
           <li>
             <strong>Crie o projeto:</strong>
-            <pre>
+            <div class="code-container">
+              <pre>
 <code class="language-bash">
 npm create vite@latest my-react-app --template react
 </code>
             </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
           <li>
             <strong>Acesse a pasta do projeto:</strong>
-            <pre>
+            <div class="code-container">
+              <pre>
 <code class="language-bash">
 cd my-react-app
 </code>
             </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
           <li>
             <strong>Instale as dependências:</strong>
-            <pre>
+            <div class="code-container">
+              <pre>
 <code class="language-bash">
 npm install
 </code>
             </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
           <li>
             <strong>Inicie o servidor de desenvolvimento:</strong>
-            <pre>
+            <div class="code-container">
+              <pre>
 <code class="language-bash">
 npm run dev
 </code>
             </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
         </ol>
         <p>
@@ -124,5 +141,6 @@ npm run dev
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

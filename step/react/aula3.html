@@ -16,6 +16,17 @@
       <h1>Aula 3</h1>
       <h4 style="text-align: center">React</h4>
       <h4 style="text-align: center">Fragments, Props e States</h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 18/06/2025</b>
+          </p>
+          <p>📔 Fragments</p>
+        </div>
+      </div>
     </header>
     <div class="container">
       <div class="texto-imprimir">
@@ -27,7 +38,8 @@
         <p>Exemplo usando Fragment shorthand:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React from 'react';
 
 function Lista() {
@@ -40,6 +52,8 @@ function Lista() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
         <h2>Props</h2>
@@ -47,7 +61,8 @@ function Lista() {
           <b>Props</b> (abreviação de "properties") são uma forma de passar
           dados de um componente pai para um componente filho em React.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 import React from 'react';
 
@@ -62,13 +77,16 @@ const Saudacao = (props) => {
 export default Saudacao;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2>Estados (states)</h2>
         <p>
           <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
           do tempo em um componente React.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 import React, { useState } from 'react';
 
@@ -89,6 +107,8 @@ const Contador = () => {
 export default Contador;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </div>
     </div>
 
@@ -100,5 +120,6 @@ export default Contador;
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

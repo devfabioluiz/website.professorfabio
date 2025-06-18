@@ -23,36 +23,43 @@
       <p>
         <code>Math.PI</code>: Representa o valor de π (3.14159...).
       </p>
-      <pre><code>console.log(Math.PI); // 3.141592653589793</code></pre>
+      <div class="code-container"><pre><code>console.log(Math.PI); // 3.141592653589793</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <p>
           <code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).
         </p>
-        <pre><code>console.log(Math.E); // 2.718281828459045</code></pre>
+        <div class="code-container"><pre><code>console.log(Math.E); // 2.718281828459045</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Arredondamentos</h4>
-<pre><code>console.log(Math.round(4.5)); // 5
+<div class="code-container"><pre><code>console.log(Math.round(4.5)); // 5
 console.log(Math.ceil(4.2)); // 5
 console.log(Math.floor(4.8)); // 4
-</code></pre>
+</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Potência e Raiz Quadrada</h4>
-<pre><code>console.log(Math.pow(2, 3)); // 8
+<div class="code-container"><pre><code>console.log(Math.pow(2, 3)); // 8
 console.log(Math.sqrt(16)); // 4
-</code></pre>
+</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Máximo e Mínimo</h4>
-<pre><code>console.log(Math.max(10, 20, 30)); // 30
+<div class="code-container"><pre><code>console.log(Math.max(10, 20, 30)); // 30
 console.log(Math.min(10, 20, 30)); // 10
-</code></pre>
+</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Números Aleatórios</h4>
-<pre><code>console.log(Math.random()); // Exemplo: 0.823
+<div class="code-container"><pre><code>console.log(Math.random()); // Exemplo: 0.823
 console.log(Math.random() * 10); // Exemplo: 8.23
-</code></pre>
+</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
         <h4>Trigonometria</h4>
-<pre><code>console.log(Math.sin(Math.PI / 2)); // 1
-console.log(Math.cos(Math.PI)); // -1</code></pre>
+<div class="code-container"><pre><code>console.log(Math.sin(Math.PI / 2)); // 1
+console.log(Math.cos(Math.PI)); // -1</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
       <h2>Array</h2>
       <p>
@@ -63,29 +70,34 @@ console.log(Math.cos(Math.PI)); // -1</code></pre>
       <h4>Criação de Arrays</h4>
         <p>
           Com colchetes:
-          <pre><code>const numeros = [1, 2, 3];
-console.log(numeros); // [1, 2, 3]</code></pre>
+          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
+console.log(numeros); // [1, 2, 3]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
         </p>
         <p>
           Com o construtor:
-<pre><code>const letras = new Array('a', 'b', 'c');
-console.log(letras); // ["a", "b", "c"]</code></pre>
+<div class="code-container"><pre><code>const letras = new Array('a', 'b', 'c');
+console.log(letras); // ["a", "b", "c"]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
         </p>
 
       <h4>Adicionar/Remover Elementos (push e pop)</h4>
-          <pre><code>const frutas = ["maçã", "banana"];
+          <div class="code-container"><pre><code>const frutas = ["maçã", "banana"];
 frutas.push("laranja"); // ["maçã", "banana", "laranja"]
-frutas.pop(); // ["maçã", "banana"]</code></pre>
+frutas.pop(); // ["maçã", "banana"]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
       <h4>Ordenação (sort e reverse)</h4>
-<pre><code>const numeros = [3, 1, 2];
+<div class="code-container"><pre><code>const numeros = [3, 1, 2];
 numeros.sort(); // [1, 2, 3]
-numeros.reverse(); // [3, 2, 1]</code></pre>
+numeros.reverse(); // [3, 2, 1]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Buscar Elemento (indexOf e includes)</h4>
-<pre><code>const frutas = ["maçã", "banana"];
+<div class="code-container"><pre><code>const frutas = ["maçã", "banana"];
 console.log(frutas.indexOf("banana")); // 1
-console.log(frutas.includes("laranja")); // false</code></pre>
+console.log(frutas.includes("laranja")); // false</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Iteração (for, for...in, for...of e forEach)</h4>
         <p>
@@ -103,13 +115,14 @@ console.log(frutas.includes("laranja")); // false</code></pre>
         <p>
           Útil para iteração em arrays ou listas e controlar totalmente o índice
         </p>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 for (let i = 0; i &lt; 5; i++) {
   console.log(i); // Imprime 0, 1, 2, 3, 4
 }
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>for...in</h3>
         <p>
@@ -122,7 +135,7 @@ for (let i = 0; i &lt; 5; i++) {
         <p>
           <strong>Não recomendado para arrays</strong>, pois pode incluir propriedades herdadas.
         </p>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const obj = { a: 1, b: 2, c: 3 };
 
@@ -134,7 +147,8 @@ for (const key in obj) {
 // b: 2
 // c: 3
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>for...of</h3>
         <p>
@@ -144,7 +158,7 @@ for (const key in obj) {
         <p>
           Útil para iterar diretamente sobre os valores de arrays ou strings.
         </p>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const arr = ["a", "b", "c"];
 
@@ -152,14 +166,15 @@ for (const value of arr) {
   console.log(value); // Imprime "a", "b", "c"
 }
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>forEach</h3>
         <p>
           O método <code>forEach</code> é usado para iterar sobre arrays, 
           executando uma função callback para cada elemento. É mais legível para funções simples.
         </p>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const arr = [1, 2, 3];
 
@@ -171,7 +186,8 @@ arr.forEach((value, index) => {
 // Index: 1, Value: 2
 // Index: 2, Value: 3
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Considerações de Uso (for, for...in, for...of e forEach)</h3>
         <ul>
@@ -206,7 +222,7 @@ arr.forEach((value, index) => {
         </p>
 
         <h5>Exemplo 1</h5>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const numbers = [1, 2, 3, 4, 5];
 
@@ -214,10 +230,11 @@ const numbers = [1, 2, 3, 4, 5];
 const doubled = numbers.map(num => num * 2);
 console.log(doubled); // [2, 4, 6, 8, 10]
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h5>Exemplo 2</h5>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const names = ["Alice", "Bob", "Charlie"];
 
@@ -225,10 +242,11 @@ const names = ["Alice", "Bob", "Charlie"];
 const upperCaseNames = names.map(name => name.toUpperCase());
 console.log(upperCaseNames); // ["ALICE", "BOB", "CHARLIE"]
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h5>Exemplo 3</h5>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const users = [
   { id: 1, name: "Alice", age: 25 },
@@ -240,10 +258,11 @@ const users = [
 const userNames = users.map(user => user.name);
 console.log(userNames); // ["Alice", "Bob", "Charlie"]
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h5>Exemplo 4 (Usando index)</h5>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const numbers = [10, 20, 30, 40, 50];
 
@@ -251,10 +270,11 @@ const numbers = [10, 20, 30, 40, 50];
 const indexedNumbers = numbers.map((num, index) => num + index);
 console.log(indexedNumbers); // [10, 21, 32, 43, 54]
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h5>Exemplo 5</h5>
-        <pre>
+        <div class="code-container"><pre>
 <code>
 const items = ["apple", "banana", "cherry"];
 
@@ -270,12 +290,14 @@ console.log(itemObjects);
 //   { id: 3, name: "cherry" }
 // ]
 </code>
-        </pre>
+        </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <h5>Exemplo 6</h5>
-          <pre><code>const numeros = [1, 2, 3];
+          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
 const dobrados = numeros.map((n) => n * 2); // [2, 4, 6]
-const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
+const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <p>
           
@@ -286,27 +308,30 @@ const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
         <p>
           Caso queira usar map() sem necessidade de transformar dados, prefira <code>forEach()</code> para casos sem retorno.
         </p>
-            <pre>
+            <div class="code-container"><pre>
 <code>
 const result = [1, 2, 3].map(num => {
   num * 2; // Sem retorno explícito
 });
 console.log(result); // [undefined, undefined, undefined]
 </code>
-            </pre>
+            </pre><button class="btn-copy">Copiar Código</button>
+</div>
 
         <li>
           Reduzir o Array
-          <pre><code>const numeros = [1, 2, 3];
+          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
 const soma = numeros.reduce((acum, atual) => acum + atual, 0);
-console.log(soma); // 6</code></pre>
+console.log(soma); // 6</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
         </li>
 
         <li>
           Clonar ou Combinar Arrays
-          <pre><code>const numeros = [1, 2, 3];
+          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
 const clonados = [...numeros]; // [1, 2, 3]
-const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
+const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre><button class="btn-copy">Copiar Código</button>
+</div>
         </li>
       </ul>
     </main>
@@ -317,6 +342,7 @@ const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
       <div class="button-container">
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
-    </footer>
+        </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

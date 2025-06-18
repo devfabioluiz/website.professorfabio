@@ -5,33 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulários em React</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
-     <header>
+    <header>
       <h1>Aula 8</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">
-        Formulários em React
-      </h4>
+      <h4 style="text-align: center">Formulários em React</h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 18/06/2025</b>
+          </p>
+          <p>Nessa versão foram incluídos os seguintes tópicos:</p>
+            <p>🧐 Como funcionam os Formulários em React</p>
+            <p>🧐 Gerenciando Inputs com Estado</p>
+            <p>🧐 Estilizando Formulários com Material UI</p>
+        </div>
+      </div>
+
     </header>
     <main class="container">
       <div class="texto-impirmir">
-        <h1>Formulários em React</h1>
+<p>
+  Formulários em React são usados para capturar dados do usuário e processá-los. Existem duas formas principais de trabalhar com formulários:
+</p>
+<ul>
+  <li><b>Formulários controlados</b>: Cada campo é vinculado ao estado do componente, garantindo controle total sobre os dados.</li>
+  <li><b>Formulários não controlados</b>: Os dados são manipulados diretamente pelo DOM, usando referências (<code>refs</code>).</li>
+</ul>
+
+ <h4 class="titulo-h4">Gerenciando Inputs com Estado</h4>
         <p>
-          Os formulários no React permitem capturar dados do usuário. Eles podem
-          ser controlados ou não controlados, dependendo de como o estado do
-          formulário é gerenciado.
+          Estados são frequentemente usados em formulários para controlar inputs
+          e manipular dados enviados pelo usuário.
         </p>
 
-        <h2>Formulário com Validadores</h2>
+<h5>Exemplo 1</h5>
+<p>
+  Este exemplo mostra como capturar o nome do usuário usando um estado simples em um formulário controlado.
+</p>
+<div class="code-container">
+  <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+
+function FormularioControlado() {
+  const [nome, setNome] = useState("");
+
+  const handleChange = (e) => {
+    setNome(e.target.value); // Atualiza o estado com o valor do campo
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Evita o recarregamento da página
+    alert(\`Nome enviado: \${nome}\`);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label&gt;
+        Nome:
+        &lt;input
+          type="text"
+          value={nome}
+          onChange={handleChange}
+        /&gt;
+      &lt;/label&gt;
+      &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FormularioControlado;
+</code>
+  </pre>
+  <button class="btn-copy">Copiar Código</button>
+</div>
+
+<h5>Exemplo 2</h5>
+<p>
+  Neste exemplo, capturamos os valores de vários campos (nome e e-mail) usando um estado representado como um objeto.
+</p>
+<div class="code-container">
+  <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+
+function FormularioMultiCampos() {
+  const [formData, setFormData] = useState({
+    nome: "",
+    email: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target; // Extrai o nome e valor do campo
+    setFormData({ ...formData, [name]: value }); // Atualiza o campo correspondente no estado
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(\`Nome: \${formData.nome}, Email: \${formData.email}\`);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label&gt;
+        Nome:
+        &lt;input
+          type="text"
+          name="nome"
+          value={formData.nome}
+          onChange={handleChange}
+        /&gt;
+      &lt;/label&gt;
+      &lt;br /&gt;
+      &lt;label&gt;
+        Email:
+        &lt;input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        /&gt;
+      &lt;/label&gt;
+      &lt;br /&gt;
+      &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FormularioMultiCampos;
+</code>
+  </pre>
+  <button class="btn-copy">Copiar Código</button>
+</div>
+
+<h4 class="titulo-h4">Benefícios de Formulários Controlados</h4>
+<p>
+  Trabalhar com formulários controlados em React oferece as seguintes vantagens:
+</p>
+<ul>
+  <li><b>Sincronização direta com o estado:</b> Permite controle total sobre os valores dos campos.</li>
+  <li><b>Validação facilitada:</b> Validações podem ser realizadas diretamente ao atualizar o estado.</li>
+  <li><b>Integração com APIs:</b> Fácil envio de dados para backends ou serviços externos.</li>
+</ul>
+
+
+        <h4>Usando Validadores</h4>
         <p>
           Adicione validação para garantir que os dados inseridos pelos usuários
           atendam aos critérios exigidos.
         </p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <pre>
-<code>
+        <div class="code-container"><pre>
+          <code class="language-javascript">
 import React, { useState } from 'react';
 
 const FormWithValidation = () => {
@@ -63,16 +197,16 @@ const FormWithValidation = () => {
         &lt;label&gt;
           Nome:
           &lt;input
-            type="text"
-            value={formData.name}
+          type="text"
+          value={formData.name}
             onChange={(e) =>
               setFormData({ ...formData, name: e.target.value })
-            /&gt;
-        &lt;/label&gt;
-        {errors.name && &lt;span&gt;{errors.name}&lt;/span&gt;}
-      &lt;/div&gt;
+              /&gt;
+              &lt;/label&gt;
+              {errors.name && &lt;span&gt;{errors.name}&lt;/span&gt;}
+              &lt;/div&gt;
       &lt;div&gt;
-        &lt;label&gt;
+      &lt;label&gt;
           Email:
           &lt;input
             type="email"
@@ -90,15 +224,16 @@ const FormWithValidation = () => {
 
 export default FormWithValidation;
 </code>
-    </pre>
+</pre><button class="btn-copy">Copiar Código</button>
+</div>
         </div>
 
-        <h2>Passar Dados de um Formulário para Outro</h2>
+        <h4>Passar Dados de um Formulário para Outro</h4>
         <p>Use props para passar dados entre componentes pai e filho.</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre>
-<code>
+          <div class="code-container"><pre>
+<code class="language-javascript">
 import React, { useState } from 'react';
 
 const ParentForm = () => {
@@ -136,9 +271,123 @@ const ChildForm = ({ onFormSubmit }) => {
 
 export default ParentForm;
 </code>
-    </pre>
+    </pre><button class="btn-copy">Copiar Código</button>
+</div>
         </div>
-      </div>
+        <h4 class="titulo-h4">Como Usar Elementos de Formulários com Material-UI em React</h4>
+<p>
+  Material-UI (MUI) é uma biblioteca popular de componentes React que segue os princípios de design do Google Material Design. Ela oferece componentes pré-estilizados para criar interfaces modernas e responsivas. Quando se trata de formulários, o MUI fornece componentes como <code>&lt;TextField&gt;</code>, <code>&lt;Checkbox&gt;</code>, e <code>&lt;Select&gt;</code>, tornando mais fácil estilizar e gerenciar elementos de formulário.
+</p>
+
+<h5>Exemplo 1</h5>
+<p>
+  Este exemplo mostra como criar um campo de texto básico e capturar os dados digitados pelo usuário.
+</p>
+<div class="code-container">
+  <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+
+function FormularioTexto() {
+  const [nome, setNome] = useState("");
+
+  const handleChange = (e) => {
+    setNome(e.target.value); // Atualiza o estado com o valor do campo
+  };
+
+  const handleSubmit = () => {
+    alert(\`Nome enviado: \${nome}\`);
+  };
+
+  return (
+    &lt;div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}&gt;
+      &lt;TextField
+        label="Nome"
+        variant="outlined"
+        value={nome}
+        onChange={handleChange}
+      /&gt;
+      &lt;Button variant="contained" color="primary" onClick={handleSubmit}&gt;
+        Enviar
+      &lt;/Button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FormularioTexto;
+</code>
+  </pre>
+  <button class="btn-copy">Copiar Código</button>
+</div>
+
+<h5>Exemplo 2</h5>
+<p>
+  Este exemplo demonstra como usar um checkbox e um campo de seleção no Material-UI.
+</p>
+<div class="code-container">
+  <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+import { FormControl, InputLabel, MenuItem, Select, Checkbox, FormControlLabel, Button } from "@mui/material";
+
+function FormularioSelectCheckbox() {
+  const [opcao, setOpcao] = useState("");
+  const [aceito, setAceito] = useState(false);
+
+  const handleSelectChange = (e) => {
+    setOpcao(e.target.value); // Atualiza a opção selecionada
+  };
+
+  const handleCheckboxChange = (e) => {
+    setAceito(e.target.checked); // Atualiza o estado do checkbox
+  };
+
+  const handleSubmit = () => {
+    alert(\`Opção: \${opcao}, Aceito: \${aceito}\`);
+  };
+
+  return (
+    &lt;div style={{ display: "flex", flexDirection: "column", gap: "15px", width: "300px" }}&gt;
+      &lt;FormControl fullWidth&gt;
+        &lt;InputLabel&gt;Opções&lt;/InputLabel&gt;
+        &lt;Select value={opcao} onChange={handleSelectChange}&gt;
+          &lt;MenuItem value="opcao1"&gt;Opção 1&lt;/MenuItem&gt;
+          &lt;MenuItem value="opcao2"&gt;Opção 2&lt;/MenuItem&gt;
+          &lt;MenuItem value="opcao3"&gt;Opção 3&lt;/MenuItem&gt;
+        &lt;/Select&gt;
+      &lt;/FormControl&gt;
+
+      &lt;FormControlLabel
+        control=&lt;Checkbox checked={aceito} onChange={handleCheckboxChange} /&gt;
+        label="Aceito os termos"
+      /&gt;
+
+      &lt;Button variant="contained" color="primary" onClick={handleSubmit}&gt;
+        Enviar
+      &lt;/Button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FormularioSelectCheckbox;
+</code>
+  </pre>
+  <button class="btn-copy">Copiar Código</button>
+</div>
+
+<h4 class="titulo-h4">Benefícios do Uso do Material-UI em Formulários</h4>
+<p>
+  Trabalhar com formulários no Material-UI oferece as seguintes vantagens:
+</p>
+<ul>
+  <li><b>Estilização pronta:</b> Todos os componentes seguem o Material Design.</li>
+  <li><b>Flexibilidade:</b> Fácil customização para atender às necessidades do projeto.</li>
+  <li><b>Integração com validações:</b> Pode ser usado com bibliotecas de validação como <code>Formik</code> ou <code>React Hook Form</code>.</li>
+</ul>
+
+    </div>
     </main>
     <footer>
       <div class="button-container">
@@ -148,5 +397,6 @@ export default ParentForm;
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

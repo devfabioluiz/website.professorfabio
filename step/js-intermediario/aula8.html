@@ -76,31 +76,41 @@
 
         <h2>Exemplo Prático: Teste de Unidade</h2>
         <h3>Código a ser Testado</h3>
-        <pre><code>// math.js
+        <div class="code-container">
+          <pre><code>// math.js
 function soma(a, b) {
     return a + b;
 }
 module.exports = soma;
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>Configuração</h3>
         <ol>
           <li>
             Instale o Jest (ou outra ferramenta):
-            <pre><code>npm install jest --save-dev</code></pre>
+            <div class="code-container">
+              <pre><code>npm install jest --save-dev</code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
           <li>
             Adicione um script no <code>package.json</code>:
-            <pre><code>{
+            <div class="code-container">
+              <pre><code>{
   "scripts": {
       "test": "jest"
   }
 }</code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
           </li>
         </ol>
 
         <h3>Escrevendo o Teste</h3>
-        <pre><code>// math.test.js
+        <div class="code-container">
+          <pre><code>// math.test.js
 const soma = require('./math');
 
 test('Deve somar 2 e 3 e retornar 5', () => {
@@ -111,15 +121,23 @@ test('Deve retornar um número negativo ao somar -5 e 2', () => {
     expect(soma(-5, 2)).toBe(-3);
 });
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>Executando o Teste</h3>
-        <pre><code>npm test</code></pre>
+        <div class="code-container">
+          <pre><code>npm test</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <p><strong>Saída esperada:</strong></p>
-        <pre><code>
+        <div class="code-container">
+          <pre><code>
 PASS  ./math.test.js
 ✓ Deve somar 2 e 3 e retornar 5 (Xms)
 ✓ Deve retornar um número negativo ao somar -5 e 2 (Xms)
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2>Teste com Mocking e Spying</h2>
         <p>
@@ -128,16 +146,20 @@ PASS  ./math.test.js
         </p>
         <h3>Exemplo</h3>
         <p>Simulando uma função que faz uma chamada API:</p>
-        <pre><code>// api.js
+        <div class="code-container">
+          <pre><code>// api.js
 function fetchUser(id) {
     return fetch(`https://api.example.com/users/${id}`)
         .then((response) => response.json());
 }
 module.exports = fetchUser;
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <p><strong>Teste com Mock:</strong></p>
-        <pre><code>const fetchUser = require('./api');
+        <div class="code-container">
+          <pre><code>const fetchUser = require('./api');
 
 jest.mock('./api', () => ({
     fetchUser: jest.fn(() => Promise.resolve({ id: 1, name: "John Doe" }))
@@ -148,6 +170,8 @@ test('Deve retornar o usuário correto', async () => {
     expect(user).toEqual({ id: 1, name: "John Doe" });
 });
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2>Boas Práticas</h2>
         <ul>

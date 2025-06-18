@@ -34,7 +34,8 @@
           A passagem de dados do pai para o filho é realizada por meio de props
           (propriedades). Veja o exemplo abaixo:
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">import React from 'react';
 
 const Child = ({ message }) => {
@@ -48,6 +49,8 @@ const Parent = () => {
 export default Parent;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Vantagens</h4>
         <ul>
@@ -71,7 +74,8 @@ export default Parent;
           como prop para o filho. O filho pode chamar essa função com os dados
           desejados.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">import React, { useState } from 'react';
 
 Child = ({ sendDataToParent }) => {
@@ -98,6 +102,8 @@ Parent = () => {
 export default Parent;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Vantagens</h4>
         <ul>
@@ -117,7 +123,8 @@ export default Parent;
         </p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre>
+          <div class="code-container">
+            <pre>
 <code>
 import React from 'react';
 
@@ -136,6 +143,8 @@ const ItemList = () => {
 export default ItemList;
 </code>
     </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
       </div>
       <div id="question-container-aula">
@@ -160,5 +169,6 @@ export default ItemList;
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

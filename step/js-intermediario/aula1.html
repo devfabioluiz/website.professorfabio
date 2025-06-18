@@ -55,7 +55,8 @@
         </ul>
 
         <h4 class="titulo-h4">Exemplo com <code>Date</code></h4>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 const agora = new Date();
 console.log(agora.toDateString()); // "Tue May 28 2025"
@@ -64,6 +65,8 @@ console.log(agora.getMonth()); // 4 (maio, pois começa em 0)
 console.log(agora.getTime()); // Timestamp em milissegundos
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2 class="titulo-h2">O que é o Objeto <code>String</code>?</h2>
         <p>
@@ -113,7 +116,8 @@ console.log(agora.getTime()); // Timestamp em milissegundos
         </ul>
 
         <h4 class="titulo-h4">Exemplo com <code>String</code></h4>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 const texto = "  Olá, mundo!  ";
 console.log(texto.trim()); // "Olá, mundo!"
@@ -122,6 +126,8 @@ console.log(texto.slice(2, 6)); // "lá,"
 console.log(texto.split(" ")); // ["", "", "Olá,", "mundo!", "", ""]
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3 class="titulo-h3">
           Diferenças entre Métodos de <code>String</code>
@@ -143,5 +149,6 @@ console.log(texto.split(" ")); // ["", "", "Olá,", "mundo!", "", ""]
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

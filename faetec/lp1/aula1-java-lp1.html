@@ -36,7 +36,8 @@
         </p>
 
         <h4 class="titulo-h4">Declaração e Inicialização</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 // Declaração de um vetor de inteiros
 int[] vetor;
 // Alocação de memória para 5 elementos
@@ -50,14 +51,20 @@ vetor[4] = 50;
 // Declaração e inicialização em uma linha
 int[] vetor2 = {1, 2, 3, 4, 5};
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Acessando Elementos</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 System.out.println(vetor[0]); // Saída: 10
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Iterando Sobre um Vetor</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 for (int i = 0; i &lt; vetor.length; i++) {
     System.out.println(vetor[i]);
 }
@@ -66,6 +73,8 @@ for (int valor : vetor) {
     System.out.println(valor);
 }
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2 class="titulo-h2">Variáveis Compostas Bidimensionais (Matrizes)</h2>
         <p>
@@ -74,7 +83,8 @@ for (int valor : vetor) {
         </p>
 
         <h4 class="titulo-h4">Declaração e Inicialização</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 // Declaração de uma matriz 3x3
 int[][] matriz;
 // Alocação de memória
@@ -96,14 +106,20 @@ int[][] matriz2 = {
     {7, 8, 9}
 };
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Acessando Elementos</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 System.out.println(matriz[1][2]); // Saída: 6
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Iterando Sobre uma Matriz</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 for (int i = 0; i &lt; matriz.length; i++) {
     for (int j = 0; j &lt; matriz[i].length; j++) {
         System.out.print(matriz[i][j] + " ");
@@ -111,6 +127,8 @@ for (int i = 0; i &lt; matriz.length; i++) {
     System.out.println();
 }
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2 class="titulo-h2">Método de Pesquisa Sequencial</h2>
         <p>
@@ -120,7 +138,8 @@ for (int i = 0; i &lt; matriz.length; i++) {
         </p>
 
         <h4 class="titulo-h4">Implementação em Vetor</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 public class PesquisaSequencial {
     public static int buscaSequencial(int[] array, int valor) {
         for (int i = 0; i &lt; array.length; i++) {
@@ -144,9 +163,12 @@ public class PesquisaSequencial {
     }
 }
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Implementação em Matriz</h4>
-        <pre><code class="language-java">
+        <div class="code-container">
+          <pre><code class="language-java">
 public class PesquisaEmMatriz {
     public static int[] buscaSequencial(int[][] matriz, int valor) {
         for (int i = 0; i &lt; matriz.length; i++) {
@@ -176,6 +198,8 @@ public class PesquisaEmMatriz {
     }
 }
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </div>
     </div>
 
@@ -187,5 +211,6 @@ public class PesquisaEmMatriz {
         <a class="btn-indice" href="../indice-faetec.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

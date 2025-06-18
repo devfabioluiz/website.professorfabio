@@ -31,7 +31,8 @@
           <b>Componentes de Classe:</b> Usa a sintaxe da classe JavaScript e tem
           acesso ao estado e ao ciclo de vida.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code>
 import React, { Component } from 'react';
 
@@ -48,6 +49,8 @@ class HelloWorld extends Component {
 export default HelloWorld;
 </code>
 </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">Criando um componente funcional</h4>
         <p>
@@ -55,7 +58,8 @@ export default HelloWorld;
           retornam JSX. Com o React Hooks, eles podem gerenciar o estado e os
           efeitos colaterais.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 import React from 'react';
 
@@ -70,13 +74,16 @@ const HelloWorld = () => {
 export default HelloWorld;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">O que são Props?</h4>
         <p>
           <b>Props</b> (abreviação de "properties") são uma forma de passar
           dados de um componente pai para um componente filho em React.
         </p>
-        <pre>
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">
 import React from 'react';
 
@@ -91,31 +98,91 @@ const Saudacao = (props) => {
 export default Saudacao;
 </code>
         </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-        <h4 class="titulo-h4">O que são estados?</h4>
+        <h4 class="titulo-h4">O que são Estados no React?</h4>
         <p>
-          <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
-          do tempo em um componente React.
+          <b>Estados</b> são uma forma de gerenciar dados que podem mudar ao
+          longo do tempo em um componente React. Sempre que o estado é alterado,
+          o componente é re-renderizado para refletir essas mudanças na
+          interface do usuário.
         </p>
-        <pre>
-<code class="language-javascript">
-import React, { useState } from 'react';
+        <p>
+          Os estados são usados para criar interfaces dinâmicas e interativas,
+          como alterar o conteúdo exibido com base em ações do usuário,
+          armazenar informações temporárias ou gerenciar inputs de formulários.
+        </p>
+        <p>
+          Em aplicações modernas, estados são usados em dashboards para
+          atualizações em tempo real, e-commerces para gerenciar carrinhos de
+          compras e SPAs (Single Page Applications) para navegar sem recarregar
+          a página.
+        </p>
 
-const Contador = () => {
-  const [contador, setContador] = useState(0);
-  const incrementar = () => {
-    setContador(contador + 1);
-  };
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+
+function Contador() {
+  const [contador, setContador] = useState(0); // Estado inicial é 0
 
   return (
-    &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
-    &lt;button onClick={incrementar}&gt;Incrementar!&lt;/button&gt;
+    &lt;div&gt;
+      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+      &lt;button onClick={() => setContador(contador + 1)}&gt;Incrementar&lt;/button&gt;
+      &lt;button onClick={() => setContador(contador - 1)}&gt;Decrementar&lt;/button&gt;
+      &lt;button onClick={() => setContador(0)}&gt;Resetar&lt;/button&gt;
+    &lt;/div&gt;
   );
-};
+}
 
 export default Contador;
 </code>
-        </pre>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2</h5>
+        <p>
+          O estado pode ser um objeto para lidar com dados mais complexos. É
+          importante usar o operador spread (<code>...</code>) para atualizar
+          apenas a propriedade desejada sem sobrescrever o restante.
+        </p>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React, { useState } from "react";
+
+function PerfilUsuario() {
+  const [perfil, setPerfil] = useState({
+    nome: "João",
+    idade: 30,
+    cidade: "São Paulo"
+  });
+
+  const atualizarCidade = () => {
+    setPerfil({ ...perfil, cidade: "Rio de Janeiro" });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Perfil do Usuário&lt;/h1&gt;
+      &lt;p&gt;Nome: {perfil.nome}&lt;/p&gt;
+      &lt;p&gt;Idade: {perfil.idade}&lt;/p&gt;
+      &lt;p&gt;Cidade: {perfil.cidade}&lt;/p&gt;
+      &lt;button onClick={atualizarCidade}&gt;Mudar Cidade&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default PerfilUsuario;
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </div>
     </div>
 
@@ -127,5 +194,6 @@ export default Contador;
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

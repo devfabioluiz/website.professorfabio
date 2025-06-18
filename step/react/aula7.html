@@ -18,18 +18,10 @@
       <h4 style="text-align: center">Requisições HTTP</h4>
     </header>
     <div class="container">
-      <div class="texto-imprimir">
-        <h2 class="titulo-h2">Requisições HTTP no React</h2>
-        <p>
-          Existem várias formas de realizar requisições HTTP no React. Abaixo,
-          exploramos algumas opções, incluindo vantagens e desvantagens de cada
-          abordagem.
-        </p>
-
-        <h3 class="titulo-h3">
-          1. Usando <code>fetch</code> nativo do JavaScript
-        </h3>
-        <pre>
+      <!-- Primeiro bloco de código -->
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">import React, { useEffect, useState } from 'react';
 
 const App = () => {
@@ -37,7 +29,7 @@ const App = () => {
 
   useEffect(() => {
     fetch('https://api.example.com/data')
-      .then((response) => response.json())
+      .then((response) => dasdsadasdsaddsaASDASDSADSA.json())
       .then((data) => setData(data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
@@ -53,21 +45,14 @@ const App = () => {
 export default App;
 </code>
         </pre>
-        <h4 class="titulo-h4">Vantagens</h4>
-        <ul>
-          <li>Nativo no JavaScript; nenhuma biblioteca externa necessária.</li>
-          <li>Compatível com qualquer ambiente moderno.</li>
-          <li>Ideal para chamadas simples.</li>
-        </ul>
-        <h4 class="titulo-h4">Desvantagens</h4>
-        <ul>
-          <li>Não inclui timeout por padrão.</li>
-          <li>Tratamento de erros mais trabalhoso.</li>
-          <li>Pode ser verboso para lógicas repetitivas.</li>
-        </ul>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </div>
 
-        <h3 class="titulo-h3">2. Usando <code>axios</code></h3>
-        <pre>
+      <!-- Segundo bloco de código -->
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
 <code class="language-javascript">import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -91,159 +76,7 @@ const App = () => {
 export default App;
 </code>
         </pre>
-        <h4 class="titulo-h4">Vantagens</h4>
-        <ul>
-          <li>Sintaxe mais concisa que <code>fetch</code>.</li>
-          <li>Suporte nativo a JSON, timeout e cancelamento de requisições.</li>
-          <li>
-            Interceptadores para manipulação global de requisições e respostas.
-          </li>
-        </ul>
-        <h4 class="titulo-h4">Desvantagens</h4>
-        <ul>
-          <li>Adiciona uma dependência externa.</li>
-          <li>Leve aumento no tamanho do bundle.</li>
-        </ul>
-
-        <h3 class="titulo-h3">
-          3. Usando <code>react-query</code> (TanStack Query)
-        </h3>
-        <pre>
-<code class="language-javascript">import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-
-const App = () => {
-  const { data, isLoading, error } = useQuery(['data'], () =>
-    fetch('https://api.example.com/data').then((res) => res.json())
-  );
-
-  if (isLoading) return &lt;div&gt;Loading...&lt;/div&gt;;
-  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;;
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Data:&lt;/h1&gt;
-      &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default App;
-</code>
-        </pre>
-        <h4 class="titulo-h4">Vantagens</h4>
-        <ul>
-          <li>Cache de dados automático e revalidação em segundo plano.</li>
-          <li>Gerenciamento eficiente de estado de requisições.</li>
-          <li>
-            Ótimo suporte a SSR (Server-Side Rendering) (Veremos esse tema em
-            aulas futuras).
-          </li>
-        </ul>
-        <h4 class="titulo-h4">Desvantagens</h4>
-        <ul>
-          <li>Curva de aprendizado mais longa para iniciantes.</li>
-          <li>Adiciona uma dependência externa.</li>
-        </ul>
-
-        <h3 class="titulo-h3">
-          4. Usando <code>useEffect</code> com Context API ou Redux
-        </h3>
-        <pre>
-<code class="language-javascript">import React, { createContext, useContext, useEffect, useState } from 'react';
-
-const DataContext = createContext();
-
-export const DataProvider = ({ children }) => {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch('https://api.example.com/data')
-      .then((response) => response.json())
-      .then((data) => setData(data));
-  }, []);
-
-  return <DataContext.Provider value={data}>{children}</DataContext.Provider>;
-}
-
-export function useData() {
-  return useContext(DataContext);
-}
-
-const App = () => {
-  const data = useData();
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Data:&lt;/h1&gt;
-      &lt;pre&gt;{data ? JSON.stringify(data, null, 2) : 'Loading...'}&lt;/pre&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default App;
-</code>
-        </pre>
-        <h4 class="titulo-h4">Vantagens</h4>
-        <ul>
-          <li>Integrado ao estado global da aplicação.</li>
-          <li>Sem dependências externas ao usar Context API.</li>
-        </ul>
-        <h4 class="titulo-h4">Desvantagens</h4>
-        <ul>
-          <li>Não fornece caching ou revalidação automática.</li>
-          <li>Pode aumentar a complexidade em estados globais maiores.</li>
-        </ul>
-
-        <h3 class="titulo-h3">5. Usando <code>SWR</code></h3>
-        <pre>
-<code class="language-javascript">import useSWR from 'swr';
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
-const App = () => {
-  const { data, error } = useSWR('https://api.example.com/data', fetcher);
-
-  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;;
-  if (!data) return &lt;div&gt;Loading...&lt;/div&gt;;
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Data:&lt;/h1&gt;
-      &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default App;
-</code>
-        </pre>
-        <h4 class="titulo-h4">Vantagens</h4>
-        <ul>
-          <li>Cache integrado e revalidação automática.</li>
-          <li>API simples e declarativa.</li>
-          <li>Suporte a SSR e ISR. (Veremos esse tema em aulas futuras).</li>
-        </ul>
-        <h4 class="titulo-h4">Desvantagens</h4>
-        <ul>
-          <li>Adiciona uma dependência externa.</li>
-          <li>
-            Funcionalidades avançadas (ex.:interceptadores) exigem configuração
-            adicional.
-          </li>
-        </ul>
-      </div>
-      <div id="question-container-aula">
-        <h2>Exercício para fazer em aula</h2>
-        <div class="question">
-          <b
-            >Faça um componente Dog e DogCards com requisições utilizando esse
-            codigo de base:
-          </b>
-          <a
-            href="https://github.com/devfabioluiz/aulasReact/tree/main/my-app/src/components/Aula%204"
-            >Clique aqui</a
-          >
+          <button class="btn-copy">Copiar Código</button>
         </div>
       </div>
     </div>
@@ -255,5 +88,6 @@ export default App;
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

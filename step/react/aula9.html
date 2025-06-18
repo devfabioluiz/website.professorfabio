@@ -24,7 +24,8 @@
         <p>Exemplo criando um modal renderizado fora da hierarquia:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -48,6 +49,8 @@ function App() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
         <h2>Referências (Refs)</h2>
@@ -58,7 +61,8 @@ function App() {
         <p>Exemplo com foco em input:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React, { useRef } from 'react';
 
 function Formulario() {
@@ -76,6 +80,8 @@ function Formulario() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
         <h2>useEffect</h2>
@@ -86,7 +92,8 @@ function Formulario() {
         <p>Exemplo atualizando título da página quando o contador muda:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React, { useState, useEffect } from 'react';
 
 function Contador() {
@@ -103,6 +110,8 @@ function Contador() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
         <h2>useReducer</h2>
@@ -113,7 +122,8 @@ function Contador() {
         <p>Exemplo simples de contador com useReducer:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React, { useReducer } from 'react';
 
 const initialState = { count: 0 };
@@ -141,6 +151,8 @@ function Contador() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
         <h2>Context API e useContext</h2>
@@ -151,7 +163,8 @@ function Contador() {
         <p>Exemplo simples de tema compartilhado com Context:</p>
         <div class="example">
           <h3>Exemplo:</h3>
-          <pre><code>
+          <div class="code-container">
+            <pre><code>
 import React, { createContext, useContext } from 'react';
 
 const TemaContext = createContext('claro');
@@ -169,6 +182,8 @@ function App() {
   );
 }
           </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
       </div>
     </main>
@@ -180,5 +195,6 @@ function App() {
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

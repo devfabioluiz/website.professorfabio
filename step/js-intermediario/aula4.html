@@ -38,7 +38,8 @@
         </p>
 
         <h4 class="titulo-h4">1. Convenção com underscore (_)</h4>
-        <pre><code class="language-javascript">
+        <div class="code-container">
+          <pre><code class="language-javascript">
 class ContaBancaria {
   constructor(saldo) {
     this._saldo = saldo; // _ indica que é "privado" (convenção)
@@ -56,9 +57,12 @@ class ContaBancaria {
 const conta = new ContaBancaria(1000);
 console.log(conta._saldo); // Ainda acessível (apenas convenção)
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">2. Usando Symbols</h4>
-        <pre><code class="language-javascript">
+        <div class="code-container">
+          <pre><code class="language-javascript">
 const saldoSymbol = Symbol('saldo');
 
 class ContaBancaria {
@@ -78,9 +82,12 @@ class ContaBancaria {
 const conta = new ContaBancaria(1000);
 console.log(conta[saldoSymbol]); // Acessível se tiver a referência do Symbol
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">3. Usando WeakMaps (mais privacidade)</h4>
-        <pre><code class="language-javascript">
+        <div class="code-container">
+          <pre><code class="language-javascript">
 const privado = new WeakMap();
 
 class ContaBancaria {
@@ -101,9 +108,12 @@ class ContaBancaria {
 const conta = new ContaBancaria(1000);
 console.log(conta.saldo); // undefined (realmente privado)
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4 class="titulo-h4">4. Campos privados em classes (ES2022)</h4>
-        <pre><code class="language-javascript">
+        <div class="code-container">
+          <pre><code class="language-javascript">
 class ContaBancaria {
   #saldo; // Campo privado
 
@@ -124,6 +134,8 @@ const conta = new ContaBancaria(1000);
 console.log(conta.#saldo); // Erro de sintaxe (realmente privado)
 console.log(conta.saldo); // Acessível via getter
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3 class="titulo-h3">Vantagens do Encapsulamento</h3>
         <ul>
@@ -146,7 +158,8 @@ console.log(conta.saldo); // Acessível via getter
         </ul>
 
         <h3 class="titulo-h3">Exemplo Completo com Encapsulamento</h3>
-        <pre><code class="language-javascript">
+        <div class="code-container">
+          <pre><code class="language-javascript">
 class Produto {
   #nome;
   #preco;
@@ -183,6 +196,8 @@ const notebook = new Produto('Notebook', 3000);
 notebook.desconto = 0.2;
 console.log(notebook.detalhes()); // "Notebook - R$ 2400.00 (20% off)"
         </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </div>
     </div>
 
@@ -194,5 +209,6 @@ console.log(notebook.detalhes()); // "Notebook - R$ 2400.00 (20% off)"
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

@@ -42,7 +42,7 @@
         </ul>
 
         <h3>Exemplo 1: Escopo com <code>var</code></h3>
-        <pre><code>function exemploVar() {
+        <div class="code-container"><pre><code>function exemploVar() {
     if (true) {
         var mensagem = "Olá, mundo!";
     }
@@ -50,11 +50,17 @@
 }
 
 exemploVar();</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Exemplo 2: Hoisting com <code>var</code></h3>
-        <pre><code>console.log(nome); // undefined (não dá erro, mas a variável ainda não tem valor)
+        <pre
+          id="code"
+        ><code>console.log(nome); // undefined (não dá erro, mas a variável ainda não tem valor)
 var nome = "Maria";
 console.log(nome); // Maria</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h2><code>let</code></h2>
         <h3>Características:</h3>
@@ -75,7 +81,7 @@ console.log(nome); // Maria</code></pre>
         </ul>
 
         <h3>Exemplo 1: Escopo de bloco com <code>let</code></h3>
-        <pre><code>function exemploLet() {
+        <div class="code-container"><pre><code>function exemploLet() {
     if (true) {
         let mensagem = "Olá, mundo!";
         console.log(mensagem); // Funciona aqui
@@ -84,12 +90,16 @@ console.log(nome); // Maria</code></pre>
 }
 
 exemploLet();</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Exemplo 2: Tentativa de redeclaração</h3>
-        <pre><code>let nome = "Maria";
+        <div class="code-container"><pre><code>let nome = "Maria";
 // let nome = "João"; // Erro: nome já foi declarado
 nome = "João"; // Isso funciona porque estamos apenas atualizando o valor
 console.log(nome); // João</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h2><code>const</code></h2>
         <h3>Características:</h3>
@@ -107,18 +117,22 @@ console.log(nome); // João</code></pre>
         </ul>
 
         <h3>Exemplo 1: Constantes imutáveis</h3>
-        <pre><code>const pi = 3.14;
+        <div class="code-container"><pre><code>const pi = 3.14;
 // pi = 3.15; // Erro: Não é possível reatribuir um valor a uma constante
 console.log(pi); // 3.14</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Exemplo 2: Modificação de objetos e arrays</h3>
-        <pre><code>const pessoa = { nome: "Maria" };
+        <div class="code-container"><pre><code>const pessoa = { nome: "Maria" };
 pessoa.nome = "João"; // Isso é permitido
 console.log(pessoa.nome); // João
 
 const numeros = [1, 2, 3];
 numeros.push(4); // Isso também é permitido
 console.log(numeros); // [1, 2, 3, 4]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <ul>
           <li>
@@ -137,25 +151,29 @@ console.log(numeros); // [1, 2, 3, 4]</code></pre>
         </ul>
 
         <h4>Exemplo com <code>var</code></h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 console.log(nome); // undefined (a declaração foi elevada, mas não o valor)
 var nome = "Maria";
 console.log(nome); // Maria
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Exemplo com <code>let</code> e <code>const</code></h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 // console.log(nome); // Erro: Cannot access 'nome' before initialization
 let nome = "João";
 console.log(nome); // João
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Exemplo com funções</h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 saudar(); // Funciona porque a função é elevada
 function saudar() {
@@ -163,6 +181,8 @@ function saudar() {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
       </section>
 
       <h3>Explicação sobre Hoisting em JavaScript</h3>
@@ -196,7 +216,7 @@ function saudar() {
 
         <h4>Exemplo Básico</h4>
         <h5>Arquivo <code>saudacoes.js</code>:</h5>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 export const saudacao = "Olá, mundo!";
 export function saudar(nome) {
@@ -204,8 +224,10 @@ export function saudar(nome) {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
         <h5>Arquivo <code>main.js</code>:</h5>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 import { saudacao, saudar } from './saudacoes.js';
 
@@ -213,10 +235,12 @@ console.log(saudacao); // Olá, mundo!
 console.log(saudar("Maria")); // Olá, Maria!
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Tipos de Exportação</h4>
         <h5>Exportação Nomeada</h5>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 export const nome = "João";
 export function ola() {
@@ -224,21 +248,27 @@ export function ola() {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
         <h5>Exportação Default</h5>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 export default function ola() {
     return "Olá!";
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
         <h5>No arquivo de importação:</h5>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 import ola from './arquivo.js';
 console.log(ola()); // Olá!
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
       </section>
 
       <h2>Template Literals em JavaScript</h2>
@@ -258,16 +288,18 @@ console.log(ola()); // Olá!
         </p>
 
         <h4>Interpolação de Variáveis</h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 const nome = "Maria";
 const mensagem = `Olá, ${nome}! Como você está?`;
 console.log(mensagem); // Olá, Maria! Como você está?
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Quebras de Linha</h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 const mensagem = `Essa é uma mensagem
 com múltiplas
@@ -280,15 +312,19 @@ linhas.
 */
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h4>Inclusão de Expressões</h4>
-        <pre>
+        <div class="code-container"><pre>
         <code>
 const a = 5;
 const b = 10;
 console.log(`A soma de ${a} e ${b} é ${a + b}.`); // A soma de 5 e 10 é 15.
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
       </section>
     </main>
     <footer>
@@ -299,5 +335,6 @@ console.log(`A soma de ${a} e ${b} é ${a + b}.`); // A soma de 5 e 10 é 15.
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

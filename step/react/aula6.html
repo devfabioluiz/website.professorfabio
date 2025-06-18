@@ -29,7 +29,8 @@
 
       <h3>Exemplos de Renderização Condicional</h3>
       <h4>Operador Ternário</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const UserGreeting = ({ isLoggedIn }) => {
     return (
@@ -40,9 +41,12 @@ const UserGreeting = ({ isLoggedIn }) => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Short-circuit Evaluation (`&&`)</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const Notification = ({ showNotification }) => {
     return (
@@ -53,9 +57,12 @@ const Notification = ({ showNotification }) => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Função que Retorna JSX</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const Greeting = ({ isLoggedIn }) => {
     const renderGreeting = () => {
@@ -68,6 +75,8 @@ const Greeting = ({ isLoggedIn }) => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h2>Re-renderização de Componentes</h2>
       <p>
@@ -76,7 +85,8 @@ const Greeting = ({ isLoggedIn }) => {
       </p>
 
       <h3>Alterações no State</h3>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const Counter = () => {
     const [count, setCount] = React.useState(0);
@@ -90,9 +100,12 @@ const Counter = () => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h3>Alterações nas Props</h3>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
  const Display = ({ message }) => {
     return &lt;h1&gt;{message}&lt;/h1&gt;;
@@ -110,9 +123,12 @@ const Counter = () => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h3>Force Update</h3>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const App() => {
     const [, forceUpdate] = React.useState(0);
@@ -125,6 +141,8 @@ const App() => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h2>Estilização Dinâmica</h2>
       <p>
@@ -133,7 +151,8 @@ const App() => {
       </p>
 
       <h3>Styled Components</h3>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 import styled from 'styled-components';
 
@@ -156,10 +175,13 @@ function App() {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h3>Alternativas ao Styled Components</h3>
       <h4>Emotion</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
@@ -178,9 +200,12 @@ function Button({ primary, children }) {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Tailwind CSS</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 const App = () => {
     return (
@@ -192,9 +217,12 @@ const App = () => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>CSS Modules</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 /* Button.module.css */
 .button {
@@ -211,7 +239,10 @@ const App = () => {
 }
         </code>
     </pre>
-      <pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <div class="code-container">
+        <pre>
         <code>
 import styles from './Button.module.css';
 
@@ -221,9 +252,12 @@ const Button = ({ primary, children }) => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Material-UI</h4>
-      <pre>
+      <div class="code-container">
+        <pre>
         <code>
 import Button from '@mui/material/Button';
 
@@ -237,6 +271,8 @@ const App = () => {
 }
         </code>
     </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
     </main>
   </body>
 </html>

@@ -142,15 +142,21 @@
       <section>
         <li>Operador de Exponenciação (<code>**</code>)</li>
         <p>Uma forma simplificada de calcular potências.</p>
-        <pre><code class="language-javascript">console.log(2 ** 3); // 8</code></pre>
+        <pre
+          id="code"
+        ><code class="language-javascript">console.log(2 ** 3); // 8</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <li>Método <code>Array.prototype.includes</code></li>
         <p>Verifica se um valor está presente em um array.</p>
-        <pre><code class="language-javascript">
+        <div class="code-container"><pre><code class="language-javascript">
 const numeros = [1, 2, 3];
 console.log(numeros.includes(2)); // true
 console.log(numeros.includes(4)); // false
             </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
       </section>
 
       <h3>ECMAScript 8 (2017)</h3>
@@ -161,18 +167,22 @@ console.log(numeros.includes(4)); // false
           <strong>Object.entries</strong>: Retorna pares chave-valor como
           arrays.
         </p>
-        <pre><code class="language-javascript">
+        <div class="code-container"><pre><code class="language-javascript">
 const pessoa = { nome: "Maria", idade: 25 };
 console.log(Object.values(pessoa)); // ["Maria", 25]
 console.log(Object.entries(pessoa)); // [["nome", "Maria"], ["idade", 25]]
             </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <li><code>String.prototype.padStart</code> e <code>padEnd</code></li>
         <p>Adiciona preenchimento no início ou no final de uma string.</p>
-        <pre><code class="language-javascript">
+        <div class="code-container"><pre><code class="language-javascript">
 console.log("5".padStart(3, "0")); // "005"
 console.log("5".padEnd(3, "-")); // "5--"
             </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <li><code>async/await (veremos em aulas posteriores)</code></li>
       </section>
@@ -214,7 +224,7 @@ console.log("5".padEnd(3, "-")); // "5--"
             <code>function</code>:
           </li>
         </ul>
-        <pre>
+        <div class="code-container"><pre>
           <code>
 function soma(a, b) {
   return a + b;
@@ -222,18 +232,22 @@ function soma(a, b) {
 console.log(soma(2, 3)); // Saída: 5
           </code>
         </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
         <ul>
           <li>
             <b>Arrow Function:</b> Usa uma sintaxe mais curta, com
             <code>=></code>:
           </li>
         </ul>
-        <pre>
+        <div class="code-container"><pre>
           <code>
 const soma = (a, b) => a + b;
 console.log(soma(2, 3)); // Saída: 5
           </code>
         </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Comportamento do <code>this</code></h3>
         <p>
@@ -245,7 +259,7 @@ console.log(soma(2, 3)); // Saída: 5
             contexto em que a função foi chamada.
           </li>
         </ul>
-        <pre>
+        <div class="code-container"><pre>
           <code>
 const obj = {
   valor: 10,
@@ -256,13 +270,15 @@ const obj = {
 console.log(obj.funcaoNormal()); // Saída: 10
           </code>
         </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
         <ul>
           <li>
             <b>Arrow Function:</b> O <code>this</code> é léxico, herdando o
             contexto onde a função foi definida.
           </li>
         </ul>
-        <pre>
+        <div class="code-container"><pre>
           <code>
 const obj = {
   valor: 10,
@@ -273,10 +289,12 @@ const obj = {
 console.log(obj.arrowFunction()); // Saída: undefined
           </code>
         </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
 
         <h3>Uso como Construtor</h3>
         <p>Apenas funções normais podem ser usadas como construtores:</p>
-        <pre>
+        <div class="code-container"><pre>
           <code>
 // Função Normal
 function Pessoa(nome) {
@@ -292,6 +310,8 @@ const Pessoa = (nome) => {
 const pessoa1 = new Pessoa("João"); // Erro: Pessoa não é um construtor
           </code>
         </pre>
+        <button class="btn-copy">Copiar Código</button>
+</div>
       </section>
 
       <h3>Explicação sobre o this</h3>
@@ -322,5 +342,6 @@ const pessoa1 = new Pessoa("João"); // Erro: Pessoa não é um construtor
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
