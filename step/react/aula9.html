@@ -37,18 +37,20 @@
       <h2>React Router</h2>
       <section>
         <p>
-          Rode o seguinte comando no seu terminal <code>react-router-dom</code>
+          O roteamento no React é gerenciado principalmente pela biblioteca
+          <strong>React Router</strong>. Ele permite criar interfaces de várias
+          páginas em aplicações Single-Page Application (SPA), onde a navegação
+          é feita dinamicamente sem recarregar a página.
         </p>
         <p>
-          O roteamento no React é gerenciado principalmente pela biblioteca
-          <strong>React Router</strong>. Ele permite a criação de interfaces de
-          várias páginas em aplicações Single-Page Application (SPA), onde a
-          navegação é feita dinamicamente sem recarregar a página.
+          Rode o seguinte comando no seu terminal
+          <code>npm install react-router-dom</code>
         </p>
+
+        <h4>Roteamento Básico</h4>
         <div class="code-container">
           <pre>
           <code class="language-javascript">
-              
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -77,12 +79,45 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <h4>Redirecionamento</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function Home() {
+  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;;
+}
+
+function About() {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Navigate to="/home" /&gt;} /&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
         <h4>Rotas Dinâmicas</h4>
         <p>Utiliza parâmetros na URL para acessar dados específicos.</p>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 
 function User() {
   const { id } = useParams();
@@ -100,7 +135,6 @@ function App() {
 }
             </code>
           </pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h4>Rotas Aninhadas</h4>
@@ -110,7 +144,7 @@ function App() {
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
 function Dashboard() {
   return (
@@ -119,6 +153,14 @@ function Dashboard() {
       &lt;Outlet /&gt;
     &lt;/div&gt;
   );
+}
+
+function Profile() {
+  return <h1>Perfil</h1>;
+}
+
+function Settings() {
+  return <h1>Configurações</h1>;
 }
 
 function App() {
@@ -133,39 +175,26 @@ function App() {
     &lt;/BrowserRouter&gt;
   );
 }
-
             </code>
           </pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h4>Navegação Programática</h4>
         <p>
           Permite alterar rotas dinamicamente usando o hook
-          <code>useNavigate</code>
+          <code>useNavigate</code>.
         </p>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const navigate = useNavigate();
-  return &lt;button onClick={() => navigate("/about")}&gt;Ir para Sobre&lt;/button&gt;;
+  return &lt;button onClick={() => navigate('/about')}&gt;Ir para Sobre&lt;/button/&gt;
 }
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-function App() {
-  return (
-    &lt;BrowserRouter&gt;
-      &lt;Routes&gt;
-        &lt;Route path="/" element={&lt;Navigate to="/home" /&gt;} /&gt;
-        &lt;Route path="/home" element={&lt;Home /&gt;} /&gt;
-      &lt;/Routes&gt;
-    &lt;/BrowserRouter&gt;
-  );
-}
+export default Home;
             </code>
           </pre>
           <button class="btn-copy">Copiar Código</button>
@@ -176,11 +205,10 @@ function App() {
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 function PrivateRoute({ children }) {
-  const isAuthenticated = false; // Exemplo simplificado
+  const isAuthenticated = true; // Simulação de autenticação
   return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;;
 }
 
@@ -240,12 +268,6 @@ function App() {
               <td>Navegação via lógica.</td>
               <td>Média</td>
               <td>Fluxos de autenticação ou carrinho.</td>
-            </tr>
-            <tr>
-              <td><strong>Redirecionamento</strong></td>
-              <td>Alteração automática de rota.</td>
-              <td>Baixa</td>
-              <td>Migração de rotas antigas.</td>
             </tr>
             <tr>
               <td><strong>Rotas Protegidas</strong></td>

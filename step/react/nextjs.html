@@ -4,61 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Introdução ao Next.js</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 20px;
-      }
-      .code {
-        background-color: #f4f4f4;
-        padding: 10px;
-        border-radius: 5px;
-        overflow-x: auto;
-        margin-bottom: 20px;
-      }
-      h1,
-      h2,
-      h3 {
-        color: #333;
-      }
-    </style>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
-    <h1>Introdução ao Next.js</h1>
-    <h2>Por que usar Next.js?</h2>
-    <p>
-      Next.js é um framework que estende o React com funcionalidades como SSR,
-      SSG, rotas automáticas e muito mais.
-    </p>
+    <main class="container">
+      <h2>Next.js</h2>
+      <p>
+        Next.js é um framework React que oferece recursos avançados como
+        renderização no lado do servidor (SSR), geração de páginas estáticas
+        (SSG), e renderização incremental (ISR).
+      </p>
+      <p>
+        Ele facilita o desenvolvimento de aplicações modernas com melhor SEO,
+        performance otimizada, e um sistema de rotas simples e automático. Ideal
+        para projetos que requerem carregamento rápido e grande escalabilidade.
+      </p>
 
-    <h2>Como instalar e configurar Next.js</h2>
-    <div class="code">
-      <pre>
-<code>
+      <h4>Como instalar e configurar Next.js</h4>
+      <divclass="code-container">
+        <pre>
+<code class="language-javascript">
 npx create-next-app@latest my-next-app
 cd my-next-app
 npm run dev
 </code>
     </pre>
-    </div>
+          <button class="btn-copy">Copiar Código</button>
+      </div>
 
-    <h2>Exemplo: Rotas Automáticas</h2>
-    <div class="code">
-      <pre>
-<code>
+      <h4>Exemplo: Rotas Automáticas</h4>
+      <divclass="code-container">
+        <pre>
+<code class="language-javascript">
 // /pages/index.js
 export default function Home() {
   return &lt;h1&gt;Bem-vindo ao Next.js&lt;/h1&gt;;
 }
 </code>
     </pre>
-    </div>
+          <button class="btn-copy">Copiar Código</button>
+      </div>
 
-    <h2>Exemplo: Renderização no Lado do Servidor</h2>
-    <div class="code">
-      <pre>
-<code>
+      <h4>Exemplo: Renderização no Lado do Servidor</h4>
+      <divclass="code-container">
+        <pre>
+<code class="language-javascript">
 export async function getServerSideProps() {
   const res = await fetch('https://api.example.com/data');
   const data = await res.json();
@@ -66,34 +61,37 @@ export async function getServerSideProps() {
 }
 </code>
     </pre>
-    </div>
+          <button class="btn-copy">Copiar Código</button>
+      </div>
 
-    <h2>Comparação: React vs Next.js</h2>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Critério</th>
-          <th>React</th>
-          <th>Next.js</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Renderização</td>
-          <td>Somente no cliente (CSR)</td>
-          <td>CSR, SSR, SSG e ISR</td>
-        </tr>
-        <tr>
-          <td>SEO</td>
-          <td>Requer configuração extra</td>
-          <td>Nativo com SSR</td>
-        </tr>
-        <tr>
-          <td>Roteamento</td>
-          <td>Manual com React Router</td>
-          <td>Automático</td>
-        </tr>
-      </tbody>
-    </table>
+      <h4>Comparação: React vs Next.js</h4>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Critério</th>
+            <th>React</th>
+            <th>Next.js</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Renderização</td>
+            <td>Somente no cliente (CSR)</td>
+            <td>CSR, SSR, SSG e ISR</td>
+          </tr>
+          <tr>
+            <td>SEO</td>
+            <td>Requer configuração extra</td>
+            <td>Nativo com SSR</td>
+          </tr>
+          <tr>
+            <td>Roteamento</td>
+            <td>Manual com React Router</td>
+            <td>Automático</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
