@@ -12,8 +12,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
+    <header>
+      <h1>Aula XX</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Next.js</h4>
+    </header>
     <main class="container">
-      <h2>Next.js</h2>
       <p>
         Next.js é um framework React que oferece recursos avançados como
         renderização no lado do servidor (SSR), geração de páginas estáticas
@@ -25,8 +29,31 @@
         para projetos que requerem carregamento rápido e grande escalabilidade.
       </p>
 
-      <h4>Como instalar e configurar Next.js</h4>
-      <divclass="code-container">
+      <h2>Principais Características</h2>
+      <ul>
+        <li><strong>Renderização:</strong> SSR, SSG, CSR e ISR.</li>
+        <li>
+          <strong>Roteamento:</strong> Rotas automáticas baseadas em arquivos.
+        </li>
+        <li>
+          <strong>API Routes:</strong> Criação de APIs diretamente no projeto.
+        </li>
+        <li>
+          <strong>Otimização de Imagens:</strong> Uso do componente
+          <code class="language-javascript">next/image</code>.
+        </li>
+        <li>
+          <strong>Estilização:</strong> CSS/SCSS e integração com bibliotecas
+          como Tailwind.
+        </li>
+        <li>
+          <strong>Middleware:</strong> Manipulação de requisições antes da
+          renderização.
+        </li>
+      </ul>
+
+      <h2>Como instalar e configurar Next.js</h2>
+      <div class="code-container">
         <pre>
 <code class="language-javascript">
 npx create-next-app@latest my-next-app
@@ -34,11 +61,11 @@ cd my-next-app
 npm run dev
 </code>
     </pre>
-          <button class="btn-copy">Copiar Código</button>
+        <button class="btn-copy">Copiar Código</button>
       </div>
 
-      <h4>Exemplo: Rotas Automáticas</h4>
-      <divclass="code-container">
+      <h2>Rotas Automáticas</h2>
+      <div class="code-container">
         <pre>
 <code class="language-javascript">
 // /pages/index.js
@@ -47,24 +74,286 @@ export default function Home() {
 }
 </code>
     </pre>
-          <button class="btn-copy">Copiar Código</button>
+        <button class="btn-copy">Copiar Código</button>
       </div>
 
-      <h4>Exemplo: Renderização no Lado do Servidor</h4>
-      <divclass="code-container">
-        <pre>
-<code class="language-javascript">
+      <h2>Renderização no Lado do Servidor</h2>
+      <div class="code-container">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// pages/index.js
+import React from 'react';
+
+const Home = ({ data }) => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Data Renderizada no Servidor&lt;/h1&gt;
+      &lt;p&gt;{data.message}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
 export async function getServerSideProps() {
-  const res = await fetch('https://api.example.com/data');
+  const res = await fetch('https://api.example.com/message');
   const data = await res.json();
+
   return { props: { data } };
 }
-</code>
-    </pre>
-          <button class="btn-copy">Copiar Código</button>
+
+export default Home;
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
       </div>
 
-      <h4>Comparação: React vs Next.js</h4>
+      <div class="code-container">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// pages/api/hello.js
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Olá, Next.js!' });
+}
+
+// Uso no Frontend
+import React, { useEffect, useState } from 'react';
+
+const Home = () => {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetch('/api/hello')
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
+  }, []);
+
+  return &lt;h1&gt;{message}&lt;/h1&gt;;
+};
+
+export default Home;
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <div class="example">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// pages/blog/[id].js
+export default function BlogPost({ post }) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;p&gt;{post.body}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export async function getStaticPaths() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const posts = await res.json();
+
+  const paths = posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+
+  return { paths, fallback: 'blocking' };
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/posts/${params.id}`
+  );
+  const post = await res.json();
+
+  return {
+    props: { post },
+    revalidate: 10,
+  };
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Rotas Básicas</h2>
+      <div class="code-container">
+        <h3>Estrutura do Projeto</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+pages/
+  index.js
+  about.js
+  contact.js
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Código de <code class="language-javascript">pages/index.js</code></h3>
+      <div class="code-container">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+export default function Home() {
+  return &lt;h1&gt;Página Inicial&lt;/h1&gt;;
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Código de <code class="language-javascript">pages/about.js</code></h3>
+      <div class="code-container">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+export default function About() {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <h3>
+        Código de <code class="language-javascript">pages/contact.js</code>
+      </h3>
+      <div class="code-container">
+        <div class="code-container">
+          <pre><code class="language-javascript">
+export default function Contact() {
+  return &lt;h1&gt;Contato&lt;/h1&gt;;
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Rotas Dinâmicas</h2>
+      <h3>Estrutura do Projeto</h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+pages/
+  blog/
+    [id].js
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>
+        Código de <code class="language-javascript">pages/blog/[id].js</code>
+      </h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+import { useRouter } from 'next/router';
+
+export default function BlogPost() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  return &lt;h1&gt;Postagem do Blog: {id}&lt;/h1&gt;;
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>O que acontece:</h3>
+      <p>
+        Quando o usuário acessa
+        <code class="language-javascript">/blog/123</code>, a página exibe:
+        "Postagem do Blog: 123".
+      </p>
+
+      <h2>Rotas Aninhadas</h2>
+      <h3>Estrutura do Projeto</h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+pages/
+  dashboard/
+    index.js
+    settings.js
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <h3>
+        Código de
+        <code class="language-javascript">pages/dashboard/index.js</code>
+      </h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+export default function Dashboard() {
+  return &lt;h1&gt;Bem-vindo ao Dashboard&lt;/h1&gt;;
+}
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+      <h3>
+        Código de
+        <code class="language-javascript">pages/dashboard/settings.js</code>
+      </h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+export default function Settings() {
+  return &lt;h1&gt;Configurações do Dashboard&lt;/h1&gt;;
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Roteamento API</h2>
+      <h3>Estrutura do Projeto</h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+pages/
+  api/
+    hello.js
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>
+        Código de <code class="language-javascript">pages/api/hello.js</code>
+      </h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Olá, API do Next.js!' });
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>O que acontece:</h3>
+      <p>
+        Quando o usuário faz uma requisição para
+        <code class="language-javascript">/api/hello</code>, a API responde com:
+      </p>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+{
+  "message": "Olá, API do Next.js!"
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Navegação Entre Páginas</h2>
+      <h3>Exemplo</h3>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Página Inicial&lt;/h1&gt;
+      &lt;Link href="/about"&gt;Ir para Sobre Nós&lt;/Link&gt;
+    &lt;/div&gt;
+  );
+}
+    </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>O que acontece:</h3>
+      <p>
+        O usuário clica no link e é redirecionado para
+        <code class="language-javascript">/about</code> sem um recarregamento
+        completo da página.
+      </p>
+
+      <h2>Comparação: React vs Next.js</h2>
       <table border="1">
         <thead>
           <tr>
@@ -91,6 +380,34 @@ export async function getServerSideProps() {
           </tr>
         </tbody>
       </table>
+
+      <h2>Roteamento no Next.js</h2>
+      <p>
+        O roteamento no Next.js é baseado no sistema de arquivos. Isso significa
+        que o Next.js cria rotas automaticamente com base na estrutura de
+        arquivos dentro da pasta <code>pages</code>. Cada arquivo na pasta
+        <code>pages</code> se torna uma rota correspondente na aplicação.
+      </p>
+
+      <h2>Tipos de Roteamento</h2>
+      <ul>
+        <li>
+          <strong>Rotas Básicas:</strong> Cada arquivo na pasta
+          <code>pages</code> representa uma rota.
+        </li>
+        <li>
+          <strong>Rotas Dinâmicas:</strong> Utilizam colchetes
+          <code>[ ]</code> nos nomes dos arquivos.
+        </li>
+        <li>
+          <strong>Rotas Aninhadas:</strong> Criadas com base na estrutura de
+          diretórios.
+        </li>
+        <li>
+          <strong>Rotas API:</strong> Arquivos dentro da pasta
+          <code>pages/api</code> são usados para criar endpoints da API.
+        </li>
+      </ul>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
   </body>
