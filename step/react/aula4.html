@@ -15,7 +15,7 @@
     <header>
       <h1>Aula 4</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">XXX</h4>
+      <h4 style="text-align: center">Iteração sobre arrays</h4>
       <div class="alert alert-container new-alert">
         <div class="pin-message">
           <span>📌</span>
@@ -30,8 +30,204 @@
           <p>❌ Hooks <strong>- movido para a Aula 2</strong></p>
         </div>
       </div>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>inclúidos</strong> os seguintes tópicos:
+          </p>
+          <p>✔️ Iteração sobre arrays <strong>- movido da Aula 5</strong></p>
+          <p>
+            ✔️
+            <strong
+              >Inserida uma explicação mais detalhada e adicionados mais
+              exemplos </strong
+            >sobre iteração em arrays.
+          </p>
+        </div>
+      </div>
     </header>
-    <div class="container"></div>
+    <div class="container">
+      <h2>Iteração sobre arrays</h2>
+      <section>
+        <p>
+          No React, a <strong>iteração sobre arrays</strong> é usada para
+          transformar ou exibir listas de elementos na interface do usuário
+          (UI). A abordagem mais comum é utilizar o método
+          <code>.map()</code> do JavaScript para iterar sobre os itens do array
+          e retornar componentes JSX, como <code>&lt;div&gt;</code>,
+          <code>&lt;li&gt;</code>, ou até mesmo tabelas.
+        </p>
+        <p>
+          Essa técnica é essencial em React para lidar com dados dinâmicos, como
+          listas de tarefas, produtos, ou usuários vindos de uma API ou de um
+          estado interno.
+        </p>
+
+        <h4>Método <code>.map()</code>:</h4>
+        <p>
+          O método <code>.map()</code> é uma função de arrays em JavaScript que
+          cria um novo array transformando cada elemento do array original. No
+          React, utilizamos o <code>.map()</code> para transformar dados em
+          componentes JSX.
+        </p>
+
+        <h4><code>key</code> em React:</h4>
+        <p>
+          Sempre que você renderiza uma lista de elementos no React, é
+          necessário incluir uma
+          <strong>propriedade <code>key</code></strong> única em cada elemento.
+          A chave ajuda o React a identificar quais itens mudaram, foram
+          adicionados ou removidos, otimizando a renderização.
+        </p>
+
+        <h4>Estrutura de Dados:</h4>
+        <p>
+          O array pode conter objetos, strings, números ou qualquer estrutura
+          que você deseja transformar em JSX. Exemplo com objetos:
+        </p>
+
+        <h4>Quando usar iteração sobre arrays no React?</h4>
+        <ul>
+          <li>
+            <strong>Listagem de Dados Dinâmicos:</strong> Quando você busca
+            dados de uma API e precisa exibi-los em lista.
+          </li>
+          <li>
+            <strong>Renderização Condicional:</strong> Para aplicar estilos ou
+            comportamentos diferentes em cada elemento, com base no valor do
+            array.
+          </li>
+          <li>
+            <strong>Transformação de Dados:</strong> Quando você precisa alterar
+            o formato dos dados antes de exibi-los (ex.: formatar preços ou
+            converter datas).
+          </li>
+        </ul>
+
+        <h4>Dicas:</h4>
+        <ul>
+          <li>
+            <strong>Sempre Use <code>key</code>:</strong> Evite usar o índice do
+            array (<code>index</code>) como chave em dados dinâmicos.
+          </li>
+          <li>
+            <strong
+              >Combine <code>.filter()</code> e <code>.map()</code>:</strong
+            >
+            Para exibir apenas elementos que atendam a certas condições.
+          </li>
+          <li>
+            <strong>Cuidado com Loops Aninhados:</strong> Em listas complexas,
+            garanta que cada nível tenha sua própria lógica de chave.
+          </li>
+        </ul>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React from 'react';
+
+const ItemList = () => {
+  const items = ['React', 'Vue', 'Angular'];
+
+  return (
+     &lt;ul&gt;
+      {items.map((item, index) => (
+        &lt;li key={index}&gt;{item}&lt;/li&gt
+      ))}
+     &lt;/ul&gt;
+  );
+}
+
+export default ItemList;
+</code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React from "react";
+
+function ListaDeTarefas() {
+  const tarefas = [
+    { id: 1, titulo: "Estudar React", concluida: true },
+    { id: 2, titulo: "Fazer Exercício", concluida: false },
+    { id: 3, titulo: "Preparar Jantar", concluida: true },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Tarefas&lt;/h1&gt;
+        &lt;ul&gt;
+            {tarefas.map((tarefa) => (
+              &lt;li key={tarefa.id}&gt;
+                {tarefa.titulo}
+              &lt;/li&gt;
+            ))}
+        &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ListaDeTarefas;
+
+</code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h5>Exemplo 3</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React from "react";
+
+function ListaDeProdutos() {
+  const produtos = [
+    { id: 1, nome: "Notebook", preco: 4500 },
+    { id: 2, nome: "Smartphone", preco: 2500 },
+    { id: 3, nome: "Monitor", preco: 1200 },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;h1>Lista de Produtos&lt;/h1&gt;
+      &lt;table border="1"&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;thNome&lt;/th&gt;
+            &lt;th>Preço&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {produtos.map((produto) => (
+            &lt;tr key={produto.id}>
+              &lt;td>{produto.nome}&lt;/td&gt;
+              &lt;td>R$ {produto.preco.toFixed(2)}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ListaDeProdutos;
+
+</code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </div>
 
     <footer>
       <div class="button-container">
