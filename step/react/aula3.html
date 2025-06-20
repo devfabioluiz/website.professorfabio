@@ -15,103 +15,170 @@
     <header>
       <h1>Aula 3</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Fragments, Props e States</h4>
+      <h4 style="text-align: center">Props e Passagem de dados (Pai/Filho)</h4>
       <div class="alert alert-container new-alert">
         <div class="pin-message">
           <span>📌</span>
         </div>
         <div class="alert-text">
           <p class="alert-title">
-            <b>📅 Versão atualizada em 18/06/2025</b>
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
           </p>
-          <p>📔 Fragments</p>
+          <p>
+            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
+          </p>
+          <p>❌ Fragments <strong>- movido para a Aula 2</strong></p>
+          <p>
+            ❌ Explicação mais detalhada sobre Estados (useState)
+            <strong>- movido para a Aula 2</strong>
+          </p>
+        </div>
+      </div>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ✔️ Props
+            <strong>- movido da Aula 2</strong>
+          </p>
+          <p>
+            ✔️ Passagem de dados (Pai/Filho)
+            <strong>- movido da Aula 5</strong>
+          </p>
         </div>
       </div>
     </header>
     <div class="container">
-      <div class="texto-imprimir">
-        <h2>React Fragments</h2>
-        <p>
-          React Fragments permitem agrupar múltiplos elementos JSX sem criar
-          elementos extras no DOM, evitando "divs" desnecessárias.
-        </p>
-        <p>Exemplo usando Fragment shorthand:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React from 'react';
-
-function Lista() {
-  return (
-    &lt;&gt;
-      &lt;li&gt;Item 1&lt;/li&gt;
-      &lt;li&gt;Item 2&lt;/li&gt;
-      &lt;li&gt;Item 3&lt;/li&gt;
-    &lt;/&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-
-        <h2>Props</h2>
+      <h2>Props</h2>
+      <section>
         <p>
           <b>Props</b> (abreviação de "properties") são uma forma de passar
           dados de um componente pai para um componente filho em React.
         </p>
         <div class="code-container">
           <pre>
-<code class="language-javascript">
+              <code class="language-javascript">
 import React from 'react';
 
 const Saudacao = (props) => {
   return (
     &lt;div&gt;
-      &lt;h1&gt;Olá, {props.nome}!&lt;h1&gt;
+      &lt;h1&gt;Olá, {props.nome}!&lt;/h1&gt;
     &lt;/div&gt;
   );
 };
 
 export default Saudacao;
+              </code>
+            </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <h2>Passagem de dados entre componentes (Pai/Filho)</h2>
+      <section>
+        <p>
+          A comunicação entre componentes no React é fundamental para construir
+          aplicações dinâmicas. Aqui veremos como passar dados de um componente
+          pai para um filho e vice-versa.
+        </p>
+        <img src="../../imagens/react-example-parent-data.webp" alt="" />
+
+        <h4>Passando Dados do Pai para o Filho</h4>
+        <p>
+          A passagem de dados do pai para o filho é realizada por meio de props
+          (propriedades). Veja o exemplo abaixo:
+        </p>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">import React from 'react';
+
+const Child = ({ message }) => {
+  return &lt;p&gt;{message}&lt;/p&gt;;
+}
+
+const Parent = () => {
+  return &lt;Child message="Olá, do componente Pai!" /&gt;;
+}
+
+export default Parent;
 </code>
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h2>Estados (states)</h2>
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Simples e direto para componentes hierárquicos.</li>
+          <li>
+            Propriedades podem ser usadas como valores estáticos ou dinâmicos.
+          </li>
+        </ul>
+
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>
+            Torna-se complexo em hierarquias profundas (pode ser resolvido com
+            Context API ou bibliotecas de gerenciamento de estado).
+          </li>
+        </ul>
+
+        <h3>2. Passando Dados do Filho para o Pai</h3>
         <p>
-          <b>Estado:</b> Uma maneira de armazenar dados que podem mudar ao longo
-          do tempo em um componente React.
+          Para enviar dados do filho para o pai, o pai deve passar uma função
+          como prop para o filho. O filho pode chamar essa função com os dados
+          desejados.
         </p>
         <div class="code-container">
           <pre>
-<code class="language-javascript">
-import React, { useState } from 'react';
+<code class="language-javascript">import React, { useState } from 'react';
 
-const Contador = () => {
-  const [contador, setContador] = useState(0);
-  const incrementar = () => {
-    setContador(contador + 1);
+Child = ({ sendDataToParent }) => {
+  return (
+    &lt;button onClick={() => sendDataToParent('Dados do Filho')}&gt;Enviar&lt;button&gt;
+  );
+}
+
+Parent = () => {
+  const [data, setData] = useState('');
+
+  const handleDataFromChild = (childData) => {
+    setData(childData);
   };
 
   return (
     &lt;div&gt;
-      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
-      &lt;button onClick={incrementar}&gt;Incrementar&lt;/button&gt;
+      &lt;p&gt;Dados recebidos: {data}&lt;/p&gt;
+      &lt;Child sendDataToParent={handleDataFromChild} /&gt;;
     &lt;/div&gt;
   );
-};
+}
 
-export default Contador;
+export default Parent;
 </code>
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </div>
-    </div>
 
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Permite que o pai reaja a eventos do filho.</li>
+          <li>Flexível para construir interações dinâmicas.</li>
+        </ul>
+
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>Requer mais configuração do que a passagem pai para filho.</li>
+        </ul>
+      </section>
+    </div>
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>

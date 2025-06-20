@@ -15,108 +15,23 @@
     <header>
       <h1>Aula 4</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Hooks</h4>
-    </header>
-    <div class="container">
-      <div class="texto-imprimir">
-        <h2 class="titulo-h2">O que são Hooks?</h2>
-        <p>
-          Hooks são funções especiais que permitem que você use recursos do
-          React, como estado e ciclo de vida, em componentes funcionais. Eles
-          foram introduzidos no React 16.8 e eliminaram a necessidade de usar
-          componentes de classe para gerenciar estado ou ciclos de vida.
-        </p>
-
-        <h3 class="titulo-h3">Por que usar Hooks?</h3>
-        <ul>
-          <li>
-            Permitem usar estado e outras funcionalidades do React em
-            componentes funcionais.
-          </li>
-          <li>Facilitam o compartilhamento de lógica entre componentes.</li>
-          <li>
-            Reduzem a complexidade dos componentes ao evitar o uso de classes.
-          </li>
-        </ul>
-
-        <h3 class="titulo-h3">Principais Hooks</h3>
-        <ul>
-          <li>
-            <code>useState</code>: Gerencia estado local em componentes
-            funcionais.
-          </li>
-          <li>
-            <code>useEffect</code>: Manipula efeitos colaterais, como
-            requisições de dados ou manipulação do DOM.
-          </li>
-          <li>
-            <code>useContext</code>: Acessa valores do contexto de forma mais
-            simples.
-          </li>
-          <li>
-            <code>useReducer</code>: Gerencia estados complexos usando um padrão
-            semelhante ao Redux.
-          </li>
-          <li>
-            <code>useRef</code>: Permite criar referências mutáveis que
-            sobrevivem entre renderizações.
-          </li>
-        </ul>
-
-        <h4 class="titulo-h4">Exemplo: Contador com <code>useState</code></h4>
-        <div class="code-container">
-          <pre>
-<code class="language-javascript">
-import React, { useState } from 'react';
-
-const Contador = () => {
-  const [contador, setContador] = useState(0);
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
-      &lt;button onClick={() => setContador(contador + 1)}>Incrementar&lt;/button&gt;
-      &lt;button onClick={() => setContador(contador - 1)}>Decrementar&lt;/button&gt;
-    &lt;/div&gt;
-  );
-};
-
-export default Contador;
-</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
+      <h4 style="text-align: center">XXX</h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
         </div>
-
-        <h4 class="titulo-h4">
-          Exemplo: Requisição com <code>useEffect</code>
-        </h4>
-        <div class="code-container">
-          <pre>
-<code class="language-javascript">
-import React, { useState, useEffect } from 'react';
-
-import { useState, useEffect } from "react";
-import ReactDOM from "react-dom/client";
-
-const Timer = () => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setCount((count) => count + 1);
-    }, 1000);
-  });
-
-  return  &lt;h1&gt;Isso está se repetindo {count} vezes!&lt;/h1&gt;;
-}
-
-export default Timer;
-</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
+          </p>
+          <p>❌ Hooks <strong>- movido para a Aula 2</strong></p>
         </div>
       </div>
-    </div>
+    </header>
+    <div class="container"></div>
 
     <footer>
       <div class="button-container">

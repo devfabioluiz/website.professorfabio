@@ -21,7 +21,7 @@
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h2 class="titulo-h2">Encapsulamento em JavaScript</h2>
+        <h2>Encapsulamento em JavaScript</h2>
         <p>
           O encapsulamento é um dos pilares fundamentais da Programação
           Orientada a Objetos que consiste em esconder os detalhes internos de
@@ -29,7 +29,7 @@
           interação.
         </p>
 
-        <h3 class="titulo-h3">Como implementar encapsulamento em JavaScript</h3>
+        <h3>Como implementar encapsulamento em JavaScript</h3>
         <p>
           JavaScript não possui modificadores de acesso como
           <code>private</code>, <code>protected</code> e
@@ -37,7 +37,7 @@
           encapsulamento de várias formas:
         </p>
 
-        <h4 class="titulo-h4">1. Convenção com underscore (_)</h4>
+        <h4>1. Convenção com underscore (_)</h4>
         <div class="code-container">
           <pre><code class="language-javascript">
 class ContaBancaria {
@@ -60,7 +60,7 @@ console.log(conta._saldo); // Ainda acessível (apenas convenção)
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4 class="titulo-h4">2. Usando Symbols</h4>
+        <h4>2. Usando Symbols</h4>
         <div class="code-container">
           <pre><code class="language-javascript">
 const saldoSymbol = Symbol('saldo');
@@ -85,7 +85,7 @@ console.log(conta[saldoSymbol]); // Acessível se tiver a referência do Symbol
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4 class="titulo-h4">3. Usando WeakMaps (mais privacidade)</h4>
+        <h4>3. Usando WeakMaps (mais privacidade)</h4>
         <div class="code-container">
           <pre><code class="language-javascript">
 const privado = new WeakMap();
@@ -111,7 +111,7 @@ console.log(conta.saldo); // undefined (realmente privado)
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4 class="titulo-h4">4. Campos privados em classes (ES2022)</h4>
+        <h4>4. Campos privados em classes (ES2022)</h4>
         <div class="code-container">
           <pre><code class="language-javascript">
 class ContaBancaria {
@@ -137,7 +137,7 @@ console.log(conta.saldo); // Acessível via getter
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3 class="titulo-h3">Vantagens do Encapsulamento</h3>
+        <h3>Vantagens do Encapsulamento</h3>
         <ul>
           <li>
             <strong>Proteção de dados:</strong> Impede modificações diretas em
@@ -157,7 +157,7 @@ console.log(conta.saldo); // Acessível via getter
           </li>
         </ul>
 
-        <h3 class="titulo-h3">Exemplo Completo com Encapsulamento</h3>
+        <h3>Exemplo Completo com Encapsulamento</h3>
         <div class="code-container">
           <pre><code class="language-javascript">
 class Produto {
