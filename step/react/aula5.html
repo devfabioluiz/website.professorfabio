@@ -15,7 +15,9 @@
     <header>
       <h1>Aula 5</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center"></h4>
+      <h4 style="text-align: center">
+        Renderização Condicional e Re-renderização
+      </h4>
       <div class="alert alert-container new-alert">
         <div class="pin-message">
           <span>📌</span>
@@ -33,8 +35,172 @@
           </p>
         </div>
       </div>
+      <div class="alert-update alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>✔️ Renderização Condicional <strong>- movido da Aula 6</strong></p>
+          <p>
+            ✔️ Renderização Condicional
+            <strong>- mais explicações sobre o operador &&</strong>
+          </p>
+          <p>✔️ Re-renderização <strong>- movido da Aula 6</strong></p>
+        </div>
+      </div>
     </header>
-   
+    <div class="container">
+      <h2>Renderização Condicional</h2>
+      <section>
+        <p>
+          Renderização condicional em React é o processo de decidir o que exibir
+          na interface do usuário com base em certas condições.
+        </p>
+
+        <h4>Operador Ternário</h4>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+const UserGreeting = ({ isLoggedIn }) => {
+    return (
+        &lt;div&gt;
+            {isLoggedIn ? &lt;h1&gt;Welcome back!&lt;/h1&gt; : &lt;h1&gt;Please log in.&lt;/h1&gt;}
+        &lt;/div&gt;
+    );
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Short-circuit Evaluation (`&&`)</h4>
+        <p>
+          O Short-circuit Evaluation no JavaScript ocorre quando operadores
+          lógicos, como && (E lógico), avaliam expressões e interrompem a
+          execução assim que o resultado é conhecido. O operador && avalia os
+          operandos da esquerda para a direita.
+        </p>
+        <p>
+          Ele retorna o primeiro valor falsy encontrado. Se todos os valores
+          forem truthy, retorna o último valor avaliado. O operador interrompe a
+          avaliação assim que encontra um valor que determina o resultado final.
+          No caso do &&, se o primeiro valor for falsy, o restante não é
+          avaliado.
+        </p>
+        <p>
+          <code>&&</code> é útil para verificar condições sem precisar usar
+          estruturas como <code>if</code>. Ele é eficiente porque interrompe a
+          execução assim que a condição é resolvida. Combinado com React, é uma
+          maneira limpa de implementar renderização condicional.
+        </p>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+const Notification = ({ showNotification }) => {
+    return (
+        &lt;div&gt;
+            {showNotification && &lt;p&gt;You have new messages!&lt;/p&gt;}
+        &lt;/div&gt;
+    );
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Função que Retorna JSX</h4>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+const Greeting = ({ isLoggedIn }) => {
+    const renderGreeting = () => {
+        if (isLoggedIn) {
+            return &lt;h1&gt;Welcome back!&lt;/h1&gt;;
+        }
+        return &lt;h1&gt;Please sign in.&lt;/h1&gt;;
+    }
+    return &lt;div&gt;{renderGreeting()}&lt;/div&gt;;
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Re-renderização</h2>
+      <section>
+        <p>
+          Em React, os componentes re-renderizam quando há alterações no estado,
+          nas props, ou em raros casos, forçando a atualização manualmente.
+        </p>
+
+        <h4>Alterações no State</h4>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+const Counter = () => {
+    const [count, setCount] = React.useState(0);
+
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() => setCount(count + 1)}>Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Alterações nas Props</h4>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+ const Display = ({ message }) => {
+    return &lt;h1&gt;{message}&lt;/h1&gt;;
+}
+
+ const App = () => {
+    const [text, setText] = React.useState('Hello');
+
+    return (
+        &lt;div&gt;
+            &lt;Display message={text} /&gt;
+            &lt;button onClick={() => setText('World')}&gt;Change Message&lt;/button&gt;
+        &lt;/div&gt;
+    );
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Force Update</h4>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+const App() => {
+    const [, forceUpdate] = React.useState(0);
+
+    return (
+        &lt;div&gt;
+            &lt;button onClick={() => forceUpdate(n => n + 1)}>Force Update&lt;/button&gt;
+        &lt;/div&gt;
+    );
+}
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </div>
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>

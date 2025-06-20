@@ -17,143 +17,209 @@
         <h1>Aula 6</h1>
         <h4 style="text-align: center">React</h4>
         <h4 style="text-align: center">
-          Renderização Condicional, Re-renderização e Estilização
+          Estilização de componentes e Material-UI
         </h4>
+        <div class="alert alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>excluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>
+              ❌ Renderização Condicional
+              <strong>- movido para a Aula 5</strong>
+            </p>
+            <p>❌ Re-renderização <strong>- movido para a Aula 5</strong></p>
+          </div>
+        </div>
+        <div class="alert-update alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>incluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>✔️ <strong>Mais detalhes, explicações e links</strong></p>
+            <p>✔️ <strong>Vanilla Extract</strong></p>
+          </div>
+        </div>
       </header>
 
-      <h2>Renderização Condicional</h2>
-      <p>
-        Renderização condicional em React é o processo de decidir o que exibir
-        na interface do usuário com base em certas condições.
-      </p>
+      <h2>Como estilizar com CSS em componentes do React</h2>
+      <section>
+        <p>
+          Existem várias maneiras de usar CSS em uma aplicação React. Aqui estão
+          três abordagens populares:
+        </p>
 
-      <h3>Exemplos de Renderização Condicional</h3>
-      <h4>Operador Ternário</h4>
-      <div class="code-container">
-        <pre>
-        <code>
-const UserGreeting = ({ isLoggedIn }) => {
-    return (
-        &lt;div&gt;
-            {isLoggedIn ? &lt;h1&gt;Welcome back!&lt;/h1&gt; : &lt;h1&gt;Please log in.&lt;/h1&gt;}
-        &lt;/div&gt;
-    );
+        <h4>Usando um Arquivo CSS Externo</h4>
+        <p>Crie um arquivo CSS separado e importe-o no componente.</p>
+        <div class="code-container">
+          <pre>
+<code class="language-css">
+.container {
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-      <h4>Short-circuit Evaluation (`&&`)</h4>
-      <div class="code-container">
-        <pre>
-        <code>
-const Notification = ({ showNotification }) => {
-    return (
-        &lt;div&gt;
-            {showNotification && &lt;p&gt;You have new messages!&lt;/p&gt;}
-        &lt;/div&gt;
-    );
-}
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React from "react";
+import "./App.css";
 
-      <h4>Função que Retorna JSX</h4>
-      <div class="code-container">
-        <pre>
-        <code>
-const Greeting = ({ isLoggedIn }) => {
-    const renderGreeting = () => {
-        if (isLoggedIn) {
-            return &lt;h1&gt;Welcome back!&lt;/h1&gt;;
-        }
-        return &lt;h1&gt;Please sign in.&lt;/h1&gt;;
-    }
-    return &lt;div&gt;{renderGreeting()}&lt;/div&gt;;
-}
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h2>Re-renderização de Componentes</h2>
-      <p>
-        Em React, os componentes re-renderizam quando há alterações no estado,
-        nas props, ou em raros casos, forçando a atualização manualmente.
-      </p>
-
-      <h3>Alterações no State</h3>
-      <div class="code-container">
-        <pre>
-        <code>
-const Counter = () => {
-    const [count, setCount] = React.useState(0);
-
-    return (
-        &lt;div&gt;
-            &lt;p&gt;Count: {count}&lt;/p&gt;
-            &lt;button onClick={() => setCount(count + 1)}>Increment&lt;/button&gt;
-        &lt;/div&gt;
-    );
-}
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h3>Alterações nas Props</h3>
-      <div class="code-container">
-        <pre>
-        <code>
- const Display = ({ message }) => {
-    return &lt;h1&gt;{message}&lt;/h1&gt;;
+function App() {
+  return (
+    &lt;div className="container"div&gt;
+      &lt;h1&gt;Olá, React com CSS!&lt;/h1&gt;
+      &lt;p&gt;Este é um exemplo simples de uso de CSS em React.&lt;/p&gt;
+    &lt;div&gt;
+  );
 }
 
- const App = () => {
-    const [text, setText] = React.useState('Hello');
+export default App;
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-    return (
-        &lt;div&gt;
-            &lt;Display message={text} /&gt;
-            &lt;button onClick={() => setText('World')}&gt;Change Message&lt;/button&gt;
-        &lt;/div&gt;
-    );
+        <h4>Usando Inline Styles</h4>
+        <p>
+          Os estilos são definidos como objetos JavaScript e aplicados
+          diretamente nos elementos usando a propriedade <code>style</code>.
+        </p>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React from "react";
+
+function App() {
+  const estiloContainer = {
+    backgroundColor: "#f9f9f9",
+    color: "#333",
+    padding: "20px",
+    borderRadius: "8px",
+    textAlign: "center",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  return (
+    &lt;div style={estiloContainer}&gt;
+      &lt;h1&gt;Olá, React com Estilos Inline!&lt;/h1&gt;
+      &lt;p&gt;Este é um exemplo simples de estilos inline.&lt;/p&gt;
+    &lt;/div&gt;
+  );
 }
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
 
-      <h3>Force Update</h3>
-      <div class="code-container">
-        <pre>
-        <code>
-const App() => {
-    const [, forceUpdate] = React.useState(0);
+export default App;
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-    return (
-        &lt;div&gt;
-            &lt;button onClick={() => forceUpdate(n => n + 1)}>Force Update&lt;/button&gt;
-        &lt;/div&gt;
-    );
+        <h4>Usando CSS Modules</h4>
+        <p>
+          CSS Modules é uma abordagem de estilização que permite escopar
+          automaticamente os estilos de um arquivo CSS para o componente em que
+          são usados. Isso evita conflitos de nomes de classes entre diferentes
+          partes de uma aplicação. Com CSS Modules, os estilos são importados
+          como objetos JavaScript, permitindo aplicar classes diretamente aos
+          elementos HTML, como <code>className={styles.minhaClasse}</code>. Eles
+          são amplamente utilizados em aplicações React e são suportados por
+          ferramentas modernas de build, como Webpack e Vite. Essa técnica é
+          ideal para manter o código organizado e garantir que os estilos sejam
+          isolados por componente, promovendo a reutilização e a modularidade.
+        </p>
+        <div class="code-container">
+          <pre>
+<code class="language-css">
+/* App.module.css */
+.container {
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre class="code">
+<code class="language-javascript">
+import React from "react";
+import styles from "./App.module.css";
 
-      <h2>Estilização Dinâmica</h2>
-      <p>
-        Estilização dinâmica permite aplicar estilos com base no estado ou nas
-        props do componente.
-      </p>
+function App() {
+  return (
+    &lt;div className={styles.container}&gt;
+      &lt;h1&gt;Olá, React com CSS Modules!&lt;/h1&gt;
+      &lt;p&gt;Os estilos estão escopados ao componente.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
 
-      <h3>Styled Components</h3>
-      <div class="code-container">
-        <pre>
-        <code>
+export default App;
+</code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Styled Components</h2>
+      <section>
+        <p>
+          O Styled Components é uma biblioteca para estilização no React que
+          utiliza o conceito de CSS-in-JS, permitindo que estilos sejam escritos
+          diretamente dentro de componentes JavaScript. Com ele, você cria
+          estilos encapsulados e reutilizáveis ao definir componentes
+          estilizados usando a função <code>styled</code>, fornecida pela
+          biblioteca. Por exemplo, você pode criar um botão estilizado com
+          <code
+            >const Botao = styled.button`background-color: blue; color:
+            white;`;</code
+          >. Esses componentes são utilizados como qualquer outro componente
+          React, garantindo que os estilos sejam aplicados de forma específica
+          sem afetar outros elementos da aplicação. Além disso, o Styled
+          Components suporta dinamicidade, permitindo passar propriedades para
+          alterar estilos de maneira flexível, como
+          <code>background-color: ${props => props.cor || 'blue'};</code>. Essa
+          abordagem combina o poder do JavaScript e do CSS, simplificando a
+          manutenção e organização de estilos em aplicações React modernas.
+        </p>
+
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://styled-components.com/" class="link-estilizado"
+            >Documentação do Styled Components</a
+          >
+        </p>
+
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
 import styled from 'styled-components';
 
 const Button = styled.button\`
@@ -175,14 +241,47 @@ function App() {
 }
         </code>
     </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-      <h3>Alternativas ao Styled Components</h3>
-      <h4>Emotion</h4>
-      <div class="code-container">
-        <pre>
-        <code>
+        <p>
+          Veja este artigo que explica sobre o atual cenário do Styled
+          Components:
+          <a
+            href="https://blog.formacao.dev/styled-components-um-adeus-ou-um-ate-logo//"
+            class="link-estilizado"
+            >Styled Components: Um adeus ou um até logo?</a
+          >
+        </p>
+      </section>
+
+      <h2>Emotion</h2>
+      <section>
+        <p>
+          Emotion é uma biblioteca de estilização em JavaScript que permite
+          criar estilos dinâmicos para componentes React e outros frameworks.
+          Ela combina a flexibilidade do CSS-in-JS com uma API simples e
+          poderosa, oferecendo suporte para estilos globais, temáticos e
+          específicos de componentes. A geração de estilos ocorre em tempo de
+          execução, permitindo que você altere dinamicamente as propriedades de
+          estilo com base em variáveis ou estados do componente. Emotion também
+          suporta a integração com TypeScript e oferece várias formas de uso,
+          como o uso de classes estilizadas (`styled`) ou a aplicação direta de
+          estilos com a função `css`. Essa abordagem facilita a criação de
+          interfaces modernas e altamente personalizáveis.
+        </p>
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://emotion.sh/docs/introduction" class="link-estilizado"
+            >Documentação do Emotion</a
+          >
+        </p>
+
+        <h5>Exemplo</h5>
+
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
@@ -200,13 +299,100 @@ function Button({ primary, children }) {
 }
         </code>
     </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
 
-      <h4>Tailwind CSS</h4>
-      <div class="code-container">
-        <pre>
-        <code>
+      <h2>Vanilla Extract</h2>
+      <section>
+        <p>
+          Vanilla Extract é uma biblioteca de CSS-in-TypeScript que permite
+          criar estilos com tipagem estática e gerar arquivos CSS em tempo de
+          build. Diferentemente de outras soluções CSS-in-JS, ela elimina a
+          necessidade de aplicar estilos em tempo de execução, melhorando a
+          performance da aplicação. Com Vanilla Extract, os estilos são
+          escopados automaticamente, semelhantes ao CSS Modules, e é possível
+          criar
+        </p>
+
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://vanilla-extract.style/" class="link-estilizado"
+            >Documentação do Vanilla Extract</a
+          >
+        </p>
+
+        <h5>Exemplo</h5>
+
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
+// Criar um arquivo chamado styles.css.ts e inserir o código abaixo
+import { style } from '@vanilla-extract/css';
+
+export const botao = style({
+  backgroundColor: 'blue',
+  color: 'white',
+  padding: '10px 20px',
+  borderRadius: '5px',
+  border: 'none',
+  cursor: 'pointer',
+  ':hover': {
+    backgroundColor: 'darkblue',
+  },
+});
+
+</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+
+import React from 'react';
+import * as styles from './styles.css';
+
+function Botao() {
+  return &lt;button className={styles.botao}&gt;Clique Aqui&lt;/button&gt;;
+}
+
+export default Botao;
+        </code>
+    </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Tailwind CSS</h2>
+      <section>
+        <p>
+          Tailwind CSS é um framework utilitário de CSS que permite criar
+          interfaces de forma rápida e eficiente usando classes pré-definidas
+          diretamente no HTML. Em vez de escrever estilos personalizados, você
+          utiliza combinações de classes utilitárias para estilizar os
+          elementos, como <code>bg-blue-500</code> para definir a cor de fundo
+          ou <code>p-4</code> para adicionar espaçamento interno. Ele promove
+          consistência no design e facilita a manutenção ao evitar a repetição
+          de estilos personalizados. Além disso, Tailwind é altamente
+          configurável, permitindo personalizar temas, adicionar classes
+          personalizadas e reduzir o tamanho final do CSS com a remoção de
+          estilos não utilizados (purge). É uma solução moderna e flexível para
+          construir interfaces responsivas e acessíveis.
+        </p>
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://tailwindcss.com/" class="link-estilizado"
+            >Documentação do Tailwind CSS</a
+          >
+        </p>
+
+        <h5>Exemplo</h5>
+
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
 const App = () => {
     return (
         &lt;div&gt;
@@ -217,48 +403,33 @@ const App = () => {
 }
         </code>
     </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
 
-      <h4>CSS Modules</h4>
-      <div class="code-container">
-        <pre>
-        <code>
-/* Button.module.css */
-.button {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    color: white;
-}
-.primary {
-    background-color: blue;
-}
-.secondary {
-    background-color: gray;
-}
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-      <div class="code-container">
-        <pre>
-        <code>
-import styles from './Button.module.css';
-
-const Button = ({ primary, children }) => {
-    const className = primary ? styles.primary : styles.secondary;
-    return &lt;button className={\`\${styles.button} \${className}\`}>{children}&lt;/button&gt;;
-}
-        </code>
-    </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h4>Material-UI</h4>
-      <div class="code-container">
-        <pre>
-        <code>
+      <h2>Material-UI</h2>
+      <section>
+        <p>
+          Material UI é uma biblioteca de componentes React baseada nos
+          princípios de design do Google Material Design. Ela fornece uma ampla
+          gama de componentes prontos para uso, como botões, formulários,
+          tabelas e layouts, estilizados de forma consistente e moderna. Além de
+          permitir personalização por meio de temas, Material UI oferece
+          integração com CSS-in-JS, possibilitando a criação de estilos
+          dinâmicos diretamente no JavaScript. A biblioteca também suporta
+          responsividade nativa e práticas de acessibilidade, tornando-se uma
+          escolha popular para desenvolvedores que desejam criar interfaces
+          bonitas, consistentes e fáceis de usar, sem começar do zero.
+        </p>
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://mui.com/material-ui/" class="link-estilizado"
+            >Documentação do Material-UI</a
+          >
+        </p>
+        <div class="code-container">
+          <pre>
+        <code class="language-javascript">
 import Button from '@mui/material/Button';
 
 const App = () => {
@@ -271,8 +442,10 @@ const App = () => {
 }
         </code>
     </pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
     </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
