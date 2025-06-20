@@ -16,25 +16,237 @@
       <h1>Aula 1</h1>
       <h4 style="text-align: center">React</h4>
       <h4 style="text-align: center">O que é o React e montando o ambiente</h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>atualizados</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ✔️ Configurando o Ambiente com Vite - <strong>
+              inseridas imagens para ilustrar
+            </strong>
+          </p>
+        </div>
+      </div>
+       <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ✔️ Para que Serve o React?
+          </p>
+          <p>
+            ✔️ Como o React Funciona?
+          </p>
+          <p>
+            ✔️ Como o React Funciona?
+          </p>
+          <p>
+            ✔️ Live Reload e HMR
+          </p>
+        </div>
+      </div>
     </header>
     <div class="container">
-      <div class="texto-imprimir">
-        <h2 class="titulo-h2">O que é React?</h2>
+      <h2>O que é React?</h2>
+      <section>
         <p>
-          React é uma biblioteca JavaScript para construção de interfaces de
-          usuário. Criado pelo Facebook, ele utiliza um conceito de componentes
-          para facilitar o desenvolvimento, manutenção e escalabilidade de
-          aplicações.
+          React é uma biblioteca JavaScript criada pelo Facebook em 2013 para
+          construir interfaces de usuário (UI) dinâmicas e reativas. Ele é
+          amplamente utilizado no desenvolvimento de aplicações web e móveis
+          devido à sua flexibilidade, alta performance e facilidade de
+          manutenção.
         </p>
+      </section>
 
-        <h2 class="titulo-h2">Arquitetura do React</h2>
+      <h2>Para que Serve o React?</h2>
+      <section>
+        <p>O React é usado para:</p>
+        <ul>
+          <li>
+            <strong>Criar Componentes Reutilizáveis:</strong> Permite encapsular
+            partes da interface como botões ou caixas de texto.
+          </li>
+          <li>
+            <strong>Gerenciar Estados:</strong> Facilita o gerenciamento de
+            dados dinâmicos e sua sincronização com a interface.
+          </li>
+          <li>
+            <strong>Renderizar Interfaces de Forma Reativa:</strong> Atualiza a
+            interface automaticamente quando os dados mudam.
+          </li>
+          <li>
+            <strong>Criar Aplicações Escaláveis:</strong> A abordagem baseada em
+            componentes torna projetos mais fáceis de manter e expandir.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Como o React Funciona?</h2>
+      <p>
+        O React segue um modelo declarativo, onde você descreve o que deve ser
+        exibido, enquanto ele cuida de como atualizá-lo.
+      </p>
+      <h4>Principais Conceitos</h4>
+      <section>
+        <ul>
+          <li>
+            <strong>Componentes:</strong> Peças fundamentais da interface, como
+            botões ou formulários.
+          </li>
+          <li>
+            <strong>JSX:</strong> Extensão de sintaxe que combina HTML e
+            JavaScript.
+          </li>
+          <li>
+            <strong>Virtual DOM:</strong> Representação leve do DOM que torna as
+            atualizações mais eficientes. O React utiliza um Virtual DOM para
+            gerenciar mudanças na interface. Em vez de atualizar o DOM real
+            (relembre ou pesquise sobre o que é DOM no JavaScript) diretamente,
+            ele mantém uma cópia virtual e atualiza apenas os elementos
+            necessários, melhorando a performance.
+          </li>
+          <li>
+            <strong>Hooks:</strong> Recursos como <code>useState</code> e
+            <code>useEffect</code> para gerenciar estado e ciclo de vida.
+            (veremos melhor nas próximas aulas)
+          </li>
+          <li>
+            <strong>Servidores de Desenvolvimento:</strong> Ferramentas como
+            Vite criam um ambiente local para desenvolvimento.
+          </li>
+          <li>
+            <strong>Node.js e npm/yarn:</strong> Gerenciam pacotes e bibliotecas
+            do projeto.
+          </li>
+          <li>
+            <strong>Transpilers (Babel):</strong> Convertem código moderno em
+            versões compatíveis com navegadores.
+          </li>
+          <li>
+            <strong>Empacotadores (Webpack/Vite):</strong> Empacotam os arquivos
+            para otimizar a entrega.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Live Reload e HMR</h2>
+      <section>
+        <p>
+          Quando você salva uma alteração no código, o servidor de
+          desenvolvimento recarrega automaticamente a página no navegador.
+          Ferramentas como o Vite ou o Create React App integram o
+          <strong>Live Reload</strong>
+          automaticamente.
+        </p>
+        <p>
+          <strong>Hot Module Replacement (HMR)</strong>: Uma evolução do live
+          reload, onde apenas o código alterado é recarregado no navegador,
+          preservando o estado atual da aplicação. Isso é especialmente útil
+          para acelerar o desenvolvimento, pois evita que a interface seja
+          reiniciada completamente.
+        </p>
+      </section>
+
+      <h2>Configurando o Ambiente com Vite</h2>
+      <section>
+        <p>
+          O Vite é uma ferramenta moderna para construção de aplicações web. Ele
+          oferece uma experiência de desenvolvimento rápida e simples.
+        </p>
+        <h4>Passo a Passo</h4>
+        <ol>
+          <li>
+            <strong>Instale o Node.js:</strong> Certifique-se de que o Node.js
+            está instalado em sua máquina.
+          </li>
+          <li>
+            <strong>Crie o projeto:</strong>
+            <p>
+              Nesse exemplo iremos criar um projeto React com o Vite o qual será
+              chamado de my-react-app (nome que você pode colocar o que quiser)
+            </p>
+            <div>
+              <pre>
+<code class="language-bash">
+npm create vite@latest my-react-app --template react
+</code>
+            </pre>
+              <button class="btn-copy">Copiar Texto</button>
+            </div>
+          </li>
+          <li>
+            <strong>  Escolha a opção de criar um projeto React com o Vite usando JavaScript  </strong>
+            <img style="width: 200px; height: 200px" src="../../imagens/step/react-vite-print-1.png" alt="" />
+          </li>
+          <li>
+            <strong>Acesse a pasta do projeto:</strong>
+            <div>
+              <pre>
+<code class="language-bash">
+cd my-react-app
+</code>
+            </pre>
+              <button class="btn-copy">Copiar Texto</button>
+            </div>
+          </li>
+          <li>
+            <strong>Instale as dependências:</strong>
+            <div>
+              <pre>
+<code class="language-bash">
+npm install
+</code>
+            </pre>
+              <button class="btn-copy">Copiar Texto</button>
+            </div>
+          </li>
+          <li>
+            <strong>Inicie o servidor de desenvolvimento:</strong>
+            <div>
+              <pre>
+<code class="language-bash">
+npm run dev
+</code>
+            </pre>
+              <button class="btn-copy">Copiar Texto</button>
+            </div>
+          </li>
+        </ol>
+        <p>
+          Após seguir esses passos, você poderá acessar sua aplicação no
+          navegador pelo endereço exibido no terminal (geralmente
+          <code>http://localhost:5173</code>).
+        </p>
+        <p>Ao acessar <code>http://localhost:5173</code>, vocé vera a seguinte tela:</code></p>
+        <img style="width: 800px; height: 600px" src="../../imagens/step/react-vite-print-2.png" alt="" />
+      </section>
+
+      <h2>Arquitetura do React</h2>
+      <section>
         <p>
           A arquitetura do React é baseada no conceito de componentes
           reutilizáveis. Uma aplicação React geralmente segue a seguinte
           estrutura de pastas:
         </p>
-        <h4 class="titulo-h4">Estrutura de Pastas</h4>
-        <div class="code-container">
+      </section>
+
+      <h4>Estrutura de Pastas</h4>
+      <section>
+        <div>
           <pre>
 <code class="language-bash">
 my-react-app/
@@ -48,89 +260,50 @@ my-react-app/
 ├── package.json      # Configuração do projeto
 └── vite.config.js    # Configuração do Vite
 </code>
-        </pre>
+</pre>
         </div>
 
-        <h4 class="titulo-h4">Exemplo de Componente</h4>
-        <div class="code-container">
+        <p>
+          - <strong>node_modules/:</strong> Contém todas as dependências
+          instaladas via NPM ou Yarn.
+        </p>
+        <p>
+          - <strong>public/:</strong> Armazena arquivos estáticos, como
+          <code>index.html</code>, o ponto de entrada para o navegador.
+        </p>
+        <p>
+          - <strong>src/:</strong> Contém o código-fonte, incluindo os
+          componentes e a lógica do aplicativo.
+        </p>
+      </section>
+
+      <h4>Exemplo de Componente</h4>
+      <section>
+        <p>
+          Nesse código podemos perceber que temos um componente chamado Welcome
+          o qual é uma Arrow Function, podendo também ser uma função em
+          JavaScript ou uma classe em JavaScript (veremos melhor na próxima aula
+          a diferença entre eles), que recebe um parâmetro name. O componente
+          retorna um JSX que exibe uma mensagem de bem-vindo com o nome
+          fornecido.
+        </p>
+        <div>
           <pre>
 <code class="language-javascript">
 import React from 'react';
 
 const Welcome = ({ name }) => (
-  <div>
-    <h1>Bem-vindo, {name}!</h1>
-  </div>
+  &lt;div&gt;
+    &lt;h1&gt;Bem-vindo, {name}!&lt;/h1&gt;
+  &lt;/div&gt;
 );
 
 export default Welcome;
 </code>
         </pre>
-          <button class="btn-copy">Copiar Código</button>
+          <button class="btn-copy">Copiar Texto</button>
         </div>
-
-        <h2 class="titulo-h2">Configurando o Ambiente com Vite</h2>
-        <p>
-          O Vite é uma ferramenta moderna para construção de aplicações web. Ele
-          oferece uma experiência de desenvolvimento rápida e simples.
-        </p>
-        <h4 class="titulo-h4">Passo a Passo</h4>
-        <ol>
-          <li>
-            <strong>Instale o Node.js:</strong> Certifique-se de que o Node.js
-            está instalado em sua máquina.
-          </li>
-          <li>
-            <strong>Crie o projeto:</strong>
-            <div class="code-container">
-              <pre>
-<code class="language-bash">
-npm create vite@latest my-react-app --template react
-</code>
-            </pre>
-              <button class="btn-copy">Copiar Código</button>
-            </div>
-          </li>
-          <li>
-            <strong>Acesse a pasta do projeto:</strong>
-            <div class="code-container">
-              <pre>
-<code class="language-bash">
-cd my-react-app
-</code>
-            </pre>
-              <button class="btn-copy">Copiar Código</button>
-            </div>
-          </li>
-          <li>
-            <strong>Instale as dependências:</strong>
-            <div class="code-container">
-              <pre>
-<code class="language-bash">
-npm install
-</code>
-            </pre>
-              <button class="btn-copy">Copiar Código</button>
-            </div>
-          </li>
-          <li>
-            <strong>Inicie o servidor de desenvolvimento:</strong>
-            <div class="code-container">
-              <pre>
-<code class="language-bash">
-npm run dev
-</code>
-            </pre>
-              <button class="btn-copy">Copiar Código</button>
-            </div>
-          </li>
-        </ol>
-        <p>
-          Após seguir esses passos, você poderá acessar sua aplicação no
-          navegador pelo endereço exibido no terminal (geralmente
-          <code>http://localhost:5173</code>).
-        </p>
-      </div>
+      </section>
     </div>
 
     <footer>

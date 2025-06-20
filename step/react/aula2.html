@@ -15,25 +15,92 @@
     <header>
       <h1>Aula 2</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Tipos de Componentes</h4>
+      <h4 style="text-align: center">
+        Fragments, Tipos de Componentes e Hooks (useState e useEffect)
+      </h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
+          </p>
+          <p>❌ Props <strong>- movido para a Aula 3</strong></p>
+        </div>
+      </div>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ✔️ Fragments
+            <strong>- movido da Aula 3</strong>
+          </p>
+          <p>
+            ✔️ Hooks
+            <strong>- movido da Aula 4</strong>
+          </p>
+          <p>
+            ✔️ Explicação mais detalhada sobre Estados (useState)
+            <strong>- movido da Aula 3</strong>
+          </p>
+        </div>
+      </div>
     </header>
     <div class="container">
-      <div class="texto-imprimir">
-        <h2 class="titulo-h2">Tipos de Componentes</h2>
+      <h2>Fragments</h2>
+      <section>
+        <p>
+          React Fragments (<code>&lt;&gt;</code> e <code>&lt;/&gt;</code>)
+          permitem agrupar múltiplos elementos JSX sem criar elementos extras no
+          DOM, evitando "divs" desnecessárias.
+        </p>
+        <p>Exemplo usando Fragment shorthand:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+
+function Lista() {
+  return (
+    &lt;&gt;
+      &lt;li&gt;Item 1&lt;/li&gt;
+      &lt;li&gt;Item 2&lt;/li&gt;
+      &lt;li&gt;Item 3&lt;/li&gt;
+    &lt;/&gt;
+  );
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Tipos de Componentes</h2>
+      <section>
         <p>
           No React, um componente é um pedaço de código reutilizável que
           representa uma parte da interface do usuário, ajudando a dividir a
           interface do usuário em partes menores e mais gerenciáveis.
         </p>
 
-        <h4 class="titulo-h4">Tipos de componentes do React</h4>
+        <h4>Tipos de componentes do React</h4>
         <p>
           <b>Componentes de Classe:</b> Usa a sintaxe da classe JavaScript e tem
           acesso ao estado e ao ciclo de vida.
         </p>
         <div class="code-container">
           <pre>
-<code>
+<code class="language-javascript">
 import React, { Component } from 'react';
 
 class HelloWorld extends Component {
@@ -52,7 +119,6 @@ export default HelloWorld;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4 class="titulo-h4">Criando um componente funcional</h4>
         <p>
           <b>Componentes Funcionais:</b> São funções JavaScript simples que
           retornam JSX. Com o React Hooks, eles podem gerenciar o estado e os
@@ -73,35 +139,60 @@ const HelloWorld = () => {
 
 export default HelloWorld;
 </code>
-        </pre>
+</pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+      </section>
 
-        <h4 class="titulo-h4">O que são Props?</h4>
+      <h2>O que são Hooks?</h2>
+      <section>
         <p>
-          <b>Props</b> (abreviação de "properties") são uma forma de passar
-          dados de um componente pai para um componente filho em React.
+          Hooks são funções especiais que permitem que você use recursos do
+          React, como estado e ciclo de vida, em componentes funcionais. Eles
+          foram introduzidos no React 16.8 e eliminaram a necessidade de usar
+          componentes de classe para gerenciar estado ou ciclos de vida.
         </p>
-        <div class="code-container">
-          <pre>
-<code class="language-javascript">
-import React from 'react';
 
-const Saudacao = (props) => {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Olá, {props.nome}!&lt;/h1&gt;
-    &lt;/div&gt;
-  );
-};
+        <ul>
+          <li>
+            Permitem usar estado e outras funcionalidades do React em
+            componentes funcionais.
+          </li>
+          <li>Facilitam o compartilhamento de lógica entre componentes.</li>
+          <li>
+            Reduzem a complexidade dos componentes ao evitar o uso de classes.
+          </li>
+        </ul>
 
-export default Saudacao;
-</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+        <h4>Principais Hooks</h4>
+        <ul>
+          <li>
+            <code>useState</code>: Gerencia estado local em componentes
+            funcionais.
+          </li>
+          <li>
+            <code>useEffect</code>: Manipula efeitos colaterais (side Effects),
+            como requisições de dados ou manipulação do DOM.
+          </li>
+          <li>
+            <code>useContext</code>: Acessa valores do contexto de forma mais
+            simples.
+          </li>
+          <li>
+            <code>useReducer</code>: Gerencia estados complexos usando um padrão
+            semelhante ao Redux.
+          </li>
+          <li>
+            <code>useRef</code>: Permite criar referências mutáveis que
+            sobrevivem entre renderizações.
+          </li>
+        </ul>
 
-        <h4 class="titulo-h4">O que são Estados no React?</h4>
+        <p>Por enquanto, vamos aprender os seguintes Hooks do React:</p>
+      </section>
+
+      <h4>O que são Estados no React? (hook useState)</h4>
+      <section>
         <p>
           <b>Estados</b> são uma forma de gerenciar dados que podem mudar ao
           longo do tempo em um componente React. Sempre que o estado é alterado,
@@ -119,10 +210,11 @@ export default Saudacao;
           compras e SPAs (Single Page Applications) para navegar sem recarregar
           a página.
         </p>
+      </section>
 
-        <h5>Exemplo 1</h5>
-        <div class="code-container">
-          <pre>
+      <h5>Exemplo 1</h5>
+      <div class="code-container">
+        <pre>
 <code class="language-javascript">
 import React, { useState } from "react";
 
@@ -141,18 +233,18 @@ function Contador() {
 
 export default Contador;
 </code>
-  </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+</pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 2</h5>
-        <p>
-          O estado pode ser um objeto para lidar com dados mais complexos. É
-          importante usar o operador spread (<code>...</code>) para atualizar
-          apenas a propriedade desejada sem sobrescrever o restante.
-        </p>
-        <div class="code-container">
-          <pre>
+      <h5>Exemplo 2</h5>
+      <p>
+        O estado pode ser um objeto para lidar com dados mais complexos. É
+        importante usar o operador spread (<code>...</code>) para atualizar
+        apenas a propriedade desejada sem sobrescrever o restante.
+      </p>
+      <div class="code-container">
+        <pre>
 <code class="language-javascript">
 import React, { useState } from "react";
 
@@ -180,10 +272,77 @@ function PerfilUsuario() {
 
 export default PerfilUsuario;
 </code>
-  </pre>
+</pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Side Effects (hook useEffect)</h4>
+      <section>
+        <p>
+          Os efeitos colaterais (side effects) podem ser usados para lidar com
+          efeitos colaterais, como requisições de dados, manipulação do DOM e
+          manipulação de APIs externas.
+        </p>
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React, { useState, useEffect } from "react";
+
+const Timer = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+  });
+
+  return  &lt;h1&gt;Isso está se repetindo {count} vezes!&lt;/h1&gt;;
+}
+
+export default Timer;
+</code>
+</pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </div>
+
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import React, { useState, useEffect } from "react";
+
+function Relogio() {
+  const [horario, setHorario] = useState(new Date());
+
+  useEffect(() => {
+    // Atualiza o horário a cada segundo
+    const intervalo = setInterval(() => {
+      setHorario(new Date());
+    }, 1000);
+
+    // Cleanup: Limpa o intervalo ao desmontar o componente
+    return () => clearInterval(intervalo);
+  }, []); 
+  // Executa apenas uma vez, na montagem do componente
+
+  return (
+    &lt;div style={{ textAlign: "center", marginTop: "50px" }}&gt;
+      &lt;p&gt;Relógio Digital&lt;p&gt;
+      &lt;p style={{ fontSize: "2rem", fontWeight: "bold" }}&gt;
+        {horario.toLocaleTimeString()}
+      &lt;p&gt;
+    &lt;div&gt;
+  );
+}
+
+export default Relogio;
+</code>
+</pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
     </div>
 
     <footer>
