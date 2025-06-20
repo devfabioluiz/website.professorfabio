@@ -10,6 +10,22 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -17,7 +33,230 @@
       <h4 style="text-align: center">React</h4>
       <h4 style="text-align: center">Roteamento no React</h4>
     </header>
-    <main class="container"></main>
+    <main class="container">
+      <h2>React Router</h2>
+      <section>
+        <p>
+          Rode o seguinte comando no seu terminal <code>react-router-dom</code>
+        </p>
+        <p>
+          O roteamento no React é gerenciado principalmente pela biblioteca
+          <strong>React Router</strong>. Ele permite a criação de interfaces de
+          várias páginas em aplicações Single-Page Application (SPA), onde a
+          navegação é feita dinamicamente sem recarregar a página.
+        </p>
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
+              
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function Home() {
+  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;;
+}
+
+function About() {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Rotas Dinâmicas</h4>
+        <p>Utiliza parâmetros na URL para acessar dados específicos.</p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+
+function User() {
+  const { id } = useParams();
+  return &lt;h1&gt;Usuário ID: {id}&lt;/h1&gt;;
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/user/:id" element={&lt;User /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Rotas Aninhadas</h4>
+        <p>
+          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
+        </p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+
+function Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
+          &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
+          &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Navegação Programática</h4>
+        <p>
+          Permite alterar rotas dinamicamente usando o hook
+          <code>useNavigate</code>
+        </p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+
+function Home() {
+  const navigate = useNavigate();
+  return &lt;button onClick={() => navigate("/about")}&gt;Ir para Sobre&lt;/button&gt;;
+}
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Navigate to="/home" /&gt;} /&gt;
+        &lt;Route path="/home" element={&lt;Home /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Rotas Protegidas</h4>
+        <p>Controle de acesso baseado em autenticação</p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+function PrivateRoute({ children }) {
+  const isAuthenticated = false; // Exemplo simplificado
+  return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;;
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route
+          path="/dashboard"
+          element={
+            &lt;PrivateRoute&gt;
+              &lt;Dashboard /&gt;
+            &lt;/PrivateRoute&gt;
+          }
+        /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Comparativo das Abordagens</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Abordagem</th>
+              <th>Uso Principal</th>
+              <th>Complexidade</th>
+              <th>Cenário Ideal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Roteamento Básico</strong></td>
+              <td>Navegação simples.</td>
+              <td>Baixa</td>
+              <td>Aplicações com poucas rotas.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Dinâmicas</strong></td>
+              <td>URLs parametrizadas.</td>
+              <td>Média</td>
+              <td>Sistemas de perfil ou detalhe de produto.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Aninhadas</strong></td>
+              <td>Rotas hierárquicas.</td>
+              <td>Alta</td>
+              <td>Dashboards ou sistemas modulares.</td>
+            </tr>
+            <tr>
+              <td><strong>Navegação Programática</strong></td>
+              <td>Navegação via lógica.</td>
+              <td>Média</td>
+              <td>Fluxos de autenticação ou carrinho.</td>
+            </tr>
+            <tr>
+              <td><strong>Redirecionamento</strong></td>
+              <td>Alteração automática de rota.</td>
+              <td>Baixa</td>
+              <td>Migração de rotas antigas.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Protegidas</strong></td>
+              <td>Controle de acesso.</td>
+              <td>Alta</td>
+              <td>Sistemas com login obrigatório.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
