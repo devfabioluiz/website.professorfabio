@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Fragments, Portals e Refs</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Context API, useReducer e Redux</h4>
+    </header>
+    <main class="container">
+      <h2>Context API (hook useContext)</h2>
+      <section>
+        <p>
+          A Context API no React é uma ferramenta que permite compartilhar
+          valores e estados entre componentes sem a necessidade de passar props
+          manualmente por toda a árvore de componentes. Ela é ideal para
+          gerenciar dados globais, como temas, autenticação ou configurações de
+          idioma. O contexto é criado usando
+          <code>React.createContext()</code>, e seus valores são fornecidos aos
+          componentes filhos através do <code>Provider</code>. Os componentes
+          que precisam acessar esses valores utilizam o hook
+          <code>useContext</code>. A Context API simplifica a gestão de estados
+          globais em aplicações React, eliminando a complexidade de "prop
+          drilling".
+        </p>
+        <div class="code-container">
+          <pre><code>
+import React, { createContext, useContext } from 'react';
+
+const TemaContext = createContext('claro');
+
+function Painel() {
+  const tema = useContext(TemaContext);
+  return &lt;div&gt;Tema atual: {tema}&lt;/div&gt;;
+}
+
+function App() {
+  return (
+    &lt;TemaContext.Provider value="escuro"&gt;
+      &lt;Painel /&gt;
+    &lt;/TemaContext.Provider&gt;
+  );
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Redux</h2>
+      <section>
+        <p>
+          Redux e uma ferramenta popular para gerenciamento de estado em
+          aplicações React. Ele proporciona uma estrutura de dados unificada que
+          pode ser facilmente compartilhada entre componentes e acionados por
+          ações.
+        </p>
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre>
+              <code class="language-javascript">
+import React from 'react';
+import { createStore } from 'redux';
+
+const initialState = { count: 0 };  
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    case 'DECREMENT':
+      return { ...state, count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer);
+
+const Contador = () => {
+  const state = store.getState();
+  return (
+    &lt;&gt;
+      &lt;p&gt;Contagem: {state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; store.dispatch({ type: 'INCREMENT' })}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; store.dispatch({ type: 'DECREMENT' })}&gt;-&lt;/button&gt;
+    &lt;/&gt;
+  );
+};
+
+export default Contador;
+              </code>
+            </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>useReducer</h2>
+      <section>
+        <p>
+          Hook para gerenciamento de estado complexo, similar ao Redux, com
+          dispatch e reducer.
+        </p>
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useReducer } from 'react';
+
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+}
+
+function Contador() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    &lt;&gt;;
+      &lt;p&gt;;Contagem: {state.count}&lt;/p&gt;;
+      &lt;button onClick={() =&gt;; dispatch({ type: 'increment' })}&gt;;+&lt;/button&gt;;
+      &lt;button onClick={() =&gt;; dispatch({ type: 'decrement' })}&gt;;-&lt;/button&gt;;
+    &lt;/&gt;;
+  );
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

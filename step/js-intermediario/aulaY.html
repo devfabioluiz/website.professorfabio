@@ -21,7 +21,7 @@
     </header>
     <div class="container">
       <div class="texto-imprimir">
-        <h2 class="titulo-h2">O que é SOLID?</h2>
+        <h2 class="">O que é SOLID?</h2>
         <p>
           SOLID é um acrônimo criado por Michael Feathers, após observar que
           cinco princípios da orientação a objetos e design de código — Criados
@@ -29,7 +29,7 @@
           Principles of OOD — poderiam se encaixar nesta palavra.
         </p>
 
-        <h3 class="titulo-h3">S.O.L.I.D: Os 5 princípios da POO</h3>
+        <h3 class="">S.O.L.I.D: Os 5 princípios da POO</h3>
         <ul>
           <li>
             S — Single Responsiblity Principle (Princípio da responsabilidade
@@ -55,7 +55,7 @@
           refatoração e estimulando o reaproveitamento do código.
         </p>
 
-        <h3 class="titulo-h3">1. SRP — Single Responsibility Principle:</h3>
+        <h3 class="">1. SRP — Single Responsibility Principle:</h3>
         <p>
           Princípio da Responsabilidade Única — Uma classe deve ter um, e
           somente um, motivo para mudar.
@@ -92,7 +92,7 @@
           >
         </p>
 
-        <h4 class="titulo-h4">Exemplo prático do SRP:</h4>
+        <h4 class="">Exemplo prático do SRP:</h4>
         <p>
           A classe Order viola o SRP porque realiza 3 tipos distintos de
           tarefas. Além de lidar com as informações do pedido, ela também é
@@ -161,7 +161,7 @@ class OrderRepository {
           código mais limpo e de fácil manutenção!
         </p>
 
-        <h3 class="titulo-h3">2. OCP — Open-Closed Principle:</h3>
+        <h3 class="">2. OCP — Open-Closed Principle:</h3>
         <p>
           Princípio Aberto-Fechado — Objetos ou entidades devem estar abertos
           para extensão, mas fechados para modificação, ou seja, quando novos
@@ -169,7 +169,7 @@ class OrderRepository {
           devemos estender e não alterar o código fonte original.
         </p>
 
-        <h4 class="titulo-h4">Exemplo prático do OCP:</h4>
+        <h4 class="">Exemplo prático do OCP:</h4>
         <p>
           Em um sistema hipotético de RH, temos duas classes que representam os
           contratos de trabalhos dos funcionários de uma pequena empresa,
@@ -247,7 +247,7 @@ class FolhaDePagamento {
           logo o software estará aberto para extensão.
         </p>
 
-        <h4 class="titulo-h4">Aplicando OCP na prática</h4>
+        <h4 class="">Aplicando OCP na prática</h4>
         <p>
           Voltando para o nosso exemplo, podemos concluir que o contexto que
           estamos lidando é a remuneração dos contratos de trabalho, aplicando
@@ -310,7 +310,7 @@ class FolhaDePagamento {
           provavelmente continuara funcionando.
         </p>
 
-        <h3 class="titulo-h3">3. LSP— Liskov Substitution Principle:</h3>
+        <h3 class="">3. LSP— Liskov Substitution Principle:</h3>
         <p>
           Princípio da substituição de Liskov — Uma classe derivada deve ser
           substituível por sua classe base.
@@ -391,7 +391,7 @@ imprimeNome($obj2); // "Classe B"
           sem preocupações com resultados inesperados.
         </p>
 
-        <h3 class="titulo-h3">4. ISP — Interface Segregation Principle:</h3>
+        <h3 class="">4. ISP — Interface Segregation Principle:</h3>
         <p>
           Princípio da Segregação da Interface — Uma classe não deve ser forçada
           a implementar interfaces e métodos que não irão utilizar.
@@ -401,9 +401,7 @@ imprimeNome($obj2); // "Classe B"
           específicas ao invés de termos uma única interface genérica.
         </p>
 
-        <h4 class="titulo-h4">
-          Vamos ver o ISP na prática através de códigos:
-        </h4>
+        <h4 class="">Vamos ver o ISP na prática através de códigos:</h4>
         <p>
           Em um cenário fictício para criação de um game de animais, teremos
           algumas aves que serão tratadas como personagens dentro do jogo. Sendo
@@ -499,7 +497,7 @@ class Aguia implements AvesQueVoam {
           próximo princípio.
         </p>
 
-        <h3 class="titulo-h3">5. DIP — Dependency Inversion Principle:</h3>
+        <h3 class="">5. DIP — Dependency Inversion Principle:</h3>
         <p>
           Princípio da Inversão de Dependência — Dependa de abstrações e não de
           implementações.
@@ -533,7 +531,7 @@ class Aguia implements AvesQueVoam {
           >
         </p>
 
-        <h4 class="titulo-h4">
+        <h4 class="">
           Vamos entender tudo isso na prática através de exemplos:
         </h4>
         <div class="code-container">
@@ -632,9 +630,7 @@ class PasswordReminder {
           implementação e não uma abstração!
         </p>
 
-        <h4 class="titulo-h4">
-          Como refatoramos nosso exemplo para utilizar o DIP?
-        </h4>
+        <h4 class="">Como refatoramos nosso exemplo para utilizar o DIP?</h4>
         <p>Se tratando de POO, você já ouviu aquela frase:</p>
         <p>
           <em>"Programe para uma interface e não para uma implementação."</em>
@@ -690,7 +686,7 @@ class PasswordReminder {
           código e como "bônus" também estamos respeitando o SRP e o OCP.
         </p>
 
-        <h3 class="titulo-h3">Conclusão</h3>
+        <h3 class="">Conclusão</h3>
         <p>
           A sistemática dos princípios SOLID tornam o software mais robusto,
           escalável e flexível, deixando-o tolerante a mudanças, facilitando a

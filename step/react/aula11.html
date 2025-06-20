@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Fragments, Portals e Refs</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Aula 11</h1>
+      <h4 style="text-align: center">React</h4>
+      <h4 style="text-align: center">Portals e Refs</h4>
+    </header>
+    <main class="container">
+      <div class="texto-impirmir">
+        <h2>Portals</h2>
+        <section>
+          <p>
+            Portals no React são uma forma de renderizar um componente filho em
+            um nó DOM que está fora da hierarquia DOM do componente pai. Isso é
+            útil para casos em que você precisa que um elemento, como um modal,
+            tooltip ou menu suspenso, seja exibido fora da estrutura principal
+            do aplicativo, mas ainda mantenha a conexão com o React para
+            gerenciamento de estado e eventos. Para criar um portal, usa-se a
+            função <code>ReactDOM.createPortal(child, container)</code>, onde
+            <code>child</code> é o elemento React que você quer renderizar e
+            <code>container</code> é o nó DOM onde ele será inserido. Assim,
+            Portals facilitam o controle da posição visual e do comportamento
+            dos componentes, sem complicar a organização do código.
+          </p>
+
+          <h5>Exemplo 1</h5>
+          <div class="code-container">
+            <pre>
+                  <code class="language-javascript">
+    // Modal simples usando Portal
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+
+    const Modal = ({ children }) => {
+      return ReactDOM.createPortal(
+        &lt;div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center',
+        }}&gt;
+          &lt;div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}&gt;
+            {children}
+          &lt;/div&gt;
+        &lt;/div&gt;
+        document.getElementById('modal-root') // nó fora do app principal
+      );
+    };
+
+    export default Modal;
+
+    // Uso no App
+    import React, { useState } from 'react';
+    import Modal from './Modal';
+
+    function App() {
+      const [open, setOpen] = useState(false);
+      return (
+        &lt;&gt;
+          &lt;button onClick={() => setOpen(true)}&gtAbrir Modal&lt;/button&gt;
+          {open && (
+            &lt;Modal&gt;
+              &lt;h2&gtEste é um modal!&gt;/h2&gt;
+              &lt;button onClick={() => setOpen(false)}&gtFechar&lt;/button&gt;
+            &lt;/Modal&gt;
+          )}
+        &lt;/&gt;
+      );
+    }
+
+    export default App;
+
+                  </code>
+                </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h5>Exemplo 2</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+// Exemplo 2: Tooltip com Portal
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const Tooltip = ({ text, targetRef }) => {
+  if (!targetRef.current) return null;
+
+  const rect = targetRef.current.getBoundingClientRect();
+
+  return ReactDOM.createPortal(
+    &lt;div style={{
+      position: 'fixed',
+      top: rect.bottom + 5,
+      left: rect.left,
+      backgroundColor: '#333',
+      color: '#fff',
+      padding: '5px 10px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      zIndex: 1000,
+    }}&gt;
+      {text}
+    &lt;/div&gt;,
+    document.body
+  );
+};
+
+export default Tooltip;
+
+// Uso no App
+import React, { useRef, useState } from 'react';
+import Tooltip from './Tooltip';
+
+function App() {
+  const btnRef = useRef(null);
+  const [hover, setHover] = useState(false);
+
+  return (
+    &lt;&gt;
+      &lt;button
+        ref={btnRef}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      &gt;
+        Passe o mouse aqui
+      &lt;/button&gt;
+      {hover && &lt;Tooltip text="Tooltip via Portal!" targetRef={btnRef} /&gt;}
+    &lt;/&gt;
+  );
+}
+
+export default App;
+
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h5>Exemplo 3</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+
+// Exemplo 3: Menu Dropdown usando Portal
+import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
+
+const Dropdown = ({ anchorRef, children }) => {
+  if (!anchorRef.current) return null;
+
+  const rect = anchorRef.current.getBoundingClientRect();
+
+  return ReactDOM.createPortal(
+    &lt;ul
+      style={{
+            position: 'fixed',
+            top: rect.bottom,
+            left: rect.left,
+            margin: 0,
+            padding: '10px',
+            listStyle: 'none',
+            backgroundColor: 'white',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            zIndex: 1000,
+            minWidth: rect.width,
+          }}&gt;
+      {children}
+    &lt;ul&gt;,
+    document.body
+  );
+};
+
+export default Dropdown;
+// Uso no App
+function App() {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef(null);
+
+  return (
+    &lt;div style={{ padding: '50px' }}&gt;
+      &lt;button ref={btnRef} onClick={() => setOpen(!open)}&gt;
+        Abrir Menu
+      &lt;/button&gt;
+      {open && (
+        &lt;Dropdown anchorRef={btnRef}&gt;
+          &lt;li>Opção 1&lt;/li&gt;
+          &lt;li>Opção 2&lt;/li&gt;
+          &lt;li>Opção 3&lt;/li&gt;
+        &lt;/Dropdown&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+
+              </code>
+              </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <h2>Referências (Refs)</h2>
+        <section>
+          <p>
+            <code>ref</code> é uma forma de acessar diretamente um elemento DOM
+            ou um componente React criado no JSX. Ele permite manipular
+            elementos de forma imperativa, como focar um input, controlar
+            vídeos, ou integrar bibliotecas externas que precisam de acesso
+            direto ao DOM. Para criar uma referência, usa-se o hook
+            <code>useRef</code>, que retorna um objeto cuja propriedade
+            <code>current</code> pode ser atribuída a um elemento JSX. Isso
+            facilita interações que não são possíveis apenas com props e estado.
+          </p>
+
+          <h5>Exemplo 1</h5>
+          <div class="code-container">
+            <pre>
+<code class="language-javascript">
+import React, { useRef } from 'react';
+
+function Formulario() {
+  const inputRef = useRef(null);
+
+  function focarInput() {
+    inputRef.current.focus();
+  }
+
+  return (
+    &lt;&gt;
+      &lt;input ref={inputRef} type="text" /&gt;
+      &lt;button onClick={focarInput}&gt;Focar input&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h5>Exemplo 2</h5>
+          <div class="code-container">
+            <pre>
+<code class="language-javascript">
+import React, { useRef } from "react";
+
+function VideoPlayer() {
+  const videoRef = useRef(null);
+
+  const playVideo = () =&gt; {
+    videoRef.current.play();
+  };
+
+  const pauseVideo = () =&gt; {
+    videoRef.current.pause();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;video ref={videoRef} width="320" height="240" controls src="video.mp4" /&gt;
+      &lt;br /&gt;
+      &lt;button onClick={playVideo}&gt;Play&lt;/button&gt;
+      &lt;button onClick={pauseVideo}&gt;Pause&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default VideoPlayer;
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h5>Exemplo 3</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { useRef, forwardRef, useImperativeHandle } from "react";
+
+const Pai = () => {
+  const filhoRef = useRef(null);
+
+  return (
+    &lt;div&gt;
+      &lt;Filho ref={filhoRef} /&gt;
+      &lt;button onClick={() =&gt; filhoRef.current.digaOla()}&gt;Dizer Olá&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { useRef, forwardRef, useImperativeHandle } from "react";
+
+const Filho = forwardRef((props, ref) =&gt; {
+  useImperativeHandle(ref, () =&gt; ({
+    digaOla() {
+      alert("Olá do componente Filho!");
+    }
+  }));
+
+  return &lt;div&gt;Componente Filho&lt;/div&gt;;
+});
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

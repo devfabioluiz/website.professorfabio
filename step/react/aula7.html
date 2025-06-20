@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 7 de React - IT Step</title>
+    <title>Aula 7 - React - IT Step</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -15,31 +15,72 @@
     <header>
       <h1>Aula 7</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Requisições HTTP</h4>
+      <h4 style="text-align: center">Requisições HTTP no React</h4>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ❌ useContext e ContextAPI
+            <strong>- movido para a Aula 10</strong>
+          </p>
+        </div>
+      </div>
+      <div class="alert-update alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ✔️
+            <strong>
+              Mais detalhes e explicações sobre React Query e SWR e
+              links</strong
+            >
+          </p>
+        </div>
+      </div>
     </header>
-    <div class="container">
-      <!-- Primeiro bloco de código -->
-      <div class="code-container">
-      <div class="code-container">
-          <pre>
-<code class="language-javascript">import React, { useEffect, useState } from 'react';
+    <main class="container">
+      <p>
+        Existem várias formas de realizar requisições HTTP no React. São elas:
+      </p>
 
+      <h2>Usando <code>fetch</code> nativo do JavaScript</h2>
+      <section>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
 const App = () => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     fetch('https://api.example.com/data')
-      .then((response) => dasdsadasdsaddsaASDASDSADSA.json())
+      .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
-  return (
+   return (
     &lt;div&gt;
       &lt;h1&gt;Data:&lt;/h1&gt;
       &lt;pre&gt;{data ? JSON.stringify(data, null, 2) : 'Loading...'}&lt;/pre&gt;
     &lt;/div&gt;
   );
+
 }
 
 export default App;
@@ -47,24 +88,34 @@ export default App;
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </div>
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Nativo no JavaScript; nenhuma biblioteca externa necessária.</li>
+          <li>Compatível com qualquer ambiente moderno.</li>
+          <li>Ideal para chamadas simples.</li>
+        </ul>
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>Não inclui timeout por padrão.</li>
+          <li>Tratamento de erros mais trabalhoso.</li>
+          <li>Pode ser verboso para lógicas repetitivas.</li>
+        </ul>
+      </section>
 
-      <!-- Segundo bloco de código -->
-      <div class="code-container">
+      <h2>Usando Axios</h2>
+      <section>
         <div class="code-container">
           <pre>
-<code class="language-javascript">import React, { useEffect, useState } from 'react';
+            <code class="language-javascript">
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
 const App = () => {
   const [data, setData] = useState(null);
-
   useEffect(() => {
     axios.get('https://api.example.com/data')
       .then((response) => setData(response.data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
-
   return (
     &lt;div&gt;
       &lt;h1&gt;Data:&lt;/h1&gt;
@@ -72,14 +123,160 @@ const App = () => {
     &lt;/div&gt;
   );
 }
+export default App;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Sintaxe mais concisa que <code>fetch</code>.</li>
+          <li>Suporte nativo a JSON, timeout e cancelamento de requisições.</li>
+          <li>
+            Interceptadores para manipulação global de requisições e respostas.
+          </li>
+        </ul>
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>Adiciona uma dependência externa.</li>
+          <li>Leve aumento no tamanho do bundle.</li>
+        </ul>
+        <p>
+          Instale e veja como funciona em:
+          <a
+            href="https://axios-http.com/ptbr/docs/intro"
+            class="link-estilizado"
+            >Documentação do Axios</a
+          >
+        </p>
+      </section>
 
+      <h2>Usando <code>react-query</code> (TanStack Query)</h2>
+      <section>
+        <p>
+          React Query é uma biblioteca para gerenciamento de estados
+          relacionados a dados assíncronos em aplicações React. Ela simplifica
+          tarefas como o fetch de dados, caching, sincronização e atualização em
+          tempo real, reduzindo a necessidade de gerenciar manualmente estados
+          de carregamento, erro e sucesso. Com React Query, dados são
+          armazenados em cache e revalidados automaticamente, melhorando a
+          performance da aplicação. A biblioteca também oferece suporte a
+          funcionalidades avançadas, como pré-busca de dados, paginação e
+          invalidação de cache, tornando-se uma escolha poderosa para lidar com
+          APIs e dados assíncronos de forma eficiente.
+        </p>
+        <pre>
+<code class="language-javascript">import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+const App = () => {
+  const { data, isLoading, error } = useQuery(['data'], () =>
+    fetch('https://api.example.com/data').then((res) => res.json())
+  );
+  if (isLoading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;;
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Data:&lt;/h1&gt;
+      &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
+    &lt;/div&gt;
+  );
+}
 export default App;
 </code>
         </pre>
-          <button class="btn-copy">Copiar Código</button>
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Cache de dados automático e revalidação em segundo plano.</li>
+          <li>Gerenciamento eficiente de estado de requisições.</li>
+          <li>
+            Ótimo suporte a SSR (Server-Side Rendering) (Veremos esse tema em
+            aulas futuras).
+          </li>
+        </ul>
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>Curva de aprendizado mais longa para iniciantes.</li>
+          <li>Adiciona uma dependência externa.</li>
+        </ul>
+        <p>
+          Instale e veja como funciona em:
+          <a
+            href="https://tanstack.com/query/latest/docs/framework/react/overview"
+            class="link-estilizado"
+            >Documentação do TanStack Query</a
+          >
+        </p>
+      </section>
+
+      <h2>Usando <code>SWR</code></h2>
+      <section>
+        <p>
+          SWR (stale-while-revalidate) é uma biblioteca para React que facilita
+          o gerenciamento de dados remotos, especialmente na interação com APIs.
+          Baseada no conceito de "stale-while-revalidate", ela retorna dados
+          armazenados em cache enquanto busca novas informações em segundo
+          plano, garantindo uma experiência rápida e responsiva para o usuário.
+        </p>
+        <p>
+          SWR simplifica a implementação de funcionalidades como cache,
+          revalidação automática, sincronização de dados, e suporte a SSR
+          (Server-Side Rendering). É ideal para aplicações que requerem dados em
+          tempo real ou atualizações frequentes, oferecendo uma abordagem leve e
+          eficiente para o gerenciamento de dados assíncronos.
+        </p>
+        <pre>
+<code class="language-javascript">import useSWR from 'swr';
+const fetcher = (url) => fetch(url).then((res) => res.json());
+const App = () => {
+  const { data, error } = useSWR('https://api.example.com/data', fetcher);
+  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;;
+  if (!data) return &lt;div&gt;Loading...&lt;/div&gt;;
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Data:&lt;/h1&gt;
+      &lt;pre&gt;{JSON.stringify(data, null, 2)}&lt;/pre&gt;
+    &lt;/div&gt;
+  );
+}
+export default App;
+</code>
+        </pre>
+        <h4>Vantagens</h4>
+        <ul>
+          <li>Cache integrado e revalidação automática.</li>
+          <li>API simples e declarativa.</li>
+          <li>Suporte a SSR e ISR. (Veremos esse tema em aulas futuras).</li>
+        </ul>
+        <h4>Desvantagens</h4>
+        <ul>
+          <li>Adiciona uma dependência externa.</li>
+          <li>
+            Funcionalidades avançadas (ex.:interceptadores) exigem configuração
+            adicional.
+          </li>
+        </ul>
+        <p>
+          Instale e veja como funciona em:
+          <a href="https://swr.vercel.app/pt-BR" class="link-estilizado"
+            >Documentação do SWR</a
+          >
+        </p>
+      </section>
+      <div id="question-container-aula">
+        <h2>Exercício para fazer em aula</h2>
+        <div class="question">
+          <b
+            >Faça um componente Dog e DogCards com requisições utilizando esse
+            codigo de base:
+          </b>
+          <a
+            class="link-estilizado"
+            href="https://github.com/devfabioluiz/aulasReact/tree/main/my-app/src/components/Aula%204"
+            >Clique aqui</a
+          >
         </div>
       </div>
-    </div>
+    </main>
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>

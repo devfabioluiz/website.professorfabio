@@ -3,190 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>React Fragments, Portals e Refs</title>
+    <title>Aula 9 - React - IT Step</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
     <header>
       <h1>Aula 9</h1>
       <h4 style="text-align: center">React</h4>
-      <h4 style="text-align: center">Fragments, Portals, Refs e Hooks</h4>
+      <h4 style="text-align: center">Roteamento no React</h4>
     </header>
-    <main class="container">
-      <div class="texto-impirmir">
-        <h1>Portals e Refs</h1>
-
-        <h2>Portals</h2>
-        <p>
-          Portals permitem renderizar componentes em um nó do DOM diferente do
-          pai React, útil para modais, tooltips, etc.
-        </p>
-        <p>Exemplo criando um modal renderizado fora da hierarquia:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-function Modal({ children }) {
-  return ReactDOM.createPortal(
-    &lt;div className="modal"&gt;
-      {children}
-    &lt;/div&gt;,
-    document.getElementById('modal-root')
-  );
-}
-
-function App() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Minha aplicação&lt;/h1&gt;
-      &lt;Modal&gt;
-        &lt;p&gt;Conteúdo do modal&lt;/p&gt;
-      &lt;/Modal&gt;
-    &lt;/div&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-
-        <h2>Referências (Refs)</h2>
-        <p>
-          Refs permitem acessar diretamente elementos DOM ou componentes para
-          manipulação imperativa, como foco em inputs.
-        </p>
-        <p>Exemplo com foco em input:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React, { useRef } from 'react';
-
-function Formulario() {
-  const inputRef = useRef(null);
-
-  function focarInput() {
-    inputRef.current.focus();
-  }
-
-  return (
-    &lt;&gt;
-      &lt;input ref={inputRef} type="text" /&gt;
-      &lt;button onClick={focarInput}&gt;Focar input&lt;/button&gt;
-    &lt;/&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-
-        <h2>useEffect</h2>
-        <p>
-          Hook para executar efeitos colaterais, como chamadas a APIs ou
-          manipulação do DOM, executa após a renderização.
-        </p>
-        <p>Exemplo atualizando título da página quando o contador muda:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React, { useState, useEffect } from 'react';
-
-function Contador() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() =&gt; {
-    document.title = `Você clicou ${count} vezes`;
-  }, [count]);
-
-  return (
-    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
-      Clique aqui
-    &lt;/button&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-
-        <h2>useReducer</h2>
-        <p>
-          Hook para gerenciamento de estado complexo, similar ao Redux, com
-          dispatch e reducer.
-        </p>
-        <p>Exemplo simples de contador com useReducer:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React, { useReducer } from 'react';
-
-const initialState = { count: 0 };
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'increment':
-      return { count: state.count + 1 };
-    case 'decrement':
-      return { count: state.count - 1 };
-    default:
-      return state;
-  }
-}
-
-function Contador() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    &lt;&gt;
-      &lt;p&gt;Contagem: {state.count}&lt;/p&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: 'increment' })}&gt;+&lt;/button&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: 'decrement' })}&gt;-&lt;/button&gt;
-    &lt;/&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-
-        <h2>Context API e useContext</h2>
-        <p>
-          Context API permite compartilhar dados globais sem passar props em
-          todos os níveis. useContext consome o contexto facilmente.
-        </p>
-        <p>Exemplo simples de tema compartilhado com Context:</p>
-        <div class="example">
-          <h3>Exemplo:</h3>
-          <div class="code-container">
-            <pre><code>
-import React, { createContext, useContext } from 'react';
-
-const TemaContext = createContext('claro');
-
-function Painel() {
-  const tema = useContext(TemaContext);
-  return &lt;div&gt;Tema atual: {tema}&lt;/div&gt;;
-}
-
-function App() {
-  return (
-    &lt;TemaContext.Provider value="escuro"&gt;
-      &lt;Painel /&gt;
-    &lt;/TemaContext.Provider&gt;
-  );
-}
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </div>
-      </div>
-    </main>
+    <main class="container"></main>
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
