@@ -61,18 +61,18 @@ function FormularioControlado() {
   const [nome, setNome] = useState("");
 
   const handleChange = (e) => {
-    setNome(e.target.value); // Atualiza o estado com o valor do campo
+    setNome(e.target.value);
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Evita o recarregamento da página
-    alert(\`Nome enviado: \${nome}\`);
+    e.preventDefault();
+    alert(`Olá, ${nome}`);
   };
 
   return (
     &lt;form onSubmit={handleSubmit}&gt;
       &lt;label&gt;
-        Nome:
+        Escreva aqui o seu nome:
         &lt;input
           type="text"
           value={nome}
@@ -112,7 +112,7 @@ function FormularioMultiCampos() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(\`Nome: \${formData.nome}, Email: \${formData.email}\`);
+    alert(`Nome: ${formData.nome}, Email: ${formData.email}`);
   };
 
   return (
