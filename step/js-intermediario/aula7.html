@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JavaScript: Objeto Math e Array</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
     <header>
@@ -20,123 +25,145 @@
       </p>
 
       <h4>Propriedades do Math</h4>
-      <p>
-        <code>Math.PI</code>: Representa o valor de π (3.14159...).
-      </p>
-      <div class="code-container"><pre><code>console.log(Math.PI); // 3.141592653589793</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+      <p><code>Math.PI</code>: Representa o valor de π (3.14159...).</p>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.PI); // 3.141592653589793</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <p><code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).</p>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.E); // 2.718281828459045</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <p>
-          <code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).
-        </p>
-        <div class="code-container"><pre><code>console.log(Math.E); // 2.718281828459045</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-
-        <h4>Arredondamentos</h4>
-<div class="code-container"><pre><code>console.log(Math.round(4.5)); // 5
+      <h4>Arredondamentos</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.round(4.5)); // 5
 console.log(Math.ceil(4.2)); // 5
 console.log(Math.floor(4.8)); // 4
-</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h4>Potência e Raiz Quadrada</h4>
-<div class="code-container"><pre><code>console.log(Math.pow(2, 3)); // 8
+      <h4>Potência e Raiz Quadrada</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.pow(2, 3)); // 8
 console.log(Math.sqrt(16)); // 4
-</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h4>Máximo e Mínimo</h4>
-<div class="code-container"><pre><code>console.log(Math.max(10, 20, 30)); // 30
+      <h4>Máximo e Mínimo</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.max(10, 20, 30)); // 30
 console.log(Math.min(10, 20, 30)); // 10
-</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h4>Números Aleatórios</h4>
-<div class="code-container"><pre><code>console.log(Math.random()); // Exemplo: 0.823
+      <h4>Números Aleatórios</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.random()); // Exemplo: 0.823
 console.log(Math.random() * 10); // Exemplo: 8.23
-</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-        <h4>Trigonometria</h4>
-<div class="code-container"><pre><code>console.log(Math.sin(Math.PI / 2)); // 1
-console.log(Math.cos(Math.PI)); // -1</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <h4>Trigonometria</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">console.log(Math.sin(Math.PI / 2)); // 1
+console.log(Math.cos(Math.PI)); // -1</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h2>Array</h2>
       <p>
-        O <code>Array</code> armazena coleções de elementos, como
-        números, strings e objetos.
+        O <code>Array</code> armazena coleções de elementos, como números,
+        strings e objetos.
       </p>
 
       <h4>Criação de Arrays</h4>
-        <p>
-          Com colchetes:
-          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
-console.log(numeros); // [1, 2, 3]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-        </p>
-        <p>
-          Com o construtor:
-<div class="code-container"><pre><code>const letras = new Array('a', 'b', 'c');
-console.log(letras); // ["a", "b", "c"]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-        </p>
+      <p>Com colchetes:</p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
+const numeros = [1, 2, 3];
+console.log(numeros); // [1, 2, 3]
+</code>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Com o construtor:</p>
+      <div class="code-container">
+        <pre><code class="language-javascript">const letras = new Array('a', 'b', 'c');
+console.log(letras); // ["a", "b", "c"]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Adicionar/Remover Elementos (push e pop)</h4>
-          <div class="code-container"><pre><code>const frutas = ["maçã", "banana"];
+      <div class="code-container">
+        <pre><code class="language-javascript">const frutas = ["maçã", "banana"];
 frutas.push("laranja"); // ["maçã", "banana", "laranja"]
-frutas.pop(); // ["maçã", "banana"]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+frutas.pop(); // ["maçã", "banana"]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
       <h4>Ordenação (sort e reverse)</h4>
-<div class="code-container"><pre><code>const numeros = [3, 1, 2];
+      <div class="code-container">
+        <pre><code class="language-javascript">const numeros = [3, 1, 2];
 numeros.sort(); // [1, 2, 3]
-numeros.reverse(); // [3, 2, 1]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+numeros.reverse(); // [3, 2, 1]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h4>Buscar Elemento (indexOf e includes)</h4>
-<div class="code-container"><pre><code>const frutas = ["maçã", "banana"];
+      <h4>Buscar Elemento (indexOf e includes)</h4>
+      <div class="code-container">
+        <pre><code class="language-javascript">const frutas = ["maçã", "banana"];
 console.log(frutas.indexOf("banana")); // 1
-console.log(frutas.includes("laranja")); // false</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+console.log(frutas.includes("laranja")); // false</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h4>Iteração (for, for...in, for...of e forEach)</h4>
-        <p>
-          O JavaScript oferece diversas formas de iterar sobre arrays, objetos
-          ou outros iteráveis. Aqui estão as principais: <code>for</code>, 
-          <code>for...in</code>, <code>for...of</code>, e <code>forEach</code>. 
-          Cada uma delas tem usos específicos.
-        </p>
+      <h4>Iteração (for, for...in, for...of e forEach)</h4>
+      <p>
+        O JavaScript oferece diversas formas de iterar sobre arrays, objetos ou
+        outros iteráveis. Aqui estão as principais: <code>for</code>,
+        <code>for...in</code>, <code>for...of</code>, e <code>forEach</code>.
+        Cada uma delas tem usos específicos.
+      </p>
 
-        <h3>for</h3>
-        <p>
-          O laço <code>for</code> é a forma mais básica e flexível de iterar. 
-          Ele permite controle total sobre o início, fim e incremento do laço. 
-        </p>
-        <p>
-          Útil para iteração em arrays ou listas e controlar totalmente o índice
-        </p>
-        <div class="code-container"><pre>
-<code>
+      <h3>for</h3>
+      <p>
+        O laço <code>for</code> é a forma mais básica e flexível de iterar. Ele
+        permite controle total sobre o início, fim e incremento do laço.
+      </p>
+      <p>
+        Útil para iteração em arrays ou listas e controlar totalmente o índice
+      </p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 for (let i = 0; i &lt; 5; i++) {
   console.log(i); // Imprime 0, 1, 2, 3, 4
 }
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h3>for...in</h3>
-        <p>
-          O laço <code>for...in</code> é usado para iterar sobre as chaves de um 
-          objeto ou os índices de um array.
-        </p>
-        <p>
-          Útil para iterar sobre as propriedades de um objeto.
-        </p>
-        <p>
-          <strong>Não recomendado para arrays</strong>, pois pode incluir propriedades herdadas.
-        </p>
-        <div class="code-container"><pre>
-<code>
+      <h3>for...in</h3>
+      <p>
+        O laço <code>for...in</code> é usado para iterar sobre as chaves de um
+        objeto ou os índices de um array.
+      </p>
+      <p>Útil para iterar sobre as propriedades de um objeto.</p>
+      <p>
+        <strong>Não recomendado para arrays</strong>, pois pode incluir
+        propriedades herdadas.
+      </p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const obj = { a: 1, b: 2, c: 3 };
 
 for (const key in obj) {
@@ -147,35 +174,38 @@ for (const key in obj) {
 // b: 2
 // c: 3
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h3>for...of</h3>
-        <p>
-          O laço <code>for...of</code> é usado para iterar sobre elementos de 
-          objetos iteráveis (arrays, strings, sets, maps, etc.).
-        </p>
-        <p>
-          Útil para iterar diretamente sobre os valores de arrays ou strings.
-        </p>
-        <div class="code-container"><pre>
-<code>
+      <h3>for...of</h3>
+      <p>
+        O laço <code>for...of</code> é usado para iterar sobre elementos de
+        objetos iteráveis (arrays, strings, sets, maps, etc.).
+      </p>
+      <p>Útil para iterar diretamente sobre os valores de arrays ou strings.</p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const arr = ["a", "b", "c"];
 
 for (const value of arr) {
   console.log(value); // Imprime "a", "b", "c"
 }
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h3>forEach</h3>
-        <p>
-          O método <code>forEach</code> é usado para iterar sobre arrays, 
-          executando uma função callback para cada elemento. É mais legível para funções simples.
-        </p>
-        <div class="code-container"><pre>
-<code>
+      <h3>forEach</h3>
+      <p>
+        O método <code>forEach</code> é usado para iterar sobre arrays,
+        executando uma função callback para cada elemento. É mais legível para
+        funções simples.
+      </p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const arr = [1, 2, 3];
 
 arr.forEach((value, index) => {
@@ -186,68 +216,73 @@ arr.forEach((value, index) => {
 // Index: 1, Value: 2
 // Index: 2, Value: 3
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
-
-        <h3>Considerações de Uso (for, for...in, for...of e forEach)</h3>
-        <ul>
-          <li>
-            Use <code>for</code> quando precisar de controle total sobre o laço.
-          </li>
-          <li>
-            Use <code>for...in</code> apenas para objetos. Não é recomendado 
-            para arrays.
-          </li>
-          <li>
-            Use <code>for...of</code> para iterar sobre valores de iteráveis.
-          </li>
-          <li>
-            Use <code>forEach</code> para operações simples em arrays, mas lembre-se 
-            de que ele não suporta <code>break</code> ou <code>continue</code>.
-          </li>
-        </ul>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
       </div>
 
-        <h4>Transformar Arrays </h4>
-        <p>
-          O método <code>map()</code> cria um novo array aplicando uma função de transformação a cada elemento de um array existente, sem alterar o array original. Não altera o array original. Logo, retorna um novo array. 
-        </p>
-        <p>
-          Estrutura: Recebe três argumentos:
-            <ul>
-              <li><code>element</code>: O elemento atual sendo processado.</li>
-              <li><code>index</code>: O índice do elemento atual.</li>
-              <li><code>array</code>: O array original.</li>
-            </ul>
-        </p>
+      <h3>Considerações de Uso (for, for...in, for...of e forEach)</h3>
+      <ul>
+        <li>
+          Use <code>for</code> quando precisar de controle total sobre o laço.
+        </li>
+        <li>
+          Use <code>for...in</code> apenas para objetos. Não é recomendado para
+          arrays.
+        </li>
+        <li>
+          Use <code>for...of</code> para iterar sobre valores de iteráveis.
+        </li>
+        <li>
+          Use <code>forEach</code> para operações simples em arrays, mas
+          lembre-se de que ele não suporta <code>break</code> ou
+          <code>continue</code>.
+        </li>
+      </ul>
 
-        <h5>Exemplo 1</h5>
-        <div class="code-container"><pre>
-<code>
+      <h4>Transformar Arrays</h4>
+      <p>
+        O método <code>map()</code> cria um novo array aplicando uma função de
+        transformação a cada elemento de um array existente, sem alterar o array
+        original. Não altera o array original. Logo, retorna um novo array.
+      </p>
+      <p>Estrutura: Recebe três argumentos:</p>
+      <ul>
+        <li><code>element</code>: O elemento atual sendo processado.</li>
+        <li><code>index</code>: O índice do elemento atual.</li>
+        <li><code>array</code>: O array original.</li>
+      </ul>
+      <h5>Exemplo 1</h5>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const numbers = [1, 2, 3, 4, 5];
 
 // Transformar cada número multiplicando por 2
 const doubled = numbers.map(num => num * 2);
 console.log(doubled); // [2, 4, 6, 8, 10]
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 2</h5>
-        <div class="code-container"><pre>
-<code>
+      <h5>Exemplo 2</h5>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const names = ["Alice", "Bob", "Charlie"];
 
 // Transformar cada nome em caixa alta
 const upperCaseNames = names.map(name => name.toUpperCase());
 console.log(upperCaseNames); // ["ALICE", "BOB", "CHARLIE"]
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 3</h5>
-        <div class="code-container"><pre>
-<code>
+      <h5>Exemplo 3</h5>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const users = [
   { id: 1, name: "Alice", age: 25 },
   { id: 2, name: "Bob", age: 30 },
@@ -258,24 +293,28 @@ const users = [
 const userNames = users.map(user => user.name);
 console.log(userNames); // ["Alice", "Bob", "Charlie"]
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 4 (Usando index)</h5>
-        <div class="code-container"><pre>
-<code>
+      <h5>Exemplo 4 (Usando index)</h5>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const numbers = [10, 20, 30, 40, 50];
 
 // Adicionar o índice ao valor de cada número
 const indexedNumbers = numbers.map((num, index) => num + index);
 console.log(indexedNumbers); // [10, 21, 32, 43, 54]
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 5</h5>
-        <div class="code-container"><pre>
-<code>
+      <h5>Exemplo 5</h5>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const items = ["apple", "banana", "cherry"];
 
 // Transformar cada item em um objeto
@@ -290,50 +329,191 @@ console.log(itemObjects);
 //   { id: 3, name: "cherry" }
 // ]
 </code>
-        </pre><button class="btn-copy">Copiar Código</button>
-</div>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <h5>Exemplo 6</h5>
-          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
+      <h5>Exemplo 6</h5>
+      <div class="code-container">
+        <pre><code class="language-javascript">const numeros = [1, 2, 3];
 const dobrados = numeros.map((n) => n * 2); // [2, 4, 6]
-const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
+const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <p>
-          
-            Observação:
-          
-          O <code>map()</code> não retorna valores explicitamente.
-        </p>
-        <p>
-          Caso queira usar map() sem necessidade de transformar dados, prefira <code>forEach()</code> para casos sem retorno.
-        </p>
-            <div class="code-container"><pre>
-<code>
+      <p>
+        Observação: O <code>map()</code> não retorna valores explicitamente.
+      </p>
+      <p>
+        Caso queira usar map() sem necessidade de transformar dados, prefira
+        <code>forEach()</code> para casos sem retorno.
+      </p>
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
 const result = [1, 2, 3].map(num => {
   num * 2; // Sem retorno explícito
 });
 console.log(result); // [undefined, undefined, undefined]
 </code>
-            </pre><button class="btn-copy">Copiar Código</button>
-</div>
+            </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-        <li>
-          Reduzir o Array
-          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
-const soma = numeros.reduce((acum, atual) => acum + atual, 0);
-console.log(soma); // 6</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-        </li>
-
-        <li>
-          Clonar ou Combinar Arrays
-          <div class="code-container"><pre><code>const numeros = [1, 2, 3];
-const clonados = [...numeros]; // [1, 2, 3]
-const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre><button class="btn-copy">Copiar Código</button>
-</div>
-        </li>
+      <h4>Reduzir o Array</h4>
+      <p>
+        O método reduce() em JavaScript é usado para iterar sobre um array e
+        reduzir seus elementos a um único valor, aplicando uma função
+        acumuladora. Ele processa cada elemento do array, acumulando um
+        resultado ao longo do caminho.
+      </p>
+      <div class="code-container">
+        <pre>
+<code>
+array.reduce(callback, valorInicial);
+</code>
+            </pre>
+      </div>
+      <ul>
+        <li>callback: A função que recebe quatro parâmetros principais:</li>
+        <ul>
+          <li>acumulador: O valor acumulado até o momento.</li>
+          <li>atual: O elemento atual sendo processado.</li>
+          <li>índice (opcional): O índice do elemento atual.</li>
+          <li>array (opcional): O array original.</li>
+        </ul>
+        <li>valorInicial: (Opcional) O valor inicial do acumulador.</li>
       </ul>
+      <h5>Exemplo 1</h5>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+const numeros = [1, 2, 3];
+const soma = numeros.reduce((acum, atual) => acum + atual, 0);
+console.log(soma); // 6</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h5>Exemplo 2</h5>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+const numeros = [10, 20, 30, 40];
+const resumo = numeros.reduce((acumulador, atual, indice, array) => {
+  console.log(`Índice: ${indice}, Atual: ${atual}, Acumulador: ${acumulador}, Array: ${array}`);
+
+  // Atualiza o acumulador
+  acumulador.soma += atual;
+  acumulador.elementos.push(`Índice ${indice}: ${atual}`);
+  acumulador.media = acumulador.soma / (indice + 1);
+
+  return acumulador;
+}, { soma: 0, elementos: [], media: 0 });
+
+console.log('Resumo Final:', resumo);
+          </code>
+        </pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <div class="code-container">
+        <pre>
+<code class="language-javascript">
+const numeros = [1, 2, 3];
+const clonados = [...numeros]; // [1, 2, 3]
+const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Clonando Arrays</h4>
+      <p>
+        Clonar um array significa criar uma cópia exata do array original. Uma
+        forma eficiente e moderna de fazer isso é utilizando o
+        <strong>spread operator</strong> (<code>...</code>).
+      </p>
+
+      <h5>Exemplo</h5>
+      <div class="code-container">
+        <pre><code>const original = [1, 2, 3];
+const clone = [...original];
+console.log(clone); // [1, 2, 3]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <p>
+        Esse método cria uma cópia superficial do array. Se o array contiver
+        objetos, as referências desses objetos serão copiadas, e não os objetos
+        em si.
+      </p>
+
+      <h4>Combinando Arrays</h4>
+      <p>
+        Para combinar arrays, podemos usar o
+        <strong>spread operator</strong> para espalhar os elementos de vários
+        arrays em um novo array.
+      </p>
+
+      <h5>Exemplo</h5>
+      <div class="code-container">
+        <pre><code>const array1 = [1, 2];
+const array2 = [3, 4];
+const combined = [...array1, ...array2];
+console.log(combined); // [1, 2, 3, 4]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+      <p>É possível adicionar elementos adicionais durante a combinação:</p>
+      <div class="code-container">
+        <pre><code>const combinedWithExtras = [...array1, 'extra', ...array2];
+console.log(combinedWithExtras); // [1, 2, "extra", 3, 4]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Spread Operator</h3>
+      <p>
+        O <strong>spread operator</strong> (<code>...</code>) é uma
+        funcionalidade poderosa introduzida no ES6 que permite espalhar
+        elementos de um array, objeto ou string em um novo contexto. Abaixo
+        estão suas principais aplicações:
+      </p>
+
+      <h4>Clonar Arrays</h4>
+      <p>
+        Como mencionado anteriormente, é uma maneira simples e eficaz de criar
+        uma cópia de um array.
+      </p>
+
+      <h4>Combinar Arrays</h4>
+      <p>Permite mesclar múltiplos arrays em um único array.</p>
+
+      <h4>Dividir Strings em Caracteres</h4>
+      <div class="code-container">
+        <pre><code>const string = "Hello";
+const characters = [...string];
+console.log(characters); // ["H", "e", "l", "l", "o"]</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Passar Elementos de Arrays como Argumentos de Funções</h4>
+      <div class="code-container">
+        <pre><code>const numbers = [1, 2, 3];
+console.log(Math.max(...numbers)); // 3</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Clonar Objetos</h4>
+      <p>Também pode ser usado para clonar objetos:</p>
+      <div class="code-container">
+        <pre><code>const originalObj = { a: 1, b: 2 };
+const cloneObj = { ...originalObj };
+console.log(cloneObj); // { a: 1, b: 2 }</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Combinar Objetos</h4>
+      <div class="code-container">
+        <pre><code>const obj1 = { a: 1 };
+const obj2 = { b: 2 };
+const combinedObj = { ...obj1, ...obj2 };
+console.log(combinedObj); // { a: 1, b: 2 }</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
     </main>
     <footer>
       <div class="button-container">
@@ -342,7 +522,7 @@ const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre><button cla
       <div class="button-container">
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
-        </footer>
+    </footer>
     <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
