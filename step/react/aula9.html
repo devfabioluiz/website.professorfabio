@@ -16,17 +16,20 @@
         width: 100%;
         margin-top: 20px;
       }
+
       th,
       td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
       }
+
       th {
         background-color: #f2f2f2;
       }
     </style>
   </head>
+
   <body>
     <header>
       <h1>Aula 9</h1>
@@ -179,8 +182,123 @@ export default Home;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <h4>Rotas Aninhadas</h4>
+        <p>
+          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
+        </p>
+        <p>
+          Inclui um <Outlet /> onde serão renderizados os componentes das rotas
+          filhas (Profile ou Settings).
+        </p>
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+import { Outlet } from 'react-router-dom';
+
+// Crie um arquivo chamado Dashboard.jsx
+const Dashboard = () => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard &lt/h1&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Dashboard;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+// Crie um arquivo chamado Profile.jsx
+const Profile = () => {
+  return  &lt;h1&gt;Perfil &lt/h1&gt;;
+}
+
+export default Profile;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+
+// Crie um arquivo chamado Settings.jsx
+const Settings = () => {
+  return &lt;h1&gt;Configurações&lt;/h1&gt;
+}
+
+export default Settings;
+    </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import Settings from "./components/Settings";
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/dashboard" element={ &ltDashboard /&gt;}&gt;
+          &lt;Route path="profile" element={ &ltProfile /&gt;} /&gt;
+          &lt;Route path="settings" element={ &ltSettings /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Logo, temos como definidas as rotas:</p>
+        <ul>
+          <li>/dashboard: Renderiza o componente Dashboard.</li>
+          <li>
+            /dashboard/profile: Renderiza Profile dentro de Dashboard (graças ao
+            <code> &lt;Outlet /&gt;). </code>
+          </li>
+
+          <li>/dashboard/settings: Renderiza Settings dentro de Dashboard.</li>
+        </ul>
+
         <h4>Rotas Protegidas</h4>
         <p>Controle de acesso baseado em autenticação</p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { useNavigate } from "react-router-dom";
+
+//crie um arquivo chamado Login.jsx
+const Login = () => {
+  const navigate = useNavigate();
+  return (
+    &lt;button onClick={() => navigate("/home")}&gt;Clique para se logar&lt;/button&gt;
+  );
+};
+
+export default Login;
+
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
@@ -247,47 +365,8 @@ const App = () => {
           resultado
         </p>
 
-        <!-- <h4>Rotas Aninhadas</h4>
-        <p>
-          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
-        </p>
-        <div class="code-container">
-          <pre>
-            <code class="language-javascript">
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-
-const Dashboard() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Dashboard&lt;/h1&gt;
-      &lt;Outlet /&gt;
-    &lt;/div&gt;
-  );
-}
-
-const Profile() {
-  return <h1>Perfil</h1>;
-}
-
-const Settings() {
-  return <h1>Configurações</h1>;
-}
-
-const App = () => {
-  return (
-    &lt;BrowserRouter&gt;
-      &lt;Routes&gt;
-        &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
-          &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
-          &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
-        &lt;/Route&gt;
-      &lt;/Routes&gt;
-    &lt;/BrowserRouter&gt;
-  );
-}
-            </code>
-          </pre>
-        </div> -->
+        <!-- 
+          -->
 
         <h4>Comparativo das Abordagens</h4>
         <table>
