@@ -27,51 +27,51 @@
       <h4>Propriedades do Math</h4>
       <p><code>Math.PI</code>: Representa o valor de π (3.14159...).</p>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.PI); // 3.141592653589793</code></pre>
+        <pre><code class="language-javascript">console.log(Math.PI); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
       <p><code>Math.E</code>: Base do logaritmo natural (e ~ 2.718).</p>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.E); // 2.718281828459045</code></pre>
+        <pre><code class="language-javascript">console.log(Math.E);</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Arredondamentos</h4>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.round(4.5)); // 5
-console.log(Math.ceil(4.2)); // 5
-console.log(Math.floor(4.8)); // 4
+        <pre><code class="language-javascript">console.log(Math.round(4.5)); 
+console.log(Math.ceil(4.2)); 
+console.log(Math.floor(4.8)); 
 </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Potência e Raiz Quadrada</h4>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.pow(2, 3)); // 8
-console.log(Math.sqrt(16)); // 4
+        <pre><code class="language-javascript">console.log(Math.pow(2, 3)); 
+console.log(Math.sqrt(16)); 
 </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Máximo e Mínimo</h4>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.max(10, 20, 30)); // 30
-console.log(Math.min(10, 20, 30)); // 10
+        <pre><code class="language-javascript">console.log(Math.max(10, 20, 30)); 
+console.log(Math.min(10, 20, 30)); 
 </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Números Aleatórios</h4>
       <div class="code-container">
-        <pre><code class="language-javascript">console.log(Math.random()); // Exemplo: 0.823
-console.log(Math.random() * 10); // Exemplo: 8.23
+        <pre><code class="language-javascript">console.log(Math.random()); 
+console.log(Math.random() * 10); 
 </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
       <h4>Trigonometria</h4>
       <div class="code-container">
         <pre><code class="language-javascript">console.log(Math.sin(Math.PI / 2)); // 1
-console.log(Math.cos(Math.PI)); // -1</code></pre>
+console.log(Math.cos(Math.PI)); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -87,7 +87,7 @@ console.log(Math.cos(Math.PI)); // -1</code></pre>
         <pre>
 <code class="language-javascript">
 const numeros = [1, 2, 3];
-console.log(numeros); // [1, 2, 3]
+console.log(numeros); 
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -96,31 +96,32 @@ console.log(numeros); // [1, 2, 3]
       <p>Com o construtor:</p>
       <div class="code-container">
         <pre><code class="language-javascript">const letras = new Array('a', 'b', 'c');
-console.log(letras); // ["a", "b", "c"]</code></pre>
+console.log(letras); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Adicionar/Remover Elementos (push e pop)</h4>
       <div class="code-container">
         <pre><code class="language-javascript">const frutas = ["maçã", "banana"];
-frutas.push("laranja"); // ["maçã", "banana", "laranja"]
-frutas.pop(); // ["maçã", "banana"]</code></pre>
+frutas.push("laranja"); 
+frutas.pop(); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Ordenação (sort e reverse)</h4>
       <div class="code-container">
         <pre><code class="language-javascript">const numeros = [3, 1, 2];
-numeros.sort(); // [1, 2, 3]
-numeros.reverse(); // [3, 2, 1]</code></pre>
+numeros.sort(); 
+numeros.reverse(); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Buscar Elemento (indexOf e includes)</h4>
       <div class="code-container">
         <pre><code class="language-javascript">const frutas = ["maçã", "banana"];
-console.log(frutas.indexOf("banana")); // 1
-console.log(frutas.includes("laranja")); // false</code></pre>
+console.log(frutas.indexOf("banana")); 
+console.log(frutas.includes("laranja")); 
+</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -144,7 +145,7 @@ console.log(frutas.includes("laranja")); // false</code></pre>
         <pre>
 <code class="language-javascript">
 for (let i = 0; i &lt; 5; i++) {
-  console.log(i); // Imprime 0, 1, 2, 3, 4
+  console.log(i); 
 }
 </code>
         </pre>
@@ -169,10 +170,6 @@ const obj = { a: 1, b: 2, c: 3 };
 for (const key in obj) {
   console.log(\`\${key}: \${obj[key]}\`);
 }
-// Imprime:
-// a: 1
-// b: 2
-// c: 3
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -190,7 +187,7 @@ for (const key in obj) {
 const arr = ["a", "b", "c"];
 
 for (const value of arr) {
-  console.log(value); // Imprime "a", "b", "c"
+  console.log(value); 
 }
 </code>
         </pre>
@@ -211,10 +208,6 @@ const arr = [1, 2, 3];
 arr.forEach((value, index) => {
   console.log(\`Index: \${index}, Value: \${value}\`);
 });
-// Imprime:
-// Index: 0, Value: 1
-// Index: 1, Value: 2
-// Index: 2, Value: 3
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -259,7 +252,7 @@ const numbers = [1, 2, 3, 4, 5];
 
 // Transformar cada número multiplicando por 2
 const doubled = numbers.map(num => num * 2);
-console.log(doubled); // [2, 4, 6, 8, 10]
+console.log(doubled); 
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -273,7 +266,7 @@ const names = ["Alice", "Bob", "Charlie"];
 
 // Transformar cada nome em caixa alta
 const upperCaseNames = names.map(name => name.toUpperCase());
-console.log(upperCaseNames); // ["ALICE", "BOB", "CHARLIE"]
+console.log(upperCaseNames); 
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -291,7 +284,7 @@ const users = [
 
 // Extraindo apenas os nomes
 const userNames = users.map(user => user.name);
-console.log(userNames); // ["Alice", "Bob", "Charlie"]
+console.log(userNames); 
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -305,7 +298,7 @@ const numbers = [10, 20, 30, 40, 50];
 
 // Adicionar o índice ao valor de cada número
 const indexedNumbers = numbers.map((num, index) => num + index);
-console.log(indexedNumbers); // [10, 21, 32, 43, 54]
+console.log(indexedNumbers); 
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -323,11 +316,6 @@ const itemObjects = items.map((item, index) => ({
   name: item
 }));
 console.log(itemObjects);
-// [
-//   { id: 1, name: "apple" },
-//   { id: 2, name: "banana" },
-//   { id: 3, name: "cherry" }
-// ]
 </code>
         </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -336,8 +324,9 @@ console.log(itemObjects);
       <h5>Exemplo 6</h5>
       <div class="code-container">
         <pre><code class="language-javascript">const numeros = [1, 2, 3];
-const dobrados = numeros.map((n) => n * 2); // [2, 4, 6]
-const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
+const dobrados = numeros.map((n) => n * 2); 
+const pares = numeros.filter((n) => n % 2 === 0); 
+</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -352,9 +341,9 @@ const pares = numeros.filter((n) => n % 2 === 0); // [2]</code></pre>
         <pre>
 <code class="language-javascript">
 const result = [1, 2, 3].map(num => {
-  num * 2; // Sem retorno explícito
+  num * 2; 
 });
-console.log(result); // [undefined, undefined, undefined]
+console.log(result); 
 </code>
             </pre>
         <button class="btn-copy">Copiar Código</button>
@@ -389,7 +378,8 @@ array.reduce(callback, valorInicial);
         <pre><code class="language-javascript">
 const numeros = [1, 2, 3];
 const soma = numeros.reduce((acum, atual) => acum + atual, 0);
-console.log(soma); // 6</code></pre>
+console.log(soma); 
+</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -414,15 +404,6 @@ console.log('Resumo Final:', resumo);
         <button class="btn-copy">Copiar Código</button>
       </div>
 
-      <div class="code-container">
-        <pre>
-<code class="language-javascript">
-const numeros = [1, 2, 3];
-const clonados = [...numeros]; // [1, 2, 3]
-const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
       <h4>Clonando Arrays</h4>
       <p>
         Clonar um array significa criar uma cópia exata do array original. Uma
@@ -434,7 +415,7 @@ const combinado = [...numeros, 4, 5]; // [1, 2, 3, 4, 5]</code></pre>
       <div class="code-container">
         <pre><code>const original = [1, 2, 3];
 const clone = [...original];
-console.log(clone); // [1, 2, 3]</code></pre>
+console.log(clone);</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
       <p>
@@ -455,13 +436,13 @@ console.log(clone); // [1, 2, 3]</code></pre>
         <pre><code>const array1 = [1, 2];
 const array2 = [3, 4];
 const combined = [...array1, ...array2];
-console.log(combined); // [1, 2, 3, 4]</code></pre>
+console.log(combined);</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
       <p>É possível adicionar elementos adicionais durante a combinação:</p>
       <div class="code-container">
         <pre><code>const combinedWithExtras = [...array1, 'extra', ...array2];
-console.log(combinedWithExtras); // [1, 2, "extra", 3, 4]</code></pre>
+console.log(combinedWithExtras);</code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -486,14 +467,14 @@ console.log(combinedWithExtras); // [1, 2, "extra", 3, 4]</code></pre>
       <div class="code-container">
         <pre><code>const string = "Hello";
 const characters = [...string];
-console.log(characters); // ["H", "e", "l", "l", "o"]</code></pre>
+console.log(characters); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
       <h4>Passar Elementos de Arrays como Argumentos de Funções</h4>
       <div class="code-container">
         <pre><code>const numbers = [1, 2, 3];
-console.log(Math.max(...numbers)); // 3</code></pre>
+console.log(Math.max(...numbers)); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -502,7 +483,7 @@ console.log(Math.max(...numbers)); // 3</code></pre>
       <div class="code-container">
         <pre><code>const originalObj = { a: 1, b: 2 };
 const cloneObj = { ...originalObj };
-console.log(cloneObj); // { a: 1, b: 2 }</code></pre>
+console.log(cloneObj); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
 
@@ -511,7 +492,7 @@ console.log(cloneObj); // { a: 1, b: 2 }</code></pre>
         <pre><code>const obj1 = { a: 1 };
 const obj2 = { b: 2 };
 const combinedObj = { ...obj1, ...obj2 };
-console.log(combinedObj); // { a: 1, b: 2 }</code></pre>
+console.log(combinedObj); </code></pre>
         <button class="btn-copy">Copiar Código</button>
       </div>
     </main>

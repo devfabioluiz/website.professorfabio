@@ -51,18 +51,39 @@
         <div class="code-container">
           <pre>
           <code class="language-javascript">
-import React from 'react';
+//crie um arquivo chamado Home.jsx
+const Home = () => {
+  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;
+};
+
+export default Home;
+
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
+//crie um arquivo chamado About.jsx
+const About = () => {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;
+};
+
+export default About;
+
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from "./components/Home";
+import About from "./components/About";
 
-function Home() {
-  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;;
-}
-
-function About() {
-  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
-}
-
-function App() {
+const App = () => {
   return (
     &lt;BrowserRouter&gt;
       &lt;Routes&gt;
@@ -83,18 +104,9 @@ export default App;
         <div class="code-container">
           <pre>
           <code class="language-javascript">
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function Home() {
-  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;;
-}
-
-function About() {
-  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
-}
-
-function App() {
+const App = () => {
   return (
     &lt;BrowserRouter&gt;
       &lt;Routes&gt;
@@ -117,14 +129,22 @@ export default App;
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
-
-function User() {
+//Crie um arquivo chamado User.jsx
+const User = () =>  {
   const { id } = useParams();
   return &lt;h1&gt;Usuário ID: {id}&lt;/h1&gt;;
 }
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-function App() {
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+
+const App = () => => {
   return (
     &lt;BrowserRouter&gt;
       &lt;Routes&gt;
@@ -135,48 +155,7 @@ function App() {
 }
             </code>
           </pre>
-        </div>
-
-        <h4>Rotas Aninhadas</h4>
-        <p>
-          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
-        </p>
-        <div class="code-container">
-          <pre>
-            <code class="language-javascript">
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-
-function Dashboard() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Dashboard&lt;/h1&gt;
-      &lt;Outlet /&gt;
-    &lt;/div&gt;
-  );
-}
-
-function Profile() {
-  return <h1>Perfil</h1>;
-}
-
-function Settings() {
-  return <h1>Configurações</h1>;
-}
-
-function App() {
-  return (
-    &lt;BrowserRouter&gt;
-      &lt;Routes&gt;
-        &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
-          &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
-          &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
-        &lt;/Route&gt;
-      &lt;/Routes&gt;
-    &lt;/BrowserRouter&gt;
-  );
-}
-            </code>
-          </pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h4>Navegação Programática</h4>
@@ -189,9 +168,9 @@ function App() {
             <code class="language-javascript">
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
+const Home = () => {
   const navigate = useNavigate();
-  return &lt;button onClick={() => navigate('/about')}&gt;Ir para Sobre&lt;/button/&gt;
+  return &lt;button onClick={() => navigate('/about')}&gt;Ir para Sobre&lt;/button&gt;
 }
 
 export default Home;
@@ -205,22 +184,51 @@ export default Home;
         <div class="code-container">
           <pre>
             <code class="language-javascript">
+import { useNavigate } from "react-router-dom";
+
+//crie um arquivo chamado Login.jsx
+const Login = () => {
+  const navigate = useNavigate();
+  return (
+    &lt;button onClick={() => navigate("/home")}&gt;Clique para se logar&lt;/button&gt;
+  );
+};
+
+export default Login;
+
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { Navigate } from "react-router-dom";
+
+//Crie um arquivo chamado PrivateRoute.jsx
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = true; // Simulação de autenticação
+  return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;
+}
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-function PrivateRoute({ children }) {
-  const isAuthenticated = true; // Simulação de autenticação
-  return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;;
-}
-
-function App() {
+const App = () => {
   return (
     &lt;BrowserRouter&gt;
       &lt;Routes&gt;
         &lt;Route
-          path="/dashboard"
+          path="/home"
           element={
             &lt;PrivateRoute&gt;
-              &lt;Dashboard /&gt;
+              &lt;Home /&gt;
             &lt;/PrivateRoute&gt;
           }
         /&gt;
@@ -233,6 +241,53 @@ function App() {
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <p>
+          Agora faça um teste de colocar isAuthenticated como false e veja o
+          resultado
+        </p>
+
+        <!-- <h4>Rotas Aninhadas</h4>
+        <p>
+          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
+        </p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+
+const Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+const Profile() {
+  return <h1>Perfil</h1>;
+}
+
+const Settings() {
+  return <h1>Configurações</h1>;
+}
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;}&gt;
+          &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
+          &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+        </div> -->
 
         <h4>Comparativo das Abordagens</h4>
         <table>
