@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciando nosso projeto Final - React</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Iniciando nosso projeto Final</h1>
+      <h4 style="text-align: center">React</h4>
+    </header>
+    <div class="container">
+      <h2>Configurando de TSX para JSX</h2>
+      <p>
+        Em virtude do template do Vite vir configurando com TSX, precisamos
+        remover os arquivos desnecessários para que o projeto funcione
+        corretamente além de configurar o TSX para JSX, pois nosso projeto será
+        apenas em React utilizando JavaScript (JSX).
+      </p>
+      <h4>1º Passo</h4>
+      <p>Remova os seguintes arquivos do projeto:</p>
+      <ul>
+        <li>
+          <b>tsconfig.json</b>
+        </li>
+        <li>
+          <b>tsconfig.node.json</b>
+        </li>
+        <li>
+          <b>tsconfig.app.json</b>
+        </li>
+      </ul>
+
+      <h4>2º Passo</h4>
+      <p>Renomeie os seguintes arquivos</p>
+      <ul>
+        <li>main.tsx para <b>main.jsx</b></li>
+        <li>App.tsx para <b>App.jsx</b></li>
+      </ul>
+
+      <h4>3º Passo</h4>
+      <p>Remova todo o código em main.jsx e coloque o seguinte:</p>
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
+<code>
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.js'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  &lt;StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/StrictMode&gt;,
+)
+</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </div>
+      <h4>4º Passo</h4>
+      <p>
+        Vá ao index.html e mude de main.tsx para main.jsx a referência abaixo
+      </p>
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
+<code>
+    &lt;div id="root"&gt;&lt;/div&gt;
+    // &lt;script type="module" src="/src/main.tsx"&gt;&lt;/script&gt; //
+    &lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;
+</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </div>
+
+      <h4>5º Passo</h4>
+      <p>Vá ao eslint.config.js e mude para o código abaixo</p>
+      <p>
+        Substitua na linha 11 de files: ['**/*.{ts,tsx}'] para
+        <b>files: ["**/*.{js,jsx}"],</b>
+      </p>
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
+<code>
+    files: ["**/*.{js,jsx}"],
+</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </div>
+
+      <h4>6º Passo</h4>
+      <p>Vá ao package.json e mude para o código abaixo</p>
+      <p>
+        Substitua na linha 8 de files: "build": "tsc -b && vite build", para
+        <b> "build": "vite build", </b>
+      </p>
+      <div class="code-container">
+        <div class="code-container">
+          <pre>
+<code>
+    files: ["**/*.{js,jsx}"],
+</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </div>
+
+      <h4>7º Passo</h4>
+      <p>Rode npm install e depois npm run dev</p>
+      <p>
+        Veja se seu projeto não vai dar nenhum erro no terminal e no navegador
+      </p>
+
+      <h4>8º Passo</h4>
+      <p>Faça o commit e push clicando no botão de commit e push do VS Code</p>
+    </div>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
