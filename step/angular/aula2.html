@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 de Angular - STEP</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 style="text-align: center">Angular</h4>
+      <h4 style="text-align: center">Como funciona o Angular</h4>
+    </header>
+    <main class="container">
+      <h2>Anatomia de uma Aplicação Angular</h2>
+      <section>
+        <p>Uma aplicação Angular é composta por:</p>
+        <ul>
+          <li>
+            <strong>Módulos:</strong> Unidades lógicas da aplicação que
+            organizam funcionalidades.
+          </li>
+          <li>
+            <strong>Componentes:</strong> As partes visuais da aplicação,
+            responsáveis pela interface do usuário.
+          </li>
+          <li>
+            <strong>Templates:</strong> HTML que define a aparência dos
+            componentes.
+          </li>
+          <li>
+            <strong>Serviços:</strong> Classes para lógica de negócios, como
+            chamadas de API.
+          </li>
+          <li>
+            <strong>Diretivas:</strong> Comandos que adicionam comportamento ao
+            DOM.
+          </li>
+        </ul>
+
+        <h3>Exemplo de Estrutura Básica</h3>
+        <pre><code>
+    @NgModule({
+      declarations: [
+        AppComponent, // Componente principal
+      ],
+      imports: [
+        BrowserModule, // Módulos necessários
+      ],
+      providers: [],
+      bootstrap: [AppComponent], // Inicialização da aplicação
+    })
+    export class AppModule {}
+    </code></pre>
+
+        <h2>Conceito de Módulo</h2>
+        <p>
+          Um módulo organiza a aplicação Angular em partes funcionais. O módulo
+          principal é o <code>AppModule</code>.
+        </p>
+
+        <h3>Exemplo de Módulo</h3>
+        <pre><code>
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { AppComponent } from './app.component';
+
+    @NgModule({
+      declarations: [AppComponent],
+      imports: [BrowserModule],
+      providers: [],
+      bootstrap: [AppComponent],
+    })
+    export class AppModule {}
+    </code></pre>
+      </section>
+
+      <h2>O que é um Componente?</h2>
+      <section>
+        <p>
+          Um componente é uma classe que controla uma parte da interface do
+          usuário. Ele é composto por:
+        </p>
+        <ul>
+          <li>HTML para a aparência.</li>
+          <li>CSS para o estilo.</li>
+          <li>TypeScript para a lógica.</li>
+        </ul>
+
+        <h3>Exemplo de Criação de Componente</h3>
+        <pre><code>
+    import { Component } from '@angular/core';
+
+    @Component({
+      selector: 'app-exemplo',
+      template: '&lt;h1&gt;Bem-vindo ao Angular!&lt;/h1&gt;',
+      styles: ['h1 { color: blue; }']
+    })
+    export class ExemploComponent {}
+    </code></pre>
+
+        <h3>Uso Prático</h3>
+        <p>
+          Para usar o componente <code>ExemploComponent</code>, basta
+          adicioná-lo ao módulo e incluí-lo no HTML:
+        </p>
+        <pre><code>
+    &lt;app-exemplo&gt;&lt;/app-exemplo&gt;
+    </code></pre>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

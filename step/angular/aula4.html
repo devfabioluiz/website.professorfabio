@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 de Angular - STEP</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 style="text-align: center">Angular</h4>
+      <h4 style="text-align: center">Data Binding, Pipes e Serviços</h4>
+    </header>
+    <main class="container">
+      <h2>Data Binding</h2>
+      <section>
+        <p>
+          <strong>Ligação de dados</strong> conecta o modelo (dados) à
+          visualização (interface de usuário). Existem quatro tipos principais:
+        </p>
+        <ul>
+          <li>
+            <strong>Interpolação (One-Way Binding):</strong> Exibe valores do
+            componente no template usando <code>{{ }}</code>.
+          </li>
+          <li>
+            <strong>Property Binding (One-Way Binding):</strong> Vincula
+            propriedades do DOM a valores do componente usando
+            <code>[property]</code>.
+          </li>
+          <li>
+            <strong>Event Binding:</strong> Captura eventos do usuário e os
+            vincula a métodos do componente usando <code>(event)</code>.
+          </li>
+          <li>
+            <strong>Two-Way Binding:</strong> Sincroniza dados entre o
+            componente e o template usando <code>[(ngModel)]</code>.
+          </li>
+        </ul>
+
+        <h4>Interpolação</h4>
+        <pre><code>&lt;h1&gt;{{ title }}&lt;/h1&gt;
+
+export class AppComponent {
+  title = 'Angular Data Binding';
+}
+</code></pre>
+        <h4>Property Binding</h4>
+        <pre><code>&lt;input [value]="username" /&gt;
+
+export class AppComponent {
+  username = 'AngularUser';
+}
+</code></pre>
+
+        <h4>Event Binding</h4>
+        <pre><code>&lt;button (click)="onClick()"&gt;Click me&lt;/button&gt;
+
+export class AppComponent {
+  onClick() {
+    alert('Button clicked!');
+  }
+}
+</code></pre>
+
+        <h4>Two-Way Binding</h4>
+        <pre><code>&lt;input [(ngModel)]="username" /&gt;
+&lt;p&gt;Welcome, {{ username }}&lt;/p&gt;
+
+export class AppComponent {
+  username = '';
+}
+</code></pre>
+      </section>
+
+      <h2>Pipes</h2>
+      <section>
+        <p>
+          <strong>Pipes</strong> transformam dados exibidos no template sem
+          alterar os dados diretamente no componente.
+        </p>
+
+        <h5>Exemplo</h5>
+        <pre><code>&lt;p&gt;{{ today | date }}&lt;/p&gt;
+&lt;p&gt;{{ amount | currency:'USD':'symbol' }}&lt;/p&gt;
+&lt;p&gt;{{ text | uppercase }}&lt;/p&gt;
+
+export class AppComponent {
+  today = new Date();
+  amount = 1234.56;
+  text = 'hello angular';
+}
+</code></pre>
+
+        <h4>Criando um Pipe personalizado</h4>
+        <pre><code>import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'reverse'
+})
+export class ReversePipe implements PipeTransform {
+  transform(value: string): string {
+    return value.split('').reverse().join('');
+  }
+}
+</code></pre>
+        <pre><code>&lt;p&gt;{{ 'angular' | reverse }}&lt;/p&gt;</code></pre>
+      </section>
+
+      <h2>Serviços</h2>
+      <section>
+        <p>
+          <strong>Serviços</strong> são usados para lógica ou dados
+          reutilizáveis, comunicação entre componentes ou interação com APIs.
+        </p>
+
+        <h3>Exemplo de Serviço</h3>
+        <pre><code>// data.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private message = 'Hello from Data Service!';
+
+  getMessage(): string {
+    return this.message;
+  }
+}
+</code></pre>
+
+        <h3>Usando o Serviço em um Componente</h3>
+        <pre><code>// app.component.ts
+import { Component } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-root',
+  template: `&lt;h1&gt;{{ message }}&lt;/h1&gt;`,
+})
+export class AppComponent {
+  message = '';
+
+  constructor(private dataService: DataService) {
+    this.message = this.dataService.getMessage();
+  }
+}
+</code></pre>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

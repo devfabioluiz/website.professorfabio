@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 de Angular - STEP</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 style="text-align: center">Angular</h4>
+      <h4 style="text-align: center">
+        O que é o Angular e montando o ambiente
+      </h4>
+    </header>
+    <main class="container">
+      <h2>Frameworks e Bibliotecas</h2>
+      <section>
+        <h3>O que é um Framework?</h3>
+        <p>
+          Um <strong>framework</strong> é uma estrutura que fornece ferramentas,
+          funcionalidades e padrões pré-definidos para o desenvolvimento de
+          software. Ele:
+        </p>
+        <ul>
+          <li>Define a arquitetura básica da aplicação.</li>
+          <li>
+            Controla o fluxo do desenvolvimento, onde o desenvolvedor preenche
+            lacunas.
+          </li>
+          <li>
+            Oferece suporte integrado para resolver problemas comuns, como
+            gerenciamento de estado, manipulação de dados e construção de
+            interfaces.
+          </li>
+        </ul>
+
+        <h3>O que é uma Biblioteca?</h3>
+        <p>
+          Uma <strong>biblioteca</strong> é um conjunto de funções ou métodos
+          reutilizáveis que ajudam a resolver problemas específicos.
+          Diferentemente de frameworks:
+        </p>
+        <ul>
+          <li>
+            O desenvolvedor tem controle total sobre o fluxo da aplicação.
+          </li>
+          <li>A biblioteca é chamada pelo desenvolvedor quando necessário.</li>
+        </ul>
+
+        <h3>Diferença entre Framework e Biblioteca</h3>
+        <p>A principal diferença está no <strong>controle:</strong></p>
+        <ul>
+          <li>
+            <strong>Framework:</strong> controla o fluxo do programa e chama o
+            código do desenvolvedor (inversão de controle).
+          </li>
+          <li>
+            <strong>Biblioteca:</strong> o desenvolvedor controla o fluxo e
+            chama a biblioteca quando necessário.
+          </li>
+        </ul>
+
+        <h3>Por que o Angular é um Framework?</h3>
+        <p>O Angular é considerado um framework porque:</p>
+        <ul>
+          <li>Ele estabelece um padrão para a estrutura da aplicação.</li>
+          <li>Gerencia o ciclo de vida da aplicação, componentes e módulos.</li>
+          <li>
+            Inclui soluções integradas para tarefas comuns como roteamento,
+            manipulação de formulários, e injeção de dependências.
+          </li>
+          <li>
+            Define como o código é escrito e como as funcionalidades são
+            implementadas, garantindo consistência no desenvolvimento.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Conceito de Aplicação de Página Única (SPA)</h2>
+      <section>
+        <p>
+          Uma <strong>SPA (Single-Page Application)</strong> é um tipo de
+          aplicação web onde:
+        </p>
+        <ul>
+          <li>
+            Todo o conteúdo necessário é carregado de uma só vez ou
+            dinamicamente, sem recarregar a página inteira.
+          </li>
+          <li>
+            A navegação entre diferentes "páginas" é simulada por meio de
+            atualizações no DOM e no URL (geralmente usando APIs de roteamento).
+          </li>
+        </ul>
+        <h3>Vantagens das SPAs:</h3>
+        <ul>
+          <li>Navegação mais rápida e suave.</li>
+          <li>Melhor experiência do usuário (UX).</li>
+          <li>
+            Requisições otimizadas ao servidor, enviando apenas os dados
+            necessários.
+          </li>
+        </ul>
+        <h3>Desvantagens das SPAs:</h3>
+        <ul>
+          <li>Maior complexidade no desenvolvimento inicial.</li>
+          <li>
+            Exige mais esforço para SEO, pois o conteúdo não está pronto no HTML
+            inicial.
+          </li>
+        </ul>
+      </section>
+
+      <h2>O que é o Angular?</h2>
+      <section>
+        <p>
+          <strong>Angular</strong> é uma plataforma de desenvolvimento para a
+          criação de aplicações web modernas e dinâmicas. Desenvolvido e mantido
+          pelo Google, é baseado em <strong>TypeScript</strong> e utiliza o
+          padrão <strong>MVC (Model-View-Controller)</strong> para estruturar a
+          aplicação. Algumas características do Angular incluem:
+        </p>
+        <ul>
+          <li>
+            <strong>Framework Frontend Completo:</strong> Suporte para criação
+            de componentes, rotas, formulários e integração com APIs.
+          </li>
+          <li>
+            <strong>Data Binding Bidirecional:</strong> Sincronização automática
+            entre a interface do usuário e os dados do modelo.
+          </li>
+          <li>
+            <strong>Injeção de Dependência:</strong> Sistema integrado para
+            melhorar a modularidade e reutilização de código.
+          </li>
+          <li>
+            <strong>Ferramentas Modernas:</strong> Uso de <code>RxJS</code> para
+            programação reativa e suporte nativo a PWA (Progressive Web
+            Applications).
+          </li>
+        </ul>
+      </section>
+
+      <h2>Montando o Ambiente com Angular</h2>
+      <section>
+        <h3>1. Pré-requisitos</h3>
+        <p>
+          Certifique-se de que você tenha o seguinte instalado no seu sistema:
+        </p>
+        <ul>
+          <li>
+            <strong>Node.js:</strong> Angular utiliza o npm (gerenciador de
+            pacotes do Node.js).
+          </li>
+          <li>
+            <strong>Angular CLI:</strong> Interface de linha de comando para
+            facilitar a criação e gerenciamento de projetos Angular.
+          </li>
+        </ul>
+
+        <h3>2. Instalar Node.js</h3>
+        <p>
+          Baixe e instale o
+          <a href="https://nodejs.org/" target="_blank">Node.js</a>. Durante a
+          instalação, o npm é incluído automaticamente.
+        </p>
+        <pre><code>node -v
+npm -v</code></pre>
+
+        <h3>3. Instalar o Angular CLI</h3>
+        <p>Use o npm para instalar o Angular CLI globalmente:</p>
+        <pre><code>npm install -g @angular/cli</code></pre>
+        <p>Verifique a instalação:</p>
+        <pre><code>ng version</code></pre>
+
+        <h3>4. Criar um Novo Projeto Angular</h3>
+        <p>Crie um projeto com o Angular CLI:</p>
+        <pre><code>ng new nome-do-projeto</code></pre>
+        <p>Navegue até a pasta do projeto:</p>
+        <pre><code>cd nome-do-projeto</code></pre>
+
+        <h3>5. Executar o Servidor de Desenvolvimento</h3>
+        <p>Inicie o servidor para ver a aplicação no navegador:</p>
+        <pre><code>ng serve</code></pre>
+        <p>
+          Por padrão, o servidor estará disponível em
+          <a href="http://localhost:4200" target="_blank"
+            >http://localhost:4200</a
+          >.
+        </p>
+
+        <h3>6. Estrutura Básica do Projeto</h3>
+        <p>Após a criação, a estrutura do projeto será algo como:</p>
+        <pre><code>
+    src/
+     ├── app/
+     │    ├── app.component.html   // Arquivo HTML principal
+     │    ├── app.component.css    // Estilos do componente principal
+     │    ├── app.component.ts     // Lógica do componente principal
+     │    └── app.module.ts        // Módulo principal da aplicação
+     ├── assets/                   // Recursos estáticos
+     ├── environments/             // Configurações de ambiente
+     ├── index.html                // Ponto de entrada do HTML
+     └── main.ts                   // Ponto de entrada do TypeScript
+    </code></pre>
+
+        <h3>7. Adicionar Componentes</h3>
+        <p>Crie novos componentes para a sua aplicação:</p>
+        <pre><code>ng generate component nome-do-componente
+# ou
+ng g c nome-do-componente</code></pre>
+      </section>
+
+      <h2>Objetivos e Tarefas do Angular</h2>
+      <section>
+        <p>
+          O Angular é projetado para resolver problemas comuns no
+          desenvolvimento web moderno. Entre os seus principais objetivos e
+          tarefas estão:
+        </p>
+        <ul>
+          <li>
+            <strong>Criação de SPAs:</strong> Angular é ideal para aplicações de
+            página única.
+          </li>
+          <li>
+            <strong>Organização do Código:</strong> Promove modularidade usando
+            componentes e módulos.
+          </li>
+          <li>
+            <strong>Data Binding:</strong> Sincroniza automaticamente os dados
+            entre a interface do usuário e o modelo.
+          </li>
+          <li>
+            <strong>Desempenho Otimizado:</strong> Inclui técnicas como divisão
+            de código e carregamento sob demanda.
+          </li>
+          <li>
+            <strong>Reutilização de Código:</strong> Facilita a criação de
+            componentes reutilizáveis.
+          </li>
+          <li>
+            <strong>Testabilidade:</strong> Oferece ferramentas integradas para
+            realizar testes unitários e de integração.
+          </li>
+          <li>
+            <strong>Programação Reativa:</strong> Usa <code>RxJS</code> para
+            lidar com eventos e estados assíncronos.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

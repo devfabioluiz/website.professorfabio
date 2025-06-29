@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3 de Angular - STEP</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 3</h1>
+      <h4 style="text-align: center">Angular</h4>
+      <h4 style="text-align: center">Modelos, Interpolação e Diretivas</h4>
+    </header>
+    <main class="container">
+      <h2>O que são Modelos?</h2>
+      <section>
+        <p>
+          Modelos em Angular são estruturas de interface de usuário que vinculam
+          dados dinâmicos e componentes. Eles utilizam a linguagem HTML
+          aprimorada com sintaxe específica do Angular, como
+          <strong>bindings</strong> e <strong>diretivas</strong>, para criar
+          layouts interativos e dinâmicos.
+        </p>
+
+        <h4>Criação de modelos</h4>
+        <p>
+          Os modelos são definidos no arquivo <code>.html</code> do componente
+          Angular associado ou diretamente dentro do componente por meio da
+          propriedade <code>template</code>.
+        </p>
+        <h5>Exemplo</h5>
+        <pre><code>// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `&lt;h1&gt;{{ title }}&lt;/h1&gt;&lt;p&gt;Welcome to Angular!&lt;/p&gt;`,
+  styles: ['h1 { color: blue; }']
+})
+export class AppComponent {
+  title = 'My Angular App';
+}
+</code></pre>
+
+        <h5>Exemplo usando modelo separado:</h5>
+        <pre><code>// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'My Angular App';
+}
+</code></pre>
+
+        <pre><code>
+// app.component.html
+&lt;h1&gt;{{ title }}&lt;/h1&gt;
+&lt;p&gt;This is an external template example.&lt;/p&gt;
+</code></pre>
+      </section>
+
+      <h2>Interpolação</h2>
+      <section>
+        <p>
+          A interpolação permite exibir propriedades e expressões do componente
+          no modelo. Utiliza-se <code>{{ }}</code> para fazer o binding
+          unidirecional dos dados.
+        </p>
+
+        <h5>Exemplo:</h5>
+        <pre><code>// HTML do componente
+&lt;h1&gt;{{ title }}&lt;/h1&gt;
+&lt;p&gt;The current year is {{ currentYear }}&lt;/p&gt;
+
+// app.component.ts
+export class AppComponent {
+  title = 'Angular Basics';
+  currentYear = new Date().getFullYear();
+}
+</code></pre>
+      </section>
+
+      <h2>Diretivas</h2>
+      <section>
+        <p>
+          Diretivas são instruções ao DOM para alterar o layout ou comportamento
+          do modelo. Elas podem ser:
+        </p>
+        <ul>
+          <li>
+            <strong>Estruturais</strong>: Alteram a estrutura do DOM.
+            <ul>
+              <li>
+                <code>*ngIf</code>: Renderiza um elemento condicionalmente.
+              </li>
+              <li>
+                <code>*ngFor</code>: Cria elementos dinamicamente com base em
+                listas.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Atributos</strong>: Alteram a aparência ou comportamento de
+            um elemento.
+            <ul>
+              <li><code>[ngClass]</code>: Aplica classes CSS dinamicamente.</li>
+              <li><code>[ngStyle]</code>: Aplica estilos dinamicamente.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h5>Exemplo com <code>*ngIf</code> e <code>*ngFor</code>:</h5>
+        <pre><code>
+// HTML do componente
+&lt;h2&gt;Product List&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li *ngFor="let product of products"&gt;{{ product.name }} - ${{ product.price }}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p *ngIf="products.length === 0"&gt;No products available.&lt;/p&gt;
+
+// app.component.ts
+export class AppComponent {
+  products = [
+    { name: 'Laptop', price: 1000 },
+    { name: 'Smartphone', price: 500 }
+  ];
+}
+</code></pre>
+
+        <h5>Exemplo com <code>[ngClass]</code>:</h5>
+        <pre><code>
+// HTML
+&lt;p[ngClass]="{ 'active': isActive, 'inactive': !isActive }"&gt;
+  This paragraph's class changes dynamically.
+&lt;/p&gt;
+
+// app.component.ts
+export class AppComponent {
+  isActive = true;
+}
+</code></pre>
+      </section>
+    </main>
+  </body>
+</html>
