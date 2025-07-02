@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aula 1 de Angular - STEP</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
   </head>
   <body>
     <header>
@@ -136,9 +140,9 @@
             melhorar a modularidade e reutilização de código.
           </li>
           <li>
-            <strong>Ferramentas Modernas:</strong> Uso de <code>RxJS</code> para
-            programação reativa e suporte nativo a PWA (Progressive Web
-            Applications).
+            <strong>Ferramentas Modernas:</strong> Uso de
+            <code class="language-javascript">RxJS</code> para programação
+            reativa e suporte nativo a PWA (Progressive Web Applications).
           </li>
         </ul>
       </section>
@@ -166,24 +170,50 @@
           <a href="https://nodejs.org/" target="_blank">Node.js</a>. Durante a
           instalação, o npm é incluído automaticamente.
         </p>
-        <pre><code>node -v
+        <div class="code-container">
+          <pre><code class="language-javascript">node -v
 npm -v</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>3. Instalar o Angular CLI</h3>
         <p>Use o npm para instalar o Angular CLI globalmente:</p>
-        <pre><code>npm install -g @angular/cli</code></pre>
+        <div class="code-container">
+          <pre><code class="language-javascript">npm install -g @angular/cli</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <p>Verifique a instalação:</p>
-        <pre><code>ng version</code></pre>
+        <div class="code-container">
+          <pre><code class="language-javascript">ng version</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>4. Criar um Novo Projeto Angular</h3>
-        <p>Crie um projeto com o Angular CLI:</p>
-        <pre><code>ng new nome-do-projeto</code></pre>
-        <p>Navegue até a pasta do projeto:</p>
-        <pre><code>cd nome-do-projeto</code></pre>
+        <h4>Crie um projeto com o Angular CLI:</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">ng new nome-do-projeto --standalone false</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>Escolha as opções conforme a imagem:</h4>
+        <div>
+          <img
+            style="width: 800px; height: 200px"
+            src="../../imagens/step/angular-setup-print1.png"
+            alt=""
+          />
+        </div>
+        <h4>Navegue até a pasta do projeto:</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">cd nome-do-projeto</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>5. Executar o Servidor de Desenvolvimento</h3>
         <p>Inicie o servidor para ver a aplicação no navegador:</p>
-        <pre><code>ng serve</code></pre>
+        <div class="code-container">
+          <pre><code class="language-javascript">ng serve</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <p>
           Por padrão, o servidor estará disponível em
           <a href="http://localhost:4200" target="_blank"
@@ -193,7 +223,8 @@ npm -v</code></pre>
 
         <h3>6. Estrutura Básica do Projeto</h3>
         <p>Após a criação, a estrutura do projeto será algo como:</p>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-javascript">
     src/
      ├── app/
      │    ├── app.component.html   // Arquivo HTML principal
@@ -205,12 +236,28 @@ npm -v</code></pre>
      ├── index.html                // Ponto de entrada do HTML
      └── main.ts                   // Ponto de entrada do TypeScript
     </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>7. Adicionar Componentes</h3>
         <p>Crie novos componentes para a sua aplicação:</p>
-        <pre><code>ng generate component nome-do-componente
+        <div class="code-container">
+          <pre><code class="language-javascript">ng generate component nome-do-componente
 # ou
 ng g c nome-do-componente</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>8. Colocar os seus componentes na aplicação pai (AppComponent)</h3>
+        <p>
+          Delete todo códito dentro do app.component.html e coloque o seguinte
+          código:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+&lt;app-nome-do-componente&gt;&lt;/app-nome-do-componente&gt;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
 
       <h2>Objetivos e Tarefas do Angular</h2>
@@ -246,8 +293,9 @@ ng g c nome-do-componente</code></pre>
             realizar testes unitários e de integração.
           </li>
           <li>
-            <strong>Programação Reativa:</strong> Usa <code>RxJS</code> para
-            lidar com eventos e estados assíncronos.
+            <strong>Programação Reativa:</strong> Usa
+            <code class="language-javascript">RxJS</code> para lidar com eventos
+            e estados assíncronos.
           </li>
         </ul>
       </section>
@@ -260,5 +308,6 @@ ng g c nome-do-componente</code></pre>
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>

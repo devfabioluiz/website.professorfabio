@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aula 2 de Angular - STEP</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
   </head>
   <body>
     <header>
@@ -40,7 +44,8 @@
         </ul>
 
         <h3>Exemplo de Estrutura Básica</h3>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-javascript">
     @NgModule({
       declarations: [
         AppComponent, // Componente principal
@@ -53,15 +58,18 @@
     })
     export class AppModule {}
     </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h2>Conceito de Módulo</h2>
         <p>
           Um módulo organiza a aplicação Angular em partes funcionais. O módulo
-          principal é o <code>AppModule</code>.
+          principal é o <code class="language-javascript">AppModule</code>.
         </p>
 
         <h3>Exemplo de Módulo</h3>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-javascript">
     import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
     import { AppComponent } from './app.component';
@@ -74,6 +82,8 @@
     })
     export class AppModule {}
     </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
 
       <h2>O que é um Componente?</h2>
@@ -89,7 +99,8 @@
         </ul>
 
         <h3>Exemplo de Criação de Componente</h3>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-javascript">
     import { Component } from '@angular/core';
 
     @Component({
@@ -99,15 +110,21 @@
     })
     export class ExemploComponent {}
     </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>Uso Prático</h3>
         <p>
-          Para usar o componente <code>ExemploComponent</code>, basta
+          Para usar o componente
+          <code class="language-javascript">ExemploComponent</code>, basta
           adicioná-lo ao módulo e incluí-lo no HTML:
         </p>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-javascript">
     &lt;app-exemplo&gt;&lt;/app-exemplo&gt;
     </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
     </main>
     <footer>
