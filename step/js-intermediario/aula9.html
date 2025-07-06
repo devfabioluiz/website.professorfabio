@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9 - JS Intermediário</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 style="text-align: center">JavaScript Intermediário</h4>
+      <h4 style="text-align: center">Manipulação de Objetos</h4>
+    </header>
+    <main class="container">
+      <h2>Operações Comuns com Objetos</h2>
+      <section>
+        <h4>1. Verificar se um objeto está vazio</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
+console.log(isEmpty({}));        // Output: true
+console.log(isEmpty({ a: 1 }));  // Output: false
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2. Mesclar dois objetos</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function mergeObjects(obj1, obj2) {
+  return { ...obj1, ...obj2 };
+}
+
+console.log(mergeObjects({ a: 1, b: 2 }, { b: 3, c: 4 }));
+// Output: { a: 1, b: 3, c: 4 }
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>3. Clonar um objeto (cópia rasa)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function cloneObject(obj) {
+  return { ...obj };
+}
+
+const original = { a: 1, b: 2 };
+const copy = cloneObject(original);
+
+console.log(copy);               // Output: { a: 1, b: 2 }
+console.log(copy === original); // Output: false
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>4. Clonar profundamente um objeto (deep copy)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+const original = { a: 1, b: { c: 2 } };
+const copy = deepClone(original);
+
+console.log(copy);               // Output: { a: 1, b: { c: 2 } }
+console.log(copy.b === original.b); // Output: false
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>5. Contar propriedades de um objeto</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function countProperties(obj) {
+  return Object.keys(obj).length;
+}
+
+console.log(countProperties({ a: 1, b: 2, c: 3 }));
+// Output: 3
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>6. Obter chaves e valores separadamente</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const person = {
+  name: 'Alice',
+  age: 25,
+  city: 'New York'
+};
+
+const keys = Object.keys(person);
+const values = Object.values(person);
+
+console.log(keys);   // Output: ['name', 'age', 'city']
+console.log(values); // Output: ['Alice', 25, 'New York']
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>7. Verificar se um objeto possui uma propriedade</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function hasProperty(obj, key) {
+  return obj.hasOwnProperty(key);
+}
+
+console.log(hasProperty({ a: 1, b: 2 }, 'a')); // Output: true
+console.log(hasProperty({ a: 1, b: 2 }, 'c')); // Output: false
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>8. Converter objeto para array de pares [chave, valor]</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function objectToPairs(obj) {
+  return Object.entries(obj);
+}
+
+console.log(objectToPairs({ a: 1, b: 2, c: 3 }));
+// Output: [['a', 1], ['b', 2], ['c', 3]]
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>9. Obter todos os métodos de um objeto</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function getMethods(obj) {
+  return Object.keys(obj).filter(key => typeof obj[key] === 'function');
+}
+
+const obj = {
+  a: 1,
+  b: 2,
+  foo() { return 'foo'; },
+  bar() { return 'bar'; }
+};
+
+console.log(getMethods(obj)); // Output: ['foo', 'bar']
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 style="text-align: center">Angular</h4>
+      <h4 style="text-align: center">Serviços e Uso de requisições HTTP</h4>
+    </header>
+    <main class="container">
+      <h2>Serviços</h2>
+      <section>
+        <p>
+          <strong>Serviços</strong> são classes que centralizam lógicas
+          reutilizáveis, como comunicação com APIs, compartilhamento de dados e
+          regras de negócio. São injetados nos componentes por meio da injeção
+          de dependência do Angular.
+        </p>
+
+        <h3>Exemplo 1 – Serviço de Mensagens</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// message.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class MessageService {
+  messages: string[] = [];
+
+  add(message: string) {
+    this.messages.push(message);
+  }
+
+  clear() {
+    this.messages = [];
+  }
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Usando o Serviço em um Componente</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.component.ts
+import { Component } from '@angular/core';
+import { MessageService } from './message.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;button (click)="sendMessage()"&gt;Enviar Mensagem&lt;/button&gt;
+    &lt;div *ngFor="let msg of messageService.messages"&gt;{{ msg }}&lt;/div&gt;
+  `
+})
+export class AppComponent {
+  constructor(public messageService: MessageService) {}
+
+  sendMessage() {
+    this.messageService.add('Nova mensagem em ' + new Date());
+  }
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Uso de Requisições HTTP</h3>
+        <p>
+          O Angular possui o módulo <code>HttpClient</code> para realizar
+          requisições HTTP como <code>GET</code>, <code>POST</code>,
+          <code>PUT</code> e <code>DELETE</code>. Esse módulo permite
+          comunicação com APIs REST de forma reativa usando Observables. Para
+          usá-lo, é necessário importar o <code>HttpClientModule</code> no
+          módulo principal da aplicação.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  imports: [BrowserModule, HttpClientModule],
+  declarations: [/* seus componentes */],
+  bootstrap: [/* componente principal */]
+})
+export class AppModule {}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 2 – Serviço com Requisição HTTP</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// user.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable&lt;any[]&gt; {
+    return this.http.get&lt;any[]&gt;(this.apiUrl);
+  }
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Usando o Serviço no Componente</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// user-list.component.ts
+import { Component, OnInit } from '@angular/core';
+import { UserService } from './user.service';
+
+@Component({
+  selector: 'app-user-list',
+  template: `
+    &lt;ul&gt;
+      &lt;li *ngFor="let user of users"&gt;{{ user.name }}&lt;/li&gt;
+    &lt;/ul&gt;
+  `
+})
+export class UserListComponent implements OnInit {
+  users: any[] = [];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.userService.getUsers().subscribe(data =&gt; this.users = data);
+  }
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 3 – Serviço para Compartilhamento de Estado</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// counter.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class CounterService {
+  count = 0;
+
+  increment() {
+    this.count++;
+  }
+
+  decrement() {
+    this.count--;
+  }
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Usando o Serviço em Dois Componentes</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// counter-display.component.ts
+import { Component } from '@angular/core';
+import { CounterService } from './counter.service';
+
+@Component({
+  selector: 'app-counter-display',
+  template: `&lt;p&gt;Contador: {{ counterService.count }}&lt;/p&gt;`
+})
+export class CounterDisplayComponent {
+  constructor(public counterService: CounterService) {}
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// counter-controls.component.ts
+import { Component } from '@angular/core';
+import { CounterService } from './counter.service';
+
+@Component({
+  selector: 'app-counter-controls',
+  template: `
+    &lt;button (click)="counterService.increment()"&gt;+&lt;/button&gt;
+    &lt;button (click)="counterService.decrement()"&gt;-&lt;/button&gt;
+  `
+})
+export class CounterControlsComponent {
+  constructor(public counterService: CounterService) {}
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

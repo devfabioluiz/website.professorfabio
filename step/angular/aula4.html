@@ -5,12 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aula 4 de Angular - STEP</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
   </head>
   <body>
     <header>
       <h1>Aula 4</h1>
       <h4 style="text-align: center">Angular</h4>
       <h4 style="text-align: center">Data Binding, Pipes e Serviços</h4>
+      <section>
+        <div class="alert alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em 05/07/2025 (versão 2.0)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>excluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>
+              ❌ Serviços
+              <strong>- movido para a Aula 5</strong>
+            </p>
+          </div>
+        </div>
+        <div class="alert-update alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em 05/07/2025 (versão 2.0)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>incluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>
+              ✔️ {{tópico}}
+              <strong>- movido da {{numero-aula}}</strong>
+            </p>
+          </div>
+        </div>
+      </section>
     </header>
     <main class="container">
       <h2>Data Binding</h2>
@@ -22,56 +64,113 @@
         <ul>
           <li>
             <strong>Interpolação (One-Way Binding):</strong> Exibe valores do
-            componente no template usando <code>{{ }}</code>.
+            componente no template usando
+            <code class="language-javascript">{{ }}</code>.
           </li>
           <li>
             <strong>Property Binding (One-Way Binding):</strong> Vincula
             propriedades do DOM a valores do componente usando
-            <code>[property]</code>.
+            <code class="language-javascript">[property]</code>.
           </li>
           <li>
             <strong>Event Binding:</strong> Captura eventos do usuário e os
-            vincula a métodos do componente usando <code>(event)</code>.
+            vincula a métodos do componente usando
+            <code class="language-javascript">(event)</code>.
           </li>
           <li>
             <strong>Two-Way Binding:</strong> Sincroniza dados entre o
-            componente e o template usando <code>[(ngModel)]</code>.
+            componente e o template usando
+            <code class="language-javascript">[(ngModel)]</code>.
           </li>
         </ul>
 
         <h4>Interpolação</h4>
-        <pre><code>&lt;h1&gt;{{ title }}&lt;/h1&gt;
+        <p>
+          A interpolação <code>{{ }}</code> é usada para exibir valores de
+          variáveis diretamente no HTML.
+        </p>
+        <p>Ela avalia expressões do TypeScript e insere o resultado no DOM.</p>
 
+        <div class="code-container">
+          <pre><code class="language-html">&lt;h1&gt;{{ title }}&lt;/h1&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
 export class AppComponent {
   title = 'Angular Data Binding';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <h4>Property Binding</h4>
-        <pre><code>&lt;input [value]="username" /&gt;
-
+        <p>
+          O Property Binding <code>[propriedade]="valor"</code> define
+          dinamicamente valores de propriedades HTML.
+        </p>
+        <p>
+          Permite passar dados do componente para o template de forma segura.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;input [value]="username" /&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
 export class AppComponent {
   username = 'AngularUser';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4>Event Binding</h4>
-        <pre><code>&lt;button (click)="onClick()"&gt;Click me&lt;/button&gt;
-
+        <h4>Property Binding</h4>
+        <p>
+          O Event Binding <code>(evento)="ação()"</code> escuta eventos do DOM,
+          como cliques ou teclas.
+        </p>
+        <p>Ele chama métodos do componente quando o evento ocorre.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;button (click)="onClick()"&gt;Click me&lt;/button&gt;
 export class AppComponent {
   onClick() {
     alert('Button clicked!');
   }
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4>Two-Way Binding</h4>
-        <pre><code>&lt;input [(ngModel)]="username" /&gt;
+        <p>
+          O Two-Way Binding <code>[(ngModel)]="variável"</code> sincroniza dados
+          entre template e componente.
+        </p>
+        <p>
+          Quando o usuário altera o valor, o componente é automaticamente
+          atualizado — e vice-versa.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;input [(ngModel)]="username" /&gt;
+&lt;p&gt;Welcome, {{ username }}&lt;/p&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
 &lt;p&gt;Welcome, {{ username }}&lt;/p&gt;
 
 export class AppComponent {
   username = '';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
 
       <h2>Pipes</h2>
@@ -82,7 +181,8 @@ export class AppComponent {
         </p>
 
         <h5>Exemplo</h5>
-        <pre><code>&lt;p&gt;{{ today | date }}&lt;/p&gt;
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;p&gt;{{ today | date }}&lt;/p&gt;
 &lt;p&gt;{{ amount | currency:'USD':'symbol' }}&lt;/p&gt;
 &lt;p&gt;{{ text | uppercase }}&lt;/p&gt;
 
@@ -92,9 +192,12 @@ export class AppComponent {
   text = 'hello angular';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4>Criando um Pipe personalizado</h4>
-        <pre><code>import { Pipe, PipeTransform } from '@angular/core';
+        <div class="code-container">
+          <pre><code class="language-javascript">import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'reverse'
@@ -105,49 +208,12 @@ export class ReversePipe implements PipeTransform {
   }
 }
 </code></pre>
-        <pre><code>&lt;p&gt;{{ 'angular' | reverse }}&lt;/p&gt;</code></pre>
-      </section>
-
-      <h2>Serviços</h2>
-      <section>
-        <p>
-          <strong>Serviços</strong> são usados para lógica ou dados
-          reutilizáveis, comunicação entre componentes ou interação com APIs.
-        </p>
-
-        <h3>Exemplo de Serviço</h3>
-        <pre><code>// data.service.ts
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class DataService {
-  private message = 'Hello from Data Service!';
-
-  getMessage(): string {
-    return this.message;
-  }
-}
-</code></pre>
-
-        <h3>Usando o Serviço em um Componente</h3>
-        <pre><code>// app.component.ts
-import { Component } from '@angular/core';
-import { DataService } from './data.service';
-
-@Component({
-  selector: 'app-root',
-  template: `&lt;h1&gt;{{ message }}&lt;/h1&gt;`,
-})
-export class AppComponent {
-  message = '';
-
-  constructor(private dataService: DataService) {
-    this.message = this.dataService.getMessage();
-  }
-}
-</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;p&gt;{{ 'angular' | reverse }}&lt;/p&gt;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
     </main>
     <footer>

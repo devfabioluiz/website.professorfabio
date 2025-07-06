@@ -5,12 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aula 3 de Angular - STEP</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </head>
   <body>
     <header>
       <h1>Aula 3</h1>
       <h4 style="text-align: center">Angular</h4>
       <h4 style="text-align: center">Modelos, Interpolação e Diretivas</h4>
+      <div class="alert-update alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 05/07/2025 (versão 2)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
+          </p>
+          <p>✔️ Mais exemplos e explicação sobre *ngFor, *ngIf e [ngClass]</p>
+        </div>
+      </div>
     </header>
     <main class="container">
       <h2>O que são Modelos?</h2>
@@ -25,12 +44,13 @@
 
         <h4>Criação de modelos</h4>
         <p>
-          Os modelos são definidos no arquivo <code>.html</code> do componente
-          Angular associado ou diretamente dentro do componente por meio da
-          propriedade <code>template</code>.
+          Os modelos são definidos no arquivo
+          <code>.html</code> do componente Angular associado ou diretamente
+          dentro do componente por meio da propriedade <code>template</code>.
         </p>
         <h5>Exemplo</h5>
-        <pre><code>// app.component.ts
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.component.ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -42,9 +62,12 @@ export class AppComponent {
   title = 'My Angular App';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h5>Exemplo usando modelo separado:</h5>
-        <pre><code>// app.component.ts
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.component.ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -56,33 +79,45 @@ export class AppComponent {
   title = 'My Angular App';
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-html">
 // app.component.html
 &lt;h1&gt;{{ title }}&lt;/h1&gt;
 &lt;p&gt;This is an external template example.&lt;/p&gt;
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
 
       <h2>Interpolação</h2>
       <section>
         <p>
           A interpolação permite exibir propriedades e expressões do componente
-          no modelo. Utiliza-se <code>{{ }}</code> para fazer o binding
-          unidirecional dos dados.
+          no modelo. Utiliza-se
+          <code>{{ }}</code> para fazer o binding unidirecional dos dados.
         </p>
 
         <h5>Exemplo:</h5>
-        <pre><code>// HTML do componente
+        <div class="code-container">
+          <pre><code class="language-html">// HTML do componente
 &lt;h1&gt;{{ title }}&lt;/h1&gt;
 &lt;p&gt;The current year is {{ currentYear }}&lt;/p&gt;
-
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">// HTML do componente
 // app.component.ts
 export class AppComponent {
   title = 'Angular Basics';
   currentYear = new Date().getFullYear();
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
 
       <h2>Diretivas</h2>
@@ -113,9 +148,81 @@ export class AppComponent {
             </ul>
           </li>
         </ul>
+      </section>
+
+      <h4>*ngFor</h4>
+      <section>
+        <p>
+          A diretiva <code>*ngFor</code> é usada no Angular para iterar sobre
+          uma lista e gerar elementos HTML dinamicamente. Ela é uma diretiva
+          estrutural, o que significa que altera a estrutura do DOM.
+        </p>
+
+        <h5>Sintaxe básica</h5>
+        <p>A forma padrão de uso é:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+&lt;elemento *ngFor="let item of lista"&gt;
+  {{ item }}
+&lt;/elemento&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  frutas = ['Maçã', 'Banana', 'Laranja', 'Uva'];
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+<!-- app.component.html -->
+&lt;h2&gt;Lista de Frutas&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li *ngFor="let fruta of frutas"&gt;
+    {{ fruta }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2</h5>
+        <p>
+          É possível acessar o índice da iteração usando
+          <code>let i = index</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;ul&gt;
+  &lt;li *ngFor="let fruta of frutas; let i = index"&gt;
+    {{ i + 1 }} - {{ fruta }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Esse recurso é útil para numerar os itens exibidos, controlar ações
+          específicas por índice ou aplicar estilos alternados.
+        </p>
 
         <h5>Exemplo com <code>*ngIf</code> e <code>*ngFor</code>:</h5>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-html">
 // HTML do componente
 &lt;h2&gt;Product List&lt;/h2&gt;
 &lt;ul&gt;
@@ -123,7 +230,11 @@ export class AppComponent {
 &lt;/ul&gt;
 
 &lt;p *ngIf="products.length === 0"&gt;No products available.&lt;/p&gt;
-
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
 // app.component.ts
 export class AppComponent {
   products = [
@@ -132,20 +243,153 @@ export class AppComponent {
   ];
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h5>Exemplo com <code>[ngClass]</code>:</h5>
-        <pre><code>
+        <div class="code-container">
+          <pre><code class="language-html">
 // HTML
-&lt;p[ngClass]="{ 'active': isActive, 'inactive': !isActive }"&gt;
+&lt;p [ngClass]="{ 'active': isActive, 'inactive': !isActive }"&gt;
   This paragraph's class changes dynamically.
 &lt;/p&gt;
-
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
 // app.component.ts
 export class AppComponent {
   isActive = true;
 }
 </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h4>*ngIf</h4>
+      <section>
+        <p>
+          A diretiva <code>*ngIf</code> é usada para exibir ou ocultar elementos
+          no DOM com base em uma condição. Se a condição for verdadeira, o
+          elemento será renderizado; caso contrário, será removido do DOM.
+        </p>
+
+        <h5>Sintaxe básica</h5>
+        <p>A forma padrão de uso é:</p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;elemento *ngIf="condicao"&gt;
+  Conteúdo exibido se a condição for verdadeira.
+&lt;/elemento&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;p *ngIf="estaLogado"&gt;
+  Bem-vindo de volta!
+&lt;/p&gt;
+&lt;p *ngIf="!estaLogado"&gt;
+  Por favor, faça login.
+&lt;/p&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// app.component.ts
+export class AppComponent {
+  estaLogado = true;
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O <code>*ngIf</code> pode ser combinado com <code>else</code> usando a
+          sintaxe <code>*ngIf="condicao; else templateAlternativo"</code>.
+        </p>
+
+        <h5>Exemplo com <code>else</code>:</h5>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;p *ngIf="temPermissao; else semPermissao"&gt;
+  Acesso concedido.
+&lt;/p&gt;
+&lt;ng-template #semPermissao&gt;
+  &lt;p&gt;Acesso negado.&lt;/p&gt;
+&lt;/ng-template&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h4>[ngClass]</h4>
+      <section>
+        <p>
+          A diretiva <code>[ngClass]</code> permite aplicar classes CSS
+          dinamicamente a um elemento com base em expressões ou condições. Ela é
+          útil para alternar estilos conforme o estado da aplicação.
+        </p>
+
+        <h5>Sintaxe básica</h5>
+        <p>A forma mais comum de uso é com um objeto:</p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;elemento [ngClass]="{ 'classe1': condicao1, 'classe2': condicao2 }"&gt;
+  Conteúdo
+&lt;/elemento&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;p [ngClass]="{ 'ativo': isActive, 'inativo': !isActive }"&gt;
+  Status do usuário
+&lt;/p&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// app.component.ts
+export class AppComponent {
+  isActive = true;
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Também é possível passar diretamente o nome da classe como string ou
+          array:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;div [ngClass]="'highlight'"&gt;Texto em destaque&lt;/div&gt;
+&lt;div [ngClass]="['box', 'rounded']"&gt;Caixa estilizada&lt;/div&gt;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
     </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>

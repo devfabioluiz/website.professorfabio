@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TITULO</title>
-    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
@@ -15,6 +15,44 @@
       <h1>Aula X</h1>
       <h4 style="text-align: center">Disciplina</h4>
       <h4 style="text-align: center">Tema da Aula</h4>
+      <section>
+        <div class="alert alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em XX/XX/XX (versão X.X)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>excluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>
+              ❌ Explicação mais detalhada sobre {{tópico}}
+              <strong>- movido para a {{numero-aula}}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="alert-update alert-container new-alert">
+          <div class="pin-message">
+            <span>📌</span>
+          </div>
+          <div class="alert-text">
+            <p class="alert-title">
+              <b>📅 Versão atualizada em XX/XX/XX (versão X.X)</b>
+            </p>
+            <p>
+              Nessa versão foram <strong>incluídos</strong> os seguintes
+              tópicos:
+            </p>
+            <p>
+              ✔️ {{tópico}}
+              <strong>- movido da {{numero-aula}}</strong>
+            </p>
+          </div>
+        </div>
+      </section>
     </header>
     <main class="container">
       <h2>Tópico</h2>
