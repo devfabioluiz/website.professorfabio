@@ -29,21 +29,21 @@
 </head>
 <body>
 
-  <h1>🧠 Entendendo o Padrão Observable no Node.js com Express</h1>
+  <h1>Entendendo o Padrão Observable no Node.js com Express</h1>
 
-  <h2>📌 O que é o padrão Observable?</h2>
+  <h2>O que é o padrão Observable?</h2>
   <p>
     O padrão <strong>Observable</strong> (também conhecido como <em>Observer</em>) é um padrão comportamental que permite que um objeto (o "observado") mantenha uma lista de dependentes (os "observadores") e <strong>notifique todos automaticamente</strong> quando uma mudança ocorrer.
   </p>
 
-  <h3>🧪 Exemplos na vida real</h3>
+  <h3>Exemplos na vida real</h3>
   <ul>
     <li><strong>Instagram:</strong> Quando você segue alguém, passa a ser um "observador". Quando a pessoa posta algo novo, você é notificado automaticamente.</li>
     <li><strong>Bolsa de Valores:</strong> Aplicações que monitoram o preço de ações se inscrevem como observadores de um feed de preços.</li>
     <li><strong>Aplicações Web Reativas:</strong> No frontend, o RxJS permite reagir a cliques, mudanças de valor, ou dados vindos do servidor.</li>
   </ul>
 
-  <h2>🔧 Exemplo básico com Node.js (sem Express)</h2>
+  <h2>Exemplo básico com Node.js (sem Express)</h2>
 
   <p>Usando o módulo nativo <code>EventEmitter</code>:</p>
 
@@ -142,15 +142,7 @@ taskObservable.on('novaTarefa', (tarefa) => {
 -d '{"titulo":"Estudar Observer"}'</code></pre>
 
   <p>O terminal exibirá:</p>
-  <pre><code>⚠️ Nova tarefa adicionada: { id: ..., titulo: 'Estudar Observer' }</code></pre>
-
-  <h2>✅ Conclusão</h2>
-  <p>
-    O padrão Observable é muito útil para criar sistemas desacoplados e reativos. Com o <code>EventEmitter</code>, podemos aplicar esse padrão no Node.js para reagir a eventos como criação de tarefas, conexões de clientes, alterações em arquivos, entre outros.
-  </p>
-  <p>
-    Ao integrar com o Express Generator, conseguimos estruturar a aplicação de forma organizada e clara, com rotas e lógica separadas.
-  </p>
+  <pre><code>⚠Nova tarefa adicionada: { id: ..., titulo: 'Estudar Observer' }</code></pre>
 
 </body>
 </html>
