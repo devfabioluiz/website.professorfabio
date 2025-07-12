@@ -74,7 +74,7 @@ require('./observer');
 observable.emitirDado('Olá, mundo!');
 </code></pre>
 
-  <h2>🚀 Integração com Express Generator</h2>
+  <h2>Integração com Express Generator</h2>
 
   <h3>1. Criando o projeto</h3>
   <pre><code>npx express-generator observable-app
@@ -126,11 +126,11 @@ const todosRouter = require('./routes/todos');
 app.use('/todos', todosRouter);
 
 taskObservable.on('novaTarefa', (tarefa) => {
-  console.log('⚠️ Nova tarefa adicionada:', tarefa);
+  console.log('Nova tarefa adicionada:', tarefa);
 });
 </code></pre>
 
-  <h2>🧪 Testando</h2>
+  <h2>Testando</h2>
   <p>
     Inicie o servidor:
   </p>
