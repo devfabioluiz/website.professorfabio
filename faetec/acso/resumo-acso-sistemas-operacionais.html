@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resumo Seg Infor - 1º ano - ACSO</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <h4 style="text-align: center">1º ano</h4>
+      <h4 style="text-align: center">ACSO</h4>
+      <h4 style="text-align: center">2º Trimestre</h4>
+      <h4 style="text-align: center">Resumo de Sistema Operacional</h4>
+    </header>
+
+    <!-- CONTEUDO -->
+    <div class="container">
+      <div class="texto-imprimir">
+        <h2>Sistemas Operacionais: Conceitos Básicos e Tipos</h2>
+        <section>
+          <h4>Sistemas SMP e NUMA</h4>
+          <p>Na ordem: Sistemas SMP e NUMA.</p>
+        </section>
+
+        <section>
+          <h4>Sistemas Fracamente Acoplados</h4>
+          <p>
+            Os sistemas fracamente acoplados consistem em sistemas
+            computacionais independentes, cada um com sua UCP, sua memória, seus
+            dispositivos de E/S e seu sistema operacional.
+          </p>
+          <p>
+            Estes sistemas são interligados por uma linha de comunicação,
+            trocando dados entre si, e operando de forma a termos uma imagem
+            única do sistema.
+          </p>
+          <p>São também conhecidos como sistemas multicomputadores.</p>
+        </section>
+
+        <section>
+          <h4>Memória Distribuída</h4>
+          <p>
+            Logo, a memória é distribuída, e deve haver um compartilhamento de
+            dados.
+          </p>
+          <p>
+            Hoje em dia, a quase totalidade dos supercomputadores do mundo são
+            sistemas fracamente acoplados, com uma quantidade imensa de UCPs
+            (chegando a alguns milhões de núcleos), interligados por uma rede de
+            altíssima velocidade.
+          </p>
+          <p>
+            O custo é o principal fator – é mais barato montar sistemas dessa
+            forma.
+          </p>
+        </section>
+
+        <section>
+          <h4>Sistema Operacional (S.O.)</h4>
+          <p>
+            Programa que controla o funcionamento do sistema computacional,
+            funcionando como interface entre usuários e a máquina. Gerencia o
+            uso de recursos como UCPs, memória e dispositivos de E/S. Suas
+            rotinas são executadas de forma concorrente, conforme eventos no
+            sistema.
+          </p>
+        </section>
+
+        <section>
+          <h4>Funções básicas</h4>
+          <p>
+            <strong>Facilidade de acesso:</strong> Organiza o acesso dos
+            usuários e programas ao hardware.
+          </p>
+          <p>
+            <strong>Compartilhamento seguro:</strong> Controla o uso simultâneo
+            dos recursos de forma protegida.
+          </p>
+        </section>
+
+        <section>
+          <h4>Exemplos de sistemas</h4>
+          <p>
+            Existem diversos S.O.s para diferentes plataformas: smartphones,
+            tablets, desktops, servidores, mainframes, supercomputadores,
+            sistemas embarcados, entre outros.
+          </p>
+        </section>
+
+        <section>
+          <h4>Sistemas embarcados</h4>
+          <p>
+            Computadores dedicados a tarefas específicas, com requisitos fixos.
+            Otimizados em tamanho, recursos e custo. Não são facilmente
+            reconfiguráveis para outras tarefas.
+          </p>
+        </section>
+
+        <section>
+          <h4>Firmware</h4>
+          <p>
+            Software especializado que controla o hardware dos sistemas
+            embarcados. Geralmente gravado em ROM e muitas vezes é o próprio
+            sistema operacional do dispositivo.
+          </p>
+        </section>
+
+        <section>
+          <h4>Exemplos de uso</h4>
+          <p>
+            Sistemas embarcados são encontrados em: smartphones, impressoras,
+            roteadores, micro-ondas, TVs, videogames, geladeiras, etc.
+          </p>
+          <p>
+            Sistemas operacionais embarcados: TinyOS, FreeRTOS, VxWorks, Tizen,
+            RTLinux, Contiki, OpenWRT, entre outros.
+          </p>
+        </section>
+
+        <section>
+          <h4>Máquina de níveis</h4>
+          <p>O computador é visto como uma máquina em camadas:</p>
+          <ul>
+            <li>Nível 0: Hardware</li>
+            <li>Nível 1: Sistema Operacional</li>
+          </ul>
+          <p>
+            O usuário interage com níveis superiores, que se comunicam com os
+            inferiores.
+          </p>
+        </section>
+
+        <section>
+          <h4>Máquina de níveis (cont.)</h4>
+          <p>
+            Os níveis são interdependentes e escondem complexidades inferiores.
+            Uma máquina virtual é um exemplo onde o hardware é simulado
+            logicamente.
+          </p>
+        </section>
+
+        <section>
+          <h4>Exemplo de máquina de seis níveis</h4>
+          <p>Combina hardware (níveis 0 e 1) e software (níveis 2 a 5).</p>
+        </section>
+
+        <section>
+          <h4>Tipos de sistemas</h4>
+          <p>
+            Classificados de acordo com a evolução do hardware e suas
+            aplicações:
+          </p>
+          <ul>
+            <li>Monotarefa / Monoprogramáveis</li>
+            <li>Multitarefa / Multiprogramáveis</li>
+            <li>Múltiplos processadores</li>
+          </ul>
+        </section>
+
+        <section>
+          <h4>Sistemas monotarefa</h4>
+          <p>
+            Executam apenas um programa por vez. São simples e causam
+            subutilização do computador.
+          </p>
+          <p>Exemplo: MS-DOS. São sistemas monousuário.</p>
+        </section>
+
+        <section>
+          <h4>Sistemas multitarefa</h4>
+          <p>
+            Permitem a execução concorrente de vários programas. Reduzem a
+            ociosidade do sistema.
+          </p>
+          <p>
+            Podem ser monousuário (um usuário por vez) ou multiusuário (vários
+            usuários simultâneos).
+          </p>
+        </section>
+
+        <section>
+          <h4>Classificação dos multitarefa</h4>
+          <ul>
+            <li>Batch (em lote)</li>
+            <li>Tempo compartilhado</li>
+            <li>Tempo real</li>
+          </ul>
+          <p>Um S.O. pode suportar mais de um desses modelos.</p>
+        </section>
+
+        <section>
+          <h4>Batch (em lote)</h4>
+          <p>
+            Executam tarefas sem interação do usuário. Programas eram
+            organizados em filas e processados automaticamente.
+          </p>
+          <p>
+            Usado para: cálculos, compilações, backups. Hoje, esse modelo é
+            apenas simulado.
+          </p>
+        </section>
+
+        <section>
+          <h4>Tempo compartilhado</h4>
+          <p>
+            Divide o tempo do processador em "fatias" (time slices). Os
+            programas são alternados em execução de forma circular, permitindo a
+            interação simultânea de usuários.
+          </p>
+          <p>Muito comum nos sistemas atuais.</p>
+        </section>
+
+        <section>
+          <h4>Tempo real</h4>
+          <p>
+            Resposta a estímulos precisa ocorrer dentro de limites rígidos. É
+            previsível e altamente confiável.
+          </p>
+          <p>Não usam time slices, mas prioridades de tarefas.</p>
+          <p>
+            Aplicações: controle de tráfego, usinas, aviônica, automação
+            crítica.
+          </p>
+          <p>Exemplos: FreeRTOS, VxWorks, QNX.</p>
+        </section>
+
+        <section>
+          <h4>Múltiplos processadores</h4>
+          <p>
+            Gerenciam várias UCPs trabalhando em paralelo. O S.O. deve
+            distribuir tarefas de forma eficiente entre os núcleos.
+          </p>
+          <p>
+            A divisão das tarefas permite a execução concorrente e
+            aproveitamento total dos recursos.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-faetec.html"> Ir para índice </a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
