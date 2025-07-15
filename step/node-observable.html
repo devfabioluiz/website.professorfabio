@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Padrão Observable com Express</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 960px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Entendendo o Padrão Observable no Node.js com Express</h1>
+
+  <h2>O que é o padrão Observable?</h2>
+  <p>
+    O padrão <strong>Observable</strong> (também conhecido como <em>Observer</em>) é um padrão comportamental que permite que um objeto (o "observado") mantenha uma lista de dependentes (os "observadores") e <strong>notifique todos automaticamente</strong> quando uma mudança ocorrer.
+  </p>
+
+  <h3>Exemplos na vida real</h3>
+  <ul>
+    <li><strong>Instagram:</strong> Quando você segue alguém, passa a ser um "observador". Quando a pessoa posta algo novo, você é notificado automaticamente.</li>
+    <li><strong>Bolsa de Valores:</strong> Aplicações que monitoram o preço de ações se inscrevem como observadores de um feed de preços.</li>
+    <li><strong>Aplicações Web Reativas:</strong> No frontend, o RxJS permite reagir a cliques, mudanças de valor, ou dados vindos do servidor.</li>
+  </ul>
+
+  <h2>Exemplo básico com Node.js (sem Express)</h2>
+
+  <p>Usando o módulo nativo <code>EventEmitter</code>:</p>
+
+  <pre><code>// observable.js
+const EventEmitter = require('events');
+
+class Observable extends EventEmitter {
+  emitirDado(dado) {
+    console.log('Emitindo dado:', dado);
+    this.emit('mudanca', dado);
+  }
+}
+module.exports = new Observable();
+</code></pre>
+
+  <pre><code>// observer.js
+const observable = require('./observable');
+
+observable.on('mudanca', (dado) => {
+  console.log('Observador recebeu o dado:', dado);
+});
+</code></pre>
+
+  <pre><code>// index.js
+const observable = require('./observable');
+require('./observer');
+
+observable.emitirDado('Olá, mundo!');
+</code></pre>
+
+  <h2>Integração com Express Generator</h2>
+
+  <h3>1. Criando o projeto</h3>
+  <pre><code>npx express-generator observable-app
+cd observable-app
+npm install
+</code></pre>
+
+  <h3>2. Criando o Observable</h3>
+  <pre><code>// observable.js
+const EventEmitter = require('events');
+
+class TaskObservable extends EventEmitter {
+  novaTarefa(tarefa) {
+    this.emit('novaTarefa', tarefa);
+  }
+}
+module.exports = new TaskObservable();
+</code></pre>
+
+  <h3>3. Criando a rota de tarefas</h3>
+  <pre><code>// routes/todos.js
+const express = require('express');
+const router = express.Router();
+const taskObservable = require('../observable');
+
+let tarefas = [];
+
+router.get('/', (req, res) => {
+  res.json(tarefas);
+});
+
+router.post('/', (req, res) => {
+  const tarefa = { id: Date.now(), titulo: req.body.titulo };
+  tarefas.push(tarefa);
+
+  taskObservable.novaTarefa(tarefa);
+  res.status(201).json(tarefa);
+});
+
+module.exports = router;
+</code></pre>
+
+  <h3>4. Atualizando o app.js</h3>
+  <pre><code>// app.js (apenas os trechos relevantes)
+const express = require('express');
+const taskObservable = require('./observable');
+
+const todosRouter = require('./routes/todos');
+app.use('/todos', todosRouter);
+
+taskObservable.on('novaTarefa', (tarefa) => {
+  console.log('Nova tarefa adicionada:', tarefa);
+});
+</code></pre>
+
+  <h2>Testando</h2>
+  <p>
+    Inicie o servidor:
+  </p>
+  <pre><code>npm start</code></pre>
+
+  <p>Adicione uma nova tarefa via terminal ou Postman:</p>
+  <pre><code>curl -X POST http://localhost:3000/todos \
+-H "Content-Type: application/json" \
+-d '{"titulo":"Estudar Observer"}'</code></pre>
+
+  <p>O terminal exibirá:</p>
+  <pre><code>⚠Nova tarefa adicionada: { id: ..., titulo: 'Estudar Observer' }</code></pre>
+
+</body>
+</html>
