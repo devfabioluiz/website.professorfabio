@@ -14,13 +14,13 @@
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">TypeScript</h4>
-      <h4 class="text-center">Operadores Condicionais</h4>
+      <h4 class="text-center">Operadores Condicionais e ENUM</h4>
     </header>
     <main class="container">
       <section>
         <h2>Operadores Condicionais</h2>
 
-        <h3><code>if</code></h3>
+        <h3><code class="language-javascript">if</code></h3>
         <p>
           Usado para verificar uma condição. Se for verdadeira, executa o bloco.
         </p>
@@ -29,11 +29,11 @@
 
 if (idade >= 18) {
   console.log("Você é maior de idade.");
-}</code></pre>
+}</code></pre></div>
           <button class="btn-copy">copiar código</button>
         </div>
 
-        <h3><code>if...else</code></h3>
+        <h3><code class="language-javascript">if...else</code></h3>
         <p>
           Executa um bloco se a condição for verdadeira e outro se for falsa.
         </p>
@@ -44,11 +44,11 @@ if (estaChovendo) {
   console.log("Leve um guarda-chuva.");
 } else {
   console.log("O tempo está bom.");
-}</code></pre>
+}</code></pre></div>
           <button class="btn-copy">copiar código</button>
         </div>
 
-        <h3><code>if...else if...else</code></h3>
+        <h3><code class="language-javascript">if...else if...else</code></h3>
         <p>Permite múltiplas condições encadeadas.</p>
         <div class="code-container">
           <pre><code class="language-javascript">let nota: number = 75;
@@ -59,11 +59,11 @@ if (nota >= 90) {
   console.log("Aprovado");
 } else {
   console.log("Reprovado");
-}</code></pre>
+}</code></pre></div>
           <button class="btn-copy">copiar código</button>
         </div>
 
-        <h3><code>switch</code></h3>
+        <h3><code class="language-javascript">switch</code></h3>
         <p>Usado para várias comparações com valores fixos.</p>
         <div class="code-container">
           <pre><code class="language-javascript">let diaSemana: number = 3;
@@ -80,97 +80,169 @@ switch (diaSemana) {
     break;
   default:
     console.log("Dia inválido");
-}</code></pre>
+}</code></pre></div>
           <button class="btn-copy">copiar código</button>
         </div>
       </section>
-
       <section>
-        <h2>Laços de Repetição</h2>
-
-        <h3><code>for</code></h3>
-        <p>Útil quando se sabe o número de repetições.</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">for (let i = 0; i < 5; i++) {
-  console.log(`Contador: ${i}`);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3><code>while</code></h3>
-        <p>Executa enquanto a condição for verdadeira.</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let contador: number = 0;
-
-while (contador < 3) {
-  console.log(`Tentativa ${contador + 1}`);
-  contador++;
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3><code>do...while</code></h3>
+        <h2>O que é <code class="language-javascript">enum</code> em TypeScript?</h2>
         <p>
-          Executa o bloco ao menos uma vez, mesmo que a condição seja falsa no
-          início.
+          <code class="language-javascript">enum</code> (abreviação de <em>enumeration</em>) é uma
+          funcionalidade do TypeScript que permite
+          <strong>declarar um conjunto de constantes nomeadas</strong>. Ele
+          facilita o trabalho com conjuntos fixos de valores, como dias da
+          semana, estados de um processo, cores, etc.
         </p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let senhaDigitada: string = "";
-let senhaCorreta: string = "1234";
+        <ul>
+          <li>
+            <code class="language-javascript">enum</code> é uma construção exclusiva do TypeScript (não
+            existe em JavaScript).
+          </li>
+          <li>
+            Pode ser compilado em objetos JavaScript que funcionam tanto com
+            nome → valor quanto valor → nome (no caso dos numéricos).
+          </li>
+          <li>
+            <code class="language-javascript">enum</code> pode ter comportamento inesperado se usado com
+            strings dinâmicas mal definidas.
+          </li>
+        </ul>
+        <h3>Por que usar <code class="language-javascript">enum</code>?</h3>
+        <ul>
+          <li>
+            <strong>Legibilidade</strong>: Os valores ficam com nomes mais
+            claros.
+          </li>
+          <li><strong>Organização</strong>: Centraliza valores fixos.</li>
+          <li>
+            <strong>Segurança de tipo</strong>: Evita uso de strings ou números
+            soltos no código.
+          </li>
+          <li>
+            <strong>Facilidade de manutenção</strong>: Mudanças em um valor são
+            feitas em um único lugar.
+          </li>
+        </ul>
 
-do {
-  senhaDigitada = prompt("Digite a senha:") || "";
-} while (senhaDigitada !== senhaCorreta);
+        <h4>Exemplo 1: Dias da Semana</h4>
+        <div class="code-container"><pre><code class="language-javascript">
+enum DiaDaSemana {
+  Domingo,
+  Segunda,
+  Terca,
+  Quarta,
+  Quinta,
+  Sexta,
+  Sabado
+}
 
-console.log("Acesso concedido!");</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+const hoje: DiaDaSemana = DiaDaSemana.Quarta;
 
+console.log(hoje); // 3
+console.log(DiaDaSemana[hoje]); // "Quarta"
+  </code></pre></div>
         <p>
-          <em>Obs.: <code>prompt()</code> funciona apenas em navegadores.</em>
+          Nesse exemplo, o <code class="language-javascript">enum</code> atribui valores numéricos
+          automaticamente a partir de 0.
         </p>
 
-        <h3><code>break</code></h3>
+        <h4>Exemplo 2: Estados de um Pedido</h4>
+        <div class="code-container"><pre><code class="language-javascript">
+enum StatusPedido {
+  Pendente = "PENDENTE",
+  Processando = "PROCESSANDO",
+  Concluido = "CONCLUIDO",
+  Cancelado = "CANCELADO"
+}
+
+function atualizarStatus(status: StatusPedido) {
+  console.log(`Status do pedido: ${status}`);
+}
+
+atualizarStatus(StatusPedido.Concluido); // Status do pedido: CONCLUIDO
+  </code></pre></div>
         <p>
-          A palavra-chave <code>break</code> interrompe completamente um laço de
-          repetição (<code>for</code>, <code>while</code>,
-          <code>do...while</code>) ou um <code>switch</code>. Ou seja, o código
-          sai do bloco atual imediatamente.
+          Neste caso, utilizamos <code class="language-javascript">enum</code> com valores string para
+          tornar os logs mais legíveis.
         </p>
-        <div class="code-container">
-          <pre><code class="language-typescript">for (let i = 1; i <= 5; i++) {
-  if (i === 3) {
-    break; // para o loop quando i for 3
+
+        <h4>Exemplo 3: Níveis de Acesso</h4>
+        <div class="code-container"><pre><code class="language-javascript">
+enum NivelAcesso {
+  Usuario = 1,
+  Moderador = 2,
+  Administrador = 3
+}
+
+function temPermissao(nivel: NivelAcesso): boolean {
+  return nivel >= NivelAcesso.Moderador;
+}
+
+console.log(temPermissao(NivelAcesso.Usuario)); // false
+console.log(temPermissao(NivelAcesso.Administrador)); // true
+  </code></pre></div>
+        <p>
+          Esse exemplo mostra como usar enums com valores numéricos
+          personalizados para controle de acesso.
+        </p>
+
+        <h4>Exemplo 4: Usando enum em um switch</h4>
+        <div class="code-container"><pre><code class="language-javascript">
+enum CorSemaforo {
+  Verde,
+  Amarelo,
+  Vermelho
+}
+
+function acaoSemaforo(cor: CorSemaforo): void {
+  switch (cor) {
+    case CorSemaforo.Verde:
+      console.log("Siga");
+      break;
+    case CorSemaforo.Amarelo:
+      console.log("Atenção");
+      break;
+    case CorSemaforo.Vermelho:
+      console.log("Pare");
+      break;
+    default:
+      console.log("Cor inválida");
   }
-  console.log(i);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+}
 
-        <p><strong>Saída:</strong></p>
-        <pre><code>1
-2</code></pre>
+acaoSemaforo(CorSemaforo.Amarelo); // Atenção
+  </code></pre></div>
 
-        <h3><code>continue</code></h3>
-        <p>
-          A palavra-chave <code>continue</code> pula a iteração atual do laço e
-          vai direto para a próxima.
-        </p>
-        <div class="code-container">
-          <pre><code class="language-typescript">for (let i = 1; i <= 5; i++) {
-  if (i === 3) {
-    continue; // pula o número 3
+        <h4>Exemplo 5: Usando enum de string</h4>
+        <div class="code-container"><pre><code class="language-javascript">
+enum TipoUsuario {
+  Admin = "ADMIN",
+  Editor = "EDITOR",
+  Leitor = "LEITOR"
+}
+
+function mostrarPermissoes(tipo: TipoUsuario) {
+  switch (tipo) {
+    case TipoUsuario.Admin:
+      console.log("Acesso total");
+      break;
+    case TipoUsuario.Editor:
+      console.log("Pode editar conteúdo");
+      break;
+    case TipoUsuario.Leitor:
+      console.log("Apenas leitura");
+      break;
   }
-  console.log(i);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+}
 
-        <p><strong>Saída:</strong></p>
-        <pre><code>1
-2
-4
-5</code></pre>
+mostrarPermissoes(TipoUsuario.Editor); // Pode editar conteúdo
+  </code></pre></div>
+
+        <p>
+          <strong>Dica:</strong> Sempre use <code class="language-javascript">Enum.Valor</code> nos
+          <code class="language-javascript">case</code> do switch. O TypeScript compila isso corretamente e
+          mantém o tipo seguro.
+        </p>
       </section>
     </main>
     <footer>

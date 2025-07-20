@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">Funções e Funções Genéricas</h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>Funções em TypeScript</h2>
+
+        <h3>Criação de funções</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">function saudacao(nome: string): string {
+  return `Olá, ${nome}!`;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Passagem de parâmetros</h3>
+
+        <h4>Parâmetros obrigatórios</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">function somar(a: number, b: number): number {
+  return a + b;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h4>Parâmetros opcionais</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">function apresentar(nome: string, idade?: number): string {
+  return idade 
+    ? `${nome}, ${idade} anos` 
+    : nome;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h4>Parâmetros com valores padrão</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">function cumprimentar(nome: string = "visitante"): string {
+  return `Olá, ${nome}!`;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h4>Número indefinido de parâmetros (Rest parameters)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">function somarTudo(...numeros: number[]): number {
+  return numeros.reduce((total, n) => total + n, 0);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Valor de retorno</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">function dobro(x: number): number {
+  return x * 2;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Sobrecarga de funções</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">function mostrar(valor: number): void;
+function mostrar(valor: string): void;
+function mostrar(valor: any): void {
+  console.log(valor);
+}
+
+mostrar("Oi");
+mostrar(10);</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Tipo de função</h3>
+
+        <h4>Definição</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">type Operacao = (a: number, b: number) => number;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <h4>Criação de variáveis com tipo de função</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">let multiplicar: Operacao = (x, y) => x * y;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <h4>Função como parâmetro</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">function executarOperacao(a: number, b: number, operacao: Operacao): number {
+  return operacao(a, b);
+}
+console.log(executarOperacao(4, 5, multiplicar)); // 20</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Funções anônimas</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const dividir = function (a: number, b: number): number {
+  return a / b;
+};</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Funções arrow</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const subtrair = (a: number, b: number): number => a - b;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+      <section>
+        <h2>Funções Genéricas</h2>
+        <p>Funções que usam generics para trabalhar com tipos variados.</p>
+
+        <h4>Exemplo 1: Função que recebe e retorna o mesmo tipo</h4>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+function echo&lt;T&gt;(arg: T): T {
+  return arg;
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>
+          Exemplo 2: Função genérica que concatena dois arrays do mesmo tipo
+        </h4>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+function concatArrays&lt;T&gt;(a: T[], b: T[]): T[] {
+  return a.concat(b);
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>Exemplo 3: Função genérica que troca os valores de uma tupla</h4>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+function swap&lt;T, U&gt;(tuple: [T, U]): [U, T] {
+  return [tuple[1], tuple[0]];
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

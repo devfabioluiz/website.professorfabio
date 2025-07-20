@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 1 de JS Intermediário - IT Step</title>
+    <title>Aula 2 - JS Intermediário</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
   </head>
   <body>
     <header>
@@ -14,8 +18,8 @@
         POO (parte 1 - Classe, Objetos, propriedades e Métodos)
       </h4>
     </header>
-    <div class="container">
-      <div class="texto-imprimir">
+    <main class="container">
+      <section>
         <h2>Introdução à Orientação a Objetos</h2>
         <p>
           A Orientação a Objetos (OO) é um paradigma de programação que organiza
@@ -30,43 +34,45 @@
           Uma <b>classe</b> é um modelo para criar objetos. Ela define as
           propriedades e métodos que os objetos terão.
         </p>
-        <pre class="question activity">
-        <code>
-        class Animal {
-            constructor(name, species) {
-                this.name = name; 
-                this.species = species;
-            }
 
-            describe() {
-                return `${this.name} é um ${this.species}.`;
-            }
-        }
-        </code>
-        </pre>
-        <button class="btn-copy">Copiar Código</button>
-</div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+class Animal {
+  constructor(name, species) {
+    this.name = name; 
+    this.species = species;
+  }
+
+  describe() {
+    return `${this.name} é um ${this.species}.`;
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
         <h4>Objeto</h4>
         <p>
           Um <b>objeto</b> é uma instância de uma classe, representando uma
           entidade concreta baseada na classe.
         </p>
-        <pre class="question activity">
-<code>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
 var dog = new Animal('Rex', 'cachorro');
 console.log(dog.describe()); // Rex é um cachorro.
-</code>
-        </pre>
-        <button class="btn-copy">Copiar Código</button>
-</div>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h4>Propriedades e Métodos</h4>
         <p>
           As <b>propriedades</b> armazenam informações do objeto, enquanto os
           <b>métodos</b> definem os comportamentos.
         </p>
-        <pre class="question activity">
-<code>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
 class Calculator {
   add(a, b) {
     return a + b;
@@ -75,12 +81,11 @@ class Calculator {
 
 var calc = new Calculator();
 console.log(calc.add(5, 3)); // 8
-</code>
-        </pre>
-        <button class="btn-copy">Copiar Código</button>
-</div>
-      </div>
-    </div>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
 
     <footer>
       <div class="button-container">
@@ -90,6 +95,8 @@ console.log(calc.add(5, 3)); // 8
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>

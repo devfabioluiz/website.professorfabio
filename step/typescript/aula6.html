@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">
+        POO (parte 1 - Classe, Objetos, Propriedades, Métodos e Interfaces)
+      </h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>Introdução à Orientação a Objetos com TypeScript</h2>
+        <p>
+          A Programação Orientada a Objetos (POO) organiza o código em entidades
+          chamadas <b>objetos</b>, que encapsulam <b>dados</b> (propriedades) e
+          <b>comportamentos</b> (métodos). Com TypeScript, esse paradigma é
+          fortalecido com a adição de <b>tipagem estática</b>,
+          <b>interfaces</b> e <b>modificadores de acesso</b>, tornando o código
+          mais robusto e legível.
+        </p>
+
+        <h4>Classe com Tipagem</h4>
+        <p>
+          Uma <b>classe</b> define a estrutura de um objeto. No TypeScript,
+          utilizamos tipos explícitos para garantir segurança e clareza.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+class Animal {
+  constructor(
+    public name: string,
+    public species: string
+  ) {}
+
+  describe(): string {
+    return `${this.name} é um ${this.species}.`;
+  }
+}
+    </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Objeto (Instância da Classe)</h4>
+        <p>
+          Um <b>objeto</b> é criado a partir de uma classe usando a
+          palavra-chave <code>new</code>. O TypeScript garante que os valores
+          estejam de acordo com os tipos definidos na classe.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const dog = new Animal('Rex', 'cachorro');
+console.log(dog.describe()); // Rex é um cachorro.
+    </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Propriedades e Métodos com Acessibilidade</h4>
+        <p>
+          <b>Propriedades</b> armazenam valores, enquanto <b>métodos</b> são
+          funções associadas à classe. No TypeScript, usamos
+          <code>public</code>, <code>private</code> e <code>readonly</code> para
+          controlar o acesso e a modificação desses elementos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+class Calculator {
+  private history: string[] = [];
+
+  public add(a: number, b: number): number {
+    const result = a + b;
+    this.log(`${a} + ${b} = ${result}`);
+    return result;
+  }
+
+  private log(operation: string): void {
+    this.history.push(operation);
+  }
+
+  public getHistory(): string[] {
+    return this.history;
+  }
+}
+
+const calc = new Calculator();
+console.log(calc.add(5, 3)); // 8
+console.log(calc.getHistory()); // ['5 + 3 = 8']
+    </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Interfaces</h4>
+        <p>
+          Interfaces definem a estrutura que uma classe deve seguir. Elas não
+          geram código no JavaScript final, mas ajudam a garantir que certas
+          propriedades e métodos estejam presentes.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+interface Describable {
+  name: string;
+  describe(): string;
+}
+
+class Person implements Describable {
+  constructor(public name: string, public age: number) {}
+
+  describe(): string {
+    return `${this.name} tem ${this.age} anos.`;
+  }
+}
+
+const user: Describable = new Person('Ana', 28);
+console.log(user.describe()); // Ana tem 28 anos.
+    </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <section>
+        <h2>Classes Genéricas</h2>
+        <p>
+          Classes que aceitam tipos genéricos para seus membros, métodos ou
+          propriedades.
+        </p>
+        <h4>Exemplo 1: Classe genérica que armazena um valor</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+class Storage&lt;T&gt; {
+  private _value: T;
+  constructor(value: T) {
+    this._value = value;
+  }
+  getValue(): T {
+    return this._value;
+  }
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>Exemplo 2: Classe genérica que representa um par de valores</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">class Pair&lt;T, U&gt; {
+  constructor(public first: T, public second: U) {}
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>Exemplo 3: Classe genérica que representa uma pilha (stack)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">class Stack&lt;T&gt; {
+  private items: T[] = [];
+  push(item: T) {
+    this.items.push(item);
+  }
+  pop(): T | undefined {
+    return this.items.pop();
+  }
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <section>
+        <h2>Interfaces Genéricas</h2>
+        <p>
+          Interfaces que definem contratos genéricos, flexíveis para diferentes
+          tipos.
+        </p>
+        <h4>
+          Exemplo 1: Interface genérica para uma função que recebe e retorna o
+          mesmo tipo
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+interface IdentityFn&lt;T&gt; {
+  (arg: T): T;
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>
+          Exemplo 2: Interface genérica para um objeto com propriedade data
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">interface Container&lt;T&gt; {
+  data: T;
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>
+          Exemplo 3: Interface genérica para uma estrutura que pode armazenar
+          múltiplos tipos
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">class Stack&lt;T&gt; {
+interface KeyValuePair&lt;K, V&gt; {
+  key: K;
+  value: V;
+}}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <section>
+        <h2>Restrições nos Genéricos</h2>
+        <p>
+          Restrições limitam os tipos genéricos para garantir que eles possuam
+          certas propriedades ou métodos.
+        </p>
+        <h4>Exemplo 1: Restringindo T para tipos que possuem length</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function loggingIdentity&lt;T extends { length: number }&gt;(arg: T): T {
+  console.log(arg.length);
+  return arg;
+}}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>
+          Exemplo 2: Interface para restrição de tipo que deve possuir método
+          toString
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">interface Stringifiable {
+  toString(): string;
+}
+function printString&lt;T extends Stringifiable&gt;(arg: T): void {
+  console.log(arg.toString());
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <h4>
+          Exemplo 3: Classe genérica com restrição para tipos que têm método
+          compareTo
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">interface Comparable {
+  compareTo(other: this): number;
+}
+class SortedCollection&lt;T extends Comparable&gt; {
+  private items: T[] = [];
+  add(item: T) {
+    this.items.push(item);
+    this.items.sort((a, b) => a.compareTo(b));
+  }
+}</code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

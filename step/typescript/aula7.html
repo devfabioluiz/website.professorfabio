@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 7 - TypeScript</title>
+    <title>Aula 9 - TypeScript</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -12,105 +12,113 @@
   </head>
   <body>
     <header>
-      <h1>Aula 7</h1>
+      <h1>Aula 9</h1>
       <h4 class="text-center">TypeScript</h4>
-      <h4 class="text-center">ENUM</h4>
+      <h4 class="text-center">POO (parte 2 - Herança e Polimorfismo)</h4>
     </header>
     <main class="container">
-      <section>
-        <h2>O que é <code>enum</code> em TypeScript?</h2>
-        <p>
-          <code>enum</code> (abreviação de <em>enumeration</em>) é uma
-          funcionalidade do TypeScript que permite
-          <strong>declarar um conjunto de constantes nomeadas</strong>. Ele
-          facilita o trabalho com conjuntos fixos de valores, como dias da
-          semana, estados de um processo, cores, etc.
-        </p>
+      <h2>Herança</h2>
+      <p>
+        A <b>herança</b> permite que uma classe reutilize propriedades e métodos
+        de outra classe. Em TypeScript, isso é feito com a palavra-chave
+        <code>extends</code>, e adicionamos tipagem explícita nas propriedades e
+        nos parâmetros.
+      </p>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+class Animal {
+  constructor(public name: string, public species: string) {}
 
-        <ul>
-          <li>
-            <code>enum</code> é uma construção exclusiva do TypeScript (não
-            existe em JavaScript).
-          </li>
-          <li>
-            Pode ser compilado em objetos JavaScript que funcionam tanto com
-            nome → valor quanto valor → nome (no caso dos numéricos).
-          </li>
-          <li>
-            <code>enum</code> pode ter comportamento inesperado se usado com
-            strings dinâmicas mal definidas.
-          </li>
-        </ul>
-
-        <h3>Por que usar <code>enum</code>?</h3>
-        <ul>
-          <li>
-            <strong>Legibilidade</strong>: Os valores ficam com nomes mais
-            claros.
-          </li>
-          <li><strong>Organização</strong>: Centraliza valores fixos.</li>
-          <li>
-            <strong>Segurança de tipo</strong>: Evita uso de strings ou números
-            soltos no código.
-          </li>
-          <li>
-            <strong>Facilidade de manutenção</strong>: Mudanças em um valor são
-            feitas em um único lugar.
-          </li>
-        </ul>
-
-        <h3>Sintaxe básica</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">enum DiaDaSemana {
-  Domingo,
-  Segunda,
-  Terca,
-  Quarta,
-  Quinta,
-  Sexta,
-  Sabado,
-}</code></pre>
-        </div>
-        <p>
-          Neste exemplo, <code>Domingo</code> será igual a <code>0</code>,
-          <code>Segunda</code> será igual a <code>1</code>, e assim por diante.
-        </p>
-
-        <h3>Como usar</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">let hoje: DiaDaSemana = DiaDaSemana.Segunda;
-
-console.log(hoje); // 1
-console.log(DiaDaSemana[1]); // Segunda</code></pre>
-        </div>
-
-        <h3>Enum com valores personalizados</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">enum StatusPedido {
-  Pendente = "PENDENTE",
-  Processando = "PROCESSANDO",
-  Concluido = "CONCLUIDO",
-  Cancelado = "CANCELADO",
-}</code></pre>
-        </div>
-
-        <p>Uso:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let status: StatusPedido = StatusPedido.Concluido;
-console.log(status); // CONCLUIDO</code></pre>
-        </div>
-
-        <h3>Enum numérico personalizado</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">enum Cores {
-  Vermelho = 1,
-  Verde = 3,
-  Azul = 5,
+  describe(): string {
+    return `${this.name} é um ${this.species}.`;
+  }
 }
 
-console.log(Cores.Verde); // 3</code></pre>
-        </div>
-      </section>
+class Mammal extends Animal {
+  constructor(name: string, species: string, public isDomestic: boolean) {
+    super(name, species);
+  }
+
+  mammalInfo(): string {
+    return `${this.name} é um ${this.species} e é ${this.isDomestic ? 'domesticado' : 'selvagem'}.`;
+  }
+}
+
+const cat = new Mammal('Mimi', 'gato', true);
+console.log(cat.mammalInfo()); // Mimi é um gato e é domesticado.
+        </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Polimorfismo</h2>
+      <p>
+        O <b>polimorfismo</b> permite que métodos em classes filhas redefinam o
+        comportamento dos métodos herdados da classe pai. Em TypeScript, podemos
+        usar o modificador <code>override</code> para deixar isso explícito.
+      </p>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+class Bird extends Animal {
+  override describe(): string {
+    return `${this.name} é um pássaro da espécie ${this.species}.`;
+  }
+}
+
+const parrot = new Bird('Loro', 'papagaio');
+console.log(parrot.describe()); // Loro é um pássaro da espécie papagaio.
+        </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>Exemplo Completo - Sistema de Veículos</h4>
+      <p>
+        Veja abaixo um sistema que gerencia veículos com classes especializadas
+        para
+        <i>carros</i> e <i>motos</i>. Note o uso da tipagem estática nos
+        atributos e métodos.
+      </p>
+      <div class="code-container">
+        <pre><code class="language-javascript">
+class Vehicle {
+  constructor(
+    public make: string,
+    public model: string,
+    public year: number
+  ) {}
+
+  getDetails(): string {
+    return `${this.year} ${this.make} ${this.model}`;
+  }
+}
+
+class Car extends Vehicle {
+  constructor(make: string, model: string, year: number, public doors: number) {
+    super(make, model, year);
+  }
+
+  override getDetails(): string {
+    return `${super.getDetails()} com ${this.doors} portas.`;
+  }
+}
+
+class Motorcycle extends Vehicle {
+  constructor(make: string, model: string, year: number, public type: string) {
+    super(make, model, year);
+  }
+
+  override getDetails(): string {
+    return `${super.getDetails()} que é uma moto do tipo ${this.type}.`;
+  }
+}
+
+const myCar = new Car('Toyota', 'Corolla', 2022, 4);
+const myBike = new Motorcycle('Honda', 'CBR', 2021, 'esportiva');
+
+console.log(myCar.getDetails()); // 2022 Toyota Corolla com 4 portas.
+console.log(myBike.getDetails()); // 2021 Honda CBR que é uma moto do tipo esportiva.
+        </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
     </main>
     <footer>
       <div class="button-container">
@@ -120,6 +128,7 @@ console.log(Cores.Verde); // 3</code></pre>
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>

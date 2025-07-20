@@ -18,67 +18,93 @@
     </header>
 
     <main class="container">
-      <h2>Arrays em TypeScript</h2>
-      <p>
-        Um array é uma coleção ordenada de elementos do mesmo tipo. No
-        TypeScript, você pode declarar arrays com tipos explícitos.
-      </p>
+      <section>
+        <h2>Laços de Repetição</h2>
 
-      <h3>Sintaxe</h3>
-      <div class="code-container">
-        <pre><code class="language-typescript">let numeros: number[] = [1, 2, 3, 4];
-let nomes: string[] = ["Ana", "João", "Maria"];</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+        <h3><code>for</code></h3>
+        <p>Útil quando se sabe o número de repetições.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  console.log(`Contador: ${i}`);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
 
-      <p>Alternativa:</p>
-      <div class="code-container">
-        <pre><code class="language-typescript">let notas: Array&lt;number&gt; = [7.5, 8.0, 9.2];</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+        <h3><code>while</code></h3>
+        <p>Executa enquanto a condição for verdadeira.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let contador: number = 0;
 
-      <h3>Métodos úteis com arrays</h3>
+while (contador < 3) {
+  console.log(`Tentativa ${contador + 1}`);
+  contador++;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
 
-      <h4><code>forEach</code></h4>
-      <p>Executa uma função para cada item do array:</p>
-      <div class="code-container">
-        <pre><code class="language-typescript">nomes.forEach((nome) => {
-  console.log("Olá, " + nome);
-});</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+        <h3><code>do...while</code></h3>
+        <p>
+          Executa o bloco ao menos uma vez, mesmo que a condição seja falsa no
+          início.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let senhaDigitada: string = "";
+let senhaCorreta: string = "1234";
 
-      <h4><code>filter</code></h4>
-      <p>Filtra os elementos com base em uma condição:</p>
-      <div class="code-container">
-        <pre><code class="language-typescript">let maiores: number[] = numeros.filter(n => n > 2);
-console.log(maiores); // [3, 4]</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+do {
+  senhaDigitada = prompt("Digite a senha:") || "";
+} while (senhaDigitada !== senhaCorreta);
 
-      <h4><code>map</code></h4>
-      <p>Cria um novo array com base no original:</p>
-      <div class="code-container">
-        <pre><code class="language-typescript">let dobrados: number[] = numeros.map(n => n * 2);
-console.log(dobrados); // [2, 4, 6, 8]</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+console.log("Acesso concedido!");</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
 
-      <h3>Tipos de arrays mais avançados</h3>
+        <p>
+          <em>Obs.: <code>prompt()</code> funciona apenas em navegadores.</em>
+        </p>
 
-      <p>Array de objetos:</p>
-      <div class="code-container">
-        <pre><code class="language-typescript">type Pessoa = {
-  nome: string;
-  idade: number;
-};
+        <h3><code>break</code></h3>
+        <p>
+          A palavra-chave <code>break</code> interrompe completamente um laço de
+          repetição (<code>for</code>, <code>while</code>,
+          <code>do...while</code>) ou um <code>switch</code>. Ou seja, o código
+          sai do bloco atual imediatamente.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    break; // para o loop quando i for 3
+  }
+  console.log(i);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
 
-let pessoas: Pessoa[] = [
-  { nome: "Carlos", idade: 30 },
-  { nome: "Ana", idade: 25 },
-];</code></pre>
-        <button class="btn-copy">copiar código</button>
-      </div>
+        <p><strong>Saída:</strong></p>
+        <pre><code>1
+2</code></pre>
+
+        <h3><code>continue</code></h3>
+        <p>
+          A palavra-chave <code>continue</code> pula a iteração atual do laço e
+          vai direto para a próxima.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    continue; // pula o número 3
+  }
+  console.log(i);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <p><strong>Saída:</strong></p>
+        <pre><code>1
+2
+4
+5</code></pre>
+      </section>
     </main>
 
     <footer>
@@ -89,5 +115,7 @@ let pessoas: Pessoa[] = [
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>
