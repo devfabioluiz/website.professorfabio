@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">Introdução ao TypeScript</h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>O que é TypeScript?</h2>
+        <p>
+          TypeScript é um <strong>superset</strong> (superconjunto) do JavaScript.
+          Ele adiciona <strong>tipagem estática</strong>,
+          <strong>interfaces</strong>, <strong>modificadores de acesso</strong>,
+          <strong>enumerações</strong> e outros recursos de linguagens mais
+          robustas como Java ou C#.
+        </p>
+        <p>
+          TypeScript adiciona tipagem estática ao JavaScript, o que significa que você pode definir os tipos de variáveis, parâmetros de funções e retornos. Isso facilita a detecção de erros antes mesmo de executar o código.
+          Benefícios do TypeScript:
+          <ul>
+            <li>Detecção precoce de erros: Menos bugs em produção.</li>
+            <li>Compatível com JavaScript: Permite a migração gradual de projetos.</li>
+          </ul>
+        </p>
+
+        <h2>História do TypeScript</h2>
+        <ul>
+          <li>
+            Criado pela <strong>Microsoft</strong> em <strong>2012</strong>.
+          </li>
+          <li>
+            Idealizado por <strong>Anders Hejlsberg</strong>, criador do C#.
+          </li>
+          <li>Surgiu da necessidade de organizar grandes projetos JS.</li>
+          <li>Hoje amplamente usado com frameworks como Angular, React e Vue.</li>
+        </ul>
+
+        <h2>Objetivos e propósitos do TypeScript</h2>
+        <ul>
+          <li>Adicionar <strong>tipagem estática opcional</strong>.</li>
+          <li>Detectar <strong>erros antes da execução</strong>.</li>
+          <li>Facilitar <strong>desenvolvimento escalável</strong>.</li>
+          <li>Melhorar <strong>autocompletar e verificação nas IDEs</strong>.</li>
+          <li>Suporte a <strong>POO moderna</strong>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Principais problemas do JavaScript (corrigidos pelo TypeScript)</h2>
+        <h3>Ausência de Tipagem Estática</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">let idade = 25;
+idade = "vinte e cinco"; // Nenhum erro!</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>
+          <strong>Problema:</strong> O tipo da variável pode mudar a qualquer
+          momento, o que pode causar erros ocultos.
+        </p>
+        <p><strong>TypeScript corrige:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let idade: number = 25;
+idade = "vinte e cinco";</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Erro ao acessar propriedades inexistentes</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const user = { nome: "Ana" };
+console.log(user.idade); // undefined (mas sem erro!)</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>
+          <strong>Problema:</strong> JS permite acessar propriedades que não
+          existem, o que pode gerar falhas silenciosas.
+        </p>
+        <p><strong>TypeScript corrige:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">const user: { nome: string } = { nome: "Ana" };
+console.log(user.idade); </code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Problemas com <code class="language-javascript">NaN</code> (Not a Number)</h3>
+        <p><strong>Exemplo em JavaScript:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">function dividir(a, b) {
+  return a / b;
+}
+
+console.log(dividir("abc", 2)); // NaN</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>
+          <strong>Problema:</strong> O JavaScript não lança erro ao tentar dividir
+          uma string por um número — retorna
+          <code class="language-javascript">NaN</code>. Esse erro só aparece em
+          tempo de execução.
+        </p>
+        <p><strong>TypeScript corrige com verificação de tipos:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">function dividir(a: number, b: number): number {
+  return a / b;
+}
+
+dividir("abc", 2); </code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>
+          Com TypeScript, você previne o erro antes de executar o código,
+          garantindo que os tipos estejam corretos.
+        </p>
+
+        <h3>Falta de recursos modernos (antes do ES6)</h3>
+        <p>
+          Antes do ES6, JavaScript não tinha classes, herança ou interfaces
+          nativas. O TypeScript ofereceu essas ferramentas muito antes do
+          JavaScript moderno.
+        </p>
+      </section>
+
+      <section>
+        <h2>Instalação do TypeScript</h2>
+        <ol>
+          <li>
+            Node.js: Certifique-se de que o Node.js está instalado na sua máquina.
+            <ul>
+              <li>Para verificar: <code>node -v</code></li>
+            </ul>
+          </li>
+          <li>
+            npm: Instalado automaticamente com o Node.js.
+            <ul>
+              <li>Para verificar: <code>npm -v</code></li>
+            </ul>
+          </li>
+          <li>
+            Abra o terminal e execute o comando: <code>npm install -g typescript</code>
+            <ul>
+              <li>Para verificar se o TypeScript foi instalado corretamente: <code>tsc -v</code></li>
+            </ul>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Configurando um Projeto com TypeScript</h2>
+        <ol>
+          <li>Crie uma pasta para o projeto:
+            <pre><code>mkdir meu-projeto-typescript</code></pre>
+          </li>
+          <li>
+            <pre><code>cd meu-projeto-typescript</code></pre>
+          </li>
+          <li>
+            Inicialize o projeto com npm:
+            <pre><code>npm init -y</code></pre>
+          </li>
+          <li>
+            Adicione o TypeScript como dependência do projeto:
+            <pre><code>npm install typescript --save-dev</code></pre>
+          </li>
+          <li>
+            Crie o arquivo de configuração do TypeScript:
+            <pre><code>tsc --init</code></pre>
+          </li>
+        </ol>
+        <p>
+          Isso criará um arquivo <code>tsconfig.json</code>, onde você pode ajustar configurações como o diretório de saída (<code>outDir</code>) e o diretório de entrada (<code>rootDir</code>).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">// Exemplo básico de `tsconfig.json`:
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+}
+          </code></pre>
+        </div>
+      </section>
+
+      <section>
+        <p>Agora instale o TypeScript globalmente:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">npm install -g typescript</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>Verificar versão:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">tsc -v</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Compilação de aplicativos TypeScript</h2>
+        <p>Criar arquivo <code>index.ts</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let nome: string = "Maria";
+console.log(`Olá, ${nome}`);</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+        <p>Compilar com o comando:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">tsc index.ts</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Tipos de dados</h2>
+        <div class="code-container">
+          <pre><code class="language-javascript">let nome: string = "João";
+let idade: number = 30;
+let ativo: boolean = true;
+let lista: number[] = [1, 2, 3];
+let qualquer: any = "pode ser qualquer coisa";</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Variáveis e constantes</h2>
+        <p><strong>let</strong> → variável com escopo de bloco</p>
+        <p><strong>const</strong> → constante</p>
+        <p><strong>var</strong> → <em>não recomendado</em> no TypeScript</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let nome: string = "Carlos";
+const PI: number = 3.14;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Saída no console</h2>
+        <div class="code-container">
+          <pre><code class="language-javascript">let nome: string = "Aline";
+console.log("Olá, " + nome);</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

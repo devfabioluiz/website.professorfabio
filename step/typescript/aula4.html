@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">Arrays</h4>
+    </header>
+    <main class="container">
+      <h2>Arrays</h2>
+      <p>
+        Um array é uma coleção ordenada de elementos do mesmo tipo. No
+        TypeScript, você pode declarar arrays com tipos explícitos.
+      </p>
+
+      <h3>Sintaxe</h3>
+      <div class="code-container">
+        <pre><code class="language-typescript">let numeros: number[] = [1, 2, 3, 4];
+let nomes: string[] = ["Ana", "João", "Maria"];</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+
+      <p>Alternativa:</p>
+      <div class="code-container">
+        <pre><code class="language-typescript">let notas: Array&lt;number&gt; = [7.5, 8.0, 9.2];</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+
+      <h3>Métodos úteis com arrays</h3>
+
+      <h4><code>forEach</code></h4>
+      <p>Executa uma função para cada item do array:</p>
+      <div class="code-container">
+        <pre><code class="language-typescript">nomes.forEach((nome) => {
+  console.log("Olá, " + nome);
+});</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+
+      <h4><code>filter</code></h4>
+      <p>Filtra os elementos com base em uma condição:</p>
+      <div class="code-container">
+        <pre><code class="language-typescript">let maiores: number[] = numeros.filter(n => n > 2);
+console.log(maiores); // [3, 4]</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+
+      <h4><code>map</code></h4>
+      <p>Cria um novo array com base no original:</p>
+      <div class="code-container">
+        <pre><code class="language-typescript">let dobrados: number[] = numeros.map(n => n * 2);
+console.log(dobrados); // [2, 4, 6, 8]</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+
+      <h3>Tipos de arrays mais avançados</h3>
+
+      <p>Array de objetos:</p>
+      <div class="code-container">
+        <pre><code class="language-typescript">type Pessoa = {
+  nome: string;
+  idade: number;
+};
+
+let pessoas: Pessoa[] = [
+  { nome: "Carlos", idade: 30 },
+  { nome: "Ana", idade: 25 },
+];</code></pre>
+        <button class="btn-copy">copiar código</button>
+      </div>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+  </body>
+</html>

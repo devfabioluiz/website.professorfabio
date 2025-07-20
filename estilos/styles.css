@@ -112,8 +112,10 @@ ul li {
   margin: 45px 0 0 0;
   padding: 0 45px 0 45px;
   border: 1px solid #0073e6;
-  height: auto;
-  min-height: 600px;
+  width: 500px;
+  min-width: 500px;
+  height: 900px;
+  min-height: 500px;
 }
 
 ul li a {

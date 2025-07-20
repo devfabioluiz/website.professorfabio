@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">Operadores Condicionais</h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>Operadores Condicionais</h2>
+
+        <h3><code>if</code></h3>
+        <p>
+          Usado para verificar uma condição. Se for verdadeira, executa o bloco.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let idade: number = 18;
+
+if (idade >= 18) {
+  console.log("Você é maior de idade.");
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3><code>if...else</code></h3>
+        <p>
+          Executa um bloco se a condição for verdadeira e outro se for falsa.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let estaChovendo: boolean = false;
+
+if (estaChovendo) {
+  console.log("Leve um guarda-chuva.");
+} else {
+  console.log("O tempo está bom.");
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3><code>if...else if...else</code></h3>
+        <p>Permite múltiplas condições encadeadas.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let nota: number = 75;
+
+if (nota >= 90) {
+  console.log("Aprovado com louvor");
+} else if (nota >= 60) {
+  console.log("Aprovado");
+} else {
+  console.log("Reprovado");
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3><code>switch</code></h3>
+        <p>Usado para várias comparações com valores fixos.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let diaSemana: number = 3;
+
+switch (diaSemana) {
+  case 1:
+    console.log("Domingo");
+    break;
+  case 2:
+    console.log("Segunda-feira");
+    break;
+  case 3:
+    console.log("Terça-feira");
+    break;
+  default:
+    console.log("Dia inválido");
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Laços de Repetição</h2>
+
+        <h3><code>for</code></h3>
+        <p>Útil quando se sabe o número de repetições.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  console.log(`Contador: ${i}`);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3><code>while</code></h3>
+        <p>Executa enquanto a condição for verdadeira.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let contador: number = 0;
+
+while (contador < 3) {
+  console.log(`Tentativa ${contador + 1}`);
+  contador++;
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3><code>do...while</code></h3>
+        <p>
+          Executa o bloco ao menos uma vez, mesmo que a condição seja falsa no
+          início.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let senhaDigitada: string = "";
+let senhaCorreta: string = "1234";
+
+do {
+  senhaDigitada = prompt("Digite a senha:") || "";
+} while (senhaDigitada !== senhaCorreta);
+
+console.log("Acesso concedido!");</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <p>
+          <em>Obs.: <code>prompt()</code> funciona apenas em navegadores.</em>
+        </p>
+
+        <h3><code>break</code></h3>
+        <p>
+          A palavra-chave <code>break</code> interrompe completamente um laço de
+          repetição (<code>for</code>, <code>while</code>,
+          <code>do...while</code>) ou um <code>switch</code>. Ou seja, o código
+          sai do bloco atual imediatamente.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-typescript">for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    break; // para o loop quando i for 3
+  }
+  console.log(i);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <p><strong>Saída:</strong></p>
+        <pre><code>1
+2</code></pre>
+
+        <h3><code>continue</code></h3>
+        <p>
+          A palavra-chave <code>continue</code> pula a iteração atual do laço e
+          vai direto para a próxima.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-typescript">for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    continue; // pula o número 3
+  }
+  console.log(i);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <p><strong>Saída:</strong></p>
+        <pre><code>1
+2
+4
+5</code></pre>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

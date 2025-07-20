@@ -14,8 +14,8 @@
   <body>
     <header>
       <h1>Aula 3</h1>
-      <h4 style="text-align: center">Angular</h4>
-      <h4 style="text-align: center">Modelos, Interpolação e Diretivas</h4>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Modelos e Diretivas</h4>
       <div class="alert-update alert-container new-alert">
         <div class="pin-message">
           <span>📌</span>
@@ -28,6 +28,23 @@
             Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
           </p>
           <p>✔️ Mais exemplos e explicação sobre *ngFor, *ngIf e [ngClass]</p>
+        </div>
+      </div>
+      <div class="alert alert-container new-alert">
+        <div class="pin-message">
+          <span>📌</span>
+        </div>
+        <div class="alert-text">
+          <p class="alert-title">
+            <b>📅 Versão atualizada em 19/07/25 (versão 3)</b>
+          </p>
+          <p>
+            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
+          </p>
+          <p>
+            ❌ Explicação mais detalhada sobre Interpolação
+            <strong>- movido para a aula 4</strong>
+          </p>
         </div>
       </div>
     </header>
@@ -87,34 +104,6 @@ export class AppComponent {
 // app.component.html
 &lt;h1&gt;{{ title }}&lt;/h1&gt;
 &lt;p&gt;This is an external template example.&lt;/p&gt;
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-      </section>
-
-      <h2>Interpolação</h2>
-      <section>
-        <p>
-          A interpolação permite exibir propriedades e expressões do componente
-          no modelo. Utiliza-se
-          <code>{{ }}</code> para fazer o binding unidirecional dos dados.
-        </p>
-
-        <h5>Exemplo:</h5>
-        <div class="code-container">
-          <pre><code class="language-html">// HTML do componente
-&lt;h1&gt;{{ title }}&lt;/h1&gt;
-&lt;p&gt;The current year is {{ currentYear }}&lt;/p&gt;
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <div class="code-container">
-          <pre><code class="language-javascript">// HTML do componente
-// app.component.ts
-export class AppComponent {
-  title = 'Angular Basics';
-  currentYear = new Date().getFullYear();
-}
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>

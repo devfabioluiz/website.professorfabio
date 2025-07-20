@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7 - TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">TypeScript</h4>
+      <h4 class="text-center">ENUM</h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>O que é <code>enum</code> em TypeScript?</h2>
+        <p>
+          <code>enum</code> (abreviação de <em>enumeration</em>) é uma
+          funcionalidade do TypeScript que permite
+          <strong>declarar um conjunto de constantes nomeadas</strong>. Ele
+          facilita o trabalho com conjuntos fixos de valores, como dias da
+          semana, estados de um processo, cores, etc.
+        </p>
+
+        <ul>
+          <li>
+            <code>enum</code> é uma construção exclusiva do TypeScript (não
+            existe em JavaScript).
+          </li>
+          <li>
+            Pode ser compilado em objetos JavaScript que funcionam tanto com
+            nome → valor quanto valor → nome (no caso dos numéricos).
+          </li>
+          <li>
+            <code>enum</code> pode ter comportamento inesperado se usado com
+            strings dinâmicas mal definidas.
+          </li>
+        </ul>
+
+        <h3>Por que usar <code>enum</code>?</h3>
+        <ul>
+          <li>
+            <strong>Legibilidade</strong>: Os valores ficam com nomes mais
+            claros.
+          </li>
+          <li><strong>Organização</strong>: Centraliza valores fixos.</li>
+          <li>
+            <strong>Segurança de tipo</strong>: Evita uso de strings ou números
+            soltos no código.
+          </li>
+          <li>
+            <strong>Facilidade de manutenção</strong>: Mudanças em um valor são
+            feitas em um único lugar.
+          </li>
+        </ul>
+
+        <h3>Sintaxe básica</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">enum DiaDaSemana {
+  Domingo,
+  Segunda,
+  Terca,
+  Quarta,
+  Quinta,
+  Sexta,
+  Sabado,
+}</code></pre>
+        </div>
+        <p>
+          Neste exemplo, <code>Domingo</code> será igual a <code>0</code>,
+          <code>Segunda</code> será igual a <code>1</code>, e assim por diante.
+        </p>
+
+        <h3>Como usar</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">let hoje: DiaDaSemana = DiaDaSemana.Segunda;
+
+console.log(hoje); // 1
+console.log(DiaDaSemana[1]); // Segunda</code></pre>
+        </div>
+
+        <h3>Enum com valores personalizados</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">enum StatusPedido {
+  Pendente = "PENDENTE",
+  Processando = "PROCESSANDO",
+  Concluido = "CONCLUIDO",
+  Cancelado = "CANCELADO",
+}</code></pre>
+        </div>
+
+        <p>Uso:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">let status: StatusPedido = StatusPedido.Concluido;
+console.log(status); // CONCLUIDO</code></pre>
+        </div>
+
+        <h3>Enum numérico personalizado</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">enum Cores {
+  Vermelho = 1,
+  Verde = 3,
+  Azul = 5,
+}
+
+console.log(Cores.Verde); // 3</code></pre>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
