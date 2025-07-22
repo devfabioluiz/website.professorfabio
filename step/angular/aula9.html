@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Roteamento</h4>
+    </header>
+    <main class="container">
+      <h2>Roteamento</h2>
+      <section>
+        <p>
+          O roteamento no Angular permite navegar entre componentes com base na
+          URL. Ele transforma a SPA (Single Page Application) em uma aplicação
+          com múltiplas "páginas virtuais".
+        </p>
+
+        <h2>1. Configuração Inicial</h2>
+
+        <p>
+          Crie um módulo de roteamento ou use o
+          <code class="language-javascript">AppRoutingModule</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { SobreComponent } from './sobre/sobre.component';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'sobre', component: SobreComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>2. Definindo Áreas de Navegação</h2>
+
+        <p>
+          Use a diretiva
+          <code class="language-javascript">&lt;router-outlet&gt;</code> para
+          indicar onde os componentes serão carregados.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">&lt;!-- app.component.html --&gt;
+&lt;nav&gt;
+  &lt;a routerLink="/"&gt;Home&lt;/a&gt;
+  &lt;a routerLink="/sobre"&gt;Sobre&lt;/a&gt;
+&lt;/nav&gt;
+
+&lt;router-outlet&gt;&lt;/router-outlet&gt;
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>3. Redirecionamento</h2>
+
+        <p>Você pode redirecionar rotas vazias ou erradas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', component: PaginaNaoEncontradaComponent }
+];</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>4. Roteamento com Parâmetros</h2>
+
+        <h3>4.1 Rota com parâmetro</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const routes: Routes = [
+  { path: 'produto/:id', component: ProdutoDetalheComponent }
+];</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>4.2 Navegar com parâmetro</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">this.router.navigate(['/produto', 10]);</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>4.3 Ler parâmetro no componente</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  this.route.paramMap.subscribe(params =&gt; {
+    const id = params.get('id');
+    console.log('ID:', id);
+  });
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>5. Query Params</h2>
+
+        <h3>5.1 Enviar:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">this.router.navigate(['/produtos'], { queryParams: { categoria: 'teclados', precoMax: 500 } });</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>5.2 Ler:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">this.route.queryParamMap.subscribe(params =&gt; {
+  const categoria = params.get('categoria');
+  const precoMax = params.get('precoMax');
+});</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>
+          6. Passagem de dados com
+          <code class="language-javascript">state</code>
+        </h2>
+
+        <h3>6.1 Enviar:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">this.router.navigate(['/perfil'], { state: { usuario: 'Carlos', nivel: 'admin' } });</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>6.2 Receber:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">ngOnInit() {
+  const usuario = history.state.usuario;
+  const nivel = history.state.nivel;
+  console.log(usuario, nivel);
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>7. Rotas Filhas</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const routes: Routes = [
+  {
+    path: 'admin',
+    component: AdminComponent,
+    children: [
+      { path: 'usuarios', component: UsuariosComponent },
+      { path: 'configuracoes', component: ConfiguracoesComponent }
+    ]
+  }
+];</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <p>Em <code class="language-javascript">admin.component.html</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>8. Lazy Loading (Carregamento Preguiçoso)</h2>
+
+        <p>Usado para carregar módulos apenas quando necessário.</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">const routes: Routes = [
+  {
+    path: 'relatorios',
+    loadChildren: () =&gt; import('./relatorios/relatorios.module').then(m =&gt; m.RelatoriosModule)
+  }
+];</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

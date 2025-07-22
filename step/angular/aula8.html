@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0" />
+    <title>Aula 8 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">
+        Passando dados entre componentes (Input/Output)
+      </h4>
+    </header>
+    <main class="container">
+      <section>
+        <h2>
+          Passagem de dados de Componente Pai para Filho (<code
+            class="language-javascript"
+            >@Input</code
+          >)
+        </h2>
+        <p>
+          <strong>Como funciona:</strong> Envia-se dados do componente pai para
+          o filho utilizando o decorador
+          <code class="language-javascript">@Input()</code> no filho.
+        </p>
+
+        <h3>Exemplo 1:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;!-- Componente Pai (app.component.html) --&gt;
+&lt;app-filho [nome]="nomeUsuario"&gt;&lt;/app-filho&gt;
+
+&lt;!-- app.component.ts --&gt;
+nomeUsuario = 'Fabio';
+
+&lt;!-- filho.component.ts --&gt;
+@Input() nome: string;
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Exemplo 2:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;app-produto [preco]="199.99" [descricao]="'Teclado Mecânico'"&gt;&lt;/app-produto&gt;
+
+@Input() preco: number;
+@Input() descricao: string;
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Exemplo 3:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">&lt;app-perfil [usuario]="usuario"&gt;&lt;/app-perfil&gt;
+
+usuario = { nome: 'Joana', idade: 30 };
+
+@Input() usuario: { nome: string; idade: number };
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>
+          Passagem de dados de Filho para Pai (<code class="language-javascript"
+            >@Output</code
+          >
+          e <code class="language-javascript">EventEmitter</code>)
+        </h2>
+        <p>
+          <strong>Como funciona:</strong> Usa-se
+          <code class="language-javascript">@Output()</code> e
+          <code class="language-javascript">EventEmitter</code> para emitir
+          eventos do componente filho que são ouvidos pelo pai.
+        </p>
+
+        <h3>Exemplo 1:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">@Output() clicado = new EventEmitter&lt;string&gt;();
+
+enviarMensagem() {
+  this.clicado.emit('Olá do filho!');
+}
+
+&lt;app-filho (clicado)="responder($event)"&gt;&lt;/app-filho&gt;
+
+responder(mensagem: string) {
+  console.log(mensagem);
+}
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Exemplo 2:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">@Output() produtoAdicionado = new EventEmitter&lt;{ nome: string; preco: number }&gt;();
+
+&lt;button (click)="produtoAdicionado.emit({ nome: 'Mouse', preco: 99 })"&gt;Adicionar&lt;/button&gt;
+
+&lt;app-produto (produtoAdicionado)="adicionarProduto($event)"&gt;&lt;/app-produto&gt;
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>Exemplo 3:</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">@Output() formEnviado = new EventEmitter&lt;any&gt;();
+
+&lt;form (submit)="formEnviado.emit(formulario.value)" #formulario="ngForm"&gt;
+  ...
+&lt;/form&gt;
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
