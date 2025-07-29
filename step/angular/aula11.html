@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 11 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 11</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Mudanças nas ultimas versões do Angular</h4>
+    </header>
+    <main class="container">
+      <h2>Angular 14</h2>
+      <section>
+        <h4>Standalone Components</h4>
+        <p>
+          <strong>O que é?</strong><br />
+          Antes do Angular 14, todo componente precisava estar declarado em um
+          <code>NgModule</code>. Com os <strong>Standalone Components</strong>,
+          isso não é mais necessário. Eles são componentes autocontidos e
+          independentes de módulos.
+        </p>
+        <div class="code-container">
+          <h5>Exemplo 1</h5>
+          <pre><code class="language-javascript">import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-hello',
+  standalone: true,
+  template: `&lt;h2&gt;Olá, Angular Standalone!&lt;/h2&gt;`,
+})
+export class HelloComponent {}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <div class="code-container">
+          <h5>Exemplo 2</h5>
+          <pre><code class="language-javascript">import { Component } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+
+@Component({
+  selector: 'app-user-card',
+  standalone: true,
+  imports: [MatCardModule],
+  template: `
+    &lt;mat-card&gt;
+      &lt;h3&gt;Usuário&lt;/h3&gt;
+      &lt;p&gt;Nome: João&lt;/p&gt;
+    &lt;/mat-card&gt;
+  `,
+})
+export class UserCardComponent {}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <section>
+        <h4>Formulários Fortemente Tipados (Typed Forms)</h4>
+        <p>
+          A partir do Angular 14, foi introduzida uma nova API que permite
+          tipagem forte em formulários reativos. Isso significa que os valores
+          dos campos são inferidos corretamente pelo TypeScript.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+interface LoginForm {
+  email: FormControl&lt;string&gt;;
+  password: FormControl&lt;string&gt;;
+}
+
+const loginForm = new FormGroup&lt;LoginForm&gt;({
+  email: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+});</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">function submitForm(form: FormGroup&lt;LoginForm&gt;) {
+  const email: string = form.controls.email.value;
+  const password: string = form.controls.password.value;
+  console.log(`Email: ${email}, Senha: ${password}`);
+}</code></pre>
+        </div>
+        <button class="btn-copy">copiar código</button>
+      </section>
+
+      <div>
+        <h2>Angular 17</h2>
+        <ul>
+          <li>
+            <strong>Signals estáveis:</strong> novo modelo reativo nativo.
+          </li>
+          <li>
+            <strong>Sintaxe moderna de controle de fluxo:</strong>
+            <code>@ if</code>, <code>@ for</code>, <code>@ switch</code>.
+          </li>
+          <li>
+            <strong>Deferrable Views:</strong> lazy-load direto no template com
+            <code>@ defer</code>.
+          </li>
+          <li>
+            SSR com <code>ng add @angular/ssr</code> e hydration integrado.
+          </li>
+          <li>Builder com <strong>esbuild como padrão</strong>.</li>
+          <li>Nova documentação em <code>angular.dev</code>.</li>
+          <li>Suporte ao TypeScript 5.2.</li>
+        </ul>
+        <section>
+          <h4>Signals estáveis</h4>
+          <p>
+            <strong>Signals</strong> são a nova forma reativa nativa no Angular.
+            Substituem e simplificam o uso do RxJS para a maioria dos casos
+            simples.
+          </p>
+
+          <strong>Vantagens:</strong>
+          <ul>
+            <li>
+              Reatividade simples, sem necessidade de <code>subscribe</code> ou
+              <code>async pipe</code>.
+            </li>
+            <li>
+              Melhor desempenho com <code>ChangeDetectionStrategy.OnPush</code>.
+            </li>
+          </ul>
+
+          <h5>Exemplo 1</h5>
+          <div class="code-container">
+            <pre><code class="language-javascript">import { signal } from '@angular/core';
+export class CounterComponent {
+  count = signal(0);
+
+  increment() {
+    this.count.update(value => value + 1);
+  }
+}</code></pre>
+            <button class="btn-copy">copiar código</button>
+          </div>
+
+          <p>No template: <code>{{ count() }}</code></p>
+        </section>
+
+        <section>
+          <h4>Sintaxe moderna de controle de fluxo</h4>
+          <p>
+            Agora é possível usar estruturas como <code>@ if</code>,
+            <code>@ for</code> e <code>@ switch</code> diretamente no template,
+            sem precisar de <code>*ngIf</code> ou <code>*ngFor</code>.
+          </p>
+
+          <h5>Exemplo 1</h5>
+          <div class="code-container">
+            <pre><code class="language-html">&lt;ng-container @if="items.length > 0; else vazio"&gt;
+  &lt;ul&gt;
+    &lt;li @for="let item of items"&gt;{{ item }}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/ng-container&gt;
+
+&lt;ng-template #vazio&gt;Nenhum item encontrado.&lt;/ng-template&gt;</code></pre>
+            <button class="btn-copy">copiar código</button>
+          </div>
+        </section>
+      </div>
+
+      <div>
+        <h2>Angular 18 e 19</h2>
+        <section>
+          <h4>Standalone Components e Pipes agora são padrão</h4>
+          <p>
+            Desde o Angular 14, os componentes standalone vinham sendo
+            introduzidos. A partir do Angular 18,
+            <strong>eles se tornaram o padrão</strong> para novos projetos
+            criados com Angular CLI.
+          </p>
+
+          <strong>O que muda?</strong>
+          <ul>
+            <li>
+              Novos projetos não usam mais <code>NgModules</code> por padrão.
+            </li>
+            <li>Maior simplicidade na arquitetura.</li>
+            <li>
+              Suporte total a lazy loading, DI, diretivas e pipes standalone.
+            </li>
+          </ul>
+
+          <strong>Exemplo de novo projeto CLI</strong>
+          <div class="code-container">
+            <pre><code class="language-bash">ng new minha-app --standalone</code></pre>
+            <button class="btn-copy">copiar código</button>
+          </div>
+        </section>
+
+        <section>
+          <h4>Introdução experimental do <code>httpResource()</code></h4>
+          <p>
+            <strong>httpResource</strong> é uma nova API para trabalhar com
+            dados remotos de forma declarativa e reativa, facilitando a
+            integração com APIs REST.
+          </p>
+
+          <strong>Vantagens:</strong>
+          <ul>
+            <li>Baseado em Signals.</li>
+            <li>Menos boilerplate do que <code>HttpClient</code>.</li>
+            <li>Melhor integração com a renderização reativa.</li>
+          </ul>
+
+          <h5>Exemplo</h5>
+          <div class="code-container">
+            <pre><code class="language-javascript">import { httpResource } from '@angular/core/rxjs-interop';
+
+const usersResource = httpResource({
+  fetch: () =&gt; fetch('/api/users').then(res =&gt; res.json())
+});
+
+@Component({
+  selector: 'app-user-list',
+  standalone: true,
+  template: `
+    &lt;ul&gt;
+      &lt;li *ngFor="let user of usersResource.data()"&gt;{{ user.name }}&lt;/li&gt;
+    &lt;/ul&gt;
+  `,
+})
+export class UserListComponent {}</code></pre>
+            <button class="btn-copy">copiar código</button>
+          </div>
+
+          <p>
+            <em
+              >Essa API ainda é experimental, mas sinaliza um futuro mais
+              simples para o consumo de APIs.</em
+            >
+          </p>
+        </section>
+
+        <section>
+          <h4>Melhorias em Validators e templates</h4>
+          <p>
+            <strong>Validações mais tipadas e precisas</strong> agora fazem
+            parte do Angular 18:
+          </p>
+
+          <h5>Exemplo 1</h5>
+          <div class="code-container">
+            <pre><code class="language-javascript">const form = new FormGroup({
+  email: new FormControl('', {
+    validators: [Validators.required, Validators.email],
+    nonNullable: true
+  })
+});
+
+const emailError = form.controls.email.errors?.['email'];</code></pre>
+            <button class="btn-copy">copiar código</button>
+          </div>
+
+          <p>
+            <em
+              >O editor agora ajuda mais e mostra exatamente o tipo de erro e
+              suas propriedades.</em
+            >
+          </p>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

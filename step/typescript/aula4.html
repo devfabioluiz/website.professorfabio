@@ -104,32 +104,49 @@ let pessoas: Pessoa[] = [
           genérico, garantindo segurança de tipo.
         </p>
 
-        <h4>Exemplo 1: Array genérico com tipo string</h4>
+        <h4>Exemplo 1</h4>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-let stringArray:/ Array&lt;string&gt; = ["a", "b", "c"]; // 
+function mostrarItens<T>(itens: Array<T>): void {
+  itens.forEach(item => console.log(item));
+}
+
+mostrarItens<string>(["Angular", "React", "Vue"]);
+mostrarItens<number>([1, 2, 3]);
+
             </code>
           </pre>
           <button class="btn-copy">copiar código</button>
         </div>
-        <h4>Exemplo 2: Array genérico com tipo number l</h4>
+        <h4>Exemplo 2</h4>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-let numberArray:Array&lt;number&gt; = [1, 2, 3];
+function primeiroElemento<T>(arr: T[]): T {
+  return arr[0];
+}
+
+const nome = primeiroElemento<string>(["Ana", "João"]);
+const numero = primeiroElemento<number>([10, 20, 30]);
+
             </code>
           </pre>
           <button class="btn-copy">copiar código</button>
         </div>
         <h4>
-          Exemplo 3: Função que recebe array genérico e retorna o primeiro
+          Exemplo 3
         </h4>
         <div class="code-container">
           <pre>
             <code class="language-javascript">
-elemento function firstElement&lt;T&gt;(arr: T[]): T | undefined {
-return arr[0]; }
+function combinarArrays<T, U>(arr1: T[], arr2: U[]): (T | U)[] {
+  return [...arr1, ...arr2];
+}
+
+const resultado = combinarArrays<number, string>([1, 2], ["a", "b"]);
+console.log(resultado); // [1, 2, "a", "b"]
+
             </code>
           </pre>
           <button class="btn-copy">copiar código</button>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Roteamento</h4>
+    </header>
+    <main class="container">
+      <h2>Formulários no Angular</h2>
+
+      <section>
+        <p>
+          O Angular oferece duas formas principais de trabalhar com formulários:
+        </p>
+        <ul>
+          <li>
+            <strong>Template-driven forms</strong>: mais simples e baseada em
+            diretivas no HTML.
+          </li>
+          <li>
+            <strong>Reactive forms</strong>: mais poderosa, baseada em código
+            TypeScript e ideal para formulários complexos.
+          </li>
+        </ul>
+      </section>
+
+      <sectiondiv>
+        <h4>Template-driven Forms</h4>
+        <p><strong>Ideal para:</strong> formulários simples e pequenos.</p>
+        <p>
+          <strong>Importações necessárias:</strong>
+          <code class="language-javascript">FormsModule</code>
+        </p>
+
+        <h3>Exemplo de código</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.module.ts
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [FormsModule]
+})
+export class AppModule { }</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-html">&lt;!-- app.component.html --&gt;
+&lt;form #form="ngForm" (ngSubmit)="submitForm(form)"&gt;
+  &lt;input name="email" [(ngModel)]="email" required /&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.component.ts
+export class AppComponent {
+  email = '';
+
+  submitForm(form: any) {
+    console.log('Email enviado:', this.email);
+    console.log('Form válido?', form.valid);
+  }
+}</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+      </section>
+
+      <div>
+        <h4>Reactive Forms</h4>
+        <p>
+          <strong>Ideal para:</strong> formulários maiores, dinâmicos ou com
+          regras complexas de validação.
+        </p>
+        <p>
+          <strong>Importações necessárias:</strong>
+          <code class="language-javascript">ReactiveFormsModule</code>
+        </p>
+
+        <h3>Exemplo de código</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.module.ts
+import { ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [ReactiveFormsModule]
+})
+export class AppModule { }</code></pre>
+      <button class="btn-copy">copiar código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// app.component.ts
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+export class AppComponent {
+  loginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    senha: new FormControl('', Validators.required)
+  });
+
+  enviar() {
+    if (this.loginForm.valid) {
+      console.log(this.loginForm.value);
+    }
+  }
+}</code></pre>
+      <button class="btn-copy">copiar código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-html">&lt;!-- app.component.html --&gt;
+&lt;form [formGroup]="loginForm" (ngSubmit)="enviar()"&gt;
+  &lt;input type="email" formControlName="email" placeholder="E-mail" /&gt;
+  &lt;input type="password" formControlName="senha" placeholder="Senha" /&gt;
+  &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;p *ngIf="loginForm.get('email')?.invalid"&gt;
+  E-mail inválido
+&lt;/p&gt;</code></pre>
+      <button class="btn-copy">copiar código</button>
+        </div>
+      </div>
+
+      <div>
+        <h4>Comparativo</h4>
+        <ul>
+          <li>
+            <strong>Template-driven</strong>: menos código TypeScript, mas menos
+            controle.
+          </li>
+          <li>
+            <strong>Reactive</strong>: mais controle, mais indicado para
+            formulários dinâmicos, validações personalizadas e integração com
+            serviços.
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
