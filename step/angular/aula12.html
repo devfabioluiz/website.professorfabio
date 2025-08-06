@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 12 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 11</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Ciclo de Vida de um Componente no Angular</h4>
+    </header>
+    <main class="container">
+      <p>
+        No Angular, cada <strong>componente</strong> ou
+        <strong>diretiva</strong> segue um ciclo de vida definido. Esse ciclo
+        representa as etapas pelas quais o componente passa desde sua criação
+        até sua destruição.
+      </p>
+
+      <h2>Principais Lifecycle Hooks</h2>
+      <ul>
+        <li>
+          <strong>constructor()</strong> – Chamado quando a classe do componente
+          é instanciada. Normalmente, não se usa lógica pesada aqui.
+        </li>
+
+        <li>
+          <strong>ngOnChanges()</strong> – Executado sempre que uma propriedade
+          com <code>@Input()</code> muda. Recebe um objeto
+          <code>SimpleChanges</code> com os valores anteriores e atuais.
+        </li>
+
+        <li>
+          <strong>ngOnInit()</strong> – Chamado uma vez, logo após o Angular
+          configurar as propriedades vinculadas a dados. Ideal para
+          inicializações.
+        </li>
+
+        <li>
+          <strong>ngDoCheck()</strong> – Executado a cada verificação de mudança
+          (change detection). Pode ser usado para lógica personalizada de
+          detecção de mudanças.
+        </li>
+
+        <li>
+          <strong>ngAfterContentInit()</strong> – Chamado depois que o conteúdo
+          projetado com <code>&lt;ng-content&gt;</code> foi inserido no
+          componente.
+        </li>
+
+        <li>
+          <strong>ngAfterContentChecked()</strong> – Chamado após cada
+          verificação do conteúdo projetado.
+        </li>
+
+        <li>
+          <strong>ngAfterViewInit()</strong> – Chamado depois que a view
+          (template e filhos) do componente foi inicializada. Ideal para
+          manipulação de elementos com <code>@ViewChild</code>.
+        </li>
+
+        <li>
+          <strong>ngAfterViewChecked()</strong> – Chamado após cada verificação
+          da view.
+        </li>
+
+        <li>
+          <strong>ngOnDestroy()</strong> – Chamado antes do Angular destruir o
+          componente. É aqui que você limpa timers, observables, subscrições,
+          etc.
+        </li>
+      </ul>
+
+      <h5>Exemplo 1</h5>
+      <p>Veja abaixo um exemplo de uso básico dos hooks:</p>
+
+      <div class="code-container">
+        <pre>
+    <code class="language-javascript">
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo',
+  template: '<p>Componente carregado!</p>'
+})
+export class ExemploComponent implements OnInit, OnDestroy {
+  ngOnInit() {
+    console.log('Componente inicializado');
+  }
+
+  ngOnDestroy() {
+    console.log('Componente será destruído');
+  }
+}
+    </code>
+  </pre>
+      </div>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
