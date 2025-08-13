@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10 de Angular</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 13</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Guardião de Rotas</h4>
+    </header>
+    <main class="container">
+      <h2>Guarda de Rotas</h2>
+      <section>
+        <p>
+          As Guardas de Rotas no Angular permitem controlar o acesso a
+          determinadas rotas com base em condições, como autenticação e
+          permissões do usuário. Elas são úteis para proteger áreas restritas da
+          aplicação.
+        </p>
+
+        <h2>1. Tipos de Guards</h2>
+        <ul>
+          <li>
+            <code>CanActivate</code>: Controla se a rota pode ser acessada.
+          </li>
+          <li>
+            <code>CanActivateChild</code>: Controla o acesso a rotas filhas.
+          </li>
+          <li>
+            <code>CanDeactivate</code>: Impede a saída de uma rota sem
+            confirmação.
+          </li>
+          <li>
+            <code>Resolve</code>: Pré-carrega dados antes de ativar a rota.
+          </li>
+          <li>
+            <code>CanLoad</code>: Impede o carregamento de módulos (lazy
+            loading) sem permissão.
+          </li>
+        </ul>
+
+        <h2>2. Exemplo com Login e Roles</h2>
+
+        <p>
+          Vamos criar um guard que permite acesso apenas a usuários logados e
+          com determinada role.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">// auth.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private usuario: any = null;
+
+  login(nome: string, role: string) {
+    this.usuario = { nome, role };
+  }
+
+  logout() {
+    this.usuario = null;
+  }
+
+  estaLogado(): boolean {
+    return !!this.usuario;
+  }
+
+  temRole(role: string): boolean {
+    return this.usuario?.role === role;
+  }
+}
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>2.1 Criando o Guard</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// auth.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { AuthService } from './auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (!this.auth.estaLogado()) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+    return true;
+  }
+}
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h3>2.2 Guard para Roles</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// role.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { AuthService } from './auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class RoleGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    const roleNecessaria = route.data['role'];
+    if (this.auth.estaLogado() && this.auth.temRole(roleNecessaria)) {
+      return true;
+    }
+    this.router.navigate(['/acesso-negado']);
+    return false;
+  }
+}
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>3. Configuração das Rotas</h2>
+        <div class="code-container">
+          <pre><code class="language-javascript">// app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { AdminComponent } from './admin/admin.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
+import { RoleGuard } from './role.guard';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { role: 'admin' }
+  },
+  { path: 'acesso-negado', component: AcessoNegadoComponent }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+</code></pre>
+          <button class="btn-copy">copiar código</button>
+        </div>
+
+        <h2>4. Como Funciona</h2>
+        <p>
+          - Ao tentar acessar <code>/admin</code>, o Angular executa primeiro o
+          <code>AuthGuard</code> para verificar se o usuário está logado.<br />
+          - Em seguida, o <code>RoleGuard</code> verifica se o usuário tem a
+          <strong>role</strong> definida na rota.<br />
+          - Caso alguma verificação falhe, o usuário é redirecionado para
+          <code>/login</code> ou <code>/acesso-negado</code>.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
