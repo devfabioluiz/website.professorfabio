@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - Programação síncrona e assíncrona</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">JavaScript Avançado</h4>
+      <h4 class="text-center">Callback e Programação síncrona e assíncrona</h4>
+    </header>
+    <main class="container">
+      <!-- Função normal e callback -->
+      <h2>Função normal e callback</h2>
+      <section>
+        <p>
+          Uma <strong>função normal</strong> apenas executa uma tarefa e retorna o resultado.
+          Já uma <strong>função de callback</strong> é passada como argumento para outra função
+          e é chamada quando a tarefa terminar.
+        </p>
+
+        <h5>Exemplo 1 (função normal)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function soma(a, b) {
+  return a + b;
+}
+console.log(soma(5, 3));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2 (callback simples)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function cumprimentar(nome, callback) {
+  console.log("Olá, " + nome);
+  callback();
+}
+
+cumprimentar("Maria", () => {
+  console.log("Callback executado!");
+});
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3 (simulando servidor com callback)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function buscarDados(callback) {
+  setTimeout(() => {
+    callback("📦 Dados carregados!");
+  }, 2000);
+}
+
+buscarDados((resultado) => {
+  console.log(resultado);
+});
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Programação síncrona e assíncrona -->
+      <h2>Programação síncrona e assíncrona</h2>
+      <section>
+        <p>
+          Na <strong>programação síncrona</strong>, as instruções são executadas uma após a outra.
+          Se uma linha demora muito (como acessar um servidor), o programa inteiro fica "travado".
+        </p>
+        <p>
+          Na <strong>programação assíncrona</strong>, o JavaScript não espera a tarefa lenta terminar.
+          Ele continua executando o resto do código e, quando a tarefa acaba, chama uma função de retorno.
+        </p>
+
+        <h5>Exemplo 1 (síncrono)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+console.log("Início");
+for (let i = 0; i < 3; i++) {
+  console.log("Processando", i);
+}
+console.log("Fim");
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2 (assíncrono com setTimeout)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+console.log("Início");
+setTimeout(() => {
+  console.log("Processo demorado terminou!");
+}, 2000);
+console.log("Fim");
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3 (requisição simulada)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+console.log("Buscando dados...");
+
+setTimeout(() => {
+  console.log("✅ Dados recebidos do servidor!");
+}, 3000);
+
+console.log("Você pode continuar usando o app...");
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+           <!-- Async/Await -->
+           <h2>Async/Await</h2>
+           <section>
+             <p>
+               <code>async</code> e <code>await</code> são formas mais simples de lidar com Promises.
+               O <b>async</b> transforma a função em assíncrona, retornando uma Promise.
+               O <b>await</b> faz o código "esperar" pela resposta da Promise.
+             </p>
+     
+             <h5>Exemplo 1 (async cria promise automaticamente)</h5>
+             <div class="code-container">
+               <pre><code class="language-javascript">
+     async function exemplo() {
+       return "🚀 Retornado dentro de uma async!";
+     }
+     exemplo().then(console.log);
+     </code></pre>
+               <button class="btn-copy">Copiar Código</button>
+             </div>
+     
+             <h5>Exemplo 2 (usando await)</h5>
+             <div class="code-container">
+               <pre><code class="language-javascript">
+     function esperar(ms) {
+       return new Promise(resolve => setTimeout(resolve, ms));
+     }
+     
+     async function executar() {
+       console.log("Início");
+       await esperar(2000);
+       console.log("Fim após 2 segundos");
+     }
+     executar();
+     </code></pre>
+               <button class="btn-copy">Copiar Código</button>
+             </div>
+     
+             <h5>Exemplo 3 (tratamento de erros com try/catch)</h5>
+             <div class="code-container">
+               <pre><code class="language-javascript">
+     async function buscarDados() {
+       try {
+         throw new Error("Falha na conexão!");
+       } catch (erro) {
+         console.log("⚠️ Erro capturado:", erro.message);
+       }
+     }
+     buscarDados();
+     </code></pre>
+               <button class="btn-copy">Copiar Código</button>
+             </div>
+           </section>
+    </main>
+    </body>
+    </html>

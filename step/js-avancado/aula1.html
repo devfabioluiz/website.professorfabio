@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - JSON</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">JavaScript Avançado</h4>
+      <h4 class="text-center">Trabalhando com JSON</h4>
+    </header>
+    <main class="container">
+
+      <!-- O que é JSON -->
+      <h2>O que é JSON?</h2>
+      <section>
+        <p>
+          JSON (<b>JavaScript Object Notation</b>) é um formato leve de 
+          <b>troca de dados</b>, fácil de ler e escrever por humanos, 
+          e simples de interpretar por máquinas. 
+          É usado principalmente para comunicação entre sistemas.
+        </p>
+
+        <h5>Exemplo 1 - JSON simples</h5>
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "nome": "Ana",
+  "idade": 25,
+  "cidade": "São Paulo"
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Metas e objetivos -->
+      <h2>Metas e Objetivos do JSON</h2>
+      <section>
+        <ul>
+          <li>Ser simples de entender e escrever.</li>
+          <li>Permitir troca de informações entre linguagens diferentes.</li>
+          <li>Substituir formatos mais complexos, como XML.</li>
+        </ul>
+      </section>
+
+      <!-- Sintaxe -->
+      <h2>Sintaxe do JSON</h2>
+      <section>
+        <p>
+          A sintaxe é baseada em pares <code>chave: valor</code>, 
+          com chaves sempre entre aspas duplas.
+        </p>
+
+        <h5>Exemplo válido</h5>
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "produto": "Notebook",
+  "preco": 3500.90,
+  "estoque": true
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Variáveis -->
+      <h2>Variáveis</h2>
+      <section>
+        <p>
+          Embora o JSON em si não tenha variáveis, 
+          podemos armazenar o JSON em variáveis JavaScript.
+        </p>
+
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let pessoa = {
+  "nome": "Carlos",
+  "idade": 30
+};
+
+console.log(pessoa.nome); // Carlos
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Objetos -->
+      <h2>Objetos</h2>
+      <section>
+        <p>
+          Um objeto JSON é formado por pares <code>chave: valor</code>.
+        </p>
+
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "curso": "JavaScript",
+  "cargaHoraria": 40
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Arrays -->
+      <h2>Arrays</h2>
+      <section>
+        <p>
+          Arrays em JSON são listas de valores ordenados.
+        </p>
+
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "alunos": ["Ana", "Bruno", "Carla"]
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Objeto JSON -->
+      <h2>Objeto JSON no JavaScript</h2>
+      <section>
+        <p>
+          O JavaScript possui um objeto global chamado <code>JSON</code> 
+          com métodos úteis para conversão.
+        </p>
+      </section>
+
+      <!-- Serialização -->
+      <h2>O que é Serialização?</h2>
+      <section>
+        <p>
+          É o processo de <b>converter um objeto em texto JSON</b>. 
+          Isso permite salvar em arquivos ou enviar via rede.
+        </p>
+      </section>
+
+      <!-- Parsing -->
+      <h2>O que é Parsing?</h2>
+      <section>
+        <p>
+          É o processo de <b>converter uma string JSON em objeto JavaScript</b>.
+        </p>
+      </section>
+
+      <!-- stringify e parse -->
+      <h2>Métodos stringify e parse</h2>
+      <section>
+        <h5>Exemplo com stringify</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let usuario = { nome: "João", idade: 28 };
+let jsonStr = JSON.stringify(usuario);
+console.log(jsonStr); // {"nome":"João","idade":28}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo com parse</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let str = '{"curso":"JS","ativo":true}';
+let obj = JSON.parse(str);
+console.log(obj.curso); // JS
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- toJSON -->
+      <h2>Configuração da Serialização Personalizada - toJSON</h2>
+      <section>
+        <p>
+          Podemos controlar como um objeto é convertido em JSON 
+          sobrescrevendo o método <code>toJSON</code>.
+        </p>
+
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let produto = {
+  nome: "TV",
+  preco: 2500,
+  senhaInterna: "segredo123",
+  toJSON() {
+    // Esconde a senha na serialização
+    return { nome: this.nome, preco: this.preco };
+  }
+};
+
+let json = JSON.stringify(produto);
+console.log(json); // {"nome":"TV","preco":2500}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
