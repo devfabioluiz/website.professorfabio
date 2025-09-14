@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula Angular - Projeto Final - CRUD Funcionários</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Projeto Final do Curso de Angular</h1>
+      <h4 class="text-center">Desenvolvimento Frontend</h4>
+      <h4 class="text-center">CRUD de Funcionários</h4>
+    </header>
+    <main class="container">
+      <h2>1. Criando o Projeto</h2>
+      <section>
+        <p>
+          Primeiro, crie um novo projeto Angular usando o Angular CLI:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng new projeto-final-angular
+cd projeto-final-angular
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>2. Serviço HTTP</h2>
+      <section>
+        <p>
+          Vamos criar um serviço para se comunicar com o backend usando
+          <code>HttpClient</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// src/app/services/funcionario.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class FuncionarioService {
+  private apiUrl = 'https://node-vercel-app-rho.vercel.app/api/funcionarios';
+
+  constructor(private http: HttpClient) {}
+
+  getFuncionarios(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // Faça agora para os métodos PUT, POST e DELETE
+
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>3. Componente Pai e Filho</h2>
+      <section>
+        <p>
+          O componente <b>Pai</b> lista os funcionários, e o <b>Filho</b>
+          mostra detalhes de um funcionário.
+        </p>
+
+        <h5>Componente Pai</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// src/app/components/funcionario-list/funcionario-list.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FuncionarioService } from '../../services/funcionario.service';
+
+@Component({
+  selector: 'app-funcionario-list',
+  templateUrl: './funcionario-list.component.html'
+})
+export class FuncionarioListComponent implements OnInit {
+  funcionarios: any[] = [];
+  funcionarioSelecionado: any;
+
+  constructor(private service: FuncionarioService) {}
+
+  ngOnInit(): void {
+    this.service.getFuncionarios().subscribe(data => this.funcionarios = data);
+  }
+
+  selecionarFuncionario(func: any) {
+    this.funcionarioSelecionado = func;
+  }
+}
+          </code></pre>
+        </div>
+
+        <h5>Componente Filho</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// src/app/components/funcionario-detail/funcionario-detail.component.ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-funcionario-detail',
+  template: `
+    <div *ngIf="funcionario">
+      <h3>{{ funcionario.funcionario.nome }} {{ funcionario.funcionario.sobrenome }}</h3>
+      <p>Salário: {{ funcionario.funcionario.salarioAtual | salario }}</p>
+    </div>
+  `
+})
+export class FuncionarioDetailComponent {
+  @Input() funcionario: any;
+}
+          </code></pre>
+        </div>
+      </section>
+
+      <h2>4. Roteamento</h2>
+      <section>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+<section>
+        <p>
+          O roteamento no Angular permite navegar entre diferentes componentes
+          sem recarregar a página. No nosso CRUD, vamos ter:
+        </p>
+        <ul>
+          <li><code>/funcionarios</code> → Lista de funcionários</li>
+          <li><code>/funcionarios/novo</code> → Formulário de criação</li>
+          <li><code>/funcionarios/:id</code> → Detalhe/Edição</li>
+        </ul>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// src/app/app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { FuncionarioListComponent } from './components/funcionario-list/funcionario-list.component';
+import { FuncionarioFormComponent } from './components/funcionario-form/funcionario-form.component';
+import { FuncionarioDetailComponent } from './components/funcionario-detail/funcionario-detail.component';
+
+const routes: Routes = [
+  //crie as rotas aqui
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+          </code></pre>
+        </div>
+      </section>
+
+      <h2>5. Formulários</h2>
+      <section>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// src/app/components/funcionario-form-reactive/funcionario-form-reactive.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FuncionarioService } from '../../services/funcionario.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-funcionario-form-reactive',
+  templateUrl: './funcionario-form-reactive.component.html'
+})
+export class FuncionarioFormReactiveComponent implements OnInit {
+  form!: FormGroup;
+
+  constructor(private fb: FormBuilder, private service: FuncionarioService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      nome: ['', Validators.required],
+      sobrenome: ['', Validators.required],
+      salarioAtual: [0, [Validators.required, Validators.min(1000)]]
+      // faça os outros campos e seus validadores aqui
+    });
+  }
+
+  salvarFuncionario() {
+    if (this.form.valid) {
+      this.service.addFuncionario(this.form.value).subscribe(() => {
+        this.router.navigate(['/funcionarios']);
+      });
+    }
+  }
+}
+          </code></pre>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
