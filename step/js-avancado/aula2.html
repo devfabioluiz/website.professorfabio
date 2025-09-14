@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - Promises</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">JavaScript Avançado</h4>
+      <h4 class="text-center">Promises</h4>
+    </header>
+    <main class="container">
+
+    <!-- Promise -->
+      <h2>Definição de Promise</h2>
+      <section>
+        <p>
+          Uma <code>Promise</code> é um objeto que representa uma operação que pode:
+        </p>
+        <ul>
+          <li><b>Pendente</b> - ainda em execução.</li>
+          <li><b>Resolvida</b> - concluída com sucesso.</li>
+          <li><b>Rejeitada</b> - concluída com erro.</li>
+        </ul>
+
+        <h4>O que é uma Promise?</h4>
+        <p>
+          É como uma “promessa da vida real”: algo que pode dar certo ou errado no futuro.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let promessa = new Promise((resolve, reject) => {
+  let sucesso = true;
+  if (sucesso) {
+    resolve("🎉 Deu certo!");
+  } else {
+    reject("❌ Algo deu errado!");
+  }
+});
+
+promessa.then(msg => console.log(msg));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Como criar uma Promise</h4>
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function esperar(ms) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve("⏳ Espera concluída"), ms);
+  });
+}
+
+esperar(2000).then(msg => console.log(msg));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Usando then e catch</h4>
+        <h5>Exemplo 3</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let promessa2 = new Promise((resolve, reject) => {
+  let numero = Math.random();
+  if (numero > 0.5) resolve("Número aceito: " + numero);
+  else reject("Número muito baixo: " + numero);
+});
+
+promessa2
+  .then(msg => console.log("✅", msg))
+  .catch(erro => console.log("⚠️", erro));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- resolve e reject -->
+      <h2>Resolve e Reject</h2>
+      <section>
+        <p>
+          Dentro de uma <code>Promise</code>, usamos duas funções:
+        </p>
+        <ul>
+          <li><code>resolve(valor)</code> → indica que a operação foi concluída com sucesso.</li>
+          <li><code>reject(erro)</code> → indica que a operação falhou.</li>
+        </ul>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let promessa = new Promise((resolve, reject) => {
+  let sucesso = true;
+  if (sucesso) resolve("✅ Deu certo!");
+  else reject("❌ Algo deu errado!");
+});
+
+promessa.then(console.log).catch(console.error);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function verificarNumero(n) {
+  return new Promise((resolve, reject) => {
+    if (n > 10) resolve("Maior que 10");
+    else reject("Menor ou igual a 10");
+  });
+}
+
+verificarNumero(15).then(console.log).catch(console.error);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function dividir(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) reject("❌ Divisão por zero!");
+    else resolve(a / b);
+  });
+}
+
+dividir(10, 2).then(console.log).catch(console.error);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- finally -->
+      <h2>Finally</h2>
+      <section>
+        <p>
+          O <code>finally()</code> é sempre executado, independente se a Promise foi resolvida ou rejeitada.
+          É útil para liberar recursos, fechar conexões ou exibir mensagens finais.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+new Promise((resolve, reject) => {
+  resolve("✅ Sucesso!");
+})
+.then(console.log)
+.catch(console.error)
+.finally(() => console.log("Finalizado!"));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+new Promise((resolve, reject) => {
+  reject("❌ Ocorreu um erro");
+})
+.then(console.log)
+.catch(console.error)
+.finally(() => console.log("Liberando recursos..."));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function simularRequisicao() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject("Servidor indisponível"), 1500);
+  });
+}
+
+simularRequisicao()
+  .then(console.log)
+  .catch(console.error)
+  .finally(() => console.log("⏳ Tentativa concluída"));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Promise.all -->
+      <h2>Promise.all()</h2>
+      <section>
+        <p>
+          O <code>Promise.all()</code> executa várias Promises em paralelo e só resolve quando <b>todas</b> são concluídas com sucesso.
+          Se alguma falhar, ele rejeita tudo.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+Promise.all([
+  Promise.resolve("🍎 Maçã"),
+  Promise.resolve("🍌 Banana"),
+  Promise.resolve("🍇 Uva")
+]).then(console.log);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2 (com falha)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+Promise.all([
+  Promise.resolve("✅ Ok 1"),
+  Promise.reject("❌ Falhou!"),
+  Promise.resolve("✅ Ok 2")
+])
+.then(console.log)
+.catch(console.error);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3 (simulação de requisições)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+function esperar(ms, msg) {
+  return new Promise(resolve => setTimeout(() => resolve(msg), ms));
+}
+
+Promise.all([
+  esperar(1000, "📦 Produto"),
+  esperar(2000, "🚚 Entrega"),
+  esperar(1500, "💳 Pagamento")
+]).then(console.log);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Promise.allSettled -->
+      <h2>Promise.allSettled()</h2>
+      <section>
+        <p>
+          Diferente do <code>all()</code>, o <code>allSettled()</code> espera todas as Promises terminarem, 
+          seja com sucesso ou erro, e retorna o status de cada uma.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+Promise.allSettled([
+  Promise.resolve("✅ Sucesso"),
+  Promise.reject("❌ Erro"),
+])
+.then(console.log);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Promise.race -->
+      <h2>Promise.race()</h2>
+      <section>
+        <p>
+          O <code>Promise.race()</code> retorna a <b>primeira</b> Promise que finalizar (sucesso ou erro).
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+Promise.race([
+  new Promise(res => setTimeout(() => res("⏰ 1s"), 1000)),
+  new Promise(res => setTimeout(() => res("⏰ 2s"), 2000)),
+])
+.then(console.log);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Promise.any -->
+      <h2>Promise.any()</h2>
+      <section>
+        <p>
+          O <code>Promise.any()</code> retorna a primeira Promise que for <b>resolvida com sucesso</b>.
+          Se todas falharem, gera um erro.
+        </p>
+
+        <h5>Exemplo 1</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+Promise.any([
+  Promise.reject("❌ Erro 1"),
+  Promise.reject("❌ Erro 2"),
+  Promise.resolve("✅ Sucesso na terceira!")
+])
+.then(console.log)
+.catch(console.error);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+    </main>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>

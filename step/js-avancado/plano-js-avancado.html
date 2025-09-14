@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plano de Aulas JavaScript Avançado - 1.2.0</title>
+    <link rel="stylesheet" href="../../estilos/estilos-planos.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 align="center">JavaScript Avançado - Versão 1.2.0</h1>
+      <h2>Duração</h2>
+      <p>28 horas (14 aulas)</p>
+
+      <h2>Objetivo do Curso</h2>
+      <p>
+        Ensinar o aluno a usar o JavaScript no navegador e a interagir com o DOM.
+        Ensinar como escolher os mecanismos e designs corretos para uma determinada tarefa.
+      </p>
+
+      <h3>Ao Final do Curso</h3>
+      <ul>
+        <li>Ser capaz de serializar e fazer parse de dados usando JSON</li>
+        <li>Aplicar promessas, async/await</li>
+        <li>Conhecer os princípios da criação de consultas assíncronas</li>
+        <li>Compreender os conceitos de evento e manipulador de eventos</li>
+        <li>Criar funções manipuladoras de vários eventos</li>
+        <li>Compreender as sutilezas do DOM</li>
+        <li>Ser capaz de interagir com objetos DOM</li>
+        <li>Compreender as sutilezas da implementação de scripts de cliente para diferentes navegadores</li>
+        <li>Conhecer os princípios de criação de formulários e análise de dados do usuário usando expressões regulares</li>
+        <li>Saber como salvar os dados do usuário usando o mecanismo de cookies</li>
+      </ul>
+
+      <p>
+        Ao final do curso, o aluno fará um trabalho prático e um exame teórico sobre os materiais do curso. 
+        Para se qualificar para o exame, todos os trabalhos de casa e as tarefas práticas devem ser aprovados. 
+        A tarefa prática deve abranger no máximo o material das várias seções do curso.
+      </p>
+
+      <h2>Conteúdo Programático</h2>
+
+      <h4>Módulo 1: JSON (2 horas)</h4>
+      <ul>
+        <li>O que é JSON?</li>
+        <li>Metas e objetivos do JSON</li>
+        <li>Sintaxe do JSON
+          <ul>
+            <li>Variáveis</li>
+            <li>Objetos</li>
+            <li>Arrays</li>
+          </ul>
+        </li>
+        <li>Objeto JSON
+          <ul>
+            <li>O que é serialização?</li>
+            <li>O que é parsing?</li>
+            <li>Métodos <code>stringify</code> e <code>parse</code></li>
+          </ul>
+        </li>
+        <li>Configuração da serialização personalizada em JSON – método <code>toJSON</code></li>
+      </ul>
+
+      <h4>Módulo 2: Promessas, async/await (4 horas)</h4>
+      <ul>
+        <li>Programação síncrona e assíncrona</li>
+        <li>Função normal e função de retorno de chamada (callback)</li>
+        <li><code>Promise</code>
+          <ul>
+            <li>O que é uma promise?</li>
+            <li>As metas e os objetivos de promise</li>
+            <li>Como criar uma promise</li>
+            <li>Usar <code>then</code></li>
+            <li>Usar <code>catch</code></li>
+            <li>Cadeia de promises</li>
+            <li>Tratamento de erros</li>
+            <li><code>Promise.all()</code>, <code>Promise.race()</code>, <code>Promise.allSettled()</code>, <code>Promise.any()</code></li>
+            <li>Casos práticos de uso</li>
+          </ul>
+        </li>
+        <li><code>async/await</code>
+          <ul>
+            <li>O que é <code>async</code>?</li>
+            <li>O que é <code>await</code>?</li>
+            <li>Conversão de uma cadeia de promises em async/await</li>
+            <li>Tratamento de erros</li>
+            <li>Exemplos práticos de uso</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>Módulo 3: Interação com o servidor (2 horas)</h4>
+      <ul>
+        <li>Por que a interação com o servidor é necessária?</li>
+        <li>Solicitações
+          <ul>
+            <li>Síncronas</li>
+            <li>Assíncronas</li>
+          </ul>
+        </li>
+        <li>O que é HTTP?
+          <ul>
+            <li>Princípios básicos</li>
+            <li><code>Response</code>, <code>Request</code></li>
+            <li>Métodos HTTP: GET, POST, PUT, DELETE, PATCH</li>
+            <li>Códigos de resposta</li>
+          </ul>
+        </li>
+        <li><code>XMLHttpRequest</code>
+          <ul>
+            <li>O que é?</li>
+            <li>Metas e objetivos</li>
+            <li>Métodos e propriedades</li>
+            <li>Envio de solicitações (GET, POST, formulário)</li>
+            <li>Casos práticos de uso</li>
+          </ul>
+        </li>
+        <li>API <code>fetch</code>
+          <ul>
+            <li>O que é?</li>
+            <li>Metas e objetivos</li>
+            <li>Envio de solicitações (GET, POST, formulário)</li>
+            <li>Casos práticos de uso</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>Módulo 4: BOM e DOM (4 horas)</h4>
+      <ul>
+        <li>O que é o Browser Object Model?</li>
+        <li>Objetos do BOM: <code>Window</code>, <code>Navigator</code>, <code>Screen</code>, <code>Location</code>, <code>History</code>, Frames</li>
+        <li>O que é Document Object Model?</li>
+        <li>Diferenças entre DOM e BOM: quando usar cada um</li>
+        <li>Representação de um documento HTML como árvore</li>
+        <li>Objetos DOM: nós, hierarquia, pais e filhos</li>
+        <li>Propriedades e métodos do DOM – modelo de eventos</li>
+        <li>Alteração da árvore DOM</li>
+        <li>Objetos Document e Link</li>
+        <li>Gerenciamento de seleção e intervalo de texto: <code>Selection</code> e <code>TextRange</code></li>
+        <li>Características do DOM em HTML5</li>
+      </ul>
+
+      <h4>Módulo 5: Manipulação de eventos (6 horas)</h4>
+      <ul>
+        <li>O que é um evento?</li>
+        <li>O que é um manipulador de eventos?</li>
+        <li>Manipulação de eventos em scripts</li>
+        <li>Gerenciamento de estilos de elementos da página</li>
+        <li>Objeto de evento e suas propriedades</li>
+        <li>Manipuladores padrão e prevenção</li>
+        <li>Objeto de imagem: gerenciamento de imagens e rollovers</li>
+      </ul>
+
+      <h4>Módulo 6: Formulários (4 horas)</h4>
+      <ul>
+        <li>Aplicação e criação de formulários em HTML</li>
+        <li>Coleção de <code>forms</code></li>
+        <li>Elementos de formulário:
+          <ul>
+            <li>Botões: <code>Button</code>, <code>Submit</code>, <code>Reset</code></li>
+            <li>Campos de texto: <code>Text</code>, <code>Password</code>, <code>File</code>, <code>Textarea</code></li>
+            <li>Campo oculto: <code>Hidden</code></li>
+            <li>Caixa de seleção: <code>Checkbox</code></li>
+            <li>Switch: <code>Radio</code></li>
+            <li>Listas: <code>Select</code>, <code>Option</code></li>
+          </ul>
+        </li>
+        <li>Exemplos práticos de uso</li>
+      </ul>
+
+      <h4>Módulo 7: Validação de formulários e uso de cookies (4 horas)</h4>
+      <ul>
+        <li>Expressões regulares
+          <ul>
+            <li>O que são?</li>
+            <li>Regras de escrita</li>
+            <li>Objeto <code>RegExp</code></li>
+            <li>Métodos de <code>String</code> e <code>RegExp</code></li>
+            <li>Exemplos práticos</li>
+          </ul>
+        </li>
+        <li>Validação de formulários
+          <ul>
+            <li>Usando HTML5</li>
+            <li>Usando expressões regulares</li>
+          </ul>
+        </li>
+        <li>Cookies
+          <ul>
+            <li>O que são?</li>
+            <li>Vantagens e desvantagens</li>
+            <li>Criação, uso e exclusão</li>
+            <li>Exemplos práticos</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>Módulo 8: Exame (2 horas)</h4>
+      <ul>
+        <li>Exame teórico e prático</li>
+      </ul>
+    </div>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+    <div class="button-container">
+      <a class="btn-indice" href="../../indice-primeiro.html">
+        Ir para índice
+      </a>
+    </div>
+  </body>
+</html>

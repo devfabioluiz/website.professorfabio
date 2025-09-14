@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 - Interação com Servidor</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">JavaScript Avançado</h4>
+      <h4 class="text-center">Interação com o Servidor</h4>
+    </header>
+    <main class="container">
+
+      <!-- Interação com servidor -->
+      <h2>Por que a interação com o servidor é necessária?</h2>
+      <section>
+        <p>
+          Aplicações modernas precisam buscar dados de bancos de dados, 
+          validar informações, autenticar usuários e salvar alterações. 
+          Para isso, é fundamental a comunicação entre <b>cliente</b> 
+          (navegador) e <b>servidor</b>.
+        </p>
+
+        <h5>Exemplos</h5>
+        <ul>
+          <li>Carregar produtos de uma loja online.</li>
+          <li>Enviar um formulário de cadastro.</li>
+          <li>Atualizar apenas parte da página (sem recarregar tudo).</li>
+        </ul>
+      </section>
+
+      <!-- Solicitações -->
+      <h2>Solicitações: Síncronas x Assíncronas</h2>
+      <section>
+        <p>
+          Uma <b>solicitação síncrona</b> bloqueia a execução do código até o servidor responder.  
+          Já uma <b>solicitação assíncrona</b> permite que o restante do programa continue rodando.
+        </p>
+
+        <h5>Exemplo Síncrono (não recomendado)</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "dados.json", false); // false = síncrono
+xhr.send();
+console.log(xhr.responseText); // bloqueia até terminar
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo Assíncrono</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "dados.json", true); // true = assíncrono
+xhr.onload = function() {
+  console.log(xhr.responseText);
+};
+xhr.send();
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- HTTP -->
+      <h2>O que é HTTP?</h2>
+      <section>
+        <p>
+          HTTP (<b>HyperText Transfer Protocol</b>) é o protocolo 
+          que define como o cliente e o servidor se comunicam 
+          na web.
+        </p>
+      </section>
+
+      <h2>Princípios básicos do HTTP</h2>
+      <section>
+        <ul>
+          <li>Cliente envia uma <b>request</b>.</li>
+          <li>Servidor devolve uma <b>response</b>.</li>
+          <li>Comunicação baseada em métodos e códigos de status.</li>
+        </ul>
+      </section>
+
+      <h2>Request e Response</h2>
+      <section>
+        <ul>
+          <li><b>Request</b>: dados enviados pelo cliente (ex: formulário).</li>
+          <li><b>Response</b>: resposta do servidor (ex: lista de produtos).</li>
+        </ul>
+      </section>
+
+      <!-- Métodos HTTP -->
+      <h2>Métodos HTTP</h2>
+      <section>
+        <ul>
+          <li><b>GET</b> - Obter dados.</li>
+          <li><b>POST</b> - Enviar dados (ex: formulário).</li>
+          <li><b>PUT</b> - Atualizar dados.</li>
+          <li><b>DELETE</b> - Excluir dados.</li>
+          <li><b>PATCH</b> - Atualizar parcialmente.</li>
+        </ul>
+
+        <h5>Exemplo GET com Fetch</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+fetch("https://api.exemplo.com/produtos")
+  .then(resp => resp.json())
+  .then(dados => console.log(dados));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Códigos de resposta -->
+      <h2>Códigos de Resposta HTTP</h2>
+      <section>
+        <ul>
+          <li><b>200</b> - Sucesso</li>
+          <li><b>201</b> - Criado</li>
+          <li><b>400</b> - Requisição inválida</li>
+          <li><b>401</b> - Não autorizado</li>
+          <li><b>404</b> - Não encontrado</li>
+          <li><b>500</b> - Erro interno no servidor</li>
+        </ul>
+      </section>
+
+      <!-- XMLHttpRequest -->
+      <h2>XMLHttpRequest</h2>
+      <section>
+        <p>
+          O <code>XMLHttpRequest</code> (XHR) é um objeto usado 
+          para enviar e receber dados de um servidor de forma assíncrona.
+        </p>
+
+        <h3>Metas e Objetivos</h3>
+        <ul>
+          <li>Fazer requisições HTTP sem recarregar a página.</li>
+          <li>Trocar dados em tempo real com o servidor.</li>
+        </ul>
+
+        <h3>Métodos e Propriedades</h3>
+        <ul>
+          <li><code>open(método, url, async)</code></li>
+          <li><code>send()</code></li>
+          <li><code>onload</code> - executa quando a resposta chega.</li>
+          <li><code>status</code> - código de resposta.</li>
+          <li><code>responseText</code> - corpo da resposta.</li>
+        </ul>
+
+        <h5>Exemplo POST com XHR</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+let xhr = new XMLHttpRequest();
+xhr.open("POST", "/api/cadastro");
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.onload = () => console.log(xhr.responseText);
+xhr.send(JSON.stringify({ nome: "João", idade: 30 }));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Casos práticos com XHR -->
+      <h3>Casos práticos de uso</h3>
+      <section>
+        <ul>
+          <li>Carregar dados em tabelas sem recarregar a página.</li>
+          <li>Validação de login.</li>
+          <li>Envio de formulários AJAX.</li>
+        </ul>
+      </section>
+
+      <!-- Fetch API -->
+      <h2>API Fetch</h2>
+      <section>
+        <p>
+          O <b>fetch</b> é uma API moderna e mais simples para requisições HTTP, 
+          substituindo o uso de <code>XMLHttpRequest</code>.
+        </p>
+
+        <h3>Metas e Objetivos</h3>
+        <ul>
+          <li>Mais simples e legível.</li>
+          <li>Baseado em <b>Promises</b>.</li>
+          <li>Suporte a <code>async/await</code>.</li>
+        </ul>
+
+        <h5>Exemplo GET</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+fetch("/api/usuarios")
+  .then(resp => resp.json())
+  .then(dados => console.log(dados));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo POST</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+fetch("/api/cadastro", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ nome: "Maria", idade: 22 })
+})
+.then(resp => resp.json())
+.then(dados => console.log(dados));
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- Casos práticos Fetch -->
+      <h3>Casos práticos de uso</h3>
+      <section>
+        <ul>
+          <li>Buscar informações em APIs públicas (ex: clima, moedas).</li>
+          <li>Enviar dados de formulários.</li>
+          <li>Consumir serviços REST de back-end.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
