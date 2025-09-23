@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento de Projetos</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h4 class="text-center">Gerenciamento de Projetos</h4>
+    </header>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Gráficos de Gantt, Ciclo de vida e e Gerenciamento de Projetos </h1>
+      </div>
+    </header>
+    <div class="two-col">
+      <main>
+
+        <section id="introducao">
+          <h2>1. Introdução</h2>
+          <p><strong>Gerenciamento de projetos de software</strong> é a disciplina que aplica conhecimentos, habilidades, técnicas e ferramentas para planejar, executar, controlar e finalizar projetos cuja entrega principal é software. Envolve coordenação entre pessoas, processos e tecnologias para transformar requisitos e ideias em produtos de software úteis e com qualidade.</p>
+          <p><strong>Aspectos centrais:</strong></p>
+          <ul>
+            <li><strong>Tríplice restrição:</strong> escopo, prazo e custo (e muitas vezes qualidade).</li>
+            <li><strong>Stakeholders:</strong> cliente, usuários, patrocinador, desenvolvedores, QA, operações.</li>
+            <li><strong>Artefatos:</strong> requisitos, cronogramas, orçamentos, planos de teste, documentação.</li>
+            <li><strong>Objetivo:</strong> entregar valor ao usuário/negócio de forma previsível, minimizando riscos e custos.</li>
+          </ul>
+        </section>
+
+        <section id="porque-aprender">
+          <h2>2. Por que aprender a disciplina de gerenciamento de projetos de software</h2>
+          <p><strong>Motivações principais:</strong></p>
+          <ul>
+            <li><strong>Reduz incerteza e risco:</strong> técnicas de planejamento e controle minimizam surpresas (atrasos, estouro de custo).</li>
+            <li><strong>Melhora comunicação:</strong> artefatos e cerimônias padronizam expectativas entre times e clientes.</li>
+            <li><strong>Aumenta previsibilidade:</strong> estimativas, cronogramas e métricas ajudam decisões.</li>
+            <li><strong>Foco em valor:</strong> priorização evita trabalho em funcionalidades de pouco impacto.</li>
+            <li><strong>Escalabilidade profissional:</strong> habilidade valorizada em todo nível (devs, líderes, PMs).</li>
+            <li><strong>Qualidade e conformidade:</strong> processos e QA preservam integridade do produto e reduzem retrabalho.</li>
+          </ul>
+        </section>
+
+        <section id="gantt">
+          <h2>3. Gráficos de Gantt</h2>
+          <p>Um <strong>diagrama de Gantt</strong> é um gráfico de barras que representa visualmente o cronograma do projeto: tarefas no eixo vertical, tempo no eixo horizontal. Cada barra mostra a duração da tarefa; dependências podem ser desenhadas com setas; marcos (milestones) são pontos.</p>
+          <p><strong>Componentes:</strong></p>
+          <ul>
+            <li>Tarefas / sub-tarefas (WBS)</li>
+            <li>Duração (datas de início/fim)</li>
+            <li>Dependências (finish-to-start, start-to-start etc.)</li>
+            <li>Milestones</li>
+            <li>Linha de base (baseline) para comparação</li>
+            <li>Recursos atribuídos (opcional)</li>
+          </ul>
+          <p><strong>Como usar:</strong> comece pela <em>WBS</em>, estime durações, defina dependências, identifique o <em>caminho crítico</em> e atualize periodicamente.</p>
+          <p><strong>Vantagens/limitações:</strong> bom para visualização temporal e stakeholders; pode ser pesado para projetos iterativos — use Gantt de alto nível em Agile.</p>
+        </section>
+
+        <section id="projeto">
+          <h2>4. O que é um projeto e um projeto de software?</h2>
+          <p><strong>Projeto (geral):</strong> esforço temporário para criar um produto, serviço ou resultado único. Tem início e fim definidos, recursos limitados e objetivos claros.</p>
+          <p><strong>Projeto de software:</strong> projeto cujo produto é software — com peculiaridades: produto intangível, requisitos mutáveis, importância de testes e integração, dependência de infraestrutura e sistemas legados.</p>
+        </section>
+
+        <section id="ciclo-vida">
+          <h2>5. Qual é o ciclo de vida do processo de desenvolvimento de software?</h2>
+          <p>Fases típicas (muitas vezes iteradas):</p>
+          <ol>
+            <li><strong>Definição de requisitos:</strong> levantamento (entrevistas, user stories), saída: especificações, backlog, critérios de aceitação.</li>
+            <li><strong>Desenho (design/arquitetura):</strong> arquitetura de alto nível, protótipos, interfaces.</li>
+            <li><strong>Construção (implementação/codificação):</strong> programação, revisões de código, builds.</li>
+            <li><strong>Integração:</strong> integração entre módulos, CI.</li>
+            <li><strong>Teste e depuração (verificação):</strong> testes unitários, integração, sistema, aceitação.</li>
+            <li><strong>Instalação (deploy):</strong> entrega em produção, migração de dados.</li>
+            <li><strong>Suporte / manutenção:</strong> correções e evolução contínua.</li>
+          </ol>
+          <p>Em modelos iterativos/agile, essas fases se repetem por iterações (sprints), entregando incrementos.</p>
+        </section>
+
+        <section id="gerenciamento">
+          <h2>6. O que é gerenciamento de projetos?</h2>
+          <p>Conjunto de práticas para coordenar pessoas, recursos e atividades para atingir objetivos do projeto dentro das restrições (escopo, tempo, custo, qualidade).</p>
+          <p><strong>Áreas de conhecimento (resumido):</strong></p>
+          <ul>
+            <li>Integração</li>
+            <li>Escopo</li>
+            <li>Tempo</li>
+            <li>Custo</li>
+            <li>Qualidade</li>
+            <li>Recursos humanos</li>
+            <li>Comunicações</li>
+            <li>Riscos</li>
+            <li>Aquisições</li>
+            <li>Stakeholders</li>
+          </ul>
+          <p><strong>Técnicas comuns:</strong> WBS, estimativas (analogous, parametric, bottom-up), cronogramas (Gantt, CPM/PERT), matriz RACI, gestão de riscos.</p>
+        </section>
+
+        <section id="desenvolvimento-unico">
+          <h2>7. O que é desenvolvimento único?</h2>
+          <p>Interpretação: desenvolvimento individual/solo (um único desenvolvedor responsável pelo projeto).</p>
+          <p><strong>Características:</strong> decisões rápidas, menos overhead, alto grau de autonomia, risco de dependência única.</p>
+          <p><strong>Desafios:</strong> escalabilidade limitada, falta de revisão contínua, dificuldade em testes extensivos.</p>
+          <p><strong>Boas práticas:</strong> versionamento (git), CI, testes automatizados, documentação, timeboxing e revisão externa.</p>
+        </section>
+
+        <section id="desenvolvimento-equipe">
+          <h2>8. O que é desenvolvimento de equipe?</h2>
+          <p>Colaboração de múltiplas pessoas com papéis distintos (devs, QA, PO, devops).</p>
+          <p><strong>Características:</strong> distribuição de responsabilidades, necessidade de comunicação e coordenação, possibilidade de paralelizar trabalho.</p>
+          <p><strong>Boas práticas:</strong> definição clara de papéis, CI/CD, convenções de código, revisões por pares, ferramentas de colaboração.</p>
+        </section>
+
+        <section id="analise-problemas">
+          <h2>9. Análise de problemas de desenvolvimento de software único e em equipe</h2>
+          <h3>Problemas típicos em desenvolvimento solo</h3>
+          <ul>
+            <li>Risco de conhecimento (bus factor = 1)</li>
+            <li>Sobrecarga e burnout</li>
+            <li>Falta de revisão → bugs e más decisões arquiteturais</li>
+            <li>Dificuldade em testar em larga escala</li>
+          </ul>
+          <p><strong>Mitigações solo:</strong> documentação mínima, testes automatizados, uso de bibliotecas maduras, revisão pontual.</p>
+
+          <h3>Problemas típicos em equipe</h3>
+          <ul>
+            <li>Comunicação ineficiente → requisitos mal interpretados</li>
+            <li>Integração tardia → conflitos</li>
+            <li>Divergência técnica → padrões inconsistentes</li>
+            <li>Gerenciamento de dependências de recursos</li>
+          </ul>
+          <p><strong>Mitigações equipe:</strong> daily standups, CI, padrão de código, revisões de arquitetura, RACI.</p>
+        </section>
+
+        <section id="termos-dominio">
+          <h2>10. Análise de termos de domínio</h2>
+          <h3>Processo</h3>
+          <p>Conjunto estruturado de atividades que transforma entradas em saídas (ex.: requisitos → design → desenvolvimento → teste). Processos podem ser definidos, medidos e melhorados.</p>
+          <h3>Projeto</h3>
+          <p>Esforço temporário com objetivos e entregas. Diferente de processo (que pode ser repetitivo), o projeto busca um resultado único.</p>
+          <h3>Equipe</h3>
+          <p>Conjunto de pessoas com papéis e responsabilidades. Eficácia depende de skills, liderança e ferramentas.</p>
+          <h3>Produto</h3>
+          <p>O software em si — funcionalidades, documentação e artefatos. Produto tem ciclo de vida além do projeto (manutenção, evolução).</p>
+          <h3>Qualidade</h3>
+          <p>Grau em que o produto atende requisitos e expectativas do usuário: confiabilidade, desempenho, usabilidade, segurança, manutenibilidade.</p>
+          <p><em>Relação:</em> processos governam projetos; equipes aplicam processos; produto é resultado; qualidade é objetivo.</p>
+        </section>
+
+        <section id="recursos">
+          <h2>11. Recursos do projeto</h2>
+          <h3>Tipo de projeto</h3>
+          <p>Novo produto, migração, integração, manutenção, POC, R&D.</p>
+          <h3>Objetivo do projeto</h3>
+          <p>Entregáveis mensuráveis e impacto de negócio (ex.: reduzir churn em X%).</p>
+          <h3>Requisitos de qualidade</h3>
+          <p>Requisitos não-funcionais: performance, segurança, disponibilidade, escalabilidade, conformidade; critérios de aceitação e SLA.</p>
+          <h3>Requisitos de orçamento</h3>
+          <p>Limite total, alocação por fase, reservas para riscos, custo de pessoas, infraestrutura, licenças.</p>
+          <h3>Requisitos de prazo</h3>
+          <p>Data fixa vs. prazo flexível; marcos (milestones); identificar caminho crítico e float.</p>
+          <p>Como levantar: workshops com stakeholders e definição SMART.</p>
+        </section>
+
+        <section id="custos">
+          <h2>12. Custos do projeto</h2>
+          <h3>Custos Diretos</h3>
+          <ul>
+            <li>Salários da equipe alocada</li>
+            <li>Licenças de software específicas</li>
+            <li>Hardware e infraestrutura dedicada</li>
+            <li>Serviços de terceiros</li>
+            <li>Custos de viagem específicos</li>
+          </ul>
+          <h3>Custos Indiretos</h3>
+          <ul>
+            <li>Aluguel, utilidades</li>
+            <li>Administração e gestão</li>
+            <li>Ferramentas corporativas</li>
+            <li>Overhead (treinamento, seguro)</li>
+          </ul>
+          <p>Gestão de custos: orçamento base + reservas; monitoramento por variação (Cost Variance, CPI).</p>
+        </section>
+
+        <section id="modelos">
+          <h2>13. Visão geral dos modelos e metodologias de processos de desenvolvimento</h2>
+
+          <h3>Fases do processo (detalhadas)</h3>
+          <ul>
+            <li><strong>Definição de requisitos:</strong> elicitação, documentação, priorização.</li>
+            <li><strong>Desenho:</strong> arquitetura, componentes, decisões técnicas.</li>
+            <li><strong>Construção:</strong> codificação, revisão de código.</li>
+            <li><strong>Integração:</strong> CI, builds integrados.</li>
+            <li><strong>Teste e depuração:</strong> automação, testes de regressão.</li>
+            <li><strong>Instalação:</strong> deploy, rollback.</li>
+            <li><strong>Suporte:</strong> manutenção corretiva e evolutiva.</li>
+          </ul>
+
+          <h3>Modelo em cascata (Waterfall)</h3>
+          <p>Sequencial; bom para requisitos estáveis e ambientes regulados; rígido para mudanças.</p>
+
+          <h3>Modelo espiral</h3>
+          <p>Iterativo e orientado a risco; cada ciclo contempla planejamento, análise de risco, engenharia e avaliação. Adequado para projetos grandes/complexos.</p>
+
+          <h3>Modelo iterativo / incremental</h3>
+          <p>Entrega em incrementos funcionais; feedback rápido; pode corrigir rumo rapidamente.</p>
+
+          <h4>Agile (paradigma)</h4>
+          <p>Princípios: envolvimento do cliente, entregas frequentes, adaptação a mudanças.</p>
+
+          <h4>Scrum</h4>
+          <p>Papéis: Product Owner, Scrum Master, Time; eventos: Sprint, Planning, Daily, Review, Retro; artefatos: Backlogs e Increment.</p>
+
+          <h4>XP (Extreme Programming)</h4>
+          <p>Práticas: TDD, pair programming, CI, refactoring; foco em qualidade e redução da dívida técnica.</p>
+
+          <h3>RUP (Rational Unified Process)</h3>
+          <p>Framework iterativo com fases: Inception, Elaboration, Construction, Transition. Boa rastreabilidade, pode ficar pesado se mal aplicado.</p>
+
+          <h3>MSF (Microsoft Solutions Framework)</h3>
+          <p>Conjunto de princípios e papéis orientado a ciclos iterativos; frequentemente usado em ambientes Microsoft.</p>
+
+          <h3>Análise de modelos e métodos</h3>
+          <p>Critérios de escolha: tamanho, estabilidade dos requisitos, regulação, cultura da organização, risco técnico e experiência da equipe. Estratégia prática: adotar híbridos quando necessário.</p>
+        </section>
+
+        <section id="qualidade">
+          <h2>14. Gestão da qualidade</h2>
+          <p><strong>Conceitos:</strong></p>
+          <ul>
+            <li><strong>Quality Assurance (QA):</strong> práticas preventivas — processos, revisões, auditorias.</li>
+            <li><strong>Quality Control (QC):</strong> atividades de detecção — testes e inspeções.</li>
+            <li><strong>Qualidade do produto:</strong> aderência a requisitos e satisfação do usuário.</li>
+          </ul>
+          <p><strong>Práticas essenciais:</strong> estratégia de testes (unit, integração, sistema, aceitação), automação, revisões de código, métricas (defeitos/KLOC, cobertura), gates de qualidade e ferramentas de segurança (SAST/DAST).</p>
+          <p>Plano de qualidade deve ter objetivos mensuráveis, papéis, critérios de aceitação, métricas e relatórios.</p>
+        </section>
+
+        <section id="documentacao">
+          <h2>15. Documentação</h2>
+          <p><strong>Tipos:</strong></p>
+          <ul>
+            <li><strong>Requisitos:</strong> SRS, user stories, critérios de aceitação.</li>
+            <li><strong>Arquitetura & Design:</strong> ADRs, visão geral.</li>
+            <li><strong>Código / API:</strong> README, OpenAPI/Swagger.</li>
+            <li><strong>Operação:</strong> runbooks, scripts de deploy.</li>
+            <li><strong>Testes:</strong> planos e resultados.</li>
+            <li><strong>Usuário/treinamento:</strong> manuais, release notes.</li>
+            <li><strong>Gestão do projeto:</strong> cronogramas, atas, riscos.</li>
+          </ul>
+          <p><strong>Boas práticas:</strong> docs vivos no repositório, templates, automatizar geração de docs, rastreabilidade, simplicidade e revisões periódicas.</p>
+        </section>
+
+        <section id="dicas-final">
+          <h2>Dicas práticas finais (resumo executivo)</h2>
+          <ul>
+            <li>Comece pelo <strong>MVP</strong> e valide cedo.</li>
+            <li>Use <strong>versionamento</strong>, CI/CD e testes automatizados desde o início.</li>
+            <li>Priorize comunicação e responsabilidades claras (RACI).</li>
+            <li>Escolha o modelo pelo contexto, não por moda.</li>
+            <li>Mantenha documentação mínima viável atualizada no repositório.</li>
+            <li>Meça: estabilidade do build, lead time, cycle time e defeitos.</li>
+            <li>Para solo: automatize e busque revisões externas. Para equipes: invista em integração e normas de código.</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <aside>
+        <h3>Opções de exportação</h3>
+        <p>Você pode salvar este arquivo HTML como um documento local ou usá-lo como base para slides e materiais de curso.</p>
+
+        <h3>Recursos sugeridos</h3>
+        <ul>
+          <li>Scrum Guide</li>
+          <li>Livro: "Continuous Delivery" (Jez Humble)</li>
+          <li>Documentação RUP e MSF (quando aplicável)</li>
+        </ul>
+
+        <h3>Próximos passos</h3>
+        <p>Quer que eu:</p>
+        <ul>
+          <li>Gere um arquivo PPTX com estes tópicos?</li>
+          <li>Crie checklists (deploy/testes/WBS)?</li>
+          <li>Monte um exemplo prático com WBS + Gantt para um app?</li>
+        </ul>
+      </aside>
+    </div>
+
+    <footer>
+      <p>Conteúdo convertido para HTML. Se quiser ajustes no layout, tema escuro ou versão em PDF/PPTX, diga qual formato prefere.</p>
+    </footer>
+  </div>
+</body>
+</html>
