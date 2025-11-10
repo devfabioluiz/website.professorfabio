@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - Banco de Dados</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Banco de Dados</h4>
+      <h4 class="text-center">Introdução ao MySQL – Tabelas, Chaves e DML</h4>
+    </header>
+
+    <main class="container">
+      <h2>1. Criando Tabelas</h2>
+      <section>
+        <p>
+          Para criar uma tabela no MySQL utilizamos o comando
+          <b>CREATE TABLE</b>. Nele definimos colunas, tipos de dados e
+          restrições.
+        </p>
+
+        <h5>Exemplo – criando a tabela "clientes"</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+CREATE TABLE clientes (
+  id INT AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(150),
+  PRIMARY KEY (id)
+);
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>2. Excluir Tabela</h2>
+      <section>
+        <p>
+          Para excluir uma tabela permanentemente do banco utilizamos o comando
+          <b>DROP TABLE</b>.
+        </p>
+
+        <h5>Exemplo – excluindo tabela</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+DROP TABLE clientes;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>3. Definir Chave Primária (PRIMARY KEY)</h2>
+      <section>
+        <p>
+          A chave primária identifica cada linha de forma única e não pode se
+          repetir. Pode ser criada junto com a tabela ou adicionada depois.
+        </p>
+
+        <h5>Exemplo – chave primária na criação</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+CREATE TABLE produtos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  preco DECIMAL(10,2)
+);
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo – adicionando chave primária depois</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+ALTER TABLE produtos
+ADD PRIMARY KEY (id);
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>4. Definir Chave Estrangeira (FOREIGN KEY)</h2>
+      <section>
+        <p>
+          A chave estrangeira relaciona duas tabelas, garantindo integridade
+          referencial.
+        </p>
+
+        <h5>Exemplo – criando uma tabela com chave estrangeira</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+CREATE TABLE pedidos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT,
+  valor DECIMAL(10,2),
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>5. Comandos Básicos DML (INSERT, SELECT, UPDATE, DELETE)</h2>
+      <section>
+        <p>Estes comandos manipulam dados dentro das tabelas.</p>
+
+        <h5>INSERT – inserir dados</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+INSERT INTO clientes (nome, email)
+VALUES ('João Silva', 'joao@email.com');
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>SELECT – consultar dados</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+SELECT * FROM clientes;
+SELECT nome, email FROM clientes;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>UPDATE – atualizar dados</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+UPDATE clientes
+SET email = 'novoemail@email.com'
+WHERE id = 1;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>DELETE – excluir dados</h5>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+DELETE FROM clientes
+WHERE id = 1;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>6. Criar e Selecionar Banco de Dados</h2>
+      <section>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+CREATE DATABASE meu_banco;
+USE meu_banco;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>7. Listar Bancos e Tabelas</h2>
+      <section>
+        <div class="code-container">
+          <pre>
+<code class="language-sql">
+SHOW DATABASES;
+SHOW TABLES;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </body>
+</html>
