@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6 - Arquitetura REST no Express</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Arquitetura REST no Express</h4>
+    </header>
+
+    <div class="container">
+      <h2>Fundamentos do HTTP e HTTPS</h2>
+      <section>
+        <p>
+          O protocolo HTTP (HyperText Transfer Protocol) é responsável pela
+          comunicação entre cliente e servidor na web. Ele segue o modelo de
+          requisição e resposta.
+        </p>
+        <p>
+          O HTTPS é a versão segura do HTTP, utilizando criptografia SSL/TLS
+          para garantir confidencialidade, integridade e autenticação dos dados
+          transmitidos.
+        </p>
+      </section>
+
+      <h2>Requisições e Respostas HTTP</h2>
+      <section>
+        <p>
+          Uma requisição HTTP é composta por método, URL, headers e body. A
+          resposta contém status code, headers e o corpo da resposta.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+app.get("/produtos", (req, res) => {
+  res.json({ produtos: [] });
+});
+
+app.post("/produtos", (req, res) => {
+  res.status(201).json({ mensagem: "Produto criado" });
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Códigos de Status HTTP</h2>
+      <section>
+        <ul>
+          <li><strong>200</strong> - OK</li>
+          <li><strong>201</strong> - Created</li>
+          <li><strong>204</strong> - No Content</li>
+          <li><strong>400</strong> - Bad Request</li>
+          <li><strong>401</strong> - Unauthorized</li>
+          <li><strong>403</strong> - Forbidden</li>
+          <li><strong>404</strong> - Not Found</li>
+          <li><strong>500</strong> - Internal Server Error</li>
+        </ul>
+      </section>
+
+      <h2>Arquitetura REST</h2>
+      <section>
+        <p>
+          REST (Representational State Transfer) é um estilo arquitetural
+          utilizado para construção de APIs escaláveis, padronizadas e
+          desacopladas.
+        </p>
+        <p>
+          Os recursos são identificados por URLs e manipulados por meio de
+          métodos HTTP como GET, POST, PUT e DELETE.
+        </p>
+      </section>
+
+      <h2>Web Services RESTful</h2>
+      <section>
+        <p>
+          Web services RESTful são serviços que seguem rigorosamente os
+          princípios REST, utilizando HTTP e normalmente JSON como formato de
+          dados.
+        </p>
+        <p>
+          São amplamente usados na integração entre sistemas, aplicações web,
+          mobile e arquiteturas de microsserviços.
+        </p>
+      </section>
+
+      <h2>Criação de APIs REST</h2>
+      <section>
+        <p>
+          A seguir temos um exemplo completo de uma API REST simples utilizando
+          Express.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+let users = [];
+
+app.post("/users", (req, res) => {
+  users.push(req.body);
+  res.status(201).json({ mensagem: "Usuário criado" });
+});
+
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+app.get("/users/:id", (req, res) => {
+  const user = users[req.params.id];
+  if (!user) return res.sendStatus(404);
+  res.json(user);
+});
+
+app.put("/users/:id", (req, res) => {
+  users[req.params.id] = req.body;
+  res.json({ mensagem: "Usuário atualizado" });
+});
+
+app.delete("/users/:id", (req, res) => {
+  users.splice(req.params.id, 1);
+  res.sendStatus(204);
+});
+
+app.listen(3000, () => {
+  console.log("API rodando em http://localhost:3000");
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Boas Práticas em APIs REST</h2>
+      <section>
+        <ul>
+          <li>Uso correto dos métodos HTTP</li>
+          <li>Padronização de respostas</li>
+          <li>Versionamento da API</li>
+          <li>Tratamento centralizado de erros</li>
+          <li>Validação de dados</li>
+          <li>
+            Separação em camadas (rotas, controllers, services, repositories)
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

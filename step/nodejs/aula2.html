@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - Node.js</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">
+        Gerenciador de Pacotes, Eventos e Arquitetura Orientada a Eventos
+      </h4>
+    </header>
+
+    <div class="container">
+      <h2>Componentes Principais de uma Aplicação Node.js</h2>
+      <section>
+        <p>
+          Uma aplicação Node.js é composta por vários componentes fundamentais
+          que trabalham juntos para fornecer escalabilidade, performance e
+          modularidade.
+        </p>
+
+        <ul>
+          <li><strong>Runtime:</strong> Motor V8 + Event Loop</li>
+          <li><strong>Core Modules:</strong> fs, http, path, os, events</li>
+          <li><strong>Gerenciador de Pacotes:</strong> npm</li>
+          <li><strong>Módulos Externos:</strong> Express, Axios, Sequelize</li>
+          <li><strong>Sistema de Eventos:</strong> EventEmitter</li>
+        </ul>
+      </section>
+
+      <h2>Estrutura Básica de Projetos</h2>
+      <section>
+        <p>
+          A organização correta da estrutura de pastas facilita a manutenção,
+          escalabilidade e clareza do projeto.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+meu-projeto-node/
+├── src/
+│   ├── controllers/
+│   ├── services/
+│   ├── routes/
+│   ├── models/
+│   └── app.js
+├── package.json
+└── server.js
+</code>
+          </pre>
+        </div>
+
+        <p>
+          - <strong>controllers:</strong> lógica das rotas<br />
+          - <strong>services:</strong> regras de negócio<br />
+          - <strong>routes:</strong> mapeamento das URLs<br />
+          - <strong>models:</strong> estruturas de dados<br />
+          - <strong>app.js:</strong> configuração da aplicação
+        </p>
+      </section>
+
+      <h2>Primeira Aplicação Node.js</h2>
+      <section>
+        <p>
+          Vamos criar uma aplicação simples que exibe uma mensagem no terminal.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+mkdir primeira-app
+cd primeira-app
+npm init -y
+</code>
+          </pre>
+        </div>
+
+        <p>Crie o arquivo <code>index.js</code>:</p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+console.log("Minha primeira aplicação Node.js");
+</code>
+          </pre>
+        </div>
+
+        <p>Execute:</p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+node index.js
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Uso da Linha de Comando e REPL</h2>
+      <section>
+        <p>
+          O Node.js oferece um ambiente interativo chamado REPL (Read-Eval-Print
+          Loop).
+        </p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+node
+</code>
+          </pre>
+        </div>
+
+        <p>Exemplo:</p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+> 2 + 3
+5
+> console.log("Hello Node")
+Hello Node
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>npm: Conceitos, Instalação, Atualização e Publicação</h2>
+      <section>
+        <p>
+          O npm (Node Package Manager) é o maior repositório de pacotes do mundo
+          e permite instalar, atualizar e publicar bibliotecas.
+        </p>
+
+        <h4>Instalar dependência:</h4>
+        <div>
+          <pre>
+<code class="language-bash">
+npm install express
+</code>
+          </pre>
+        </div>
+
+        <h4>Atualizar pacotes:</h4>
+        <div>
+          <pre>
+<code class="language-bash">
+npm update
+</code>
+          </pre>
+        </div>
+
+        <h4>Publicar pacote:</h4>
+        <div>
+          <pre>
+<code class="language-bash">
+npm login
+npm publish
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Chamadas Bloqueantes e Não Bloqueantes</h2>
+      <section>
+        <p>
+          No Node.js, chamadas bloqueantes travam a execução do programa,
+          enquanto chamadas não bloqueantes permitem continuar processando
+          outras tarefas.
+        </p>
+
+        <h4>Exemplo Bloqueante:</h4>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+const data = fs.readFileSync("arquivo.txt");
+console.log(data.toString());
+</code>
+          </pre>
+        </div>
+
+        <h4>Exemplo Não Bloqueante:</h4>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+fs.readFile("arquivo.txt", (err, data) => {
+  console.log(data.toString());
+});
+console.log("Executando...");
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Callbacks e Tratamento de Erros</h2>
+      <section>
+        <p>
+          Callbacks são funções passadas como argumento para tratar resultados
+          assíncronos.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+function dividir(a, b, callback) {
+  if (b === 0) {
+    return callback(new Error("Divisão por zero"));
+  }
+  callback(null, a / b);
+}
+
+dividir(10, 2, (err, result) => {
+  if (err) {
+    console.error(err.message);
+  } else {
+    console.log(result);
+  }
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Arquitetura Orientada a Eventos</h2>
+      <section>
+        <p>
+          O Node.js utiliza uma arquitetura baseada em eventos. Tudo acontece
+          por meio de disparo e tratamento de eventos.
+        </p>
+      </section>
+
+      <h2>Classe EventEmitter</h2>
+      <section>
+        <p>
+          A classe <code>EventEmitter</code> permite criar, emitir e ouvir
+          eventos.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+const EventEmitter = require("events");
+
+class MeuEmissor extends EventEmitter {}
+
+const emissor = new MeuEmissor();
+
+emissor.on("mensagem", (msg) => {
+  console.log("Mensagem recebida:", msg);
+});
+
+emissor.emit("mensagem", "Olá Node!");
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Manipulação de Eventos</h2>
+      <section>
+        <p>
+          O Node permite criar eventos customizados para comunicação interna
+          entre módulos.
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+const EventEmitter = require("events");
+const emitter = new EventEmitter();
+
+emitter.on("login", (user) => {
+  console.log(`Usuário ${user} logado`);
+});
+
+emitter.emit("login", "Fabio");
+</code>
+          </pre>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

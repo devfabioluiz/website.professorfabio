@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - Node.js</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">
+        Introdução, Arquitetura Orientada a Eventos e Configuração de Ambiente
+      </h4>
+
+
+    </header>
+
+    <div class="container">
+      <h2>O que é Node.js?</h2>
+      <section>
+        <p>
+          Node.js é um ambiente de execução JavaScript construído sobre o motor
+          V8 do Google Chrome, que permite executar JavaScript fora do
+          navegador, principalmente no lado do servidor (backend).
+        </p>
+
+        <p>
+          Antes do Node.js, o JavaScript era utilizado quase exclusivamente para
+          manipulação de interfaces no navegador. Com o surgimento do Node, a
+          linguagem passou a ser usada para criação de servidores, APIs,
+          sistemas distribuídos, automações, aplicações em tempo real e muito
+          mais.
+        </p>
+
+        <p>
+          Em outras palavras, o Node.js transformou o JavaScript em uma
+          linguagem full-stack.
+        </p>
+      </section>
+
+      <h2>Objetivos e Características do Node.js</h2>
+      <section>
+        <ul>
+          <li>
+            <strong>Alta Escalabilidade:</strong> Capaz de lidar com milhares de
+            conexões simultâneas.
+          </li>
+          <li>
+            <strong>Performance Elevada:</strong> Arquitetura baseada em eventos
+            e I/O não bloqueante.
+          </li>
+          <li>
+            <strong>Unificação de Linguagem:</strong> Permite usar JavaScript no
+            frontend e backend.
+          </li>
+          <li>
+            <strong>Grande Ecossistema:</strong> Possui o maior repositório de
+            bibliotecas do mundo via NPM.
+          </li>
+          <li>
+            <strong>Ideal para aplicações em tempo real:</strong> Chats,
+            dashboards, streaming e jogos.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Principais Características Técnicas</h2>
+      <section>
+        <ul>
+          <li>
+            <strong>Single Thread:</strong> Executa o código JavaScript em uma
+            única thread principal.
+          </li>
+          <li>
+            <strong>Non-blocking I/O:</strong> Operações de entrada e saída são
+            assíncronas, não bloqueando a execução.
+          </li>
+          <li>
+            <strong>Event Loop:</strong> Controla a execução dos eventos e
+            callbacks.
+          </li>
+          <li>
+            <strong>Thread Pool:</strong> Gerencia operações pesadas em segundo
+            plano.
+          </li>
+          <li>
+            <strong>NPM:</strong> Gerenciador de pacotes padrão do Node.js.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Arquitetura Orientada a Eventos</h2>
+      <section>
+        <p>
+          O Node.js utiliza uma arquitetura baseada em eventos, onde todas as
+          operações são tratadas como eventos assíncronos. Isso permite que a
+          aplicação continue executando outras tarefas enquanto aguarda
+          respostas externas, como consultas ao banco de dados, leitura de
+          arquivos ou requisições HTTP.
+        </p>
+
+        <p>
+          Essa arquitetura é sustentada pelo <strong>Event Loop</strong>, que é
+          responsável por gerenciar a fila de eventos e callbacks.
+        </p>
+      </section>
+
+      <h4>Fluxo Simplificado do Event Loop</h4>
+      <section>
+        <div>
+          <pre>
+<code class="language-bash">
+Request → Event Loop → Callback → Response
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h4>Exemplo de Execução Assíncrona</h4>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+console.log("A");
+
+setTimeout(() => {
+  console.log("B");
+}, 0);
+
+console.log("C");
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Texto</button>
+        </div>
+
+        <p>Saída esperada:</p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+A
+C
+B
+</code>
+          </pre>
+        </div>
+
+        <p>
+          Isso ocorre porque o setTimeout é tratado como um evento assíncrono e
+          colocado na fila de execução.
+        </p>
+      </section>
+
+      <h2>Configuração de Ambiente</h2>
+      <section>
+        <p>
+          Para trabalhar com Node.js, é necessário instalar o ambiente em sua
+          máquina. Abaixo estão as instruções para os principais sistemas
+          operacionais.
+        </p>
+      </section>
+
+      <h3>Windows</h3>
+      <section>
+        <ol>
+          <li>Acesse: <strong>https://nodejs.org</strong></li>
+          <li>Baixe a versão <strong>LTS</strong> (recomendada).</li>
+          <li>Execute o instalador e siga as instruções padrão.</li>
+        </ol>
+
+        <p>Verifique a instalação:</p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+node -v
+npm -v
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Linux (Ubuntu / Debian)</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-bash">
+sudo apt update
+sudo apt install nodejs npm
+</code>
+          </pre>
+        </div>
+
+        <p>
+          Recomenda-se o uso do NVM (Node Version Manager) para melhor controle
+          das versões.
+        </p>
+      </section>
+
+      <h3>MacOS</h3>
+      <section>
+        <p>Utilizando Homebrew:</p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+brew install node
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Criando um Projeto Node.js</h2>
+      <section>
+        <p>
+          Para criar um projeto básico com Node.js, utilize os seguintes
+          comandos:
+        </p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+mkdir projeto-node
+cd projeto-node
+npm init -y
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Executando um Script Node</h2>
+      <section>
+        <p>Crie um arquivo <code>index.js</code>:</p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+console.log("Node.js funcionando corretamente!");
+</code>
+          </pre>
+        </div>
+
+        <p>Execute:</p>
+
+        <div>
+          <pre>
+<code class="language-bash">
+node index.js
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Quando Utilizar Node.js?</h2>
+      <section>
+        <ul>
+          <li>APIs REST</li>
+          <li>Microserviços</li>
+          <li>Chats em tempo real</li>
+          <li>Streaming</li>
+          <li>Dashboards interativos</li>
+          <li>Aplicações altamente escaláveis</li>
+        </ul>
+
+        <p>
+          <strong>Evitar:</strong> Aplicações altamente dependentes de
+          processamento intensivo de CPU.
+        </p>
+      </section>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7 - Escalabilidade em Node.js</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Escalabilidade em Node.js</h4>
+    </header>
+
+    <div class="container">
+      <h2>Motivos para Escalar Aplicações</h2>
+      <section>
+        <p>
+          Escalar uma aplicação significa aumentar sua capacidade de atender
+          mais usuários, processar mais requisições e manter alta performance.
+        </p>
+        <p>
+          Em Node.js, isso é especialmente importante devido à sua arquitetura
+          single-threaded baseada em eventos.
+        </p>
+        <ul>
+          <li>Alto volume de acessos simultâneos</li>
+          <li>Processamento intensivo</li>
+          <li>Alta disponibilidade</li>
+          <li>Melhor aproveitamento do hardware</li>
+          <li>Separação de responsabilidades</li>
+        </ul>
+      </section>
+
+      <h2>Processos Filhos (Child Processes)</h2>
+      <section>
+        <p>
+          Node.js permite a criação de processos filhos para executar tarefas
+          paralelamente, explorando melhor os múltiplos núcleos da CPU.
+        </p>
+        <p>
+          O módulo <code>child_process</code> fornece funções para criar e
+          controlar esses processos.
+        </p>
+      </section>
+
+      <h2>Exec, Spawn e Fork</h2>
+      <section>
+        <p>
+          O módulo <code>child_process</code> oferece três principais formas de
+          criar processos:
+        </p>
+        <ul>
+          <li>
+            <strong>exec:</strong> Executa comandos no shell e retorna toda a
+            saída ao final.
+          </li>
+          <li>
+            <strong>spawn:</strong> Cria um processo em tempo real, permitindo
+            manipular streams de entrada e saída.
+          </li>
+          <li>
+            <strong>fork:</strong> Cria um novo processo Node.js e estabelece
+            comunicação via IPC.
+          </li>
+        </ul>
+      </section>
+
+      <h2>Exemplo com Exec</h2>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const { exec } = require("child_process");
+
+exec("dir", (error, stdout, stderr) => {
+  if (error) {
+    console.error("Erro:", error);
+    return;
+  }
+
+  console.log("Saída:", stdout);
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Exemplo com Spawn</h2>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const { spawn } = require("child_process");
+
+const processo = spawn("node", ["script.js"]);
+
+processo.stdout.on("data", data => {
+  console.log("Saída:", data.toString());
+});
+
+processo.stderr.on("data", data => {
+  console.error("Erro:", data.toString());
+});
+
+processo.on("close", code => {
+  console.log("Processo finalizado com código:", code);
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Exemplo com Fork</h2>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const { fork } = require("child_process");
+
+const child = fork("worker.js");
+
+child.on("message", msg => {
+  console.log("Mensagem do filho:", msg);
+});
+
+child.send({ tarefa: "processar dados" });
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Exemplo Prático - Processamento Paralelo</h2>
+      <section>
+        <p>
+          Exemplo de uso do <code>fork</code> para distribuir carga de trabalho:
+        </p>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+// main.js
+const { fork } = require("child_process");
+
+for (let i = 0; i < 4; i++) {
+  const worker = fork("./worker.js");
+  worker.send({ id: i });
+}
+</code>
+          </pre>
+        </div>
+
+        <div>
+          <pre>
+<code class="language-javascript">
+// worker.js
+process.on("message", msg => {
+  console.log("Worker", msg.id, "processando...");
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Boas Práticas de Escalabilidade</h2>
+      <section>
+        <ul>
+          <li>Uso de cluster para múltiplos núcleos</li>
+          <li>Balanceamento de carga</li>
+          <li>Cache em memória (Redis)</li>
+          <li>Monitoramento e logging</li>
+          <li>Separação de serviços (microserviços)</li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

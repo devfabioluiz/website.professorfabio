@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3 - Node.js</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 3</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Buffers, Streams, Arquivos e Objetos Globais</h4>
+    </header>
+
+    <div class="container">
+      <h2>Buffers</h2>
+      <section>
+        <p>
+          Buffers são estruturas usadas para manipular dados binários
+          diretamente na memória. Eles são fundamentais para trabalhar com
+          arquivos, transmissões de dados, streams, sockets e protocolos de
+          rede.
+        </p>
+
+        <p>
+          No Node.js, o objeto <code>Buffer</code> permite criar, ler, escrever
+          e manipular dados binários de forma eficiente.
+        </p>
+      </section>
+
+      <h3>Criação de Buffers</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const buffer1 = Buffer.from("Node.js");
+const buffer2 = Buffer.alloc(10);
+const buffer3 = Buffer.allocUnsafe(10);
+
+console.log(buffer1);
+console.log(buffer2);
+console.log(buffer3);
+</code>
+          </pre>
+        </div>
+
+        <p>
+          - <strong>Buffer.from():</strong> cria um buffer a partir de dados<br />
+          - <strong>Buffer.alloc():</strong> aloca espaço preenchido com
+          zeros<br />
+          - <strong>Buffer.allocUnsafe():</strong> aloca memória sem limpeza
+          prévia (mais rápido, porém menos seguro)
+        </p>
+      </section>
+
+      <h3>Leitura e Escrita em Buffers</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const buffer = Buffer.alloc(20);
+
+buffer.write("Node");
+console.log(buffer.toString());
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Manipulação de Buffers</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const buf = Buffer.from("Node.js");
+
+console.log(buf.slice(0, 4).toString());
+console.log(buf.includes("Node"));
+console.log(buf.indexOf("js"));
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Streams</h2>
+      <section>
+        <p>
+          Streams são fluxos contínuos de dados. Eles permitem processar grandes
+          volumes de informação sem carregar tudo na memória.
+        </p>
+
+        <p>Principais tipos:</p>
+        <ul>
+          <li><strong>Readable:</strong> leitura</li>
+          <li><strong>Writable:</strong> escrita</li>
+          <li><strong>Duplex:</strong> leitura e escrita</li>
+          <li>
+            <strong>Transform:</strong> transforma os dados durante o fluxo
+          </li>
+        </ul>
+      </section>
+
+      <h3>Stream de Leitura</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+
+const stream = fs.createReadStream("arquivo.txt");
+
+stream.on("data", chunk => {
+  console.log("Chunk:", chunk.toString());
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Stream de Escrita</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+
+const stream = fs.createWriteStream("saida.txt");
+
+stream.write("Node.js Streams\n");
+stream.end();
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Stream Duplex</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const { Duplex } = require("stream");
+
+const duplex = new Duplex({
+  read(size) {
+    this.push("Entrada\n");
+    this.push(null);
+  },
+  write(chunk, encoding, callback) {
+    console.log("Saída:", chunk.toString());
+    callback();
+  }
+});
+
+duplex.write("Node.js");
+duplex.read();
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Stream Transform</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const { Transform } = require("stream");
+
+const upper = new Transform({
+  transform(chunk, encoding, callback) {
+    this.push(chunk.toString().toUpperCase());
+    callback();
+  }
+});
+
+process.stdin.pipe(upper).pipe(process.stdout);
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Manipulação de Arquivos</h2>
+      <section>
+        <p>
+          O módulo <code>fs</code> permite manipular arquivos de forma síncrona
+          e assíncrona.
+        </p>
+      </section>
+
+      <h3>Leitura Síncrona</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+
+const data = fs.readFileSync("arquivo.txt");
+console.log(data.toString());
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Leitura Assíncrona</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+
+fs.readFile("arquivo.txt", (err, data) => {
+  if (err) throw err;
+  console.log(data.toString());
+});
+
+console.log("Executando...");
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h3>Escrita em Arquivos</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+const fs = require("fs");
+
+fs.writeFile("arquivo.txt", "Hello Node", err => {
+  if (err) throw err;
+  console.log("Arquivo salvo!");
+});
+</code>
+          </pre>
+        </div>
+      </section>
+
+      <h2>Objetos Globais e Funções Globais</h2>
+      <section>
+        <p>
+          O Node.js fornece vários objetos globais disponíveis em qualquer
+          arquivo sem necessidade de importação.
+        </p>
+
+        <ul>
+          <li><code>global</code></li>
+          <li><code>process</code></li>
+          <li><code>console</code></li>
+          <li><code>__dirname</code></li>
+          <li><code>__filename</code></li>
+          <li><code>setTimeout</code></li>
+          <li><code>setInterval</code></li>
+        </ul>
+      </section>
+
+      <h3>Exemplos</h3>
+      <section>
+        <div>
+          <pre>
+<code class="language-javascript">
+console.log(__dirname);
+console.log(__filename);
+console.log(process.pid);
+console.log(process.platform);
+</code>
+          </pre>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
