@@ -335,6 +335,71 @@ Essas operações são chamadas de <strong>CRUD</strong>:
 As funções implementam essas operações utilizando o SQLAlchemy.
 </p>
 
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from sqlalchemy.orm import Session
+from . import models, schemas
+
+
+def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
+
+    novo_usuario = models.Usuario(
+        nome=usuario.nome,
+        email=usuario.email
+    )
+
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    return novo_usuario
+
+
+def listar_usuarios(db: Session):
+    return db.query(models.Usuario).all()
+
+
+def buscar_usuario(db: Session, usuario_id: int):
+    return db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+
+def atualizar_usuario(db: Session, usuario_id: int, dados: schemas.UsuarioUpdate):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    usuario.nome = dados.nome
+    usuario.email = dados.email
+
+    db.commit()
+    db.refresh(usuario)
+
+    return usuario
+
+
+def deletar_usuario(db: Session, usuario_id: int):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    db.delete(usuario)
+    db.commit()
+
+    return usuario
+</pre>
+</div>
+
 </section>
 
 
