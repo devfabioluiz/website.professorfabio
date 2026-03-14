@@ -427,6 +427,41 @@ from . import models, schemas, crud
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@app.post("/usuarios")
+def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+    return crud.criar_usuario(db, usuario)
+
+
+@app.get("/usuarios")
+def listar_usuarios(db: Session = Depends(get_db)):
+    return crud.listar_usuarios(db)
+
+
+@app.get("/usuarios/{usuario_id}")
+def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.buscar_usuario(db, usuario_id)
+
+
+@app.put("/usuarios/{usuario_id}")
+def atualizar_usuario(usuario_id: int, dados: schemas.UsuarioUpdate, db: Session = Depends(get_db)):
+    return crud.atualizar_usuario(db, usuario_id, dados)
+
+
+@app.delete("/usuarios/{usuario_id}")
+def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.deletar_usuario(db, usuario_id)
 </code>
 </pre>
 
