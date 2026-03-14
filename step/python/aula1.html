@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tutorial FastAPI + PostgreSQL</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f8;
+    margin:0;
+    padding:40px;
+    line-height:1.6;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+h1{
+    color:#222;
+}
+
+h2{
+    margin-top:40px;
+    border-bottom:2px solid #ddd;
+    padding-bottom:5px;
+}
+
+.code-block{
+    position:relative;
+    background:#1e1e1e;
+    color:#e6e6e6;
+    padding:15px;
+    border-radius:8px;
+    margin-top:10px;
+    overflow:auto;
+}
+
+pre{
+    margin:0;
+    font-family: Consolas, monospace;
+    font-size:14px;
+}
+
+button{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    padding:6px 10px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#45a049;
+}
+
+.section{
+    margin-bottom:30px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Tutorial FastAPI + PostgreSQL</h1>
+
+<p>Guia completo para criar uma API Python com FastAPI e PostgreSQL.</p>
+
+<h2>1. Criar projeto</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+mkdir projeto_api
+cd projeto_api
+</pre>
+</div>
+
+
+<h2>2. Criar ambiente virtual</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+python -m venv venv
+</pre>
+</div>
+
+
+<h2>3. Ativar ambiente virtual</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+source venv/bin/activate
+</pre>
+</div>
+
+
+<h2>4. Instalar dependências</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic
+</pre>
+</div>
+
+
+<h2>5. Estrutura do projeto</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+projeto_api
+│
+├── app
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── crud.py
+│
+└── venv
+</pre>
+</div>
+
+
+<h2>6. database.py</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+DATABASE_URL = "postgresql://postgres:senha@localhost/fastapi_db"
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
+</pre>
+</div>
+
+
+<h2>7. models.py</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from sqlalchemy import Column, Integer, String
+from .database import Base
+
+class Usuario(Base):
+
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String)
+    email = Column(String)
+</pre>
+</div>
+
+
+<h2>8. schemas.py</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from pydantic import BaseModel
+
+class UsuarioCreate(BaseModel):
+    nome: str
+    email: str
+
+class UsuarioUpdate(BaseModel):
+    nome: str
+    email: str
+
+class UsuarioResponse(BaseModel):
+    id: int
+    nome: str
+    email: str
+
+    class Config:
+        orm_mode = True
+</pre>
+</div>
+
+
+<h2>9. crud.py</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from sqlalchemy.orm import Session
+from . import models, schemas
+
+
+def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
+
+    novo_usuario = models.Usuario(
+        nome=usuario.nome,
+        email=usuario.email
+    )
+
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    return novo_usuario
+
+
+def listar_usuarios(db: Session):
+    return db.query(models.Usuario).all()
+
+
+def buscar_usuario(db: Session, usuario_id: int):
+    return db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+
+def atualizar_usuario(db: Session, usuario_id: int, dados: schemas.UsuarioUpdate):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    usuario.nome = dados.nome
+    usuario.email = dados.email
+
+    db.commit()
+    db.refresh(usuario)
+
+    return usuario
+
+
+def deletar_usuario(db: Session, usuario_id: int):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    db.delete(usuario)
+    db.commit()
+
+    return usuario
+</pre>
+</div>
+
+
+<h2>10. main.py</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+from .database import engine, SessionLocal, Base
+from . import models, schemas, crud
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@app.post("/usuarios")
+def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+    return crud.criar_usuario(db, usuario)
+
+
+@app.get("/usuarios")
+def listar_usuarios(db: Session = Depends(get_db)):
+    return crud.listar_usuarios(db)
+
+
+@app.get("/usuarios/{usuario_id}")
+def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.buscar_usuario(db, usuario_id)
+
+
+@app.put("/usuarios/{usuario_id}")
+def atualizar_usuario(usuario_id: int, dados: schemas.UsuarioUpdate, db: Session = Depends(get_db)):
+    return crud.atualizar_usuario(db, usuario_id, dados)
+
+
+@app.delete("/usuarios/{usuario_id}")
+def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.deletar_usuario(db, usuario_id)
+</pre>
+</div>
+
+
+<h2>11. Rodar a API</h2>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+uvicorn app.main:app --reload
+</pre>
+</div>
+
+</div>
+
+<script>
+
+function copyCode(button){
+
+    const code = button.parentElement.querySelector("pre").innerText;
+
+    navigator.clipboard.writeText(code);
+
+    button.innerText = "Copiado!";
+
+    setTimeout(() => {
+        button.innerText = "Copiar";
+    },2000);
+}
+
+</script>
+
+</body>
+</html>
