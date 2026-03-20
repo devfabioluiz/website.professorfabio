@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - REST Api e Configurando uma aplicação com SQLite e
+              FastAPI - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">REST Api e Configurando uma aplicação com SQLite e
+              FastAPI</h4>
+    </header>
+
+    <main class="container">
+      <section>
+                <h2>O que é REST?</h2>
+        <p>
+          REST (Representational State Transfer) é um padrão arquitetural
+          utilizado para comunicação entre sistemas através do protocolo HTTP.
+        </p>
+
+        <h3>Principais características do REST</h3>
+        <ul>
+          <li>Utiliza HTTP</li>
+          <li>Baseado em recursos (resources)</li>
+          <li>Sem estado (stateless)</li>
+          <li>Utiliza JSON para troca de dados</li>
+        </ul>
+
+        <h2>Métodos HTTP no REST</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td>Buscar dados</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>Criar dados</td>
+            </tr>
+            <tr>
+              <td>PUT</td>
+              <td>Atualizar dados</td>
+            </tr>
+            <tr>
+              <td>DELETE</td>
+              <td>Remover dados</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Exemplo REST com FastAPI</h2>
+        <div class="code-container">
+          <pre><code class="language-python">
+from fastapi import FastAPI
+
+app = FastAPI()
+
+usuarios = []
+
+@app.get("/usuarios")
+def listar():
+    return usuarios
+
+@app.post("/usuarios")
+def criar(nome: str):
+    usuarios.append(nome)
+    return {"msg": "criado"}
+
+@app.put("/usuarios/{id}")
+def atualizar(id: int, nome: str):
+    usuarios[id] = nome
+    return {"msg": "atualizado"}
+
+@app.delete("/usuarios/{id}")
+def deletar(id: int):
+    usuarios.pop(id)
+    return {"msg": "deletado"}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <h2>Passo a passo: Criando uma Rest API com FastAPI e SQLite</h2>
+      <section>
+
+        
+      <h2>Passo 0 - Versionamento com Git</h2>
+
+        <p>Antes de iniciar o projeto, vamos criar um repositório para versionar o código.</p>
+
+        <h3>Criar repositório no GitHub</h3>
+        <ul>
+          <li>Acesse o GitHub</li>
+          <li>Clique em <strong>New repository</strong></li>
+          <li>Nome do repositório: <strong>projeto-python-step</strong></li>
+          <li>Marque a opção <strong>Add a README file</strong></li>
+          <li>Na opção <strong>Add .gitignore</strong>, selecione <strong>Python</strong></li>
+          <li>Clique em <strong>Create repository</strong></li>
+        </ul>
+
+        <h3>Clonar o repositório</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+git clone https://github.com/SEU_USUARIO/projeto-python-step.git
+cd projeto-python-step
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <h2>Passo a passo: Criando uma API com FastAPI + SQLite</h2>
+
+      <section>
+        <h3>Passo 1 - Criar a pasta do projeto</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+mkdir projeto_api
+cd projeto_api
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 - Criar ambiente virtual (opcional)</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+python -m venv venv
+venv\\Scripts\\activate
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 - Instalar dependências</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+pip install fastapi uvicorn
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 - Criar estrutura de pastas e arquivos</h3>
+        <p>Agora vamos criar a estrutura básica do projeto usando o próprio CMD do Windows.</p>
+
+        <h4>Criar pastas</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+mkdir app
+cd app
+mkdir database
+cd ..
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Criar arquivos</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+type nul > main.py
+type nul > app\database\db.py
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Estrutura final</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+projeto-python-step/
+ ├── main.py
+ ├── app/
+ │   ├── database/
+ │   │   ├── db.py
+          </code>
+        </pre>
+        </div>
+        </div>
+
+        <h3>Passo 5 - Criar banco e tabela automaticamente</h3>
+        <p>Coloque o código abaixo dentro do arquivo <strong>app/database/db.py</strong></p>
+        <p><strong>Importante:</strong> Esse código precisa ser executado para criar a tabela. Vamos garantir isso no próximo passo.</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-python">
+import sqlite3
+
+conn = sqlite3.connect("database.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT,
+    idade INTEGER
+)
+""")
+
+conn.commit()
+conn.close()
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 - Criar API com FastAPI</h3>
+        <p>Coloque o código abaixo dentro do arquivo <strong>main.py</strong></p>
+        <p><strong>Importante:</strong> Vamos importar o arquivo <code>db.py</code> para garantir que a tabela seja criada automaticamente ao iniciar a aplicação.</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-python">
+from fastapi import FastAPI
+import sqlite3
+
+# IMPORTANTE: executa a criação do banco/tabela
+import app.database.db
+
+app = FastAPI()
+
+def get_connection():
+    return sqlite3.connect("database.db")
+
+@app.get("/")
+def home():
+    return {"msg": "API rodando"}
+
+@app.get("/usuarios")
+def listar_usuarios():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM usuarios")
+    dados = cursor.fetchall()
+
+    conn.close()
+    return dados
+
+@app.post("/usuarios")
+def criar_usuario(nome: str, idade: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO usuarios (nome, idade) VALUES (?, ?)",
+        (nome, idade)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return {"msg": "Usuário criado"}
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 - Rodar a aplicação</h3>
+        <p>Use o comando abaixo no Command Prompt (cmd) no Windows para iniciar o servidor FastAPI. O parâmetro <code>--reload</code> é importante para desenvolvimento, pois reinicia o servidor automaticamente sempre que você fizer uma alteração no código.</p>
+        
+         <div class="code-container">
+          <pre>
+          <code class="language-bash">
+uvicorn main:app --reload
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        
+        <p><strong>Caso haja algum erro:</strong> Se aparecer a mensagem <em>'uvicorn' não é reconhecido</em>, significa que o ambiente virtual não está ativado ou o comando não está no PATH.</p>
+
+        <h4>Solução 1 - Ativar ambiente virtual</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+venv\Scripts\activate
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Solução 2 - Rodar com Python diretamente</h4>
+        <p>Se ainda não funcionar, use o comando abaixo:</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+python -m uvicorn main:app --reload
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 - Testar no navegador</h3>
+        <ul>
+          <li>http://127.0.0.1:8000 ou http://localhost:8000</li>
+          <li>http://127.0.0.1:8000/docs ou http://localhost:8000/docs</li>
+        </ul>
+
+        <h3>Passo 9 - Testando a API com Postman</h3>
+
+        <p>Agora vamos testar nossa API utilizando o Postman, uma ferramenta muito utilizada no mercado para testar requisições HTTP.</p>
+
+        <h3>Instalar o Postman</h3>
+        <p>Baixe e instale o Postman no seu computador através do link abaixo:</p>
+        <p><a href="https://www.postman.com/downloads/" target="_blank">https://www.postman.com/downloads/</a></p>
+
+        <h3>Teste GET - Listar usuários</h3>
+        <ul>
+          <li>Abra o Postman</li>
+          <li>Selecione o método <strong>GET</strong></li>
+          <li>Digite a URL: <strong>http://localhost:8000/usuarios</strong></li>
+          <li>Clique em <strong>Send</strong></li>
+        </ul>
+
+        <p>Você verá a lista de usuários cadastrados.</p>
+
+        <h3>Teste POST - Criar usuário</h3>
+        <ul>
+          <li>No Postman, selecione o método <strong>POST</strong></li>
+          <li>Digite a URL: <strong>http://localhost:8000/usuarios?nome=Fabio&idade=30</strong></li>
+          <li>Clique em <strong>Send</strong></li>
+        </ul>
+
+        <p>Você verá a mensagem de sucesso indicando que o usuário foi criado.</p>
+
+        <h3>Testar novamente o GET</h3>
+        <p>Após criar um usuário, repita o teste GET para ver o novo registro inserido no banco.</p>
+
+        <h3>Passo 10 - Commitando...</h3>
+            <p>Configurar primeiro commit para enviar suas alterações e salvar na nuvem do GitHub</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+git add .
+git commit -m "estrutura inicial do projeto"
+git push
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>
+            Resumo do que fizemos como fluxo da aplicação</h2>
+        <ul>
+          <li>Usuário faz requisição HTTP</li>
+          <li>FastAPI recebe a requisição</li>
+          <li>API conecta no SQLite</li>
+          <li>Executa query SQL</li>
+          <li>Retorna os dados</li>
+        </ul>
+
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
