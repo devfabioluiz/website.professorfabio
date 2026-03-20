@@ -1,541 +1,329 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tutorial FastAPI + PostgreSQL</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula - Python com SQLite - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
 
-<link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
 
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
-/>
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">SQLite com FastAPI (Passo a Passo)</h4>
+    </header>
 
-</head>
+    <main class="container">
+      <h2>Passo 0 - Versionamento com Git</h2>
 
-<body>
+      <section>
+        <p>Antes de iniciar o projeto, vamos criar um repositório para versionar o código.</p>
 
-<header>
+        <h3>Criar repositório no GitHub</h3>
+        <ul>
+          <li>Acesse o GitHub</li>
+          <li>Clique em <strong>New repository</strong></li>
+          <li>Nome do repositório: <strong>projeto-python-step</strong></li>
+          <li>Marque a opção <strong>Add a README file</strong></li>
+          <li>Na opção <strong>Add .gitignore</strong>, selecione <strong>Python</strong></li>
+          <li>Clique em <strong>Create repository</strong></li>
+        </ul>
 
-<h1>Tutorial</h1>
-<h4 class="text-center">FastAPI + PostgreSQL</h4>
-<h4 class="text-center">Criando uma API com Python</h4>
+        <h3>Clonar o repositório</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+git clone https://github.com/SEU_USUARIO/projeto-python-step.git
+cd projeto-python-step
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+      <h2>Passo a passo: Criando uma API com FastAPI + SQLite</h2>
 
-</header>
-
-<div class="container">
-
-<p>
-Neste tutorial iremos criar uma API utilizando o <strong>FastAPI</strong>, um framework moderno para desenvolvimento de APIs em Python, e o banco de dados <strong>PostgreSQL</strong>.
-</p>
-
-<p>
-Durante o processo iremos configurar o ambiente, estruturar o projeto e implementar operações básicas de CRUD (Criar, Listar, Atualizar e Deletar registros).
-</p>
-
-
-<h2>1. Criar projeto</h2>
-
-<section>
-
-<p>
-O primeiro passo é criar uma pasta que irá armazenar todos os arquivos do projeto.
-</p>
-
-<p>
-Em seguida acessamos essa pasta utilizando o terminal.
-</p>
-
-<div>
-<pre>
-<code class="language-bash">
+      <section>
+        <h3>Passo 1 - Criar a pasta do projeto</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
 mkdir projeto_api
 cd projeto_api
-</code>
-</pre>
-<button class="btn-copy">Copiar Texto</button>
-</div>
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<p>
-O comando <code>mkdir</code> cria uma nova pasta chamada <strong>projeto_api</strong>.  
-Já o comando <code>cd</code> permite entrar dentro dessa pasta.
-</p>
-
-</section>
-
-
-<h2>2. Criar ambiente virtual</h2>
-
-<section>
-
-<p>
-O ambiente virtual é utilizado para isolar as dependências do projeto.
-</p>
-
-<p>
-Isso evita conflitos entre bibliotecas instaladas em diferentes projetos Python.
-</p>
-
-<div>
-<pre>
-<code class="language-bash">
+        <h3>Passo 2 - Criar ambiente virtual (opcional)</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
 python -m venv venv
-py -m venv venv
-</code>
-</pre>
-<button class="btn-copy">Copiar Texto</button>
-</div>
+venv\\Scripts\\activate
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<p>
-Esse comando cria uma pasta chamada <strong>venv</strong>, que contém um ambiente Python independente.
-</p>
+        <h3>Passo 3 - Instalar dependências</h3>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+pip install fastapi uvicorn
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-</section>
+        <h3>Passo 4 - Criar estrutura de pastas e arquivos</h3>
+        <p>Agora vamos criar a estrutura básica do projeto usando o próprio CMD do Windows.</p>
 
+        <h4>Criar pastas</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+mkdir app
+cd app
+mkdir database
+cd ..
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<h2>3. Ativar ambiente virtual</h2>
+        <h4>Criar arquivos</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+type nul > main.py
+type nul > app\database\db.py
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<section>
+        <h4>Estrutura final</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+projeto-python-step/
+ ├── main.py
+ ├── app/
+ │   ├── database/
+ │   │   ├── db.py
+          </code>
+        </pre>
+        </div>
+        </div>
 
-<p>
-Após criar o ambiente virtual, precisamos ativá-lo para que todas as dependências sejam instaladas nele.
-</p>
+        <h3>Passo 5 - Criar banco e tabela automaticamente</h3>
+        <p>Coloque o código abaixo dentro do arquivo <strong>app/database/db.py</strong></p>
+        <p><strong>Importante:</strong> Esse código precisa ser executado para criar a tabela. Vamos garantir isso no próximo passo.</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-python">
+import sqlite3
 
-<div>
-<pre>
-<code class="language-bash">
-venv\Scripts\activate.bat
-</code>
-</pre>
-<button class="btn-copy">Copiar Texto</button>
-</div>
+conn = sqlite3.connect("database.db")
+cursor = conn.cursor()
 
-<p>
-Quando o ambiente virtual estiver ativo, o terminal normalmente exibirá o nome do ambiente entre parênteses, indicando que o Python utilizado agora é o do ambiente virtual.
-</p>
-
-</section>
-
-
-<h2>4. Instalar dependências</h2>
-
-<section>
-
-<p>
-Agora iremos instalar as bibliotecas necessárias para o funcionamento da API.
-</p>
-
-<div>
-<pre>
-<code class="language-bash">
-pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic
-</code>
-</pre>
-<button class="btn-copy">Copiar Texto</button>
-</div>
-
-<p>Essas bibliotecas possuem as seguintes funções:</p>
-
-<ul>
-<li><strong>FastAPI:</strong> Framework para criação de APIs.</li>
-<li><strong>Uvicorn:</strong> Servidor ASGI responsável por executar a aplicação.</li>
-<li><strong>SQLAlchemy:</strong> ORM utilizado para comunicação com o banco de dados.</li>
-<li><strong>psycopg2:</strong> Driver que permite conectar ao PostgreSQL.</li>
-<li><strong>Pydantic:</strong> Biblioteca para validação de dados.</li>
-</ul>
-
-</section>
-
-
-<h2>5. Estrutura do projeto</h2>
-
-<section>
-
-<p>
-Uma boa organização de pastas facilita a manutenção e evolução do projeto.
-</p>
-
-<div>
-<pre>
-<code class="language-bash">
-projeto_api
-│
-├── app
-│   ├── main.py
-│   ├── database.py
-│   ├── models.py
-│   ├── schemas.py
-│   └── crud.py
-│
-└── venv
-</code>
-</pre>
-</div>
-
-<p>Função de cada arquivo:</p>
-
-<ul>
-<li><strong>database.py:</strong> configuração da conexão com o banco.</li>
-<li><strong>models.py:</strong> definição das tabelas do banco.</li>
-<li><strong>schemas.py:</strong> definição dos formatos de dados da API.</li>
-<li><strong>crud.py:</strong> funções que executam operações no banco.</li>
-<li><strong>main.py:</strong> arquivo principal onde a API é iniciada.</li>
-</ul>
-
-</section>
-
-
-<h2>6. database.py</h2>
-
-<section>
-
-<p>
-Esse arquivo é responsável por configurar a conexão com o banco de dados PostgreSQL.
-</p>
-
-<div>
-<pre>
-<code class="language-python">
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-
-DATABASE_URL = "postgresql://postgres:senha@localhost/fastapi_db"
-
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT,
+    idade INTEGER
 )
-
-Base = declarative_base()
-</code>
-</pre>
-
-<button class="btn-copy">Copiar Texto</button>
-
-</div>
-
-<p>
-O <code>create_engine</code> cria a conexão com o banco.  
-O <code>SessionLocal</code> é utilizado para criar sessões de acesso ao banco.  
-Já o <code>Base</code> será usado como base para os modelos das tabelas.
-</p>
-
-</section>
-
-
-<h2>7. models.py</h2>
-
-<section>
-
-<p>
-Nesse arquivo definimos o modelo da tabela do banco de dados utilizando o SQLAlchemy.
-</p>
-
-<div>
-<pre>
-<code class="language-python">
-from sqlalchemy import Column, Integer, String
-from .database import Base
-
-class Usuario(Base):
-
-    __tablename__ = "usuarios"
-
-    id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String)
-    email = Column(String)
-</code>
-</pre>
-
-<button class="btn-copy">Copiar Texto</button>
-
-</div>
-
-<p>
-Essa classe representa a tabela <strong>usuarios</strong> no banco de dados.
-</p>
-
-<ul>
-<li><strong>id:</strong> chave primária.</li>
-<li><strong>nome:</strong> nome do usuário.</li>
-<li><strong>email:</strong> email do usuário.</li>
-</ul>
-
-</section>
-
-
-<h2>8. schemas.py</h2>
-
-<section>
-
-<p>
-Os schemas são utilizados para definir o formato dos dados que serão enviados e recebidos pela API.
-</p>
-
-<div>
-<pre>
-<code class="language-python">
-from pydantic import BaseModel
-
-class UsuarioCreate(BaseModel):
-    nome: str
-    email: str
-
-class UsuarioUpdate(BaseModel):
-    nome: str
-    email: str
-
-class UsuarioResponse(BaseModel):
-    id: int
-    nome: str
-    email: str
-
-    class Config:
-        orm_mode = True
-</code>
-</pre>
-
-<button class="btn-copy">Copiar Texto</button>
-
-</div>
-
-<p>
-O Pydantic garante que os dados enviados para a API estejam no formato correto.
-</p>
-
-</section>
-
-
-<h2>9. crud.py</h2>
-
-<section>
-
-<p>
-Esse arquivo contém as funções responsáveis por realizar operações no banco de dados.
-</p>
-
-<p>
-Essas operações são chamadas de <strong>CRUD</strong>:
-</p>
-
-<ul>
-<li>Create (Criar)</li>
-<li>Read (Ler)</li>
-<li>Update (Atualizar)</li>
-<li>Delete (Excluir)</li>
-</ul>
-
-<p>
-As funções implementam essas operações utilizando o SQLAlchemy.
-</p>
-
-<div class="code-block">
-<button onclick="copyCode(this)">Copiar</button>
-<pre>
-from sqlalchemy.orm import Session
-from . import models, schemas
-
-
-def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
-
-    novo_usuario = models.Usuario(
-        nome=usuario.nome,
-        email=usuario.email
-    )
-
-    db.add(novo_usuario)
-    db.commit()
-    db.refresh(novo_usuario)
-
-    return novo_usuario
-
-
-def listar_usuarios(db: Session):
-    return db.query(models.Usuario).all()
-
-
-def buscar_usuario(db: Session, usuario_id: int):
-    return db.query(models.Usuario).filter(
-        models.Usuario.id == usuario_id
-    ).first()
-
-
-def atualizar_usuario(db: Session, usuario_id: int, dados: schemas.UsuarioUpdate):
-
-    usuario = db.query(models.Usuario).filter(
-        models.Usuario.id == usuario_id
-    ).first()
-
-    if usuario is None:
-        return None
-
-    usuario.nome = dados.nome
-    usuario.email = dados.email
-
-    db.commit()
-    db.refresh(usuario)
-
-    return usuario
-
-
-def deletar_usuario(db: Session, usuario_id: int):
-
-    usuario = db.query(models.Usuario).filter(
-        models.Usuario.id == usuario_id
-    ).first()
-
-    if usuario is None:
-        return None
-
-    db.delete(usuario)
-    db.commit()
-
-    return usuario
-</pre>
-</div>
-
-</section>
-
-
-<h2>10. main.py</h2>
-
-<section>
-
-<p>
-Esse é o arquivo principal da aplicação.
-</p>
-
-<p>
-Aqui inicializamos o FastAPI e definimos as rotas da API.
-</p>
-
-<div>
-<pre>
-<code class="language-python">
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-
-from .database import engine, SessionLocal, Base
-from . import models, schemas, crud
-
-Base.metadata.create_all(bind=engine)
+""")
+
+conn.commit()
+conn.close()
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 - Criar API com FastAPI</h3>
+        <p>Coloque o código abaixo dentro do arquivo <strong>main.py</strong></p>
+        <p><strong>Importante:</strong> Vamos importar o arquivo <code>db.py</code> para garantir que a tabela seja criada automaticamente ao iniciar a aplicação.</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-python">
+from fastapi import FastAPI
+import sqlite3
+
+# IMPORTANTE: executa a criação do banco/tabela
+import app.database.db
 
 app = FastAPI()
 
+def get_connection():
+    return sqlite3.connect("database.db")
 
-def get_db():
-
-    db = SessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@app.post("/usuarios")
-def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
-    return crud.criar_usuario(db, usuario)
-
+@app.get("/")
+def home():
+    return {"msg": "API rodando"}
 
 @app.get("/usuarios")
-def listar_usuarios(db: Session = Depends(get_db)):
-    return crud.listar_usuarios(db)
+def listar_usuarios():
+    conn = get_connection()
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT * FROM usuarios")
+    dados = cursor.fetchall()
 
-@app.get("/usuarios/{usuario_id}")
-def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    return crud.buscar_usuario(db, usuario_id)
+    conn.close()
+    return dados
 
+@app.post("/usuarios")
+def criar_usuario(nome: str, idade: int):
+    conn = get_connection()
+    cursor = conn.cursor()
 
-@app.put("/usuarios/{usuario_id}")
-def atualizar_usuario(usuario_id: int, dados: schemas.UsuarioUpdate, db: Session = Depends(get_db)):
-    return crud.atualizar_usuario(db, usuario_id, dados)
+    cursor.execute(
+        "INSERT INTO usuarios (nome, idade) VALUES (?, ?)",
+        (nome, idade)
+    )
 
+    conn.commit()
+    conn.close()
 
-@app.delete("/usuarios/{usuario_id}")
-def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    return crud.deletar_usuario(db, usuario_id)
-</code>
-</pre>
+    return {"msg": "Usuário criado"}
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<button class="btn-copy">Copiar Texto</button>
+        <h3>Passo 7 - Rodar a aplicação</h3>
+        <p>Use o comando abaixo no Command Prompt (cmd) no Windows para iniciar o servidor FastAPI. O parâmetro <code>--reload</code> é importante para desenvolvimento, pois reinicia o servidor automaticamente sempre que você fizer uma alteração no código.</p>
+        
+         <div class="code-container">
+          <pre>
+          <code class="language-bash">
+uvicorn main:app --reload
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        
+        <p><strong>Caso haja algum erro:</strong> Se aparecer a mensagem <em>'uvicorn' não é reconhecido</em>, significa que o ambiente virtual não está ativado ou o comando não está no PATH.</p>
 
-</div>
+        <h4>Solução 1 - Ativar ambiente virtual</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+venv\Scripts\activate
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<p>
-Também criamos as rotas responsáveis por acessar as funções do CRUD.
-</p>
+        <h4>Solução 2 - Rodar com Python diretamente</h4>
+        <p>Se ainda não funcionar, use o comando abaixo:</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+python -m uvicorn main:app --reload
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<ul>
-<li><code>POST /usuarios</code> → cria usuário</li>
-<li><code>GET /usuarios</code> → lista usuários</li>
-<li><code>GET /usuarios/{id}</code> → busca usuário</li>
-<li><code>PUT /usuarios/{id}</code> → atualiza usuário</li>
-<li><code>DELETE /usuarios/{id}</code> → remove usuário</li>
-</ul>
+        <h3>Passo 8 - Testar no navegador</h3>
+        <ul>
+          <li>http://127.0.0.1:8000 ou http://localhost:8000</li>
+          <li>http://127.0.0.1:8000/docs ou http://localhost:8000/docs</li>
+        </ul>
 
-</section>
+        <h3>Passo 9 - Testando a API com Postman</h3>
 
+        <p>Agora vamos testar nossa API utilizando o Postman, uma ferramenta muito utilizada no mercado para testar requisições HTTP.</p>
 
-<h2>11. Rodar a API</h2>
+        <h3>Instalar o Postman</h3>
+        <p>Baixe e instale o Postman no seu computador através do link abaixo:</p>
+        <p><a href="https://www.postman.com/downloads/" target="_blank">https://www.postman.com/downloads/</a></p>
 
-<section>
+        <h3>Teste GET - Listar usuários</h3>
+        <ul>
+          <li>Abra o Postman</li>
+          <li>Selecione o método <strong>GET</strong></li>
+          <li>Digite a URL: <strong>http://localhost:8000/usuarios</strong></li>
+          <li>Clique em <strong>Send</strong></li>
+        </ul>
 
-<p>
-Para iniciar o servidor da API utilizamos o Uvicorn.
-</p>
+        <p>Você verá a lista de usuários cadastrados.</p>
 
-<div>
-<pre>
-<code class="language-bash">
-uvicorn app.main:app --reload
-</code>
-</pre>
+        <h3>Teste POST - Criar usuário</h3>
+        <ul>
+          <li>No Postman, selecione o método <strong>POST</strong></li>
+          <li>Digite a URL: <strong>http://localhost:8000/usuarios?nome=Fabio&idade=30</strong></li>
+          <li>Clique em <strong>Send</strong></li>
+        </ul>
 
-<button class="btn-copy">Copiar Texto</button>
+        <p>Você verá a mensagem de sucesso indicando que o usuário foi criado.</p>
 
-</div>
+        <h3>Testar novamente o GET</h3>
+        <p>Após criar um usuário, repita o teste GET para ver o novo registro inserido no banco.</p>
 
-<p>
-A opção <code>--reload</code> faz com que o servidor reinicie automaticamente sempre que o código for alterado.
-</p>
+        <h3>Passo 10 - Commitando...</h3>
+            <p>Configurar primeiro commit para enviar suas alterações e salvar na nuvem do GitHub</p>
+        <div class="code-container">
+          <pre>
+          <code class="language-bash">
+git add .
+git commit -m "estrutura inicial do projeto"
+git push
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-<p>
-Após iniciar o servidor, a API estará disponível em:
-</p>
+        <h2>
+            Resumo do que fizemos como fluxo da aplicação</h2>
+        <ul>
+          <li>Usuário faz requisição HTTP</li>
+          <li>FastAPI recebe a requisição</li>
+          <li>API conecta no SQLite</li>
+          <li>Executa query SQL</li>
+          <li>Retorna os dados</li>
+        </ul>
 
-<p><code>http://localhost:8000</code></p>
+      </section>
+    </main>
 
-<p>
-O FastAPI gera automaticamente uma documentação interativa acessível em:
-</p>
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
 
-<p><code>http://localhost:8000/docs</code></p>
-
-</section>
-
-</div>
-
-<footer>
-
-<div class="button-container">
-<button class="btn-print" onclick="window.print()">Imprimir</button>
-</div>
-
-<div class="button-container">
-<a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
-</div>
-
-</footer>
-
-<script src="../../scripts/copy-clipboard.js"></script>
-
-</body>
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
 </html>

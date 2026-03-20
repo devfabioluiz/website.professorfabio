@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tutorial FastAPI + PostgreSQL</title>
+
+<link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Tutorial</h1>
+<h4 class="text-center">FastAPI + PostgreSQL</h4>
+<h4 class="text-center">Criando uma API com Python</h4>
+
+</header>
+
+<div class="container">
+
+<p>
+Neste tutorial iremos criar uma API utilizando o <strong>FastAPI</strong>, um framework moderno para desenvolvimento de APIs em Python, e o banco de dados <strong>PostgreSQL</strong>.
+</p>
+
+<p>
+Durante o processo iremos configurar o ambiente, estruturar o projeto e implementar operações básicas de CRUD (Criar, Listar, Atualizar e Deletar registros).
+</p>
+
+
+<h2>1. Criar projeto</h2>
+
+<section>
+
+<p>
+O primeiro passo é criar uma pasta que irá armazenar todos os arquivos do projeto.
+</p>
+
+<p>
+Em seguida acessamos essa pasta utilizando o terminal.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+mkdir projeto_api
+cd projeto_api
+</code>
+</pre>
+<button class="btn-copy">Copiar Texto</button>
+</div>
+
+<p>
+O comando <code>mkdir</code> cria uma nova pasta chamada <strong>projeto_api</strong>.  
+Já o comando <code>cd</code> permite entrar dentro dessa pasta.
+</p>
+
+</section>
+
+
+<h2>2. Criar ambiente virtual</h2>
+
+<section>
+
+<p>
+O ambiente virtual é utilizado para isolar as dependências do projeto.
+</p>
+
+<p>
+Isso evita conflitos entre bibliotecas instaladas em diferentes projetos Python.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+python -m venv venv
+py -m venv venv
+</code>
+</pre>
+<button class="btn-copy">Copiar Texto</button>
+</div>
+
+<p>
+Esse comando cria uma pasta chamada <strong>venv</strong>, que contém um ambiente Python independente.
+</p>
+
+</section>
+
+
+<h2>3. Ativar ambiente virtual</h2>
+
+<section>
+
+<p>
+Após criar o ambiente virtual, precisamos ativá-lo para que todas as dependências sejam instaladas nele.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+venv\Scripts\activate.bat
+</code>
+</pre>
+<button class="btn-copy">Copiar Texto</button>
+</div>
+
+<p>
+Quando o ambiente virtual estiver ativo, o terminal normalmente exibirá o nome do ambiente entre parênteses, indicando que o Python utilizado agora é o do ambiente virtual.
+</p>
+
+</section>
+
+
+<h2>4. Instalar dependências</h2>
+
+<section>
+
+<p>
+Agora iremos instalar as bibliotecas necessárias para o funcionamento da API.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic
+</code>
+</pre>
+<button class="btn-copy">Copiar Texto</button>
+</div>
+
+<p>Essas bibliotecas possuem as seguintes funções:</p>
+
+<ul>
+<li><strong>FastAPI:</strong> Framework para criação de APIs.</li>
+<li><strong>Uvicorn:</strong> Servidor ASGI responsável por executar a aplicação.</li>
+<li><strong>SQLAlchemy:</strong> ORM utilizado para comunicação com o banco de dados.</li>
+<li><strong>psycopg2:</strong> Driver que permite conectar ao PostgreSQL.</li>
+<li><strong>Pydantic:</strong> Biblioteca para validação de dados.</li>
+</ul>
+
+</section>
+
+
+<h2>5. Estrutura do projeto</h2>
+
+<section>
+
+<p>
+Uma boa organização de pastas facilita a manutenção e evolução do projeto.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+projeto_api
+│
+├── app
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── crud.py
+│
+└── venv
+</code>
+</pre>
+</div>
+
+<p>Função de cada arquivo:</p>
+
+<ul>
+<li><strong>database.py:</strong> configuração da conexão com o banco.</li>
+<li><strong>models.py:</strong> definição das tabelas do banco.</li>
+<li><strong>schemas.py:</strong> definição dos formatos de dados da API.</li>
+<li><strong>crud.py:</strong> funções que executam operações no banco.</li>
+<li><strong>main.py:</strong> arquivo principal onde a API é iniciada.</li>
+</ul>
+
+</section>
+
+
+<h2>6. database.py</h2>
+
+<section>
+
+<p>
+Esse arquivo é responsável por configurar a conexão com o banco de dados PostgreSQL.
+</p>
+
+<div>
+<pre>
+<code class="language-python">
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+DATABASE_URL = "postgresql://postgres:senha@localhost/fastapi_db"
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
+</code>
+</pre>
+
+<button class="btn-copy">Copiar Texto</button>
+
+</div>
+
+<p>
+O <code>create_engine</code> cria a conexão com o banco.  
+O <code>SessionLocal</code> é utilizado para criar sessões de acesso ao banco.  
+Já o <code>Base</code> será usado como base para os modelos das tabelas.
+</p>
+
+</section>
+
+
+<h2>7. models.py</h2>
+
+<section>
+
+<p>
+Nesse arquivo definimos o modelo da tabela do banco de dados utilizando o SQLAlchemy.
+</p>
+
+<div>
+<pre>
+<code class="language-python">
+from sqlalchemy import Column, Integer, String
+from .database import Base
+
+class Usuario(Base):
+
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String)
+    email = Column(String)
+</code>
+</pre>
+
+<button class="btn-copy">Copiar Texto</button>
+
+</div>
+
+<p>
+Essa classe representa a tabela <strong>usuarios</strong> no banco de dados.
+</p>
+
+<ul>
+<li><strong>id:</strong> chave primária.</li>
+<li><strong>nome:</strong> nome do usuário.</li>
+<li><strong>email:</strong> email do usuário.</li>
+</ul>
+
+</section>
+
+
+<h2>8. schemas.py</h2>
+
+<section>
+
+<p>
+Os schemas são utilizados para definir o formato dos dados que serão enviados e recebidos pela API.
+</p>
+
+<div>
+<pre>
+<code class="language-python">
+from pydantic import BaseModel
+
+class UsuarioCreate(BaseModel):
+    nome: str
+    email: str
+
+class UsuarioUpdate(BaseModel):
+    nome: str
+    email: str
+
+class UsuarioResponse(BaseModel):
+    id: int
+    nome: str
+    email: str
+
+    class Config:
+        orm_mode = True
+</code>
+</pre>
+
+<button class="btn-copy">Copiar Texto</button>
+
+</div>
+
+<p>
+O Pydantic garante que os dados enviados para a API estejam no formato correto.
+</p>
+
+</section>
+
+
+<h2>9. crud.py</h2>
+
+<section>
+
+<p>
+Esse arquivo contém as funções responsáveis por realizar operações no banco de dados.
+</p>
+
+<p>
+Essas operações são chamadas de <strong>CRUD</strong>:
+</p>
+
+<ul>
+<li>Create (Criar)</li>
+<li>Read (Ler)</li>
+<li>Update (Atualizar)</li>
+<li>Delete (Excluir)</li>
+</ul>
+
+<p>
+As funções implementam essas operações utilizando o SQLAlchemy.
+</p>
+
+<div class="code-block">
+<button onclick="copyCode(this)">Copiar</button>
+<pre>
+from sqlalchemy.orm import Session
+from . import models, schemas
+
+
+def criar_usuario(db: Session, usuario: schemas.UsuarioCreate):
+
+    novo_usuario = models.Usuario(
+        nome=usuario.nome,
+        email=usuario.email
+    )
+
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    return novo_usuario
+
+
+def listar_usuarios(db: Session):
+    return db.query(models.Usuario).all()
+
+
+def buscar_usuario(db: Session, usuario_id: int):
+    return db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+
+def atualizar_usuario(db: Session, usuario_id: int, dados: schemas.UsuarioUpdate):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    usuario.nome = dados.nome
+    usuario.email = dados.email
+
+    db.commit()
+    db.refresh(usuario)
+
+    return usuario
+
+
+def deletar_usuario(db: Session, usuario_id: int):
+
+    usuario = db.query(models.Usuario).filter(
+        models.Usuario.id == usuario_id
+    ).first()
+
+    if usuario is None:
+        return None
+
+    db.delete(usuario)
+    db.commit()
+
+    return usuario
+</pre>
+</div>
+
+</section>
+
+
+<h2>10. main.py</h2>
+
+<section>
+
+<p>
+Esse é o arquivo principal da aplicação.
+</p>
+
+<p>
+Aqui inicializamos o FastAPI e definimos as rotas da API.
+</p>
+
+<div>
+<pre>
+<code class="language-python">
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+from .database import engine, SessionLocal, Base
+from . import models, schemas, crud
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@app.post("/usuarios")
+def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+    return crud.criar_usuario(db, usuario)
+
+
+@app.get("/usuarios")
+def listar_usuarios(db: Session = Depends(get_db)):
+    return crud.listar_usuarios(db)
+
+
+@app.get("/usuarios/{usuario_id}")
+def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.buscar_usuario(db, usuario_id)
+
+
+@app.put("/usuarios/{usuario_id}")
+def atualizar_usuario(usuario_id: int, dados: schemas.UsuarioUpdate, db: Session = Depends(get_db)):
+    return crud.atualizar_usuario(db, usuario_id, dados)
+
+
+@app.delete("/usuarios/{usuario_id}")
+def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    return crud.deletar_usuario(db, usuario_id)
+</code>
+</pre>
+
+<button class="btn-copy">Copiar Texto</button>
+
+</div>
+
+<p>
+Também criamos as rotas responsáveis por acessar as funções do CRUD.
+</p>
+
+<ul>
+<li><code>POST /usuarios</code> → cria usuário</li>
+<li><code>GET /usuarios</code> → lista usuários</li>
+<li><code>GET /usuarios/{id}</code> → busca usuário</li>
+<li><code>PUT /usuarios/{id}</code> → atualiza usuário</li>
+<li><code>DELETE /usuarios/{id}</code> → remove usuário</li>
+</ul>
+
+</section>
+
+
+<h2>11. Rodar a API</h2>
+
+<section>
+
+<p>
+Para iniciar o servidor da API utilizamos o Uvicorn.
+</p>
+
+<div>
+<pre>
+<code class="language-bash">
+uvicorn app.main:app --reload
+</code>
+</pre>
+
+<button class="btn-copy">Copiar Texto</button>
+
+</div>
+
+<p>
+A opção <code>--reload</code> faz com que o servidor reinicie automaticamente sempre que o código for alterado.
+</p>
+
+<p>
+Após iniciar o servidor, a API estará disponível em:
+</p>
+
+<p><code>http://localhost:8000</code></p>
+
+<p>
+O FastAPI gera automaticamente uma documentação interativa acessível em:
+</p>
+
+<p><code>http://localhost:8000/docs</code></p>
+
+</section>
+
+</div>
+
+<footer>
+
+<div class="button-container">
+<button class="btn-print" onclick="window.print()">Imprimir</button>
+</div>
+
+<div class="button-container">
+<a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+</div>
+
+</footer>
+
+<script src="../../scripts/copy-clipboard.js"></script>
+
+</body>
+</html>
