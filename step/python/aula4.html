@@ -146,8 +146,7 @@ projeto-python-step/
         </div>
 
         <h3>Passo 4 - Model (dados)</h3>
-        <p>Crie o arquivo <strong>app/models/usuario_model.py </strong>
-          manualmente ou usando o comando type nul > app\models\usuario_model.py
+        <p>Crie o arquivo: <strong>app/models/usuario_model.py </strong>
           e insira dentro dele:</p>
         <div class="code-container">
           <pre><code class="language-python">
@@ -165,8 +164,7 @@ def criar(nome):
         </div>
 
         <h3>Passo 5 - View (resposta)</h3>
-        <p>Crie o arquivo arquivo: <strong>app/views/usuario_view.py</strong> 
-          manualmente ou usando o comando type nul > app\models\usuario_model.py
+        <p>Crie o arquivo: <strong>app/views/usuario_view.py</strong> 
           e insira dentro dele:</p>
         <div class="code-container">
           <pre><code class="language-python">
@@ -178,8 +176,7 @@ def resposta_sucesso(msg):
         </div>
 
         <h3>Passo 6 - Controller (regras)</h3>
-        <p>Crie o arquivo arquivo: <strong>app/controllers/usuario_controller.py</strong>
-          manualmente ou usando o comando type nul > app\models\usuario_model.py
+        <p>Crie o arquivo: <strong>app/controllers/usuario_controller.py</strong>
           e insira dentro dele:</p>
         <div class="code-container">
           <pre><code class="language-python">
@@ -218,7 +215,14 @@ def criar(nome: str):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 8 - Rodar aplicação</h3>
+        <h3>Passo 8 - Crie o banco de dados da nossa aplicação</h3>
+        <div class="code-container">
+          <p>Entre no site https://supabase.com e crie uma conta utilizando o login do github</p>
+          <p>Crie o banco de dados db-projeto-python-step</p>
+          <p>Crie a tabela usuarios com as colunas id (auto-increment) e nome (string)</p>
+        </div>
+
+        <!-- <h3>Passo 8 - Rodar aplicação</h3>
         <div class="code-container">
           <pre><code class="language-bash">
 venv\\Scripts\\activate        
@@ -230,7 +234,7 @@ python -m uvicorn main:app --reload
         <h3>Passo 9 - Testar</h3>
         <ul>
           <li>http://localhost:8000/docs</li>
-        </ul>
+        </ul> -->
       </section>
     </main>
 
