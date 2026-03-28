@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 4: Arquitetura de Software (parte 2) - Rest API com MVT</title>
+    <title>Aula 3 : Arquitetura de Software (parte 2) - Rest API com MVC</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -12,96 +12,115 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
     <style>
       table {
         border-collapse: collapse;
         width: 100%;
         margin-top: 20px;
       }
+
       th,
       td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
       }
+
       th {
         background-color: #f2f2f2;
       }
     </style>
   </head>
+
   <body>
     <header>
-      <h1>Aula 4</h1>
-      <h4 class="text-center">Arquitetura de Software (parte 2)</h4>
-      <h4 class="text-center">Padrão MVT (Model-View-Template)</h4>
+      <h1>Aula 3</h1>
+      <h4 class="text-center">Arquitetura de Software (parte 1)</h4>
+      <h4 class="text-center">Padrão MVC (Model-View-Controller)</h4>
     </header>
 
     <main class="container">
       <section>
-        <h2>O que é o padrão MVT?</h2>
+        <h2>Arquitetura de Sistemas</h2>
         <p>
-          O padrão MVT (Model-View-Template) é uma variação do MVC muito
-          utilizada em frameworks como Django.
+          Arquitetura define como os componentes de um sistema são organizados e
+          como eles se comunicam.
         </p>
 
-        <h3>Objetivos do MVT</h3>
+        <h2>Padrão MVC</h2>
+
+        <h3>1. O que é o padrão MVC?</h3>
+        <p>
+          MVC (Model-View-Controller) é um padrão que separa responsabilidades
+          em três camadas.
+        </p>
+
+        <h3>2. Objetivos do MVC</h3>
         <ul>
           <li>Separar responsabilidades</li>
-          <li>Organizar o código</li>
           <li>Facilitar manutenção</li>
+          <li>Organizar código</li>
         </ul>
 
-        <h3>Model</h3>
-        <p><strong>O que é?</strong> Representa os dados</p>
-        <p><strong>Responsabilidade:</strong> Gerenciar banco e regras</p>
+        <h3>3. Model</h3>
+        <p><strong>a. O que é?</strong> Representa os dados</p>
+        <p>
+          <strong>b. Responsabilidades:</strong> Gerenciar dados e regras de
+          negócio
+        </p>
 
-        <h3>View</h3>
-        <p><strong>O que é?</strong> Lógica da aplicação</p>
-        <p><strong>Responsabilidade:</strong> Receber requisição e processar</p>
+        <h3>4. View</h3>
+        <p><strong>a. O que é?</strong> Interface com o usuário</p>
+        <p><strong>b. Responsabilidades:</strong> Exibir dados</p>
 
-        <h3>Template</h3>
-        <p><strong>O que é?</strong> Interface visual</p>
-        <p><strong>Responsabilidade:</strong> Exibir HTML</p>
+        <h3>5. Controller</h3>
+        <p><strong>a. O que é?</strong> Controla fluxo da aplicação</p>
+        <p>
+          <strong>b. Responsabilidades:</strong> Receber requisições e chamar
+          Model e View
+        </p>
 
-        <h2>Fluxo MVT</h2>
+        <h3>6. Exemplo MVC</h3>
         <ul>
-          <li>Usuário faz requisição</li>
-          <li>View recebe</li>
-          <li>View chama Model</li>
-          <li>View envia dados para Template</li>
-          <li>Template renderiza resposta</li>
+          <li>Model → Banco de dados</li>
+          <li>View → Frontend</li>
+          <li>Controller → API</li>
         </ul>
 
-        <h2>Passo a passo: Criando API com padrão MVT</h2>
+        <h2>Passo a passo: Criando uma API em padrão MVC com FastAPI</h2>
 
         <h3>Passo 1 - Criar repositório no GitHub</h3>
         <ul>
-          <li>Nome: projeto-python-mvt-step</li>
-          <li>Add README</li>
-          <li>.gitignore Python</li>
+          <li>Acesse o GitHub</li>
+          <li>Clique em <strong>New repository</strong></li>
+          <li>Nome: <strong>projeto-python-mvc-step</strong></li>
+          <li>Marque <strong>Add a README</strong></li>
+          <li>Selecione <strong>.gitignore Python</strong></li>
+          <li>Clique em Create repository</li>
         </ul>
 
-        <h3>Passo 2 - Clonar</h3>
+        <h3>Passo 2 - Clonar o repositório</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-git clone https://github.com/SEU_USUARIO/projeto-python-mvt-step.git
-cd projeto-python-mvt-step
+git clone https://github.com/SEU_USUARIO/projeto-python-mvc-step.git
+cd projeto-python-mvc-step
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 3 - Estrutura MVT</h3>
+        <h3>Passo 3 - Criar estrutura MVC</h3>
         <div class="code-container">
           <pre><code class="language-bash">
 mkdir app
 cd app
-mkdir models views templates
+mkdir models views controllers
 cd ..
 
 type nul > main.py
-type nul > app\\models\\usuario_model.py
-type nul > app\\views\\usuario_view.py
-type nul > app\\templates\\usuario_template.py
+type nul > app\models\usuario_model.py
+type nul > app\views\usuario_view.py
+type nul > app\controllers\usuario_controller.py
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -109,23 +128,25 @@ type nul > app\\templates\\usuario_template.py
         <h3>Estrutura final</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-projeto-python-mvt-step/
+projeto-python-mvc-step/
  ├── main.py
  ├── app/
  │   ├── models/
  │   ├── views/
- │   ├── templates/
+ │   ├── controllers/
           </code></pre>
         </div>
 
-        <h3>Passo 4 - Model</h3>
-        <p>Arquivo: app/models/usuario_model.py</p>
+        <h3>Passo 4 - Model (dados)</h3>
+        <p>Arquivo: <strong>app/models/usuario_model.py</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
 usuarios = []
 
+
 def listar():
     return usuarios
+
 
 def criar(nome):
     usuarios.append(nome)
@@ -133,58 +154,57 @@ def criar(nome):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 - Template</h3>
-        <p>Arquivo: app/templates/usuario_template.py</p>
+        <h3>Passo 5 - View (resposta)</h3>
+        <p>Arquivo: <strong>app/views/usuario_view.py</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
 
-def render(dados):
-    return {"usuarios": dados}
+def resposta_sucesso(msg):
+    return {"msg": msg}
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 - View</h3>
-        <p>Arquivo: app/views/usuario_view.py</p>
+        <h3>Passo 6 - Controller (regras)</h3>
+        <p>Arquivo: <strong>app/controllers/usuario_controller.py</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
 from app.models import usuario_model
-from app.templates import usuario_template
+from app.views import usuario_view
 
 
-def listar_view():
-    dados = usuario_model.listar()
-    return usuario_template.render(dados)
+def listar_usuarios():
+    return usuario_model.listar()
 
 
-def criar_view(nome):
+def criar_usuario(nome):
     usuario_model.criar(nome)
-    return {"msg": "criado"}
+    return usuario_view.resposta_sucesso("Usuário criado")
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 7 - FastAPI</h3>
-        <p>Arquivo: main.py</p>
+        <h3>Passo 7 - Integrar com FastAPI</h3>
+        <p>Arquivo: <strong>main.py</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
 from fastapi import FastAPI
-from app.views import usuario_view
+from app.controllers import usuario_controller
 
 app = FastAPI()
 
 @app.get("/usuarios")
 def listar():
-    return usuario_view.listar_view()
+    return usuario_controller.listar_usuarios()
 
 @app.post("/usuarios")
 def criar(nome: str):
-    return usuario_view.criar_view(nome)
+    return usuario_controller.criar_usuario(nome)
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 8 - Rodar</h3>
+        <h3>Passo 8 - Rodar aplicação</h3>
         <div class="code-container">
           <pre><code class="language-bash">
 python -m uvicorn main:app --reload
@@ -196,34 +216,6 @@ python -m uvicorn main:app --reload
         <ul>
           <li>http://localhost:8000/docs</li>
         </ul>
-
-        <h2>Comparação MVC vs MVT</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Elemento</th>
-              <th>MVC</th>
-              <th>MVT</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Controller</td>
-              <td>Existe separado</td>
-              <td>Fica dentro da View</td>
-            </tr>
-            <tr>
-              <td>View</td>
-              <td>Interface</td>
-              <td>Lógica</td>
-            </tr>
-            <tr>
-              <td>Template</td>
-              <td>Não existe</td>
-              <td>Interface visual</td>
-            </tr>
-          </tbody>
-        </table>
       </section>
     </main>
 

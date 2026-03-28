@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula - Estruturas Avançadas do Python</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">
+        Tuplas, Dicionários, Lambda, Geradores, Closures e Decoradores
+      </h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>1. Tuplas</h2>
+
+        <p>
+          Uma <strong>tupla</strong> é uma coleção de elementos ordenados e
+          imutáveis em Python. Ela funciona de forma parecida com uma lista,
+          porém seus valores não podem ser alterados após a criação.
+        </p>
+
+        <h3>Criando uma Tupla</h3>
+
+        <pre><code class="language-python">
+coordenadas = (10, 20)
+
+print(coordenadas)
+        </code></pre>
+
+        <p>
+          Depois de criada, uma tupla não pode ter seus elementos alterados.
+        </p>
+
+        <pre><code class="language-python">
+numeros = (1, 2, 3)
+
+numeros[0] = 10
+        </code></pre>
+
+        <p>O código acima gera um erro, pois tuplas são imutáveis.</p>
+
+        <h3>Características das Tuplas</h3>
+
+        <ul>
+          <li>São imutáveis</li>
+          <li>Preservam a ordem dos elementos</li>
+          <li>Podem armazenar diferentes tipos de dados</li>
+          <li>São mais eficientes em memória que listas</li>
+        </ul>
+
+        <h3>Exemplo Prático</h3>
+
+        <p>Um uso comum é armazenar coordenadas geográficas.</p>
+
+        <pre><code class="language-python">
+localizacao = (-22.9068, -43.1729)
+
+latitude = localizacao[0]
+longitude = localizacao[1]
+
+print(latitude, longitude)
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>2. Dicionários</h2>
+
+        <p>
+          Um <strong>dicionário</strong> é uma estrutura de dados baseada em
+          pares de chave e valor.
+        </p>
+
+        <pre><code class="language-python">
+pessoa = {
+  "nome": "Fabio",
+  "idade": 30,
+  "cidade": "Rio"
+}
+
+print(pessoa["nome"])
+        </code></pre>
+
+        <h3>Mapas Associativos</h3>
+
+        <p>
+          Dicionários também são chamados de
+          <strong>mapas associativos</strong>, pois cada chave está associada a
+          um valor.
+        </p>
+
+        <table>
+          <tr>
+            <th>Chave</th>
+            <th>Valor</th>
+          </tr>
+
+          <tr>
+            <td>nome</td>
+            <td>Fabio</td>
+          </tr>
+
+          <tr>
+            <td>idade</td>
+            <td>30</td>
+          </tr>
+
+          <tr>
+            <td>cidade</td>
+            <td>Rio</td>
+          </tr>
+        </table>
+
+        <h3>Tabelas Hash</h3>
+
+        <p>
+          Internamente os dicionários utilizam uma estrutura chamada
+          <strong>Hash Table</strong>, que permite acessar dados de forma
+          extremamente rápida.
+        </p>
+
+        <pre><code class="language-python">
+dados = {
+  "nome": "Fabio",
+  "idade": 30
+}
+        </code></pre>
+
+        <h3>Métodos Importantes</h3>
+
+        <h4>get()</h4>
+
+        <pre><code class="language-python">
+pessoa = {"nome": "Ana"}
+
+print(pessoa.get("nome"))
+print(pessoa.get("idade"))
+        </code></pre>
+
+        <h4>keys()</h4>
+
+        <pre><code class="language-python">
+print(pessoa.keys())
+        </code></pre>
+
+        <h4>values()</h4>
+
+        <pre><code class="language-python">
+print(pessoa.values())
+        </code></pre>
+
+        <h4>items()</h4>
+
+        <pre><code class="language-python">
+for chave, valor in pessoa.items():
+  print(chave, valor)
+        </code></pre>
+
+        <h3>Exemplo Prático</h3>
+
+        <pre><code class="language-python">
+texto = "python é poderoso e python é simples"
+
+palavras = texto.split()
+
+contador = {}
+
+for palavra in palavras:
+
+  if palavra in contador:
+      contador[palavra] += 1
+  else:
+      contador[palavra] = 1
+
+print(contador)
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>3. Funções Lambda</h2>
+
+        <p>
+          Funções <strong>lambda</strong> são funções anônimas e pequenas,
+          utilizadas geralmente para operações rápidas.
+        </p>
+
+        <pre><code class="language-python">
+soma = lambda a, b: a + b
+
+print(soma(3,5))
+        </code></pre>
+
+        <h3>Exemplo com Ordenação</h3>
+
+        <pre><code class="language-python">
+alunos = [
+  ("Ana", 8),
+  ("Carlos", 6),
+  ("Maria", 9)
+]
+
+alunos.sort(key=lambda aluno: aluno[1])
+
+print(alunos)
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>4. Geradores (Generators)</h2>
+
+        <p>
+          Geradores permitem produzir valores sob demanda utilizando a palavra
+          <strong>yield</strong>.
+        </p>
+
+        <pre><code class="language-python">
+def gerar_numeros():
+
+  for i in range(5):
+      yield i
+        </code></pre>
+
+        <p>Utilização:</p>
+
+        <pre><code class="language-python">
+for numero in gerar_numeros():
+  print(numero)
+        </code></pre>
+
+        <h3>Uso com Arquivos Grandes</h3>
+
+        <pre><code class="language-python">
+def ler_arquivo(nome):
+
+  with open(nome) as f:
+      for linha in f:
+          yield linha
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>5. Closures</h2>
+
+        <p>
+          Uma <strong>closure</strong> ocorre quando uma função interna lembra
+          variáveis do escopo externo.
+        </p>
+
+        <pre><code class="language-python">
+def multiplicador(n):
+
+  def calcular(x):
+      return x * n
+
+  return calcular
+        </code></pre>
+
+        <p>Uso:</p>
+
+        <pre><code class="language-python">
+dobro = multiplicador(2)
+
+print(dobro(5))
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>6. Decoradores</h2>
+
+        <p>
+          Decoradores são funções que modificam ou estendem o comportamento de
+          outras funções.
+        </p>
+
+        <pre><code class="language-python">
+def meu_decorador(func):
+
+  def wrapper():
+
+      print("Antes da função")
+      func()
+      print("Depois da função")
+
+  return wrapper
+        </code></pre>
+
+        <p>Aplicando o decorador:</p>
+
+        <pre><code class="language-python">
+@meu_decorador
+def dizer_ola():
+  print("Olá")
+
+dizer_ola()
+        </code></pre>
+
+        <h3>Exemplo Real: Log de Execução</h3>
+
+        <pre><code class="language-python">
+def log(func):
+
+  def wrapper(*args, **kwargs):
+
+      print("Executando função...")
+      resultado = func(*args, **kwargs)
+      print("Função finalizada")
+
+      return resultado
+
+  return wrapper
+        </code></pre>
+
+        <pre><code class="language-python">
+@log
+def soma(a,b):
+  return a+b
+
+print(soma(3,4))
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>Resumo</h2>
+
+        <table>
+          <tr>
+            <th>Conceito</th>
+            <th>Função</th>
+          </tr>
+
+          <tr>
+            <td>Tuplas</td>
+            <td>Estruturas imutáveis</td>
+          </tr>
+
+          <tr>
+            <td>Dicionários</td>
+            <td>Armazenam dados em pares chave → valor</td>
+          </tr>
+
+          <tr>
+            <td>Lambda</td>
+            <td>Funções anônimas e curtas</td>
+          </tr>
+
+          <tr>
+            <td>Geradores</td>
+            <td>Produzem valores sob demanda usando yield</td>
+          </tr>
+
+          <tr>
+            <td>Closures</td>
+            <td>Funções que lembram variáveis externas</td>
+          </tr>
+
+          <tr>
+            <td>Decoradores</td>
+            <td>Modificam o comportamento de outras funções</td>
+          </tr>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

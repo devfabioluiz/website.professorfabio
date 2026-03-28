@@ -393,6 +393,35 @@ git push
         </ul>
 
       </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+         <div id="question-container-casa">
+        <div class="question">
+          <b>Crie uma função get que busque apenas o usuário que colocar no parâmetro</b>
+          <p>
+            Exemplo da url: http://localhost:8000/usuarios/1
+          </p>
+        </div>
+
+        <div class="question">
+          <b>Gabarito:</b>
+          <p>
+            @app.get("/usuarios/{id}")
+def obter_usuario(id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM usuarios WHERE id = ?", (id,))
+    dados = cursor.fetchall()
+
+    conn.close()
+    return dados
+          </p>
+        </div>
+
+      </div>
+      </section>
     </main>
 
     <footer>
