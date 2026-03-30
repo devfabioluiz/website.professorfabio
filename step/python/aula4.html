@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 4 : Arquitetura de Software (parte 2) - Rest API com MVC</title>
+    <title>Aula 4: Arquitetura de Software (parte 2) - Rest API com MVT</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -12,122 +12,96 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-
     <style>
       table {
         border-collapse: collapse;
         width: 100%;
         margin-top: 20px;
       }
-
       th,
       td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
       }
-
       th {
         background-color: #f2f2f2;
       }
     </style>
   </head>
-
   <body>
     <header>
       <h1>Aula 4</h1>
-      <h4 class="text-center">Arquitetura de Software (parte 1)</h4>
-      <h4 class="text-center">Padrão MVC (Model-View-Controller)</h4>
+      <h4 class="text-center">Arquitetura de Software (parte 2)</h4>
+      <h4 class="text-center">Padrão MVT (Model-View-Template)</h4>
     </header>
 
     <main class="container">
       <section>
-        <h2>Arquitetura de Sistemas</h2>
+        <h2>O que é o padrão MVT?</h2>
         <p>
-          Arquitetura define como os componentes de um sistema são organizados e
-          como eles se comunicam.
+          O padrão MVT (Model-View-Template) é uma variação do MVC muito
+          utilizada em frameworks como Django.
         </p>
 
-        <h2>Padrão MVC</h2>
-
-        <h3>1. O que é o padrão MVC?</h3>
-        <p>
-          MVC (Model-View-Controller) é um padrão que separa responsabilidades
-          em três camadas.
-        </p>
-
-        <h3>2. Objetivos do MVC</h3>
+        <h3>Objetivos do MVT</h3>
         <ul>
           <li>Separar responsabilidades</li>
+          <li>Organizar o código</li>
           <li>Facilitar manutenção</li>
-          <li>Organizar código</li>
         </ul>
 
-        <h3>3. Model</h3>
-        <p><strong>a. O que é?</strong> Representa os dados</p>
-        <p>
-          <strong>b. Responsabilidades:</strong> Gerenciar dados e regras de
-          negócio
-        </p>
+        <h3>Model</h3>
+        <p><strong>O que é?</strong> Representa os dados</p>
+        <p><strong>Responsabilidade:</strong> Gerenciar banco e regras</p>
 
-        <h3>4. View</h3>
-        <p><strong>a. O que é?</strong> Interface com o usuário</p>
-        <p><strong>b. Responsabilidades:</strong> Exibir dados</p>
+        <h3>View</h3>
+        <p><strong>O que é?</strong> Lógica da aplicação</p>
+        <p><strong>Responsabilidade:</strong> Receber requisição e processar</p>
 
-        <h3>5. Controller</h3>
-        <p><strong>a. O que é?</strong> Controla fluxo da aplicação</p>
-        <p>
-          <strong>b. Responsabilidades:</strong> Receber requisições e chamar
-          Model e View
-        </p>
+        <h3>Template</h3>
+        <p><strong>O que é?</strong> Interface visual</p>
+        <p><strong>Responsabilidade:</strong> Exibir HTML</p>
 
-        <h3>6. Exemplo MVC</h3>
+        <h2>Fluxo MVT</h2>
         <ul>
-          <li>Model → Banco de dados</li>
-          <li>View → Frontend</li>
-          <li>Controller → API</li>
+          <li>Usuário faz requisição</li>
+          <li>View recebe</li>
+          <li>View chama Model</li>
+          <li>View envia dados para Template</li>
+          <li>Template renderiza resposta</li>
         </ul>
 
-        <h2>Passo a passo: Criando uma API em padrão MVC com FastAPI</h2>
+        <h2>Passo a passo: Criando API com padrão MVT</h2>
 
-        <h3>Passo 1 - Criar uma nova branch no GitHub</h3> <ul> 
-          <li>Acesse o repositório <strong>projeto-python-step</strong> no site do GitHub</li> 
-          <li>No topo da página, localize o seletor de branch (geralmente mostra <strong>main</strong>)</li>
-          <li>Clique nesse seletor</li>
-          <li>No campo "Find or create branch from main"</li>
-          <li>Digite o nome da nova branch (ex: <strong>aula-mvc</strong>)</li>
-          <li>Clique em <strong>Create branch</strong> ou pressione Enter</li>
-          <li>Abra o <strong>VS Code e abra o terminal</strong></li>
-          <li>Acesse o projeto cd projeto-python-step</li>
-          <li>Digite o comando git fetch</li>
-
-       <h3>Passo 2 - Acessar a branch pelo VS Code</h3>
+        <h3>Passo 1 - Criar repositório no GitHub</h3>
         <ul>
-          <li>Selecione a pasta do projeto <strong>aula-mvc</strong> no canto esquerdo inferior do VS Code</li> 
-            <li>No canto inferior esquerdo, clique no nome da branch atual (ex: <strong>main</strong>)</li> 
-            <li>Uma lista de branches será exibida</li> 
-            <li>Selecione a branch que você criou (ex: <strong>aula-mvc</strong>)</li>
-            <li>O VS Code irá automaticamente trocar para essa branch</li> 
-            <li>No explorador de arquivos do VS Code, localize a pasta <strong>app</strong></li>
-            <li>Clique com o botão direito na pasta e selecione <strong>Delete</strong> (Excluir)</li>
-            <li>Abra o arquivo <strong>main.py</strong></li>
-            <li>Selecione todo o conteúdo (Ctrl + A)</li>
-            <li>Limpe tudo que está no arquivo</li>
-          </ul>
+          <li>Nome: projeto-python-mvt-step</li>
+          <li>Add README</li>
+          <li>.gitignore Python</li>
+        </ul>
 
-        <h3>Passo 3 - Criar estrutura MVC</h3>
-        <p>No seu terminal dentro do seu projeto rode os seguintes comandos</p>
+        <h3>Passo 2 - Clonar</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-cd projeto-python-step
+git clone https://github.com/SEU_USUARIO/projeto-python-mvt-step.git
+cd projeto-python-mvt-step
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 - Estrutura MVT</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
 mkdir app
 cd app
-mkdir models views controllers
+mkdir models views templates
 cd ..
 
-type nul > app\models\usuario_model.py
-type nul > app\views\usuario_view.py
-type nul > app\controllers\usuario_controller.py
+type nul > main.py
+type nul > app\\models\\usuario_model.py
+type nul > app\\views\\usuario_view.py
+type nul > app\\templates\\usuario_template.py
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -135,27 +109,23 @@ type nul > app\controllers\usuario_controller.py
         <h3>Estrutura final</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-projeto-python-step/
-├── projeto_api
-  ├── main.py
-  ├── app/
-  │   ├── models/
-  │   ├── views/
-  │   ├── controllers/
+projeto-python-mvt-step/
+ ├── main.py
+ ├── app/
+ │   ├── models/
+ │   ├── views/
+ │   ├── templates/
           </code></pre>
         </div>
 
-        <h3>Passo 4 - Model (dados)</h3>
-        <p>Crie o arquivo: <strong>app/models/usuario_model.py </strong>
-          e insira dentro dele:</p>
+        <h3>Passo 4 - Model</h3>
+        <p>Arquivo: app/models/usuario_model.py</p>
         <div class="code-container">
           <pre><code class="language-python">
 usuarios = []
 
-
 def listar():
     return usuarios
-
 
 def criar(nome):
     usuarios.append(nome)
@@ -163,123 +133,60 @@ def criar(nome):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 - View (resposta)</h3>
-        <p>Crie o arquivo: <strong>app/views/usuario_view.py</strong> 
-          e insira dentro dele:</p>
+        <h3>Passo 5 - Template</h3>
+        <p>Arquivo: app/templates/usuario_template.py</p>
         <div class="code-container">
           <pre><code class="language-python">
 
-def resposta_sucesso(msg):
-    return {"msg": msg}
+def render(dados):
+    return {"usuarios": dados}
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 - Controller (regras)</h3>
-        <p>Crie o arquivo: <strong>app/controllers/usuario_controller.py</strong>
-          e insira dentro dele:</p>
+        <h3>Passo 6 - View</h3>
+        <p>Arquivo: app/views/usuario_view.py</p>
         <div class="code-container">
           <pre><code class="language-python">
 from app.models import usuario_model
-from app.views import usuario_view
+from app.templates import usuario_template
 
 
-def listar_usuarios():
-    return usuario_model.listar()
+def listar_view():
+    dados = usuario_model.listar()
+    return usuario_template.render(dados)
 
 
-def criar_usuario(nome):
+def criar_view(nome):
     usuario_model.criar(nome)
-    return usuario_view.resposta_sucesso("Usuário criado")
+    return {"msg": "criado"}
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 7 - Integrar com FastAPI</h3>
-        <p>Dentro do arquivo <strong>main.py</strong>insira o código abaixo:</p>
+        <h3>Passo 7 - FastAPI</h3>
+        <p>Arquivo: main.py</p>
         <div class="code-container">
           <pre><code class="language-python">
 from fastapi import FastAPI
-from app.controllers import usuario_controller
+from app.views import usuario_view
 
 app = FastAPI()
 
 @app.get("/usuarios")
 def listar():
-    return usuario_controller.listar_usuarios()
+    return usuario_view.listar_view()
 
 @app.post("/usuarios")
 def criar(nome: str):
-    return usuario_controller.criar_usuario(nome)
+    return usuario_view.criar_view(nome)
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 8 - Crie o banco de dados da nossa aplicação</h3>
-        <div class="code-container">
-          <p>Entre no site https://supabase.com e crie uma conta utilizando o login do github</p>
-          <p>Crie o banco de dados db-projeto-python-step</p>
-          <p>Crie a tabela usuarios com as colunas id (auto-increment) e nome (string)</p>
-        </div>
-
-        <h3>Passo 9 - Instale as dependências do projeto</h3> <div class="code-container"> <p>Antes de tudo, você precisa instalar as bibliotecas necessárias para rodar sua API.</p> <p>Abra o terminal dentro da pasta do projeto e execute:</p> <pre><code class="language-python">pip install fastapi uvicorn supabase</code></pre><button class="btn-copy">Copiar Código</button> <p><b>fastapi</b>: framework para criar APIs rápidas</p> <p><b>uvicorn</b>: servidor para rodar sua aplicação</p> <p><b>supabase</b>: cliente Python para conectar com o banco</p> </div>
-<h3>Passo 10 - Crie a estrutura do projeto</h3> <div class="code-container"> <p>Organize seus arquivos para manter o projeto limpo e escalável:</p> <pre><code class="language-python"> project/ │── main.py │── database.py │── models.py │── schemas.py </code></pre><button class="btn-copy">Copiar Código</button> <p>Cada arquivo terá uma responsabilidade específica (boa prática profissional).</p> </div>
-<h3>Passo 11 - Configure a conexão com o Supabase</h3> <div class="code-container"> <p>Crie o arquivo <b>database.py</b> para centralizar a conexão com o banco.</p> <p>Copie sua URL e chave no painel do Supabase.</p> <pre><code class="language-python"> from supabase import create_client
-
-SUPABASE_URL = "https://SEU-PROJETO.supabase.co
-"
-SUPABASE_KEY = "SUA-CHAVE-ANON"
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-</code></pre><button class="btn-copy">Copiar Código</button>
-
-<p>Esses dados ficam no painel do Supabase em <b>Settings → API</b>.</p> </div>
-<h3>Passo 12 - Crie o model da aplicação</h3> <div class="code-container"> <p>O model representa como os dados são estruturados dentro da aplicação.</p> <p>Crie o arquivo <b>models.py</b>:</p> <pre><code class="language-python"> class UserModel: def __init__(self, name: str, email: str): self.name = name self.email = email
-def to_dict(self):
-    return {
-        "name": self.name,
-        "email": self.email
-    }
-</code></pre><button class="btn-copy">Copiar Código</button> <p>Esse método <b>to_dict()</b> é importante para enviar os dados ao Supabase.</p> </div>
-<h3>Passo 13 - Crie o schema para validação</h3> <div class="code-container"> <p>Os schemas garantem que os dados recebidos pela API estejam corretos.</p> <p>Crie o arquivo <b>schemas.py</b>:</p> <pre><code class="language-python"> from pydantic import BaseModel
-
-class UserCreate(BaseModel):
-name: str
-email: str
-</code></pre><button class="btn-copy">Copiar Código</button>
-
-<p>Se o usuário enviar dados inválidos, o FastAPI já retorna erro automaticamente.</p> </div>
-<h3>Passo 14 - Crie a API com FastAPI</h3> <div class="code-container"> <p>Agora criamos o arquivo principal da aplicação: <b>main.py</b>.</p> <pre><code class="language-python"> from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def home():
-return {"message": "API rodando 🚀"}
-</code></pre><button class="btn-copy">Copiar Código</button>
-
-<p>Esse endpoint serve apenas para testar se a API está funcionando.</p> </div>
-<h3>Passo 15 - Crie o endpoint para inserir dados</h3> <div class="code-container"> 
-  <p>Vamos criar um endpoint para cadastrar usuários no banco.</p> 
-  <pre><code class="language-python"> from database import supabase from models import UserModel from schemas import UserCreate
-
-@app.post("/users")
-def create_user(user: UserCreate):
-user_model = UserModel(user.name, user.email)
-
-response = supabase.table("users").insert(user_model.to_dict()).execute()
-
-return response.data
-</code></pre><button class="btn-copy">Copiar Código</button> <p>Fluxo:</p> <p>1. Recebe dados → 2. Valida → 3. Converte → 4. Salva no banco</p> </div>
-<h3>Passo 16 - Crie o endpoint para listar dados</h3> <div class="code-container"> <p>Agora vamos buscar os dados do banco:</p> <pre><code class="language-python"> @app.get("/users") def get_users(): response = supabase.table("users").select("*").execute() return response.data </code></pre><button class="btn-copy">Copiar Código</button> <p>Esse endpoint retorna todos os usuários cadastrados.</p> </div>
-<h3>Passo 17 - Crie o banco de dados da nossa aplicação</h3> <div class="code-container"> <p>Acesse o site <b>https://supabase.com</b> e crie sua conta (recomendado usar GitHub).</p> <p>Depois clique em <b>New Project</b> e crie um projeto chamado:</p> <p><b>db-projeto-python-step</b></p> <p>Aguarde o Supabase finalizar a criação (leva alguns segundos).</p> <p>Depois vá até a aba <b>Table Editor</b> e crie uma nova tabela chamada:</p> <p><b>users</b></p> <p>Adicione as seguintes colunas:</p> <p>- <b>id</b> → tipo: integer, habilitar auto-increment e primary key</p> <p>- <b>name</b> → tipo: text</p> <p>- <b>email</b> → tipo: text</p> <p>Salve a tabela para que a API consiga inserir dados nela.</p> </div>
-<h3>Passo 18 - Execute a aplicação</h3> <div class="code-container"> <p>Agora rode sua API com o comando:</p> <pre><code class="language-python">uvicorn main:app --reload</code></pre><button class="btn-copy">Copiar Código</button> <p>Acesse no navegador:</p> <p>http://127.0.0.1:8000/docs</p> <p>Lá você pode testar todos os endpoints de forma interativa.</p> </div>
-<h3>Passo 19 - Entenda o fluxo completo</h3> <div class="code-container"> <p>Agora sua aplicação funciona assim:</p> <p>1. Cliente envia requisição (POST /users)</p> <p>2. FastAPI recebe os dados</p> <p>3. Schema valida</p> <p>4. Model organiza</p> <p>5. Supabase salva no banco</p> <p>6. API retorna resposta</p> <p>7. GET /users busca os dados salvos</p> </div>
-
-        <!-- <h3>Passo 8 - Rodar aplicação</h3>
+        <h3>Passo 8 - Rodar</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-venv\\Scripts\\activate        
 python -m uvicorn main:app --reload
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -288,7 +195,35 @@ python -m uvicorn main:app --reload
         <h3>Passo 9 - Testar</h3>
         <ul>
           <li>http://localhost:8000/docs</li>
-        </ul> -->
+        </ul>
+
+        <h2>Comparação MVC vs MVT</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Elemento</th>
+              <th>MVC</th>
+              <th>MVT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Controller</td>
+              <td>Existe separado</td>
+              <td>Fica dentro da View</td>
+            </tr>
+            <tr>
+              <td>View</td>
+              <td>Interface</td>
+              <td>Lógica</td>
+            </tr>
+            <tr>
+              <td>Template</td>
+              <td>Não existe</td>
+              <td>Interface visual</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </main>
 

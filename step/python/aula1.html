@@ -1,1 +1,343 @@
-<p>Em construção</p>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula 1 - REST Api e Configurando uma aplicação com SQLite e FastAPI - IT
+      Step
+    </title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">
+        REST Api e Configurando uma aplicação com SQLite e FastAPI
+      </h4>
+    </header>
+
+    <main class="container">
+      <!-- REST -->
+      <section>
+        <h2>O que é REST?</h2>
+
+        <p>
+          REST (Representational State Transfer) é um padrão arquitetural
+          utilizado para comunicação entre sistemas através do protocolo HTTP.
+        </p>
+
+        <h3>Principais características do REST</h3>
+
+        <ul>
+          <li>Utiliza HTTP</li>
+          <li>Baseado em recursos (resources)</li>
+          <li>Sem estado (stateless)</li>
+          <li>Utiliza JSON para troca de dados</li>
+        </ul>
+
+        <h2>Métodos HTTP no REST</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td>Buscar dados</td>
+            </tr>
+
+            <tr>
+              <td>POST</td>
+              <td>Criar dados</td>
+            </tr>
+
+            <tr>
+              <td>PUT</td>
+              <td>Atualizar dados</td>
+            </tr>
+
+            <tr>
+              <td>DELETE</td>
+              <td>Remover dados</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Exemplo REST com FastAPI</h2>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from fastapi import FastAPI
+
+app = FastAPI()
+
+usuarios = []
+
+@app.get("/usuarios")
+def listar():
+    return usuarios
+
+@app.post("/usuarios")
+def criar(nome: str):
+    usuarios.append(nome)
+    return {"msg": "criado"}
+
+@app.put("/usuarios/{id}")
+def atualizar(id: int, nome: str):
+    usuarios[id] = nome
+    return {"msg": "atualizado"}
+
+@app.delete("/usuarios/{id}")
+def deletar(id: int):
+    usuarios.pop(id)
+    return {"msg": "deletado"}
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+              <h2>Passo a passo: Criando uma API com FastAPI + SQLite</h2>
+
+      <!-- GIT -->
+      <section>
+        <h3>Passo 0 - Versionamento com Git</h3>
+
+        <p>
+          Antes de iniciar o projeto, vamos criar um repositório para versionar
+          o código.
+        </p>
+
+        <h3>Criar repositório no GitHub</h3>
+
+        <ul>
+          <li>Acesse o GitHub</li>
+          <li>Clique em <strong>New repository</strong></li>
+          <li>Nome do repositório: <strong>projeto-python-step</strong></li>
+          <li>Marque a opção <strong>Add a README file</strong></li>
+          <li>
+            Na opção <strong>Add .gitignore</strong>, selecione
+            <strong>Python</strong>
+          </li>
+          <li>Clique em <strong>Create repository</strong></li>
+        </ul>
+
+        <h3>Clonar o repositório</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git clone https://github.com/SEU_USUARIO/projeto-python-step.git
+cd projeto-python-step
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+         <h3>Criar uma nova branch no GitHub</h3> <ul> 
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no site do GitHub</li> 
+          <li>No topo da página, localize o seletor de branch (geralmente mostra <strong>main</strong>)</li>
+          <li>Clique nesse seletor</li>
+          <li>No campo "Find or create branch from main"</li>
+          <li>Digite o nome da nova branch com nome <strong>aula1-fastapi</strong></li>
+          <li>Clique em <strong>Create branch</strong> ou pressione Enter</li>
+          <li>Abra o <strong>VS Code e abra o terminal</strong></li>
+          <li>Acesse o projeto cd projeto-python-step</li>
+          <li>Digite o comando git fetch</li>
+
+       <h3>Acessar a branch pelo VS Code</h3>
+        <ul>
+          <li>Selecione a pasta do projeto <strong>aula1-fastapi</strong> no canto esquerdo inferior do VS Code</li> 
+            <li>No canto inferior esquerdo, clique no nome da branch atual (ex: <strong>main</strong>)</li> 
+            <li>Uma lista de branches será exibida</li> 
+            <li>Selecione a branch que você criou (ex: <strong>aula1-fastapi</strong>)</li>
+            <li>O VS Code irá automaticamente trocar para essa branch</li> 
+            <li>No explorador de arquivos do VS Code, localize a pasta <strong>app</strong></li>
+            <li>Clique com o botão direito na pasta e selecione <strong>Delete</strong> (Excluir)</li>
+            <li>Abra o arquivo <strong>main.py</strong></li>
+            <li>Selecione todo o conteúdo (Ctrl + A)</li>
+            <li>Limpe tudo que está no arquivo</li>
+          </ul>
+      </section>
+
+      <!-- PASSOS API -->
+      <section>
+        <h3>Passo 1 - Criar pasta do projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir projeto_api
+cd projeto_api
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 - Criar ambiente virtual</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+python -m venv venv
+venv\Scripts\activate
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 - Instalar dependências</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install fastapi uvicorn
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- FILTROS -->
+      <section>
+        <h2>Implementando Filtros na sua API</h2>
+
+        <p>
+          Agora vamos estabelecer como criar filtros usando parâmetros de
+          consulta numa API.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from typing import Optional
+
+@app.get("/produtos")
+def listar_produtos(
+    categoria: str = None,
+    preco_min: Optional[float] = None,
+    preco_max: Optional[float] = None
+):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM produtos WHERE 1=1"
+    params = []
+
+    if categoria:
+        query += " AND categoria = ?"
+        params.append(categoria)
+
+    if preco_min:
+        query += " AND preco >= ?"
+        params.append(preco_min)
+
+    if preco_max:
+        query += " AND preco <= ?"
+        params.append(preco_max)
+
+    cursor.execute(query, tuple(params))
+    dados = cursor.fetchall()
+
+    conn.close()
+    return dados
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section>
+        <h2>Resumo do fluxo da aplicação</h2>
+
+        <ul>
+          <li>Usuário faz requisição HTTP</li>
+          <li>FastAPI recebe a requisição</li>
+          <li>API conecta no SQLite</li>
+          <li>Executa query SQL</li>
+          <li>Retorna os dados</li>
+        </ul>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Crie uma função GET que busque apenas o usuário pelo ID</h3>
+            <p>Exemplo da URL: http://localhost:8000/usuarios/1</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+@app.get("/usuarios/{id}")
+def obter_usuario(id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM usuarios WHERE id = ?",
+        (id,)
+    )
+
+    dados = cursor.fetchall()
+
+    conn.close()
+
+    return dados
+              </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html"> Ir para o índice </a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

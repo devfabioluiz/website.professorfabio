@@ -1,241 +1,63 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 4: Arquitetura de Software (parte 2) - Rest API com MVT</title>
+    <title>Aula 5 - Criando API com Django e Django REST Framework</title>
+
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
     <style>
       table {
         border-collapse: collapse;
         width: 100%;
         margin-top: 20px;
       }
+
       th,
       td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
       }
+
       th {
         background-color: #f2f2f2;
       }
     </style>
   </head>
+
   <body>
     <header>
-      <h1>Aula 4</h1>
-      <h4 class="text-center">Arquitetura de Software (parte 2)</h4>
-      <h4 class="text-center">Padrão MVT (Model-View-Template)</h4>
+      <h1>Aula 5</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">
+        Criando uma REST API com Django e Django REST Framework
+      </h4>
     </header>
 
     <main class="container">
       <section>
-        <h2>O que é o padrão MVT?</h2>
+        <h2>O que é Django?</h2>
+
         <p>
-          O padrão MVT (Model-View-Template) é uma variação do MVC muito
-          utilizada em frameworks como Django.
+          Django é um framework web para Python criado para facilitar o
+          desenvolvimento de aplicações web robustas e escaláveis.
         </p>
 
-        <h3>Objetivos do MVT</h3>
+        <p>
+          Ele fornece diversas funcionalidades prontas, como:
+        </p>
+
         <ul>
-          <li>Separar responsabilidades</li>
-          <li>Organizar o código</li>
-          <li>Facilitar manutenção</li>
-        </ul>
-
-        <h3>Model</h3>
-        <p><strong>O que é?</strong> Representa os dados</p>
-        <p><strong>Responsabilidade:</strong> Gerenciar banco e regras</p>
-
-        <h3>View</h3>
-        <p><strong>O que é?</strong> Lógica da aplicação</p>
-        <p><strong>Responsabilidade:</strong> Receber requisição e processar</p>
-
-        <h3>Template</h3>
-        <p><strong>O que é?</strong> Interface visual</p>
-        <p><strong>Responsabilidade:</strong> Exibir HTML</p>
-
-        <h2>Fluxo MVT</h2>
-        <ul>
-          <li>Usuário faz requisição</li>
-          <li>View recebe</li>
-          <li>View chama Model</li>
-          <li>View envia dados para Template</li>
-          <li>Template renderiza resposta</li>
-        </ul>
-
-        <h2>Passo a passo: Criando API com padrão MVT</h2>
-
-        <h3>Passo 1 - Criar repositório no GitHub</h3>
-        <ul>
-          <li>Nome: projeto-python-mvt-step</li>
-          <li>Add README</li>
-          <li>.gitignore Python</li>
-        </ul>
-
-        <h3>Passo 2 - Clonar</h3>
-        <div class="code-container">
-          <pre><code class="language-bash">
-git clone https://github.com/SEU_USUARIO/projeto-python-mvt-step.git
-cd projeto-python-mvt-step
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 3 - Estrutura MVT</h3>
-        <div class="code-container">
-          <pre><code class="language-bash">
-mkdir app
-cd app
-mkdir models views templates
-cd ..
-
-type nul > main.py
-type nul > app\\models\\usuario_model.py
-type nul > app\\views\\usuario_view.py
-type nul > app\\templates\\usuario_template.py
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Estrutura final</h3>
-        <div class="code-container">
-          <pre><code class="language-bash">
-projeto-python-mvt-step/
- ├── main.py
- ├── app/
- │   ├── models/
- │   ├── views/
- │   ├── templates/
-          </code></pre>
-        </div>
-
-        <h3>Passo 4 - Model</h3>
-        <p>Arquivo: app/models/usuario_model.py</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-usuarios = []
-
-def listar():
-    return usuarios
-
-def criar(nome):
-    usuarios.append(nome)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 5 - Template</h3>
-        <p>Arquivo: app/templates/usuario_template.py</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-
-def render(dados):
-    return {"usuarios": dados}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 6 - View</h3>
-        <p>Arquivo: app/views/usuario_view.py</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-from app.models import usuario_model
-from app.templates import usuario_template
-
-
-def listar_view():
-    dados = usuario_model.listar()
-    return usuario_template.render(dados)
-
-
-def criar_view(nome):
-    usuario_model.criar(nome)
-    return {"msg": "criado"}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 7 - FastAPI</h3>
-        <p>Arquivo: main.py</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-from fastapi import FastAPI
-from app.views import usuario_view
-
-app = FastAPI()
-
-@app.get("/usuarios")
-def listar():
-    return usuario_view.listar_view()
-
-@app.post("/usuarios")
-def criar(nome: str):
-    return usuario_view.criar_view(nome)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 8 - Rodar</h3>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python -m uvicorn main:app --reload
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 9 - Testar</h3>
-        <ul>
-          <li>http://localhost:8000/docs</li>
-        </ul>
-
-        <h2>Comparação MVC vs MVT</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Elemento</th>
-              <th>MVC</th>
-              <th>MVT</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Controller</td>
-              <td>Existe separado</td>
-              <td>Fica dentro da View</td>
-            </tr>
-            <tr>
-              <td>View</td>
-              <td>Interface</td>
-              <td>Lógica</td>
-            </tr>
-            <tr>
-              <td>Template</td>
-              <td>Não existe</td>
-              <td>Interface visual</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </main>
-
-    <footer>
-      <div class="button-container">
-        <button class="btn-print" onclick="window.print()">Imprimir</button>
-      </div>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
-      </div>
-    </footer>
-
-    <script src="../../scripts/copy-clipboard.js"></script>
-  </body>
+          <li>Sistema de rotas</li>
+          <li>ORM para banco de dados</li>
 </html>
