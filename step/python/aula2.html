@@ -1,16 +1,23 @@
 <!doctype html>
-<html lang="en">
+
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 : Arquitetura de Software (parte 2) - Rest API com MVC</title>
+    <title>Aula 2 : Arquitetura de Software - Rest API com MVC</title>
+
+    ```
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
     <style>
@@ -24,7 +31,6 @@
       td {
         border: 1px solid #ddd;
         padding: 8px;
-        text-align: left;
       }
 
       th {
@@ -37,404 +43,428 @@
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">Arquitetura de Software (parte 1)</h4>
-      <h4 class="text-center">Padrão MVC (Model-View-Controller)</h4>
+      <h4 class="text-center">Rest API com MVC</h4>
     </header>
 
     <main class="container">
       <section>
         <h2>Arquitetura de Sistemas</h2>
+
         <p>
-          Arquitetura define como os componentes de um sistema são organizados e
-          como eles se comunicam.
+          Arquitetura de software define como os componentes de um sistema são
+          organizados e como eles se comunicam entre si.
+        </p>
+
+        <p>
+          Uma boa arquitetura permite que o sistema seja mais fácil de manter,
+          evoluir e escalar.
         </p>
 
         <h2>Padrão MVC</h2>
 
-        <h3>1. O que é o padrão MVC?</h3>
+        <h3>1. O que é MVC?</h3>
+
+        <p>MVC significa <strong>Model - View - Controller</strong>.</p>
+
         <p>
-          MVC (Model-View-Controller) é um padrão que separa responsabilidades
-          em três camadas.
+          Esse padrão organiza o sistema em três camadas com responsabilidades
+          diferentes.
         </p>
 
         <h3>2. Objetivos do MVC</h3>
+
         <ul>
           <li>Separar responsabilidades</li>
+          <li>Organizar melhor o código</li>
           <li>Facilitar manutenção</li>
-          <li>Organizar código</li>
+          <li>Facilitar crescimento da aplicação</li>
         </ul>
 
         <h3>3. Model</h3>
-        <p><strong>a. O que é?</strong> Representa os dados</p>
-        <p>
-          <strong>b. Responsabilidades:</strong> Gerenciar dados e regras de
-          negócio
-        </p>
+
+        <p><strong>Responsabilidade:</strong> lidar com os dados.</p>
+
+        <ul>
+          <li>Acessar banco de dados</li>
+          <li>Criar registros</li>
+          <li>Buscar registros</li>
+          <li>Atualizar ou deletar dados</li>
+        </ul>
 
         <h3>4. View</h3>
-        <p><strong>a. O que é?</strong> Interface com o usuário</p>
-        <p><strong>b. Responsabilidades:</strong> Exibir dados</p>
+
+        <p><strong>Responsabilidade:</strong> formatar a resposta.</p>
+
+        <ul>
+          <li>Organizar o retorno da API</li>
+          <li>Padronizar respostas</li>
+        </ul>
 
         <h3>5. Controller</h3>
-        <p><strong>a. O que é?</strong> Controla fluxo da aplicação</p>
+
         <p>
-          <strong>b. Responsabilidades:</strong> Receber requisições e chamar
-          Model e View
+          <strong>Responsabilidade:</strong> controlar o fluxo da aplicação.
         </p>
 
-        <h3>6. Exemplo MVC</h3>
         <ul>
-          <li>Model → Banco de dados</li>
-          <li>View → Frontend</li>
-          <li>Controller → API</li>
+          <li>Receber requisições</li>
+          <li>Chamar models</li>
+          <li>Retornar resposta via view</li>
         </ul>
 
-        <h2>Passo a passo: Criando uma API em padrão MVC com FastAPI</h2>
+        <h2>Exemplo simplificado</h2>
 
-        <h3>Passo 1 - Criar uma nova branch no GitHub</h3>
         <ul>
-          <li>
-            Acesse o repositório <strong>projeto-python-step</strong> no site do
-            GitHub
-          </li>
-          <li>
-            No topo da página, localize o seletor de branch (geralmente mostra
-            <strong>main</strong>)
-          </li>
-          <li>Clique nesse seletor</li>
-          <li>No campo "Find or create branch from main"</li>
-          <li>Digite o nome da nova branch (ex: <strong>aula-mvc</strong>)</li>
-          <li>Clique em <strong>Create branch</strong> ou pressione Enter</li>
-          <li>
-            Abra o
-            <strong
-              >VS Code e abra o terminal na opção Command Prompt (cmd)
-            </strong>
-          </li>
-          <li>Acesse o projeto cd projeto-python-step</li>
-          <li>Digite o comando git fetch</li>
+          <li><strong>Model</strong> → banco de dados</li>
+          <li><strong>Controller</strong> → lógica da API</li>
+          <li><strong>View</strong> → resposta da API</li>
         </ul>
 
-        <h3>Passo 2 - Acessar a branch pelo VS Code</h3>
+        <hr />
+
+        <h2>Passo a Passo: Criando uma API MVC com FastAPI</h2>
+
+        <h3>Passo 1 — Criar uma branch no GitHub</h3>
+
         <ul>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique no seletor de branch (main)</li>
           <li>
-            Selecione a pasta do projeto <strong>aula-mvc</strong> no canto
-            esquerdo inferior do VS Code
+            Digite o nome <b>aula2-mvc</b> da nova branch na opção "Find or
+            create a branch..."
           </li>
+
           <li>
-            No canto inferior esquerdo, clique no nome da branch atual (ex:
-            <strong>main</strong>)
+            No VS Code, abra o terminal na opção Commando Prompt e execute o
+            seguinte comando:
           </li>
-          <li>Uma lista de branches será exibida</li>
-          <li>
-            Selecione a branch que você criou (ex: <strong>aula-mvc</strong>)
-          </li>
-          <li>O VS Code irá automaticamente trocar para essa branch</li>
-          <li>
-            No explorador de arquivos do VS Code, localize a pasta
-            <strong>app</strong>
-          </li>
-          <li>
-            Clique com o botão direito na pasta e selecione
-            <strong>Delete</strong> (Excluir)
-          </li>
-          <li>Abra o arquivo <strong>main.py</strong></li>
-          <li>Selecione todo o conteúdo (Ctrl + A)</li>
-          <li>Limpe tudo que está no arquivo</li>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+cd projeto_api
+git fetch
+git checkout aula2-mvc </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <li>Delete toda a pasta a pasta app e o arquivo main.py</li>
         </ul>
 
-        <h3>Passo 3 - Criar estrutura MVC</h3>
-        <p>
-          No seu terminal na opção Command Prompt (cmd) dentro do seu projeto
-          rode os seguintes comandos
-        </p>
+        <h3>Passo 2 — Criar estrutura do projeto</h3>
+
+        <p>No terminal Command Prompt do seu VS Code execute:</p>
+
         <div class="code-container">
           <pre><code class="language-bash">
-cd projeto-python-step
 mkdir app
 cd app
-mkdir models views controllers
+
+mkdir controllers
+mkdir models
+mkdir views
+mkdir schemas
+mkdir database
+
 cd ..
 
+type nul > main.py
 type nul > app\models\usuario_model.py
 type nul > app\views\usuario_view.py
 type nul > app\controllers\usuario_controller.py
-          </code></pre>
+type nul > app\schemas\usuario_schema.py
+type nul > app\database\supabase_client.py 
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Estrutura final</h3>
+
         <div class="code-container">
           <pre><code class="language-bash">
 projeto-python-step/
-├── projeto_api
-  ├── main.py
-  ├── app/
-  │   ├── models/
-  │   ├── views/
-  │   ├── controllers/
-          </code></pre>
+│
+├── main.py
+│
+├── app/
+│   ├── controllers/
+│   │   └── usuario_controller.py
+│   │
+│   ├── models/
+│   │   └── usuario_model.py
+│   │
+│   ├── views/
+│   │   └── usuario_view.py
+│   │
+│   ├── schemas/
+│   │   └── usuario_schema.py
+│   │
+│   └── database/
+│       └── supabase_client.py </code></pre>
         </div>
 
-        <h3>Passo 4 - Model (dados)</h3>
+        <h3>Passo 3 — Instalar dependências</h3>
+
         <p>
-          No arquivo: <strong>app/models/usuario_model.py </strong> e insira
-          dentro dele:
+          Em virtude da necessidade de utilizar bibliotecas externas e por
+          questões de versões do Python, execute os seguintes passos manuais e
+          depois execute os seguintes comandos no terminal do CMD:
         </p>
+
+        <b>Passos manuais:</b>
+        <ul>
+          <li>Instale o Python 3.11</li>
+          <li>Baixe: https://www.python.org/downloads/release/python-3119</li>
+          <li>
+            NO site selecione a opção: Windows installer (64-bit) e clique para
+            o download e execute o arquivo python-3.11.9-amd64
+          </li>
+          <li>
+            Siga os passos clicando Próximo e Durante a instalação marque: ✔ Add
+            Python to PATH
+          </li>
+          <li>
+            Agora no terminal do cmd no seu VS Code execute os próximos
+            comandos:
+          </li>
+        </ul>
+
         <div class="code-container">
-          <pre><code class="language-python">
-usuarios = []
-
-
-def listar():
-    return usuarios
-
-
-def criar(nome):
-    usuarios.append(nome)
-          </code></pre>
+          <pre><code class="language-bash">
+py -0
+py -3.11 -m venv venv
+venv\Scripts\activate
+pip install --upgrade pip
+pip install fastapi uvicorn supabase </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 - View (resposta)</h3>
+        <h3>Passo 4 — Conexão com Supabase</h3>
+
         <p>
-          No arquivo: <strong>app/views/usuario_view.py</strong> e insira dentro
-          dele:
+          Entre no arquivo <strong>supabase_client.py</strong> e coloque as
+          credenciais:
         </p>
+
         <div class="code-container">
           <pre><code class="language-python">
+# app/database/supabase_client.py
+import requests
 
-def resposta_sucesso(msg):
-    return {"msg": msg}
-          </code></pre>
+SUPABASE_URL = "https://xyzcompany.supabase.co"
+SUPABASE_KEY = "sb_secret_XXXX"
+
+supabase = {
+    "url": SUPABASE_URL,
+    "key": SUPABASE_KEY
+}
+
+# ou se quiser criar um helper para requests
+def supabase_request(path, method="GET", data=None):
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    url = f"{SUPABASE_URL}/{path}"
+    if method.upper() == "GET":
+        return requests.get(url, headers=headers)
+    elif method.upper() == "POST":
+        return requests.post(url, json=data, headers=headers)
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 - Controller (regras)</h3>
+        <h3>Passo 5 — Criar Schema (validação)</h3>
+
         <p>
-          No arquivo:
-          <strong>app/controllers/usuario_controller.py</strong> e insira dentro
-          dele:
+          Entre no arquivo <strong>usuario_schema.py</strong> e coloque as
+          credenciais:
         </p>
+
         <div class="code-container">
           <pre><code class="language-python">
+
+from pydantic import BaseModel
+
+class UsuarioCreate(BaseModel):
+nome: str </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Model (acesso aos dados)</h3>
+
+        <p>
+          Entre no arquivo <strong>app/models/usuario_model.py</strong> e coloque o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+
+from app.database.supabase_client import supabase
+
+def listar_usuarios():
+response = supabase.table("usuarios").select("*").execute()
+return response.data
+
+def criar_usuario(nome):
+response = supabase.table("usuarios").insert({"nome": nome}).execute()
+return response.data </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — View (resposta da API)</h3>
+
+        <p>
+          Entre no arquivo <strong>app/views/usuario_view.py</strong> e coloque o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+
+def resposta_sucesso(msg, data=None):
+return {
+"status": "sucesso",
+"mensagem": msg,
+"dados": data
+} </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Controller</h3>
+
+        <p>
+          Entre no arquivo <stron>app/controllers/usuario_controller.py</strong> e coloque o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+
 from app.models import usuario_model
 from app.views import usuario_view
 
+def listar():
+usuarios = usuario_model.listar_usuarios()
+return usuario_view.resposta_sucesso("Lista de usuários", usuarios)
 
-def listar_usuarios():
-    return usuario_model.listar()
-
-
-def criar_usuario(nome):
-    usuario_model.criar(nome)
-    return usuario_view.resposta_sucesso("Usuário criado")
-          </code></pre>
+def criar(nome):
+usuario = usuario_model.criar_usuario(nome)
+return usuario_view.resposta_sucesso("Usuário criado", usuario) </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 7 - Integrar com FastAPI</h3>
-        <p>Dentro do arquivo <strong>main.py</strong>insira o código abaixo:</p>
+        <h3>Passo 9 — Integrar com FastAPI</h3>
+
+         <p>
+          Entre no arquivo <stron>main.py</strong> e coloque o código abaixo:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-python">
+
 from fastapi import FastAPI
 from app.controllers import usuario_controller
-
-app = FastAPI()
-
-@app.get("/usuarios")
-def listar():
-    return usuario_controller.listar_usuarios()
-
-@app.post("/usuarios")
-def criar(nome: str):
-    return usuario_controller.criar_usuario(nome)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 8 - Crie o banco de dados da nossa aplicação</h3>
-        <div class="code-container">
-          <p>
-            Entre no site https://supabase.com e crie uma conta utilizando o
-            login do github
-          </p>
-          <p>Crie o banco de dados db-projeto-python-step</p>
-          <p>
-            Crie a tabela usuarios com as colunas id (auto-increment) e nome
-            (string)
-          </p>
-        </div>
-
-        <h3>Passo 9 - Instale as dependências do projeto</h3>
-        <div class="code-container">
-          <p>
-            Antes de tudo, você precisa instalar as bibliotecas necessárias para
-            rodar sua API.
-          </p>
-          <p>
-            Abra o terminal na opção Command Prompt (cmd) dentro da pasta do
-            projeto e execute:
-          </p>
-          <pre><code class="language-python">pip install fastapi uvicorn supabase</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-          <p><b>fastapi</b>: framework para criar APIs rápidas</p>
-          <p><b>uvicorn</b>: servidor para rodar sua aplicação</p>
-          <p><b>supabase</b>: cliente Python para conectar com o banco</p>
-        </div>
-        <h3>Passo 10 - Crie a estrutura do projeto</h3>
-        <div class="code-container">
-          <p>Organize seus arquivos para manter o projeto limpo e escalável:</p>
-          <pre><code class="language-python"> project/ │── main.py │── database.py │── models.py │── schemas.py </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-          <p>
-            Cada arquivo terá uma responsabilidade específica (boa prática
-            profissional).
-          </p>
-        </div>
-        <h3>Passo 11 - Configure a conexão com o Supabase</h3>
-        <div class="code-container">
-          <p>
-            Crie o arquivo <b>database.py</b> para centralizar a conexão com o
-            banco.
-          </p>
-          <p>Copie sua URL e chave no painel do Supabase.</p>
-          <pre><code class="language-python"> from supabase import create_client
-
-SUPABASE_URL = "https://SEU-PROJETO.supabase.co
-"
-SUPABASE_KEY = "SUA-CHAVE-ANON"
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-
-          <p>
-            Esses dados ficam no painel do Supabase em <b>Settings → API</b>.
-          </p>
-        </div>
-        <h3>Passo 12 - Crie o model da aplicação</h3>
-        <div class="code-container">
-          <p>
-            O model representa como os dados são estruturados dentro da
-            aplicação.
-          </p>
-          <p>Crie o arquivo <b>models.py</b>:</p>
-          <pre><code class="language-python"> class UserModel: def __init__(self, name: str, email: str): self.name = name self.email = email
-def to_dict(self):
-    return {
-        "name": self.name,
-        "email": self.email
-    }
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-          <p>
-            Esse método <b>to_dict()</b> é importante para enviar os dados ao
-            Supabase.
-          </p>
-        </div>
-        <h3>Passo 13 - Crie o schema para validação</h3>
-        <div class="code-container">
-          <p>
-            Os schemas garantem que os dados recebidos pela API estejam
-            corretos.
-          </p>
-          <p>Crie o arquivo <b>schemas.py</b>:</p>
-          <pre><code class="language-python"> from pydantic import BaseModel
-
-class UserCreate(BaseModel):
-name: str
-email: str
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-
-          <p>
-            Se o usuário enviar dados inválidos, o FastAPI já retorna erro
-            automaticamente.
-          </p>
-        </div>
-        <h3>Passo 14 - Crie a API com FastAPI</h3>
-        <div class="code-container">
-          <p>Agora criamos o arquivo principal da aplicação: <b>main.py</b>.</p>
-          <pre><code class="language-python"> from fastapi import FastAPI
+from app.schemas.usuario_schema import UsuarioCreate
 
 app = FastAPI()
 
 @app.get("/")
 def home():
-return {"message": "API rodando 🚀"}
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
+return {"msg": "API funcionando 🚀"}
 
-          <p>
-            Esse endpoint serve apenas para testar se a API está funcionando.
-          </p>
-        </div>
-        <h3>Passo 15 - Crie o endpoint para inserir dados</h3>
-        <div class="code-container">
-          <p>Vamos criar um endpoint para cadastrar usuários no banco.</p>
-          <pre><code class="language-python"> from database import supabase from models import UserModel from schemas import UserCreate
+@app.get("/usuarios")
+def listar_usuarios():
+return usuario_controller.listar()
 
-@app.post("/users")
-def create_user(user: UserCreate):
-user_model = UserModel(user.name, user.email)
+@app.post("/usuarios")
+def criar_usuario(usuario: UsuarioCreate):
+return usuario_controller.criar(usuario.nome) </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-response = supabase.table("users").insert(user_model.to_dict()).execute()
+        <h3>Passo 10 — Criar banco no Supabase</h3>
 
-return response.data
-</code></pre>
+        <p>Acesse:</p>
+
+        <p><strong>https://supabase.com</strong></p>
+
+        <p>Crie um projeto chamado:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">db-projeto-python-step</code></pre>
+        </div>
+
+        <p>Crie a tabela:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">usuarios</code></pre>
+        </div>
+
+        <table>
+          <tr>
+            <th>Coluna</th>
+            <th>Tipo</th>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>integer (auto increment)</td>
+          </tr>
+          <tr>
+            <td>nome</td>
+            <td>text</td>
+          </tr>
+        </table>
+
+        <p>Agora no Suppabase procure pelo Projects Settings e entre em Data API e depois copie o API URL ele geralmente começa assim: <strong>https://...</strong></p>
+
+        <p>Agora volte ao Projects Settings e entre em API Keys e copie a secret key. Ele geralmente começa assim: <strong>sb_secret_...</strong></p>
+
+         <p>Agora volte ao arquivo <strong>supabase_client.py</strong> e cole as credenciais do seu projeto nos campos SUPABASE_URL e SUPABASE_KEY</p>
+
+        <h3>Passo 11 — Executar a aplicação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+
+uvicorn main:app --reload </code></pre>
           <button class="btn-copy">Copiar Código</button>
-          <p>Fluxo:</p>
-          <p>1. Recebe dados → 2. Valida → 3. Converte → 4. Salva no banco</p>
         </div>
-        <h3>Passo 16 - Crie o endpoint para listar dados</h3>
+
+        <p>Acesse no navegador:</p>
+
         <div class="code-container">
-          <p>Agora vamos buscar os dados do banco:</p>
-          <pre><code class="language-python"> @app.get("/users") def get_users(): response = supabase.table("users").select("*").execute() return response.data </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-          <p>Esse endpoint retorna todos os usuários cadastrados.</p>
+          <pre><code class="language-bash">
+
+http://127.0.0.1:8000/docs </code></pre>
         </div>
-        <h3>Passo 17 - Crie o banco de dados da nossa aplicação</h3>
-        <div class="code-container">
-          <p>
-            Acesse o site <b>https://supabase.com</b> e crie sua conta
-            (recomendado usar GitHub).
-          </p>
-          <p>Depois clique em <b>New Project</b> e crie um projeto chamado:</p>
-          <p><b>db-projeto-python-step</b></p>
-          <p>Aguarde o Supabase finalizar a criação (leva alguns segundos).</p>
-          <p>
-            Depois vá até a aba <b>Table Editor</b> e crie uma nova tabela
-            chamada:
-          </p>
-          <p><b>users</b></p>
-          <p>Adicione as seguintes colunas:</p>
-          <p>
-            - <b>id</b> → tipo: integer, habilitar auto-increment e primary key
-          </p>
-          <p>- <b>name</b> → tipo: text</p>
-          <p>- <b>email</b> → tipo: text</p>
-          <p>Salve a tabela para que a API consiga inserir dados nela.</p>
-        </div>
-        <h3>Passo 18 - Execute a aplicação</h3>
-        <div class="code-container">
-          <p>Agora rode sua API com o comando:</p>
-          <pre><code class="language-python">uvicorn main:app --reload</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-          <p>Acesse no navegador:</p>
-          <p>http://127.0.0.1:8000/docs</p>
-          <p>Lá você pode testar todos os endpoints de forma interativa.</p>
-        </div>
-        <h3>Passo 19 - Entenda o fluxo completo</h3>
-        <div class="code-container">
-          <p>Agora sua aplicação funciona assim:</p>
-          <p>1. Cliente envia requisição (POST /users)</p>
-          <p>2. FastAPI recebe os dados</p>
-          <p>3. Schema valida</p>
-          <p>4. Model organiza</p>
-          <p>5. Supabase salva no banco</p>
-          <p>6. API retorna resposta</p>
-          <p>7. GET /users busca os dados salvos</p>
-        </div>
+
+        <h3>Passo 12 — Testar a aplicação usando Postman</h3>
+
+        <ul>
+          <li>Abra o Postman e clique em New e depois em HTTP</li>
+          <li>Dentro de "Enter URL..." cole o seguinte CURL: </li>
+          <li>
+            <div class="code-container">
+              <pre>
+                <code class="language-bash">
+                  curl -X POST "http://127.0.0.1:8000/usuarios" \
+-H "Content-Type: application/json" \
+-d '{"nome": "Teste"}'
+                </code>
+              </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </li>
+        </ul>
+
+        <p>Faça o mesmo fluxo acima mas com esse outro CURL:</p>
+         <div class="code-container">
+              <pre>
+                <code class="language-bash">
+                  curl -X GET "http://127.0.0.1:8000/usuarios"
+                </code>
+              </pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
       </section>
     </main>
 
@@ -442,6 +472,7 @@ return response.data
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
+
       <div class="button-container">
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
