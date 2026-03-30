@@ -156,6 +156,22 @@ strong {
   text-decoration: underline;
 }
 
+.gabarito {
+  display: none;
+}
+
+.btn-gabarito {
+  color: #d13758;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #e41f1f;
+  align-items: center;
+}
+
 .btn-print-simplificado {
   color: #007bff;
 }
@@ -172,6 +188,10 @@ strong {
 
 .btn-indice:hover {
   background-color: #007bff;
+  color: #fff;
+}
+.btn-gabarito:hover {
+  background-color: #d87c90;
   color: #fff;
 }
 

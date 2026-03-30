@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 - REST Api e Configurando uma aplicação com SQLite e
-              FastAPI - IT Step</title>
+    <title>
+      Aula 2 - REST Api e Configurando uma aplicação com SQLite e FastAPI - IT
+      Step
+    </title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -36,84 +38,26 @@
     <header>
       <h1>Aula 3</h1>
       <h4 class="text-center">Python Backend</h4>
-      <h4 class="text-center">REST Api e Configurando uma aplicação com SQLite e
-              FastAPI (parte 2)</h4>
+      <h4 class="text-center">
+        Usando Filtros e Tratamento de Erros numa aplicação com SQLite e FastAPI
+        (parte 2)
+      </h4>
     </header>
 
     <main class="container">
-
-      <section>
-        <h2>Implementação de Filtros numa API</h2>
-        <p>Continuando nossa aula anterior, agora vamos seguir com a implementação da API REST com FastAPI.</p>
-        <p>Agora vamos estabelecer como criar filtros usando parâmetros de consulta numa API</p>
-      </section> 
-      
-      <section> 
-    <div class="code-container">
-          <pre>
-          <code class="language-python">
-from typing import Optional
-
-from fastapi import FastAPI
-import sqlite3
-
-# IMPORTANTE: executa a criação do banco/tabela
-import app.database.db
-
-app = FastAPI()
-@app.get("/produtos")
-def listar_produtos(
-    categoria: str = None,
-    preco_min: Optional[float] = None,
-    preco_max: Optional[float] = None
-):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    query = "SELECT * FROM produtos WHERE 1=1"
-    params = []
-
-    if categoria:
-        query += " AND categoria = ?"
-        params.append(categoria)
-
-    if preco_min:
-        query += " AND preco >= ?"
-        params.append(preco_min)
-
-    if preco_max:
-        query += " AND preco <= ?"
-        params.append(preco_max)
-
-    cursor.execute(query, tuple(params))
-    dados = cursor.fetchall()
-
-    conn.close()
-    return dados
-          </code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-      </section>
-
       <section>
         <h2>Dever de Casa</h2>
-         <div id="question-container-casa">
-        <div class="question">
-          <b>(EM CONSTRUÇÃO)</b>
-          <p>
-            (EM CONSTRUÇÃO)
-          </p>
-        </div>
+        <div id="question-container-casa">
+          <div class="question">
+            <b>(EM CONSTRUÇÃO)</b>
+            <p>(EM CONSTRUÇÃO)</p>
+          </div>
 
-        <div class="question">
-          <b>Gabarito:</b>
-          <p>
-           (EM CONSTRUÇÃO)
-          </p>
+          <div class="question">
+            <b>Gabarito:</b>
+            <p>(EM CONSTRUÇÃO)</p>
+          </div>
         </div>
-
-      </div>
       </section>
     </main>
 
