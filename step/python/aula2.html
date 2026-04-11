@@ -477,6 +477,70 @@ http://127.0.0.1:8000/docs </code></pre>
               </pre>
               <button class="btn-copy">Copiar Código</button>
             </div>
+
+                  <h3>Passo 13 - Evitar deixar expostos seus dados de acesso</h3>
+
+         <p>
+          Para evitarmos problemas de acessos indevidos ou o próprio github não deixar subirmos nossa aplicação por estar expondo seus dados de acesso ao supabase, faremos a inserção dos dados pela criação do que chamamos de variável de ambiente (.env)
+         </p>
+         <div class="code-container">
+          <pre><code class="language-bash">pip install python-dotenv
+type nul > .env</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+         </div>
+         <p>Agora dentro do arquivo <b>.env</b> coloque o código abaixo:</p>
+         <div class="code-container">
+          <pre><code class="language-bash">SUPABASE_URL = "https://xyzcompany.supabase.co"
+SUPABASE_KEY = "sb_secret_XXXX"</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+         </div>
+         <p>Agora adicione o .env no seu arquivo <b>.gitignore</b></p>
+         <p>Agora adicione em <b>supabase_client.py</b> o código abaixo:</p>
+         <div class="code-container"><pre><code class="language-python">
+# app/database/supabase_client.py
+
+import os
+import requests
+from dotenv import load_dotenv
+
+# Carrega variáveis do .env
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase = {
+    "url": SUPABASE_URL,
+    "key": SUPABASE_KEY
+}
+
+# ou se quiser criar um helper para requests
+def supabase_request(path, method="GET", data=None):
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+    url = f"{SUPABASE_URL}/{path}"
+    if method.upper() == "GET":
+        return requests.get(url, headers=headers)
+    elif method.upper() == "POST":
+        return requests.post(url, json=data, headers=headers)
+            </code>
+          </pre>
+         </div>
+
+         <h4>14 - Subindo para o git nossas alterações:</h4>
+         <p>
+          Agora vamos subir para salvar na nuvem do git nossos dados:
+         </p>
+         <div class="code-container">
+          <pre><code class="language-bash">
+git commit -m "minha aula 2 de MVC em python"
+git
+          </code></pre>
+         </div>
       </section>
     </main>
 
