@@ -233,7 +233,7 @@ projeto-python-step/
 py -0
 py -3.11 -m venv venv
 venv\Scripts\activate
-pip install --upgrade pip
+python.exe -m pip install --upgrade pip
 pip install fastapi uvicorn supabase </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -263,13 +263,15 @@ def supabase_request(path, method="GET", data=None):
     headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
     }
     url = f"{SUPABASE_URL}/{path}"
     if method.upper() == "GET":
         return requests.get(url, headers=headers)
     elif method.upper() == "POST":
         return requests.post(url, json=data, headers=headers)
+
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -299,16 +301,26 @@ nome: str </code></pre>
 
         <div class="code-container">
           <pre><code class="language-python">
-
-from app.database.supabase_client import supabase
-
+from app.database.supabase_client import supabase_request
 def listar_usuarios():
-response = supabase.table("usuarios").select("*").execute()
-return response.data
+    response = supabase_request(
+        "rest/v1/usuarios?select=*",
+        method="GET"
+    )
+    if response.status_code != 200:
+        raise Exception(f"Erro ao listar usuários: {response.text}")
+    return response.json()
 
 def criar_usuario(nome):
-response = supabase.table("usuarios").insert({"nome": nome}).execute()
-return response.data </code></pre>
+    response = supabase_request(
+        "rest/v1/usuarios",
+        method="POST",
+        data={"nome": nome}
+    )
+    if response.status_code not in (200, 201):
+        raise Exception(f"Erro ao criar usuário: {response.text}")
+    return response.json()
+          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
