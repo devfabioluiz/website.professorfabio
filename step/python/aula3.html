@@ -3,282 +3,245 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 3: Arquitetura de Software - Django MVT</title>
+    <title>Aula 2 : Autenticação em APIs - Tokens e API Keys</title>
+
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-      }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-    </style>
   </head>
+
   <body>
     <header>
-      <h1>Aula 3</h1>
-      <h4 class="text-center">Arquitetura de Software</h4>
-      <h4 class="text-center">Padrão MVT (Model-View-Template) com Django</h4>
+      <h1>Aula 3 (REMODELAR)</h1>
+      <h4 class="text-center">Autenticação em APIs</h4>
+      <h4 class="text-center">Token, API Key e Login com Supabase</h4>
     </header>
 
     <main class="container">
       <section>
-        <h2>O que é o padrão MVT?</h2>
+        <h2>Autenticação em APIs</h2>
+
         <p>
-          O padrão MVT é usado pelo Django para organizar aplicações. Ele é
-          similar ao MVC, mas com pequenas diferenças:
+          Autenticação é o processo de verificar quem está acessando uma API.
         </p>
 
+        <h3>Exemplo de header</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+Authorization: Bearer SEU_TOKEN_AQUI
+</code></pre>
+        </div>
+
+        <hr />
+
+        <h2>Passo a Passo</h2>
+
+        <h3>Passo 1 — Criar uma branch baseada na aula2-mvc</h3>
+
         <ul>
+          <li>Acesse o repositório no GitHub</li>
+
           <li>
-            <strong>Model:</strong> Representa os dados e regras de negócio.
-          </li>
-          <li>
-            <strong>View:</strong> Contém a lógica da aplicação, recebe
-            requisições e processa dados.
-          </li>
-          <li>
-            <strong>Template:</strong> Define a interface visual, renderizando
-            HTML.
+            No VS Code, abra o terminal na opção Command Prompt e execute os
+            comandos abaixo:
           </li>
         </ul>
 
-        <h2>Fluxo MVT no Django</h2>
-        <ol>
-          <li>Usuário faz uma requisição HTTP</li>
-          <li>Django direciona para a <strong>View</strong></li>
-          <li>View consulta os <strong>Models</strong> se necessário</li>
-          <li>View envia os dados para um <strong>Template</strong></li>
-          <li>Template renderiza a resposta HTML para o usuário</li>
-        </ol>
-
-        <h2>Passo a passo: Criando uma API de usuários com Django</h2>
-
-        <h3>Passo 1 — Criar projeto Django</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-# Instale Django se ainda não tiver
-pip install django djangorestframework
-
-# Criar projeto
-django-admin startproject projeto_django_mvt
-
-cd projeto_django_mvt
-
-# Criar app de usuários
-python manage.py startapp usuarios
-          </code></pre>
+git fetch
+git checkout aula2-mvc
+git pull
+git checkout -b aula3-mvc-login-autenticacao
+cd projeto_api
+cd app
+mkdir auth
+    </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2 — Estrutura do projeto</h3>
-        <pre><code class="language-bash">
-projeto_django_mvt/
- ├── manage.py
- ├── projeto_django_mvt/
- │    ├── settings.py
- │    ├── urls.py
- │    └── wsgi.py
- └── usuarios/
-      ├── models.py
-      ├── views.py
-      ├── urls.py
-      ├── serializers.py
-      └── templates/usuarios/
-            └── lista.html
-        </code></pre>
+        <h3>Passo 2 — Dependências</h3>
 
-        <h3>Passo 3 — Model</h3>
-        <p>Arquivo: <code>usuarios/models.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-bash">pip install requests python-jose passlib[bcrypt]
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Schema</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-from django.db import models
+from pydantic import BaseModel
 
-class Usuario(models.Model):
-    nome = models.CharField(max_length=100)
+class UsuarioCreate(BaseModel):
+    email: str
+    senha: str
 
-    def __str__(self):
-        return self.nome
-          </code></pre>
+class Login(BaseModel):
+    email: str
+    senha: str
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 4 — Serializer (para API REST)</h3>
-        <p>Arquivo: <code>usuarios/serializers.py</code></p>
+        ---
+
+        <h3>Passo 6 — Model</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-from rest_framework import serializers
-from .models import Usuario
+import requests
+from app.database.supabase_client import SUPABASE_URL, SUPABASE_KEY
 
-class UsuarioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Usuario
-        fields = '__all__'
-          </code></pre>
+def cadastrar_usuario(email, senha):
+    url = f"{SUPABASE_URL}/auth/v1/signup"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json"
+    }
+    data = {"email": email, "password": senha}
+    return requests.post(url, json=data, headers=headers).json()
+
+def login_usuario(email, senha):
+    url = f"{SUPABASE_URL}/auth/v1/token?grant_type=password"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json"
+    }
+    data = {"email": email, "password": senha}
+    return requests.post(url, json=data, headers=headers).json()
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 — View</h3>
-        <p>Arquivo: <code>usuarios/views.py</code></p>
+        ---
+
+        <h3>Passo 7 — Controller</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-from django.shortcuts import render
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import Usuario
-from .serializers import UsuarioSerializer
+from app.models import usuario_model
 
-# API: listar usuários
-@api_view(['GET'])
-def listar_usuarios(request):
-    usuarios = Usuario.objects.all()
-    serializer = UsuarioSerializer(usuarios, many=True)
-    return Response(serializer.data)
+def cadastrar(email, senha):
+    return usuario_model.cadastrar_usuario(email, senha)
 
-# API: criar usuário
-@api_view(['POST'])
-def criar_usuario(request):
-    serializer = UsuarioSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"msg": "Usuario criado"})
-    return Response(serializer.errors)
-        </code></pre>
+def login(email, senha):
+    return usuario_model.login_usuario(email, senha)
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 — Template</h3>
-        <p>Arquivo: <code>usuarios/templates/usuarios/lista.html</code></p>
-        <div class="code-container">
-          <pre><code class="language-html">
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Lista de Usuários</title>
-  </head>
-  <body>
-    <h1>Usuários</h1>
-    <ul>
-      {% for usuario in usuarios %}
-        <li>{{ usuario.nome }}</li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+        ---
 
-        <h3>Passo 7 — View para template</h3>
-        <p>Arquivo: <code>usuarios/views.py</code></p>
+        <h3>Passo 8 — Middleware Token</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-def listar_template(request):
-    usuarios = Usuario.objects.all()
-    return render(request, 'usuarios/lista.html', {'usuarios': usuarios})
-        </code></pre>
+from fastapi import Header, HTTPException
+
+def verificar_token(authorization: str = Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Token não enviado")
+
+    token = authorization.replace("Bearer ", "")
+
+    if len(token) < 10:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+    return token
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 8 — URLs</h3>
-        <p>Arquivo: <code>usuarios/urls.py</code></p>
+        ---
+
+        <h3>Passo 9 — Rotas</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-from django.urls import path
-from . import views
+from fastapi import FastAPI, Depends
+from app.controllers import usuario_controller
+from app.schemas.usuario_schema import UsuarioCreate, Login
+from app.auth.auth import verificar_token
 
-urlpatterns = [
-    path('api/usuarios/', views.listar_usuarios),
-    path('api/usuarios/criar/', views.criar_usuario),
-    path('usuarios/', views.listar_template),
-]
-        </code></pre>
+app = FastAPI()
+
+@app.post("/cadastro")
+def cadastro(user: UsuarioCreate):
+    return usuario_controller.cadastrar(user.email, user.senha)
+
+@app.post("/login")
+def login(user: Login):
+    return usuario_controller.login(user.email, user.senha)
+
+@app.get("/perfil")
+def perfil(token: str = Depends(verificar_token)):
+    return {"msg": "Usuário autenticado"}
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Em <code>projeto_django_mvt/urls.py</code>, adicione:</p>
+        ---
+
+        <h3>Passo 10 — API Key</h3>
+
         <div class="code-container">
           <pre><code class="language-python">
-from django.contrib import admin
-from django.urls import path, include
+from fastapi import Header, HTTPException
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('usuarios.urls')),
-]
-        </code></pre>
+API_KEY = "123456"
+
+def verificar_api_key(x_api_key: str = Header(None)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="API Key inválida")
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 9 — Migrar banco e rodar</h3>
+        ---
+
+        <h3>Passo 11 — Teste com curl</h3>
+
         <div class="code-container">
           <pre><code class="language-bash">
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
-          </code></pre>
+curl -X POST http://127.0.0.1:8000/login \
+-H "Content-Type: application/json" \
+-d '{"email":"teste@email.com","senha":"123456"}'
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 10 — Testar</h3>
-        <ul>
-          <li>API REST: <code>http://localhost:8000/api/usuarios/</code></li>
-          <li>Template: <code>http://localhost:8000/usuarios/</code></li>
-        </ul>
+        <div class="code-container">
+          <pre><code class="language-bash">
+curl -X GET http://127.0.0.1:8000/perfil \
+-H "Authorization: Bearer SEU_TOKEN"
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-        <h2>Comparação MVC vs MVT</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Elemento</th>
-              <th>MVC</th>
-              <th>MVT</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Controller</td>
-              <td>Separado</td>
-              <td>Fica dentro da View</td>
-            </tr>
-            <tr>
-              <td>View</td>
-              <td>Lógica + interface</td>
-              <td>Lógica da aplicação</td>
-            </tr>
-            <tr>
-              <td>Template</td>
-              <td>Interface</td>
-              <td>HTML renderizado</td>
-            </tr>
-          </tbody>
-        </table>
+        ---
+
+        <h3>Passo 12 — Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "auth com token"
+git push
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
     </main>
-
-    <footer>
-      <div class="button-container">
-        <button class="btn-print" onclick="window.print()">Imprimir</button>
-      </div>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
-      </div>
-    </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
   </body>

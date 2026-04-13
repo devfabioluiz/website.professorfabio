@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>aula 4: Arquitetura de Software - Django MVT</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>aula 4</h1>
+      <h4 class="text-center">Arquitetura de Software (parte 3) - MVT</h4>
+      <h4 class="text-center">Padrão MVT (Model-View-Template) com Django</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que é o padrão MVT?</h2>
+        <p>
+          O padrão MVT é usado pelo Django para organizar aplicações. Ele é
+          similar ao MVC, mas com pequenas diferenças:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Model:</strong> Representa os dados e regras de negócio.
+          </li>
+          <li>
+            <strong>View:</strong> Contém a lógica da aplicação, recebe
+            requisições e processa dados.
+          </li>
+          <li>
+            <strong>Template:</strong> Define a interface visual, renderizando
+            HTML.
+          </li>
+        </ul>
+
+        <h2>Fluxo MVT no Django</h2>
+        <ol>
+          <li>Usuário faz uma requisição HTTP</li>
+          <li>Django direciona para a <strong>View</strong></li>
+          <li>View consulta os <strong>Models</strong> se necessário</li>
+          <li>View envia os dados para um <strong>Template</strong></li>
+          <li>Template renderiza a resposta HTML para o usuário</li>
+        </ol>
+
+        <h2>Passo a passo: Criando uma API de usuários com Django</h2>
+
+        <h3>Passo 0 — Criar uma branch no GitHub</h3>
+        <ul>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique no seletor de branch (main)</li>
+          <li>
+            Digite o nome <b>aula4-mvt-django</b> da nova branch na opção "Find
+            or create a branch..."
+          </li>
+          <li>
+            No VS Code, abra o terminal na opção Command Prompt e execute o
+            seguinte comando:
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula4-mvt-django
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar projeto Django</h3>
+        <ul>
+          <li>Delete toda a pasta projeto_api do seu projeto</li>
+          <li>Abra o terminal e execute os seguintes comandos:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install django djangorestframework
+django-admin startproject projeto_django_mvt
+cd projeto_django_mvt
+python manage.py startapp usuarios
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O comando <code>startapp</code> cria arquivos como
+          <code>models.py</code> e <code>views.py</code>, mas não cria
+          automaticamente <code>serializers.py</code> nem <code>urls.py</code>.
+          Por isso, precisaremos criá-los manualmente.
+        </p>
+
+        <h3>Passo 2 — Criar arquivos e pastas que o Django não gera sozinho</h3>
+        <p>
+          Agora vamos criar os arquivos e diretórios adicionais usados na aula.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd usuarios
+type nul > serializers.py
+type nul > urls.py
+mkdir templates
+cd templates
+mkdir usuarios
+cd usuarios
+type nul > lista.html
+cd ..\..
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Configurar o Django</h3>
+        <p>Arquivo: <code>projeto_django_mvt/settings.py</code></p>
+        <p>
+          Adicione <code>rest_framework</code> e <code>usuarios</code> em
+          <code>INSTALLED_APPS</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'usuarios',
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Estrutura do projeto</h3>
+        <pre><code class="language-bash">
+projeto_django_mvt/
+ ├── manage.py
+ ├── projeto_django_mvt/
+ │    ├── settings.py
+ │    ├── urls.py
+ │    └── wsgi.py
+ └── usuarios/
+      ├── models.py
+      ├── views.py
+      ├── urls.py
+      ├── serializers.py
+      └── templates/
+           └── usuarios/
+                └── lista.html
+        </code></pre>
+
+        <h3>Passo 5 — Model</h3>
+        <p>Arquivo: <code>usuarios/models.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.db import models
+
+class Usuario(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Serializer (para API REST)</h3>
+        <p>Arquivo: <code>usuarios/serializers.py</code></p>
+        <p>
+          O arquivo <code>serializers.py</code> é usado com o Django REST
+          Framework para transformar os dados do model em JSON e também validar
+          dados recebidos pela API.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework import serializers
+from .models import Usuario
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — View</h3>
+        <p>Arquivo: <code>usuarios/views.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Usuario
+from .serializers import UsuarioSerializer
+
+# API: listar usuários
+@api_view(['GET'])
+def listar_usuarios(request):
+    usuarios = Usuario.objects.all()
+    serializer = UsuarioSerializer(usuarios, many=True)
+    return Response(serializer.data)
+
+# API: criar usuário
+@api_view(['POST'])
+def criar_usuario(request):
+    serializer = UsuarioSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"msg": "Usuário criado"})
+    return Response(serializer.errors)
+
+# Template HTML
+def listar_template(request):
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios/lista.html', {'usuarios': usuarios})
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Criar o template HTML</h3>
+        <p>Arquivo: <code>usuarios/templates/usuarios/lista.html</code></p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Lista de Usuários&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Usuários cadastrados&lt;/h1&gt;
+
+    &lt;ul&gt;
+      {% for usuario in usuarios %}
+        &lt;li&gt;{{ usuario.nome }}&lt;/li&gt;
+      {% empty %}
+        &lt;li&gt;Nenhum usuário cadastrado.&lt;/li&gt;
+      {% endfor %}
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — URLs</h3>
+        <p>Arquivo: <code>usuarios/urls.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('api/usuarios/', views.listar_usuarios),
+    path('api/usuarios/criar/', views.criar_usuario),
+    path('usuarios/', views.listar_template),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Em <code>projeto_django_mvt/urls.py</code>, adicione:</p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('usuarios.urls')),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Migrar banco e rodar</h3>
+        <p>Feche o terminal e abra um novo:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd projeto_django_mvt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 11 — Testar</h3>
+        <ul>
+          <li>
+            API REST (listar): <code>http://localhost:8000/api/usuarios/</code>
+          </li>
+          <li>
+            API REST (criar):
+            <code>http://localhost:8000/api/usuarios/criar/</code>
+          </li>
+          <li>Template HTML: <code>http://localhost:8000/usuarios/</code></li>
+        </ul>
+
+        <h3>Passo 12 — Testar a API com Postman (ou cURL)</h3>
+
+        <p>
+          Agora vamos testar nossa API na prática, enviando requisições HTTP.
+          Você pode usar ferramentas como o Postman, Insomnia ou diretamente
+          pelo terminal com o comando <code>curl</code>.
+        </p>
+
+        <h4>1. Testando listagem de usuários (GET)</h4>
+        <p>Esse endpoint retorna todos os usuários cadastrados:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+curl http://localhost:8000/api/usuarios/
+  </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Resposta esperada (JSON):</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+[]
+  </code></pre>
+        </div>
+
+        <p>Caso já existam usuários cadastrados, você verá algo como:</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+[
+  {
+    "id": 1,
+    "nome": "João"
+  }
+]
+  </code></pre>
+        </div>
+
+        <h4>2. Testando criação de usuário (POST)</h4>
+        <p>Agora vamos enviar dados para criar um novo usuário:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+curl -X POST http://localhost:8000/api/usuarios/criar/ \
+-H "Content-Type: application/json" \
+-d "{\"nome\": \"Maria\"}"
+  </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Resposta esperada:</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "msg": "Usuário criado"
+}
+  </code></pre>
+        </div>
+
+        <h4>3. Testando novamente a listagem</h4>
+        <p>Após criar um usuário, execute novamente o GET:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+curl http://localhost:8000/api/usuarios/
+  </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora o usuário criado deverá aparecer na lista.</p>
+
+        <h4>4. Testando no Postman</h4>
+        <ul>
+          <li>Abra o Postman</li>
+          <li>
+            Crie uma requisição GET para:
+            <code>http://localhost:8000/api/usuarios/</code>
+          </li>
+          <li>
+            Crie uma requisição POST para:
+            <code>http://localhost:8000/api/usuarios/criar/</code>
+          </li>
+          <li>Na aba <b>Body</b>, selecione <b>raw</b> → <b>JSON</b></li>
+          <li>Envie o seguinte conteúdo:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "nome": "Carlos"
+}
+  </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Isso terá o mesmo efeito do comando <code>curl</code>.</p>
+
+        <h3>Último passo — Subindo para o Git nossas alterações</h3>
+        <ul>
+          <li>
+            Abra um novo terminal e agora vamos subir para salvar na nuvem do
+            Git nossos dados:
+          </li>
+        </ul>
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "minha aula 4 de MVT com Django"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>Comparação MVC vs MVT</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Elemento</th>
+              <th>MVC</th>
+              <th>MVT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Controller</td>
+              <td>Separado</td>
+              <td>Fica dentro da View</td>
+            </tr>
+            <tr>
+              <td>View</td>
+              <td>Lógica + interface</td>
+              <td>Lógica da aplicação</td>
+            </tr>
+            <tr>
+              <td>Template</td>
+              <td>Interface</td>
+              <td>HTML renderizado</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
