@@ -232,7 +232,7 @@ botaoDesabilitado = true;
 
         <p>
           Acesse novamente o repositório no GitHub e crie agora uma nova branch
-          com o nome:
+          baseada na branch aula2-diretivas com o nome abaixo:
         </p>
 
         <div class="code-container">
@@ -296,6 +296,10 @@ export class Aula3 {
     alert('Botão clicado com sucesso!');
   }
 
+  habilitarDesabilitarBotao(){
+    this.botaoDesabilitado = !this.botaoDesabilitado;
+  }
+
 }
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -313,6 +317,10 @@ export class Aula3 {
 
 &lt;input [(ngModel)]="nome" placeholder="Digite seu nome" /&gt;
 
+&lt;button (click)="habilitarDesabilitarBotao()"&gt;
+Habilitar Botão
+&lt;/button&gt;
+
 &lt;button (click)="mostrarMensagem()" [disabled]="botaoDesabilitado"&gt;
   Exibir mensagem
 &lt;/button&gt;
@@ -326,22 +334,25 @@ export class Aula3 {
         <h3>Passo 4 — Inserir o componente no template principal</h3>
 
         <p>
-          Entre em <code>app.ts</code> e insira o código abaixo na parte de
-          imports.
+          Entre em <code>app.ts</code> e substitua todo código dentro dele pelo
+          código abaixo:
         </p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Exemplo } from './exemplo/exemplo';
 import { Aula3 } from './aula3/aula3';
+
 @Component({
-    selector: 'app-root', 
-    imports: [RouterOutlet, Exemplo, Aula2, Aula3],
-    templateUrl: './app.html',
-    styleUrl: './app.css'
+  selector: 'app-root',
+  imports: [Aula3],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
+export class App {
+  protected readonly title = signal('controle-estoque');
+}
+
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -373,10 +384,6 @@ import { Aula3 } from './aula3/aula3';
           <li><strong>Two-Way Data Binding</strong> com ngModel</li>
           <li><strong>Event Binding</strong> com click</li>
           <li><strong>Property Binding</strong> com disabled</li>
-          <li><strong>*ngIf</strong> para condição</li>
-          <li><strong>*ngFor</strong> para repetição</li>
-          <li><strong>ngSwitch</strong> para múltiplas condições</li>
-          <li><strong>ngStyle</strong> para estilo dinâmico</li>
           <li><strong>Pipes</strong> para formatação dos dados</li>
         </ul>
 
@@ -440,5 +447,6 @@ git push
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
