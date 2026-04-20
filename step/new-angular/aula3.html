@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3 : Angular - Data Binding e Pipes</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 3</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Data Binding e Pipes</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Ligação de dados no Angular (Data Binding)</h2>
+
+        <h3>6. O que é Data Binding?</h3>
+
+        <p>
+          Data Binding é o mecanismo que permite conectar os dados do componente
+          com o template HTML.
+        </p>
+
+        <p>
+          É graças ao Data Binding que conseguimos exibir valores na tela,
+          capturar eventos do usuário e sincronizar informações entre a
+          interface e a lógica da aplicação.
+        </p>
+
+        <h3>7. Tipos principais de Data Binding</h3>
+
+        <ul>
+          <li><strong>Interpolação</strong></li>
+          <li><strong>Property Binding</strong></li>
+          <li><strong>Event Binding</strong></li>
+          <li><strong>Two-Way Data Binding</strong></li>
+        </ul>
+
+        <h3>8. Interpolação</h3>
+
+        <p>A interpolação é usada para exibir valores do componente no HTML.</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h1&gt;{{ titulo }}&lt;/h1&gt;
+&lt;p&gt;Bem-vindo, {{ nomeUsuario }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          As expressões dentro de <code>{{ }}</code> são avaliadas pelo Angular
+          e exibidas no template.
+        </p>
+
+        <h3>9. Property Binding</h3>
+
+        <p>
+          O Property Binding é usado para enviar valores do componente para
+          propriedades de elementos HTML.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+// No componente temos as variáveis:
+imagemUrl = 'caminho/para/imagem.jpg';
+descricaoImagem = 'Descrição da imagem';
+botaoDesabilitado = true;
+
+&lt;img [src]="imagemUrl" [alt]="descricaoImagem" /&gt;
+&lt;button [disabled]="botaoDesabilitado"&gt;Salvar&lt;/button&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Aqui, o Angular preenche as propriedades do HTML com os valores das
+          variáveis do componente.
+        </p>
+
+        <h3>10. Event Binding</h3>
+
+        <p>
+          O Event Binding permite capturar eventos da interface, como clique,
+          digitação, foco e outros.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;button (click)="mostrarMensagem()"&gt;Clique aqui&lt;/button&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Quando o botão for clicado, o método
+          <strong>mostrarMensagem()</strong> será executado.
+        </p>
+
+        <h3>11. Two-Way Data Binding</h3>
+
+        <p>
+          O Two-Way Data Binding faz uma ligação em dois sentidos: do componente
+          para a interface e da interface para o componente.
+        </p>
+
+        <p>Esse recurso é muito usado em formulários.</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+// No componente temos a variável: nome = '';
+
+&lt;input [(ngModel)]="nome" /&gt;
+&lt;p&gt;Nome digitado: {{ nome }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, tudo o que for digitado no campo de entrada será
+          automaticamente refletido na variável <strong>nome</strong>, e o valor
+          atualizado também aparecerá no parágrafo.
+        </p>
+
+        <p>
+          Para usar <strong>ngModel</strong>, normalmente precisamos importar o
+          <strong>FormsModule</strong> na propriedade
+          <strong>imports</strong> do componente.
+        </p>
+
+        <h2>Pipes em uma aplicação Angular</h2>
+
+        <h3>12. O que são Pipes?</h3>
+
+        <p>
+          Pipes são recursos do Angular usados para transformar dados no
+          template antes de exibi-los ao usuário.
+        </p>
+
+        <p>
+          Em vez de alterar o valor original no componente, o pipe modifica
+          apenas a forma como ele será apresentado na interface.
+        </p>
+
+        <h3>13. Para que servem os Pipes?</h3>
+
+        <ul>
+          <li>Formatar textos</li>
+          <li>Formatar datas</li>
+          <li>Formatar moedas</li>
+          <li>Formatar números</li>
+          <li>Organizar dados para exibição</li>
+        </ul>
+
+        <h3>14. Sintaxe de um Pipe</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+{{ valor | nomeDoPipe }}
+          </code></pre>
+        </div>
+
+        <p>
+          O símbolo <strong>|</strong> indica que o valor será transformado pelo
+          pipe.
+        </p>
+
+        <h3>15. Exemplos de Pipes nativos</h3>
+
+        <ul>
+          <li><strong>uppercase</strong> → deixa o texto em maiúsculo</li>
+          <li><strong>lowercase</strong> → deixa o texto em minúsculo</li>
+          <li><strong>titlecase</strong> → primeira letra maiúscula</li>
+          <li><strong>date</strong> → formata datas</li>
+          <li><strong>currency</strong> → formata valores monetários</li>
+          <li><strong>number</strong> → formata números</li>
+          <li><strong>percent</strong> → formata porcentagem</li>
+        </ul>
+
+        <h3>Exemplo com uppercase</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;{{ nome | uppercase }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h3>Exemplo com date</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;{{ hoje | date:'dd/MM/yyyy' }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h3>Exemplo com currency</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;{{ preco | currency:'BRL' }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h3>16. Encadeando Pipes</h3>
+
+        <p>Também podemos aplicar mais de um pipe em sequência.</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;{{ nomeCompleto | lowercase | titlecase }}&lt;/p&gt;
+          </code></pre>
+        </div>
+      </section>
+      <section>
+        <h2>Passo a Passo: Aplicando data binding e pipes</h2>
+
+        <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula2-binding-pipes
+          </code></pre>
+        </div>
+
+        <p>
+          Depois, no terminal do VSCode, dentro da pasta do projeto, execute:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula2-binding-pipes
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar um novo componente</h3>
+
+        <p>
+          Agora vamos criar um componente para praticar os conceitos desta aula.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c painel
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Inserir a lógica do componente</h3>
+
+        <p>
+          Abra o arquivo <strong>painel.ts</strong> e insira o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-painel',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './painel.html',
+  styleUrl: './painel.css',
+})
+export class Painel {
+  nome = 'Fabio';
+  estaLogado = true;
+  botaoDesabilitado = false;
+  perfil = 'admin';
+  corTexto = 'blue';
+  tamanhoFonte = '22px';
+  hoje = new Date();
+  preco = 199.9;
+
+  produtos = ['Notebook', 'Teclado', 'Mouse', 'Monitor'];
+
+  mostrarMensagem() {
+    alert('Botão clicado com sucesso!');
+  }
+
+  alternarLogin() {
+    this.estaLogado = !this.estaLogado;
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Inserir o template HTML do componente</h3>
+
+        <p>
+          Abra o arquivo <strong>painel.html</strong> e insira o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h1&gt;{{ nome | uppercase }}&lt;/h1&gt;
+
+&lt;input [(ngModel)]="nome" placeholder="Digite seu nome" /&gt;
+
+&lt;p *ngIf="estaLogado"&gt;Usuário logado no sistema&lt;/p&gt;
+&lt;p *ngIf="!estaLogado"&gt;Usuário não está logado&lt;/p&gt;
+
+&lt;button (click)="alternarLogin()"&gt;Alternar login&lt;/button&gt;
+&lt;button (click)="mostrarMensagem()" [disabled]="botaoDesabilitado"&gt;
+  Exibir mensagem
+&lt;/button&gt;
+
+&lt;h2&gt;Lista de produtos&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li *ngFor="let produto of produtos"&gt;
+    {{ produto }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div [ngSwitch]="perfil"&gt;
+  &lt;p *ngSwitchCase="'admin'"&gt;Perfil Administrador&lt;/p&gt;
+  &lt;p *ngSwitchCase="'cliente'"&gt;Perfil Cliente&lt;/p&gt;
+  &lt;p *ngSwitchDefault&gt;Perfil desconhecido&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p [ngStyle]="{ 'color': corTexto, 'font-size': tamanhoFonte }"&gt;
+  Texto estilizado dinamicamente
+</p>
+
+&lt;p&gt;Data atual: {{ hoje | date:'dd/MM/yyyy' }}&lt;/p&gt;
+&lt;p&gt;Preço do produto: {{ preco | currency:'BRL' }}&lt;/p&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Inserir o componente no template principal</h3>
+
+        <p>Entre em <code>app.ts</code> e insira o código abaixo na parte de imports.</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Exemplo } from './exemplo/exemplo';
+import { Painel } from './painel/painel';
+@Component({
+    selector: 'app-root', 
+    imports: [RouterOutlet, Exemplo, Painel],
+    templateUrl: './app.html',
+    styleUrl: './app.css'
+})
+          </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Perceba que toda vez que criarmos um componente, precisamos importá-lo no arquivo principal da aplicação caso queiramos usá-lo dentro do template do <code>app.html</code></p>
+
+        <p>
+          Agora entre no arquivo <strong>app.html</strong>, apague o conteúdo
+          atual e insira:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;app-painel&gt;&lt;/app-painel&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Entendendo o que foi feito</h3>
+
+        <p>Nesse exemplo, aplicamos vários conceitos importantes:</p>
+
+        <ul>
+          <li><strong>Interpolação</strong> para exibir variáveis</li>
+          <li><strong>Two-Way Data Binding</strong> com ngModel</li>
+          <li><strong>Event Binding</strong> com click</li>
+          <li><strong>Property Binding</strong> com disabled</li>
+          <li><strong>*ngIf</strong> para condição</li>
+          <li><strong>*ngFor</strong> para repetição</li>
+          <li><strong>ngSwitch</strong> para múltiplas condições</li>
+          <li><strong>ngStyle</strong> para estilo dinâmico</li>
+          <li><strong>Pipes</strong> para formatação dos dados</li>
+        </ul>
+
+        <h3>Passo 6 — Rodar a aplicação</h3>
+
+        <p>No terminal execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200
+          </code></pre>
+        </div>
+
+        <p>
+          Você verá um exemplo prático reunindo diretivas, ligação de dados e
+          pipes em uma mesma interface.
+        </p>
+
+        <h3>Passo 7 — Testar alterações</h3>
+
+        <p>Faça alguns testes na aplicação:</p>
+
+        <ul>
+          <li>Digite outro nome no campo de entrada</li>
+          <li>Veja o nome sendo atualizado em tempo real</li>
+          <li>Clique no botão para alternar o estado de login</li>
+          <li>Observe os produtos sendo renderizados em lista</li>
+          <li>Veja a data e o valor monetário formatados</li>
+        </ul>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar as alterações no repositório.</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 2 data binding e pipes"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
