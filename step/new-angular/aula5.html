@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 : Angular - Serviços, Injeção de Dependências, HTTP e Navegação</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Serviços, Injeção de Dependências, HTTP e Navegação</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Serviços no Angular</h2>
+
+        <h3>1. O que são serviços?</h3>
+
+        <p>
+          Serviços no Angular são classes criadas para concentrar lógicas que
+          não devem ficar diretamente dentro dos componentes.
+        </p>
+
+        <p>
+          Em vez de colocar toda a lógica da aplicação dentro do arquivo do
+          componente, podemos separar responsabilidades e criar serviços para
+          organizar melhor o projeto.
+        </p>
+
+        <p>
+          Assim, o componente fica mais focado na interface, enquanto o serviço
+          fica responsável por tarefas como buscar dados, compartilhar
+          informações, aplicar regras de negócio e se comunicar com APIs.
+        </p>
+
+        <h3>2. Para que servem os serviços?</h3>
+
+        <ul>
+          <li>Centralizar regras de negócio</li>
+          <li>Compartilhar dados entre componentes</li>
+          <li>Consumir APIs externas</li>
+          <li>Organizar melhor o código</li>
+          <li>Evitar repetição de lógica</li>
+        </ul>
+
+        <h3>3. Exemplo simples de uso de serviço</h3>
+
+        <p>
+          Imagine uma aplicação de estoque. Em vez de cadastrar e listar
+          produtos diretamente em vários componentes, podemos criar um serviço
+          responsável por manipular esses dados.
+        </p>
+
+        <p>
+          Dessa forma, qualquer componente que precisar dos produtos poderá usar
+          o mesmo serviço.
+        </p>
+
+        <hr />
+
+        <h2>Injeção de Dependências (Dependency Injection)</h2>
+
+        <h3>4. O que é Injeção de Dependências?</h3>
+
+        <p>
+          Injeção de Dependências é um mecanismo que permite que uma classe
+          receba outra classe pronta para uso, sem precisar criá-la manualmente.
+        </p>
+
+        <p>
+          No Angular, isso acontece com muita frequência quando um componente
+          precisa utilizar um serviço.
+        </p>
+
+        <p>
+          Em vez de o componente criar o serviço com <strong>new</strong>, o
+          próprio Angular faz esse trabalho automaticamente.
+        </p>
+
+        <h3>5. Ideia principal da Injeção de Dependências</h3>
+
+        <p>
+          A ideia é desacoplar o código. Ou seja, fazer com que uma classe não
+          fique fortemente presa à criação de outra.
+        </p>
+
+        <p>
+          Isso facilita:
+        </p>
+
+        <ul>
+          <li>Organização</li>
+          <li>Reutilização</li>
+          <li>Manutenção</li>
+          <li>Testes</li>
+        </ul>
+
+        <h3>6. Objetivos e tarefas da Injeção de Dependências</h3>
+
+        <ul>
+          <li>Fornecer instâncias prontas para uso</li>
+          <li>Reduzir acoplamento entre classes</li>
+          <li>Facilitar troca de implementações</li>
+          <li>Melhorar a manutenção do sistema</li>
+          <li>Permitir reaproveitamento de lógica</li>
+        </ul>
+
+        <h3>7. Como isso acontece no Angular?</h3>
+
+        <p>
+          Quando um serviço é registrado corretamente, o Angular consegue
+          injetá-lo no componente por meio do construtor.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+constructor(private produtoService: ProdutoService) {}
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, o Angular cria e entrega uma instância do
+          <strong>ProdutoService</strong> para o componente.
+        </p>
+
+        <p>
+          Logo, o componente pode usar os métodos do serviço sem precisar se
+          preocupar em criar manualmente esse objeto.
+        </p>
+
+        <h2>Exemplos de uso de serviços e DI</h2>
+
+        <h3>9. Situações comuns de uso</h3>
+
+        <ul>
+          <li>Buscar dados de uma API</li>
+          <li>Salvar informações temporárias</li>
+          <li>Compartilhar dados entre páginas</li>
+          <li>Fazer login e autenticação</li>
+          <li>Aplicar regras de negócio</li>
+        </ul>
+
+        <h3>10. Exemplo de serviço simples</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+export class ProdutoService {
+  produtos = ['Notebook', 'Mouse', 'Teclado'];
+
+  listarProdutos() {
+    return this.produtos;
+  }
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, o serviço possui uma lista de produtos e um método para
+          retorná-la.
+        </p>
+
+        <h3>11. Exemplo de componente usando o serviço</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+export class ListaProdutosComponent {
+  produtos: string[] = [];
+
+  constructor(private produtoService: ProdutoService) {
+    this.produtos = this.produtoService.listarProdutos();
+  }
+}
+          </code></pre>
+        </div>
+
+        <p>
+          O componente recebe o serviço por injeção de dependência e usa o
+          método <strong>listarProdutos()</strong> para obter os dados.
+        </p>
+
+        <hr />
+
+        <h2>Uso de requisições HTTP</h2>
+
+        <h3>12. O que são requisições HTTP?</h3>
+
+        <p>
+          Requisições HTTP são chamadas feitas pela aplicação para se comunicar
+          com servidores e APIs.
+        </p>
+
+        <p>
+          Com elas, podemos:
+        </p>
+
+        <ul>
+          <li>Buscar dados</li>
+          <li>Cadastrar dados</li>
+          <li>Atualizar informações</li>
+          <li>Remover registros</li>
+        </ul>
+
+        <h3>13. Principais métodos HTTP</h3>
+
+        <table>
+          <tr>
+            <th>Método</th>
+            <th>Função</th>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>Buscar dados</td>
+          </tr>
+          <tr>
+            <td>POST</td>
+            <td>Criar dados</td>
+          </tr>
+          <tr>
+            <td>PUT</td>
+            <td>Atualizar dados</td>
+          </tr>
+          <tr>
+            <td>DELETE</td>
+            <td>Excluir dados</td>
+          </tr>
+        </table>
+
+        <h3>14. Como o Angular faz requisições HTTP?</h3>
+
+        <p>
+          O Angular utiliza o <strong>HttpClient</strong> para fazer chamadas
+          HTTP.
+        </p>
+
+        <p>
+          Esse recurso normalmente é usado dentro de serviços, e não
+          diretamente dentro dos componentes.
+        </p>
+
+        <h3>15. Exemplo de uso de HttpClient</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProdutoApiService {
+  constructor(private http: HttpClient) {}
+
+  listarProdutos() {
+    return this.http.get('https://fakestoreapi.com/products');
+  }
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse caso, o serviço faz uma requisição GET para uma API e devolve os
+          dados para quem o utilizar.
+        </p>
+
+        <h3>16. Exemplo de componente consumindo a API</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { ProdutoApiService } from '../services/produto-api.service';
+
+@Component({
+  selector: 'app-produtos-api',
+  imports: [],
+  templateUrl: './produtos-api.html',
+  styleUrl: './produtos-api.css'
+})
+export class ProdutosApi {
+  produtos: any[] = [];
+
+  constructor(private produtoApiService: ProdutoApiService) {}
+
+  ngOnInit() {
+    this.produtoApiService.listarProdutos().subscribe((dados: any) => {
+      this.produtos = dados;
+    });
+  }
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Aqui, o componente pede os dados ao serviço e, quando a resposta
+          chega, salva os dados na variável <strong>produtos</strong>.
+        </p>
+
+        <h2>Navegação e transferência de dados</h2>
+
+        <h2>Passo a Passo: Criando exemplo prático com serviço, HTTP e navegação</h2>
+
+        <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie uma nova branch com o
+          nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula5-servicos-di-http-navegacao
+          </code></pre>
+        </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash"> 
+git fetch
+git checkout aula5-servicos-di-http-navegacao
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar os componentes</h3>
+
+        <p>
+          Vamos criar dois componentes: um para listar produtos e outro para
+          mostrar o detalhe de um produto.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c pages/lista-produtos
+ng g c pages/detalhe-produto
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o serviço</h3>
+
+        <p>
+          Agora vamos criar um serviço para centralizar a busca dos produtos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g s services/produto
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Inserir a lógica do serviço</h3>
+
+        <p>Abra o arquivo <strong>produto.service.ts</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProdutoService {
+  private apiUrl = 'https://fakestoreapi.com/products';
+
+  constructor(private http: HttpClient) {}
+
+  listarProdutos() {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  buscarProdutoPorId(id: string | null) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Configurar as rotas</h3>
+
+        <p>
+          Agora abra o arquivo de rotas do projeto e insira a configuração
+          abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { ListaProdutosComponent } from './pages/lista-produtos/lista-produtos';
+import { DetalheProdutoComponent } from './pages/detalhe-produto/detalhe-produto';
+
+export const routes: Routes = [
+  { path: '', component: ListaProdutosComponent },
+  { path: 'produto/:id', component: DetalheProdutoComponent }
+];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Importar HttpClient e RouterOutlet</h3>
+
+        <p>
+          No componente principal da aplicação, adicione os imports necessários
+          para o roteamento funcionar.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora no arquivo <strong>app.html</strong> deixe apenas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+<router-outlet></router-outlet>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Inserir a lógica da lista de produtos</h3>
+
+        <p>Abra o arquivo <strong>lista-produtos.ts</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ProdutoService } from '../../services/produto.service';
+
+@Component({
+  selector: 'app-lista-produtos',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './lista-produtos.html',
+  styleUrl: './lista-produtos.css'
+})
+export class ListaProdutosComponent {
+  produtos: any[] = [];
+
+  constructor(private produtoService: ProdutoService) {}
+
+  ngOnInit() {
+    this.produtoService.listarProdutos().subscribe((dados) => {
+      this.produtos = dados;
+    });
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora abra o arquivo <strong>lista-produtos.html</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+<h1>Lista de Produtos</h1>
+
+<ul>
+  <li *ngFor="let produto of produtos">
+    {{ produto.title }} -
+    <a [routerLink]="['/produto', produto.id]">Ver detalhes</a>
+  </li>
+</ul>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Inserir a lógica do detalhe do produto</h3>
+
+        <p>Abra o arquivo <strong>detalhe-produto.ts</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ProdutoService } from '../../services/produto.service';
+
+@Component({
+  selector: 'app-detalhe-produto',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './detalhe-produto.html',
+  styleUrl: './detalhe-produto.css'
+})
+export class DetalheProdutoComponent {
+  produto: any;
+
+  constructor(
+    private route: ActivatedRoute,
+    private produtoService: ProdutoService
+  ) {}
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    this.produtoService.buscarProdutoPorId(id).subscribe((dados) => {
+      this.produto = dados;
+    });
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora abra o arquivo <strong>detalhe-produto.html</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+<div *ngIf="produto">
+  <h1>{{ produto.title }}</h1>
+  <img [src]="produto.image" [alt]="produto.title" width="150" />
+  <p>{{ produto.description }}</p>
+  <p><strong>Preço:</strong> {{ produto.price | currency:'BRL' }}</p>
+
+  <a routerLink="/">Voltar</a>
+</div>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Configurar o HttpClient</h3>
+
+        <p>
+          Para que o Angular consiga fazer requisições HTTP, precisamos ativar o
+          provider do HttpClient na configuração da aplicação.
+        </p>
+
+        <p>
+          No arquivo principal de configuração da aplicação, insira algo como:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Rodar a aplicação</h3>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200
+          </code></pre>
+        </div>
+
+        <p>
+          Você verá a listagem de produtos carregada a partir de uma API. Ao
+          clicar no link de detalhes, será feita a navegação para outra rota e o
+          identificador do produto será transferido pela URL.
+        </p>
+
+        <h3>Passo 10 — Entendendo o que foi feito</h3>
+
+        <p>Neste exemplo prático utilizamos:</p>
+
+        <ul>
+          <li><strong>Serviço</strong> para centralizar a busca de dados</li>
+          <li><strong>Injeção de Dependências</strong> para fornecer o serviço ao componente</li>
+          <li><strong>HttpClient</strong> para consumir uma API</li>
+          <li><strong>Rotas</strong> para mudar de página</li>
+          <li><strong>Parâmetros de rota</strong> para transferir dados</li>
+          <li><strong>Diretivas</strong> como *ngFor e *ngIf</li>
+          <li><strong>Pipes</strong> para formatar o preço</li>
+        </ul>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>
+          Agora vamos salvar tudo no repositório:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 5 servicos di http navegacao"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

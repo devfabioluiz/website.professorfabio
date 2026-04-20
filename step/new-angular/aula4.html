@@ -1,0 +1,127 @@
+<section>
+  <h3>17. O que é navegação no Angular?</h3>
+
+  <p>
+    Navegação é o processo de mudar de uma tela para outra dentro da aplicação.
+  </p>
+
+  <p>Em aplicações Angular, isso normalmente é feito com rotas.</p>
+
+  <h3>18. O que são rotas?</h3>
+
+  <p>
+    Rotas definem qual componente será exibido quando um determinado caminho da
+    URL for acessado.
+  </p>
+
+  <p>Exemplo:</p>
+
+  <ul>
+    <li><strong>/home</strong> → página inicial</li>
+    <li><strong>/produtos</strong> → página de produtos</li>
+    <li><strong>/detalhe/1</strong> → detalhe de um produto</li>
+  </ul>
+
+  <h3>19. Exemplo de rotas</h3>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { ProdutosComponent } from './produtos/produtos.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'produtos', component: ProdutosComponent }
+];
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <h3>20. Navegação pelo template</h3>
+
+  <p>
+    Podemos navegar entre páginas usando a diretiva
+    <strong>routerLink</strong>.
+  </p>
+
+  <div class="code-container">
+    <pre><code class="language-markup">
+<a routerLink="/produtos">Ir para produtos</a>
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <h3>21. Navegação pelo TypeScript</h3>
+
+  <p>
+    Também podemos navegar por código usando o serviço
+    <strong>Router</strong>.
+  </p>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+import { Router } from '@angular/router';
+
+constructor(private router: Router) {}
+
+irParaProdutos() {
+  this.router.navigate(['/produtos']);
+}
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <h3>22. Transferência de dados entre rotas</h3>
+
+  <p>
+    Existem várias formas de transferir dados de uma página para outra no
+    Angular.
+  </p>
+
+  <ul>
+    <li>Parâmetros de rota</li>
+    <li>Query params</li>
+    <li>State de navegação</li>
+    <li>Uso de serviços compartilhados</li>
+  </ul>
+
+  <h3>23. Exemplo com parâmetro de rota</h3>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+{ path: 'produto/:id', component: ProdutoDetalheComponent }
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <div class="code-container">
+    <pre><code class="language-markup">
+<a [routerLink]="['/produto', 10]">Ver produto 10</a>
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <p>
+    Nesse caso, o número <strong>10</strong> será enviado na URL como
+    identificador do produto.
+  </p>
+
+  <h3>24. Lendo o parâmetro da rota</h3>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  const id = this.route.snapshot.paramMap.get('id');
+  console.log(id);
+}
+          </code></pre>
+    <button class="btn-copy">Copiar Código</button>
+  </div>
+
+  <p>Assim conseguimos recuperar o valor enviado na rota.</p>
+</section>
