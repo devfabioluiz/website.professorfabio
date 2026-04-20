@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 : Angular - Diretivas</title>
+    <title>Aula 2 : Angular - Diretivas (Versão Atual)</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -13,11 +13,8 @@
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
   </head>
 
@@ -25,7 +22,7 @@
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">Angular</h4>
-      <h4 class="text-center">Diretivas</h4>
+      <h4 class="text-center">Diretivas (Angular moderno)</h4>
     </header>
 
     <main class="container">
@@ -42,107 +39,86 @@
 
         <p>
           Em outras palavras, as diretivas permitem que o Angular “faça algo”
-          com um elemento HTML.
+          com um elemento HTML. Elas são muito importantes porque ajudam a
+          deixar a interface dinâmica, isto é, capaz de reagir aos dados e às
+          ações do usuário.
         </p>
 
         <p>
-          Elas são muito importantes porque ajudam a deixar a interface
-          dinâmica, isto é, capaz de reagir aos dados e às ações do usuário.
-        </p>
-
-        <h3>2. Para que servem as diretivas?</h3>
-
-        <ul>
-          <li>Exibir ou esconder elementos</li>
-          <li>Repetir elementos em listas</li>
-          <li>Aplicar estilos dinamicamente</li>
-          <li>Alterar classes CSS</li>
-          <li>Controlar comportamento da interface</li>
-        </ul>
-
-        <h3>3. Tipos de diretivas</h3>
-
-        <p>
-          No Angular, de forma geral, trabalhamos com três grupos principais:
+          Em Angular moderno, parte das antigas diretivas estruturais evoluiu
+          para uma nova forma chamada <strong>control flow</strong>, utilizando:
         </p>
 
         <ul>
-          <li><strong>Diretivas estruturais</strong></li>
-          <li><strong>Diretivas de atributo</strong></li>
-          <li><strong>Diretivas personalizadas</strong></li>
+          <li><strong>@if</strong></li>
+          <li><strong>@for</strong></li>
+          <li><strong>@switch</strong></li>
         </ul>
 
-        <h3>4. Diretivas estruturais</h3>
-
         <p>
-          As diretivas estruturais alteram a estrutura do DOM, ou seja, elas
-          podem criar ou remover elementos da tela.
+          Essas estruturas tornam o código mais legível e mais próximo da lógica
+          de programação tradicional.
         </p>
 
-        <p>As mais comuns são:</p>
+        <h3>2. Para que servem?</h3>
 
         <ul>
-          <li><strong>*ngIf</strong> → mostra ou esconde elementos</li>
-          <li><strong>*ngFor</strong> → repete elementos</li>
-          <li><strong>*ngSwitch</strong> → escolhe entre várias opções</li>
+          <li>Controlar exibição de elementos</li>
+          <li>Renderizar listas</li>
+          <li>Alterar estilos dinamicamente</li>
+          <li>Controlar estados da interface</li>
         </ul>
 
-        <h3>Exemplo com *ngIf</h3>
+        <h3>3. Exemplos de diretivas</h3>
 
-        <p>
-          O <strong>*ngIf</strong> renderiza um elemento somente se a condição
-          for verdadeira.
-        </p>
+        <h3>Exemplo com @if</h3>
 
         <div class="code-container">
-          <pre><code class="language-markup">
-&lt;p *ngIf="estaLogado"&gt;Usuário autenticado com sucesso.&lt;/p&gt;
+          <pre><code class="language-typescript">
+@if (estaLogado) {
+  &lt;p&gt;Usuário autenticado&lt;/p&gt;
+} @else {
+  &lt;p&gt;Usuário não autenticado&lt;/p&gt;
+}
           </code></pre>
         </div>
 
-        <p>
-          Nesse caso, o parágrafo só será exibido se a variável
-          <strong>estaLogado</strong> tiver valor verdadeiro.
-        </p>
-
-        <h3>Exemplo com *ngFor</h3>
-
-        <p>
-          O <strong>*ngFor</strong> é utilizado para repetir um trecho do HTML
-          para cada item de uma lista.
-        </p>
+        <h3>Exemplo com @for</h3>
 
         <div class="code-container">
-          <pre><code class="language-markup">
-// No componente temos a seguinte variável: produtos = ['Notebook', 'Teclado', 'Mouse'];
+          <pre><code class="language-typescript">
+// componente
+produtos = [
+  { id: 1, nome: 'Notebook' },
+  { id: 2, nome: 'Teclado' },
+  { id: 3, nome: 'Mouse' }
+];
+
 &lt;ul&gt;
-&lt;li *ngFor="let produto of produtos"&gt;
-    {{ produto }}
-  &lt;/li&gt;
+  @for (produto of produtos; track produto.id) {
+    &lt;li&gt;{{ produto.nome }}&lt;/li&gt;
+  } @empty {
+    &lt;li&gt;Nenhum produto disponível&lt;/li&gt;
+  }
 &lt;/ul&gt;
           </code></pre>
         </div>
 
-        <p>
-          Aqui, para cada item do array <strong>produtos</strong>, um elemento
-          <strong>li</strong> será criado.
-        </p>
-
-        <h3>Exemplo com *ngSwitch</h3>
-
-        <p>
-          O <strong>*ngSwitch</strong> é útil quando queremos exibir conteúdos
-          diferentes conforme o valor de uma variável.
-        </p>
+        <h3>Exemplo com @switch</h3>
 
         <div class="code-container">
-          <pre><code class="language-markup">
-// No componente temos a variável: perfil = 'admin'; Porém poderia ser 'cliente' ou outro valor.
-&lt;div [ngSwitch]="perfil"&gt;
-  &lt;p *ngSwitchCase="'admin'"&gt;Administrador do sistema&lt;/p&gt;
-  &lt;p *ngSwitchCase="'cliente'"&gt;Cliente da aplicação&lt;/p&gt;
-  &lt;p *ngSwitchDefault&gt;Perfil não identificado&lt;/p&gt;
-&lt;/div&gt;
+          <pre><code class="language-typescript">
+@switch (perfil) {
+  @case ('admin') {
+    &lt;p&gt;Administrador&lt;/p&gt;
+  }
+  @case ('cliente') {
+    &lt;p&gt;Cliente&lt;/p&gt;
+  }
+  @default {
+    &lt;p&gt;Perfil desconhecido&lt;/p&gt;
+  }
+}
           </code></pre>
         </div>
 
@@ -150,10 +126,9 @@
 
         <p>
           As diretivas de atributo alteram a aparência ou o comportamento de um
-          elemento já existente, mas sem remover ou recriar esse elemento.
+          elemento já existente, mas sem remover ou recriar esse elemento. As
+          mais comuns são:
         </p>
-
-        <p>As mais comuns são:</p>
 
         <ul>
           <li><strong>[ngClass]</strong> → adiciona ou remove classes CSS</li>
@@ -162,159 +137,129 @@
           </li>
         </ul>
 
-        <h3>Exemplo com [ngClass]</h3>
+        <h3>Exemplo com ngClass</h3>
 
         <div class="code-container">
           <pre><code class="language-markup">
-&lt;p [ngClass]="{ 'ativo': estaAtivo, 'inativo': !estaAtivo }"&gt;
+&lt;p [ngClass]="{
+  'online': estaLogado,
+  'offline': !estaLogado
+}"&gt;
   Status do usuário
 &lt;/p&gt;
-  </code></pre>
+          </code></pre>
         </div>
 
-        <p>
-          Se <strong>estaAtivo</strong> for verdadeiro, a classe
-          <strong>ativo</strong> será aplicada. Caso contrário, a classe
-          <strong>inativo</strong> será aplicada.
-        </p>
-
-        <h3>Exemplo com [ngStyle]</h3>
+        <h3>Exemplo com ngStyle</h3>
 
         <div class="code-container">
           <pre><code class="language-markup">
-&lt;p [ngStyle]="{ 'color': corTexto, 'font-size': tamanhoFonte }"&gt;
-  Texto estilizado dinamicamente
+&lt;p [ngStyle]="{
+  'color': estaLogado ? 'green' : 'red'
+}"&gt;
+  Situação de acesso
 &lt;/p&gt;
-  </code></pre>
+          </code></pre>
         </div>
 
+        <h2>Hora de Praticar</h2>
+
+        <h3>Passo 0 — Criar branch</h3>
+
         <p>
-          Nesse caso, o Angular aplica os estilos com base nos valores das
-          variáveis declaradas no componente.
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          baseada na branch aula1-angular com o nome:
         </p>
 
-        <h2>Hora de Praticar</h2>
-        <section>
-          <h3>Passo a Passo: Aplicando diretivas</h3>
-
-          <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
-
-          <p>
-            Acesse novamente o repositório no GitHub e crie agora uma nova
-            branch com o nome:
-          </p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">
+        <div class="code-container">
+          <pre><code class="language-bash">
 aula2-diretivas
           </code></pre>
-          </div>
+        </div>
 
-          <p>
-            Depois, no terminal do VSCode, dentro da pasta do projeto, execute:
-          </p>
+        <h3>Passo 1 — Criar componente</h3>
 
-          <div class="code-container">
-            <pre><code class="language-bash">
-git fetch
-git checkout aula2-diretivas
-          </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-
-          <h3>Passo 1 — Criar um novo componente</h3>
-
-          <p>
-            Agora vamos criar um componente para praticar os conceitos desta
-            aula.
-          </p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">
+        <div class="code-container">
+          <pre><code class="language-bash">
 ng g c aula2
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <h3>Passo 2 — Inserir a lógica do componente</h3>
+        <h3>Passo 2 — Código do componente</h3>
 
-          <p>
-            Abra o arquivo <strong>aula2.ts</strong> e insira o código abaixo:
-          </p>
-
-          <div class="code-container">
-            <pre><code class="language-typescript">
+        <div class="code-container">
+          <pre><code class="language-typescript">
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-aula2',
-  imports: [CommonModule, FormsModule],
   templateUrl: './aula2.html',
   styleUrl: './aula2.css',
 })
 export class Aula2 {
   estaLogado = true;
-  botaoDesabilitado = false;
   perfil = 'admin';
-  corTexto = 'blue';
-  tamanhoFonte = '22px';
 
-  produtos = ['Notebook', 'Teclado', 'Mouse', 'Monitor'];
+  produtos = [
+    { id: 1, nome: 'Notebook' },
+    { id: 2, nome: 'Teclado' },
+    { id: 3, nome: 'Mouse' }
+  ];
 
   alternarLogin() {
-    console.log('O valor da variável estaLogado é:', this.estaLogado);
     this.estaLogado = !this.estaLogado;
   }
 }
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <h3>Passo 3 — Inserir o template HTML do componente</h3>
+        <h3>Passo 3 — Template</h3>
 
-          <p>
-            Abra o arquivo <strong>aula2.html</strong> e insira o código abaixo:
-          </p>
+        <div class="code-container">
+          <pre><code class="language-markup">
+@if (estaLogado) {
+  &lt;p&gt;Logado&lt;/p&gt;
+} @else {
+  &lt;p&gt;Não logado&lt;/p&gt;
+}
 
-          <div class="code-container">
-            <pre><code class="language-markup">
-&lt;p *ngIf="estaLogado"&gt;Usuário logado no sistema&lt;/p&gt;
-&lt;p *ngIf="!estaLogado"&gt;Usuário não está logado&lt;/p&gt;
+&lt;button (click)="alternarLogin()"&gt;
+  Alternar
+&lt;/button&gt;
 
-&lt;button (click)="alternarLogin()"&gt;Alternar login&lt;/button&gt;
-
-&lt;h2&gt;Lista de produtos&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li *ngFor="let produto of produtos"&gt;
-    {{ produto }}
-  &lt;/li&gt;
+  @for (produto of produtos; track produto.id) {
+    &lt;li&gt;{{ produto.nome }}&lt;/li&gt;
+  }
 &lt;/ul&gt;
 
-&lt;div [ngSwitch]="perfil"&gt;
-  &lt;p *ngSwitchCase="'admin'"&gt;Perfil Administrador&lt;/p&gt;
-  &lt;p *ngSwitchCase="'cliente'"&gt;Perfil Cliente&lt;/p&gt;
-  &lt;p *ngSwitchDefault&gt;Perfil desconhecido&lt;/p&gt;
-&lt;/div&gt;
+@switch (perfil) {
+  @case ('admin') {
+    &lt;p&gt;Admin&lt;/p&gt;
+  }
+  @default {
+    &lt;p&gt;Outro&lt;/p&gt;
+  }
+}
 
-&lt;p [ngStyle]="{ 'color': corTexto, 'font-size': tamanhoFonte }"&gt;
-  Texto estilizado dinamicamente
+&lt;p [ngClass]="{ 'ativo': estaLogado }"&gt;
+  Classe dinâmica
 &lt;/p&gt;
-
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <h3>Passo 4 — Inserir o componente no template principal</h3>
+        <h3>Passo 4 — Usar no app</h3>
 
-          <p>
-            Entre em <code>app.ts</code> e insira o código abaixo na parte de
-            imports.
-          </p>
+        <p>
+          Entre em <code>app.ts</code> e insira o componente
+          <code>Aula2</code> na parte de imports tal como no código abaixo.
+        </p>
 
-          <div class="code-container">
-            <pre><code class="language-typescript">
+        <div class="code-container">
+          <pre><code class="language-typescript">
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Exemplo } from './exemplo/exemplo';
@@ -326,87 +271,42 @@ import { Aula2 } from './aula2/aula2';
     styleUrl: './app.css'
 })
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <p>
-            Perceba que toda vez que criarmos um componente, precisamos
-            importá-lo no arquivo principal da aplicação caso queiramos usá-lo
-            dentro do template do <code>app.html</code>
-          </p>
+        <p>
+          Agora precisamos importá-lo no arquivo principal da aplicação caso
+          queiramos usá-lo dentro do template do <code>app.html</code>. Logo,
+          devemos acesar o arquivo <code>app.html</code>, apagar o conteúdo
+          atual dentro dele e insirir este:
+        </p>
 
-          <p>
-            Agora entre no arquivo <strong>app.html</strong>, apague o conteúdo
-            atual e insira:
-          </p>
-
-          <div class="code-container">
-            <pre><code class="language-markup">
+        <div class="code-container">
+          <pre><code class="language-markup">
 &lt;app-aula2&gt;&lt;/app-aula2&gt;
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <h3>Passo 5 — Entendendo o que foi feito</h3>
+        <h3>Passo 5 — Rodar</h3>
 
-          <p>Nesse exemplo, aplicamos vários conceitos importantes:</p>
-
-          <ul>
-            <li><strong>*ngIf</strong> para condição</li>
-            <li><strong>*ngFor</strong> para repetição</li>
-            <li><strong>ngSwitch</strong> para múltiplas condições</li>
-            <li><strong>ngStyle</strong> para estilo dinâmico</li>
-          </ul>
-
-          <h3>Passo 6 — Rodar a aplicação</h3>
-
-          <p>No terminal execute:</p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">
-ng serve
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng s
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <p>Acesse:</p>
+        <h3>Passo final — Git</h3>
 
-          <div class="code-container">
-            <pre><code class="language-bash">
-http://localhost:4200
-          </code></pre>
-          </div>
-
-          <p>
-            Você verá um exemplo prático reunindo diretivas, ligação de dados e
-            pipes em uma mesma interface.
-          </p>
-
-          <h3>Passo 7 — Testar alterações</h3>
-
-          <p>Faça alguns testes na aplicação:</p>
-
-          <ul>
-            <li>Digite outro nome no campo de entrada</li>
-            <li>Veja o nome sendo atualizado em tempo real</li>
-            <li>Clique no botão para alternar o estado de login</li>
-            <li>Observe os produtos sendo renderizados em lista</li>
-            <li>Veja a data e o valor monetário formatados</li>
-          </ul>
-
-          <h3>Último Passo - Subindo para o Git</h3>
-
-          <p>Agora vamos salvar as alterações no repositório.</p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">
+        <div class="code-container">
+          <pre><code class="language-bash">
 git add .
-git commit -m "aula 2 diretivas data binding e pipes"
+git commit -m "aula 2 diretivas"
 git push
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-        </section>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
       </section>
     </main>
 
