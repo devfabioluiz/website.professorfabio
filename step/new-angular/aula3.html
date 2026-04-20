@@ -261,7 +261,7 @@ git checkout aula2-binding-pipes
 
         <div class="code-container">
           <pre><code class="language-bash">
-ng g c painel
+ng g c aula3
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -269,7 +269,7 @@ ng g c painel
         <h3>Passo 2 — Inserir a lógica do componente</h3>
 
         <p>
-          Abra o arquivo <strong>painel.ts</strong> e insira o código abaixo:
+          Abra o arquivo <strong>aula3.ts</strong> e insira o código abaixo:
         </p>
 
         <div class="code-container">
@@ -279,30 +279,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-painel',
+  selector: 'app-aula3',
   imports: [CommonModule, FormsModule],
-  templateUrl: './painel.html',
-  styleUrl: './painel.css',
+  templateUrl: './aula3.html',
+  styleUrl: './aula3.css',
 })
-export class Painel {
+export class Aula3 {
   nome = 'Fabio';
-  estaLogado = true;
   botaoDesabilitado = false;
   perfil = 'admin';
-  corTexto = 'blue';
-  tamanhoFonte = '22px';
   hoje = new Date();
   preco = 199.9;
-
-  produtos = ['Notebook', 'Teclado', 'Mouse', 'Monitor'];
 
   mostrarMensagem() {
     alert('Botão clicado com sucesso!');
   }
 
-  alternarLogin() {
-    this.estaLogado = !this.estaLogado;
-  }
 }
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -311,7 +303,7 @@ export class Painel {
         <h3>Passo 3 — Inserir o template HTML do componente</h3>
 
         <p>
-          Abra o arquivo <strong>painel.html</strong> e insira o código abaixo:
+          Abra o arquivo <strong>aula3.html</strong> e insira o código abaixo:
         </p>
 
         <div class="code-container">
@@ -320,30 +312,9 @@ export class Painel {
 
 &lt;input [(ngModel)]="nome" placeholder="Digite seu nome" /&gt;
 
-&lt;p *ngIf="estaLogado"&gt;Usuário logado no sistema&lt;/p&gt;
-&lt;p *ngIf="!estaLogado"&gt;Usuário não está logado&lt;/p&gt;
-
-&lt;button (click)="alternarLogin()"&gt;Alternar login&lt;/button&gt;
 &lt;button (click)="mostrarMensagem()" [disabled]="botaoDesabilitado"&gt;
   Exibir mensagem
 &lt;/button&gt;
-
-&lt;h2&gt;Lista de produtos&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li *ngFor="let produto of produtos"&gt;
-    {{ produto }}
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div [ngSwitch]="perfil"&gt;
-  &lt;p *ngSwitchCase="'admin'"&gt;Perfil Administrador&lt;/p&gt;
-  &lt;p *ngSwitchCase="'cliente'"&gt;Perfil Cliente&lt;/p&gt;
-  &lt;p *ngSwitchDefault&gt;Perfil desconhecido&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;p [ngStyle]="{ 'color': corTexto, 'font-size': tamanhoFonte }"&gt;
-  Texto estilizado dinamicamente
-</p>
 
 &lt;p&gt;Data atual: {{ hoje | date:'dd/MM/yyyy' }}&lt;/p&gt;
 &lt;p&gt;Preço do produto: {{ preco | currency:'BRL' }}&lt;/p&gt;
@@ -353,25 +324,32 @@ export class Painel {
 
         <h3>Passo 4 — Inserir o componente no template principal</h3>
 
-        <p>Entre em <code>app.ts</code> e insira o código abaixo na parte de imports.</p>
+        <p>
+          Entre em <code>app.ts</code> e insira o código abaixo na parte de
+          imports.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Exemplo } from './exemplo/exemplo';
-import { Painel } from './painel/painel';
+import { Aula3 } from './aula3/aula3';
 @Component({
     selector: 'app-root', 
-    imports: [RouterOutlet, Exemplo, Painel],
+    imports: [RouterOutlet, Exemplo, Aula2, Aula3],
     templateUrl: './app.html',
     styleUrl: './app.css'
 })
           </code></pre>
-            <button class="btn-copy">Copiar Código</button>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Perceba que toda vez que criarmos um componente, precisamos importá-lo no arquivo principal da aplicação caso queiramos usá-lo dentro do template do <code>app.html</code></p>
+        <p>
+          Perceba que toda vez que criarmos um componente, precisamos importá-lo
+          no arquivo principal da aplicação caso queiramos usá-lo dentro do
+          template do <code>app.html</code>
+        </p>
 
         <p>
           Agora entre no arquivo <strong>app.html</strong>, apague o conteúdo
@@ -380,7 +358,7 @@ import { Painel } from './painel/painel';
 
         <div class="code-container">
           <pre><code class="language-markup">
-&lt;app-painel&gt;&lt;/app-painel&gt;
+&lt;app-aula3&gt;&lt;/app-aula3&gt;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
