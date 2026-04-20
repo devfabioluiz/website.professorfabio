@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1: Introdução ao Angular</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Introdução ao Angular</h4>
+      <h4 class="text-center">Fundamentos e Estrutura</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Angular</h2>
+
+        <h3>1. O que é Angular?</h3>
+
+        <p>
+          Angular é um <strong>framework front-end</strong> desenvolvido pelo
+          Google para criação de aplicações web modernas.
+        </p>
+
+        <p>
+          Ele permite construir interfaces dinâmicas, organizadas e escaláveis.
+        </p>
+
+        <hr />
+
+        <h2>Frameworks e Bibliotecas</h2>
+
+        <h3>2. O que é um framework?</h3>
+
+        <p>
+          Um framework define uma <strong>estrutura completa</strong> para o
+          desenvolvimento.
+        </p>
+
+        <ul>
+          <li>Define regras</li>
+          <li>Define arquitetura</li>
+          <li>Controla o fluxo da aplicação</li>
+        </ul>
+
+        <h3>3. O que é uma biblioteca?</h3>
+
+        <p>
+          Uma biblioteca é um conjunto de funções que você pode usar quando
+          quiser.
+        </p>
+
+        <ul>
+          <li>Você controla o fluxo</li>
+          <li>Usa apenas quando precisa</li>
+        </ul>
+
+        <h3>4. Diferença entre framework e biblioteca</h3>
+
+        <table>
+          <tr>
+            <th>Framework</th>
+            <th>Biblioteca</th>
+          </tr>
+          <tr>
+            <td>Controla o fluxo</td>
+            <td>Você controla o fluxo</td>
+          </tr>
+          <tr>
+            <td>Estrutura completa</td>
+            <td>Funções isoladas</td>
+          </tr>
+          <tr>
+            <td>Ex: Angular</td>
+            <td>Ex: Lodash</td>
+          </tr>
+        </table>
+
+        <h3>5. Por que Angular é um framework?</h3>
+
+        <ul>
+          <li>Define estrutura de pastas</li>
+          <li>Define como criar componentes</li>
+          <li>Controla navegação</li>
+          <li>Possui injeção de dependência</li>
+        </ul>
+
+        <hr />
+
+        <h2>Objetivos do Angular</h2>
+
+        <ul>
+          <li>Criar aplicações escaláveis</li>
+          <li>Organizar código</li>
+          <li>Facilitar manutenção</li>
+          <li>Separar responsabilidades</li>
+        </ul>
+
+        <hr />
+
+        <h2>SPA - Single Page Application</h2>
+
+        <p>
+          Uma SPA é uma aplicação que carrega uma única página HTML e atualiza
+          apenas o conteúdo.
+        </p>
+
+        <ul>
+          <li>Mais rápida</li>
+          <li>Melhor experiência do usuário</li>
+          <li>Sem recarregar a página</li>
+        </ul>
+
+        <hr />
+
+        <h2>Anatomia de uma aplicação Angular</h2>
+
+        <ul>
+          <li>Modules</li>
+          <li>Components</li>
+          <li>Services</li>
+          <li>Routing</li>
+        </ul>
+
+        <hr />
+
+        <h2>Passo a Passo: Criando projeto Angular</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <ul>
+          <li>
+            Crie o repositório no GitHub chamado projeto-angular-step clicando
+            no botão "Create repository"
+          </li>
+          <li>
+            Adicione um arquivo .gitignore e um README conforme aparece na etapa
+            de criação de repositório no github
+          </li>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique no seletor de branch</li>
+          <li>Crie a branch <b>aula1-angular</b></li>
+          <li>Abra o VSCode, abra o terminal e digite</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd C:/
+git clone https://github.com/SEU USUARIO AQUI/projeto-angular-step.git
+cd projeto-angular-step
+git fetch
+git checkout aula1-angular
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Instalar Angular CLI</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm install -g @angular/cli
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng new controle-estoque
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Escolha as opções abaixo:</p>
+
+        <div>
+          <img
+            style="width: 800px; height: 200px"
+            src="../../imagens/step/angular-setup-print1.png"
+            alt=""
+          />
+        </div>
+
+        <h3>Passo 3 — Rodar o projeto</h3>
+
+        <p>Agora digite os seguintes comandos</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd controle-estoque
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200
+          </code></pre>
+        </div>
+
+        <p>
+          Verá que o angular já fez uma página introdutória. Toda vez que você
+          fizer alterações no código, o servidor será atualizado automaticamente
+          e mostrará nesse endereço localhost:4200 as mudanças em tempo real.
+        </p>
+
+        <h3>Passo 4 — Observar o projeto</h3>
+
+        <h4>O que é um componente?</h4>
+
+        <p>É a unidade básica da interface no Angular.</p>
+
+        <ul>
+          <li>Template (HTML)</li>
+          <li>Estilo (CSS)</li>
+          <li>Lógica (TypeScript)</li>
+        </ul>
+
+        <p>Vá para o arquivo <code>app.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  protected readonly title = signal('controle-estoque');
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Observe que existem três partes principais:</p>
+        <ul>
+          <li>selector: nome do componente</li>
+          <li>imports: módulos importados (falaremos mais adiante sobre)</li>
+          <li>templateUrl: HTML do componente</li>
+          <li>styleUrl: CSS do componente</li>
+        </ul>
+
+        <p>Agora, abra o arquivo <code>app.html</code></p>
+
+        <p>
+          Perceba que dentro desse HTMl estão todos os elementos que compõem a
+          interface do componente. Sendo estes os elementos presentes quando
+          acessamos http://localhost:4200
+        </p>
+
+        <p>
+          Em seguida, observe que o arquivo app.css é o arquivo de estilo do
+          componente. Para quaisquer classes, id ou elementos que queira
+          estilizar que estejam dentro do app.html devem ser declarados nele
+        </p>
+
+        <p>
+          Por fim, observe o arquivo <code>app.ts</code> para ver a lógica do
+          componente.
+        </p>
+
+        <p>
+          No app.ts podemos declarar quaisquer funções que manipulem os dados do
+          componente assim como variáveis que serão utilizadas no template
+          (html), tal como o script JS faz com arquivos HTML, porém no nosso
+          caso usaremos o TypeScript
+        </p>
+
+        <h3>Passo 5 - Criando outro componente</h3>
+
+        <p>
+          Abra um novo terminal e navegue até o projeto novamente tal como fez
+          no passo 3
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c exemplo
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Entre no arquivo <code>exemplo.ts</code> e insira o código abaixo
+          nele:
+        </p>
+        <p>
+          Perceba que nós criamos a variável nome e a função mudarNome() que
+          altera o valor da variável nome, e que será chamada no template (html)
+          do componente, que vamos inserir
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo',
+  imports: [],
+  templateUrl: './exemplo.html',
+  styleUrl: './exemplo.css',
+})
+export class Exemplo {
+  nome = "Fabio";
+
+  mudarNome() {
+    this.nome = "Angular Dev";
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora acesse o arquivo <code>exemplo.html</code> e insira o código
+          abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;h1&gt;{{ nome }}&lt;/h1&gt;
+&lt;button (click)="mudarNome()"&gt;Alterar&lt;/button&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Veja que estamos utilizando a sintaxe de interpolação do Angular
+          <code>{{variável}}</code> para exibir o valor da variável nome no
+          template. Além disso, também estamos utilizando a sintaxe de evento do
+          Angular <code>(click)</code> para chamar a função mudarNome() quando o
+          botão for clicado.
+        </p>
+
+        <h3>Passo 6 - Inserindo o componente no template principal</h3>
+
+        <p>
+          Agora, para que o componente exemplo seja exibido na página principal,
+          precisamos inseri-lo no template do componente raiz (app.html). Para
+          isso entre no arquivo <code>app.html</code>, remova todo o código que
+          está lá e insira o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;app-exemplo&gt;&lt;/app-exemplo&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 - Testando o componente</h3>
+        <p>
+          Agora, ao refresh da página, você verá o componente exemplo sendo
+          exibido.
+        </p>
+        <p>
+          Logo, assim percebemos que um componente pode ter outro dentro dele,
+          no nosso caso temos o componente raiz (app.html) e o componente
+          exemplo dentro dele, e isso é o que chamamos de hierarquia de
+          componentes, onde um componente pode conter outros componentes dentro
+          dele, e esses componentes podem conter outros componentes dentro
+          deles, e assim por diante, formando uma hierarquia de componentes.
+        </p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>
+          Agora vamos subir as alterações para o repositório do Git. Logo,
+          execute os comandos abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 1 angular fundamentos"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
