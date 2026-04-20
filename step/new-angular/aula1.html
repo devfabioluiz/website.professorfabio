@@ -374,8 +374,40 @@ export class Exemplo {
         <p>
           Agora, para que o componente exemplo seja exibido na página principal,
           precisamos inseri-lo no template do componente raiz (app.html). Para
-          isso entre no arquivo <code>app.html</code>, remova todo o código que
+          isso entre no arquivo <code>app.ts</code>, remova todo o código que
           está lá e insira o código abaixo:
+        </p>
+
+        <p>
+          Entre em <code>app.ts</code> e insira o código abaixo na parte de
+          imports.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Exemplo } from './exemplo/exemplo';
+@Component({
+    selector: 'app-root', 
+    imports: [RouterOutlet, Exemplo],
+    templateUrl: './app.html',
+    styleUrl: './app.css'
+})
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Perceba que toda vez que criarmos um componente, precisamos importá-lo
+          no arquivo principal da aplicação caso queiramos usá-lo dentro do
+          template do <code>app.html</code>
+        </p>
+
+        <p>
+          Após importar o componente, precisamos adicioná-lo ao template do
+          componente raiz. Para isso, insira o código abaixo no arquivo
+          <code>app.html</code>:
         </p>
 
         <div class="code-container">
