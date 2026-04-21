@@ -188,13 +188,20 @@ ng g c aula2
 
         <h3>Passo 2 — Código do componente</h3>
 
+        <p>
+          Entre em <code>aula2.ts</code> e substitua o conteúdo existente por
+          este código abaixo:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-aula2',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './aula2.html',
   styleUrl: './aula2.css',
 })
@@ -205,7 +212,7 @@ export class Aula2 {
   produtos = [
     { id: 1, nome: 'Notebook' },
     { id: 2, nome: 'Teclado' },
-    { id: 3, nome: 'Mouse' }
+    { id: 3, nome: 'Mouse' },
   ];
 
   alternarLogin() {
@@ -217,6 +224,11 @@ export class Aula2 {
         </div>
 
         <h3>Passo 3 — Template</h3>
+
+        <p>
+          Agora entre em <code>aula2.html</code> e substitua o conteúdo
+          existente por este código abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-markup">
@@ -245,14 +257,30 @@ export class Aula2 {
   }
 }
 
-&lt;p [ngClass]="{ 'ativo': estaLogado }"&gt;
+&lt;p [ngClass]="{ 'logado': estaLogado }"&gt;
   Classe dinâmica
 &lt;/p&gt;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 4 — Usar no app</h3>
+        <h3>Passo 4 - Adicionando estilo ao componente</h3>
+
+        <p>
+          Entre em <code>aula2.css</code> e substitua o conteúdo existente por
+          este código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.logado {
+  color: green;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Usar no app</h3>
 
         <p>
           Entre em <code>app.ts</code> e insira o componente
@@ -262,15 +290,16 @@ export class Aula2 {
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Exemplo } from './exemplo/exemplo';
 import { Aula2 } from './aula2/aula2';
 @Component({
-    selector: 'app-root', 
-    imports: [RouterOutlet, Exemplo, Aula2],
-    templateUrl: './app.html',
-    styleUrl: './app.css'
+  selector: 'app-root',
+  imports: [Aula2],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
+export class App {
+  protected readonly title = signal('minha-aplicacao-angular');
+}
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -289,7 +318,7 @@ import { Aula2 } from './aula2/aula2';
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 — Rodar</h3>
+        <h3>Passo 6 — Rodar</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -298,7 +327,7 @@ ng s
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo final — Git</h3>
+        <h3>Último passo — Git</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">

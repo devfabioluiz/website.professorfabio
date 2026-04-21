@@ -171,8 +171,13 @@
             de criação de repositório no github
           </li>
           <li>Acesse o repositório no GitHub</li>
-          <li>Clique no seletor de branch</li>
-          <li>Crie a branch <b>aula1-angular</b></li>
+          <li>Clique em <strong> 1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>No campo New branch name digite <b>aula1-angular</b></li>
+          <li>
+            No campo <strong>Source</strong> escolha <strong>main</strong>
+          </li>
+          <li>Clique em <strong>Create branch</strong></li>
           <li>Abra o VSCode, abra o terminal e digite</li>
         </ul>
 
@@ -196,11 +201,13 @@ npm install -g @angular/cli
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2 — Criar projeto</h3>
+        <h3>Passo 2 — Criar o projeto</h3>
+
+        <p>Vamos criar o projeto que utilizaremos no decorrer das aulas</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
-ng new controle-estoque
+ng new minha-aplicacao-angular
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -220,7 +227,7 @@ ng new controle-estoque
         <p>Agora digite os seguintes comandos</p>
         <div class="code-container">
           <pre><code class="language-bash">
-cd controle-estoque
+cd minha-aplicacao-angular
 ng serve
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -266,7 +273,6 @@ export class App {
   protected readonly title = signal('controle-estoque');
 }
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>Observe que existem três partes principais:</p>
@@ -306,9 +312,11 @@ export class App {
         <h3>Passo 5 - Criando outro componente</h3>
 
         <p>
-          Abra um novo terminal e navegue até o projeto novamente tal como fez
-          no passo 3
+          Pare o processo de rodar o <code>ng serve</code> apertando a tecla
+          <code>CTRL + C</code> duas vezes
         </p>
+
+        <p>Agora digite o código abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -386,14 +394,17 @@ export class Exemplo {
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { Exemplo } from './exemplo/exemplo';
+
 @Component({
-    selector: 'app-root', 
-    imports: [RouterOutlet, Exemplo],
-    templateUrl: './app.html',
-    styleUrl: './app.css'
+  selector: 'app-root',
+  imports: [Exemplo],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
+export class App {
+  protected readonly title = signal('minha-aplicacao-angular');
+}
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -418,10 +429,14 @@ import { Exemplo } from './exemplo/exemplo';
         </div>
 
         <h3>Passo 7 - Testando o componente</h3>
-        <p>
-          Agora, ao refresh da página, você verá o componente exemplo sendo
-          exibido.
-        </p>
+        <p>Agora digite o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng s
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
         <p>
           Logo, assim percebemos que um componente pode ter outro dentro dele,
           no nosso caso temos o componente raiz (app.html) e o componente

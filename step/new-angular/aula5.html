@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 5 : Angular - Serviços, Injeção de Dependências, HTTP e Navegação</title>
+    <title>
+      Aula 5 : Angular - Serviços, Injeção de Dependências, HTTP e Navegação
+    </title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -11,39 +13,17 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px;
-      }
-
-      th {
-        background-color: #f2f2f2;
-      }
-    </style>
   </head>
 
   <body>
     <header>
       <h1>Aula 5</h1>
       <h4 class="text-center">Angular</h4>
-      <h4 class="text-center">Serviços, Injeção de Dependências, HTTP e Navegação</h4>
+      <h4 class="text-center">Serviços, Injeção de Dependências e HTTP</h4>
     </header>
 
     <main class="container">
@@ -120,9 +100,7 @@
           fique fortemente presa à criação de outra.
         </p>
 
-        <p>
-          Isso facilita:
-        </p>
+        <p>Isso facilita:</p>
 
         <ul>
           <li>Organização</li>
@@ -199,8 +177,8 @@ export class ProdutoService {
 
         <div class="code-container">
           <pre><code class="language-typescript">
-export class ListaProdutosComponent {
-  produtos: string[] = [];
+export class ListaProdutos {
+  produtos: any = [];
 
   constructor(private produtoService: ProdutoService) {
     this.produtos = this.produtoService.listarProdutos();
@@ -214,8 +192,6 @@ export class ListaProdutosComponent {
           método <strong>listarProdutos()</strong> para obter os dados.
         </p>
 
-        <hr />
-
         <h2>Uso de requisições HTTP</h2>
 
         <h3>12. O que são requisições HTTP?</h3>
@@ -225,9 +201,7 @@ export class ListaProdutosComponent {
           com servidores e APIs.
         </p>
 
-        <p>
-          Com elas, podemos:
-        </p>
+        <p>Com elas, podemos:</p>
 
         <ul>
           <li>Buscar dados</li>
@@ -269,8 +243,8 @@ export class ListaProdutosComponent {
         </p>
 
         <p>
-          Esse recurso normalmente é usado dentro de serviços, e não
-          diretamente dentro dos componentes.
+          Esse recurso normalmente é usado dentro de serviços, e não diretamente
+          dentro dos componentes.
         </p>
 
         <h3>15. Exemplo de uso de HttpClient</h3>
@@ -312,7 +286,7 @@ import { ProdutoApiService } from '../services/produto-api.service';
   styleUrl: './produtos-api.css'
 })
 export class ProdutosApi {
-  produtos: any[] = [];
+  produtos: any = [];
 
   constructor(private produtoApiService: ProdutoApiService) {}
 
@@ -324,126 +298,372 @@ export class ProdutosApi {
 }
           </code></pre>
         </div>
-
         <p>
           Aqui, o componente pede os dados ao serviço e, quando a resposta
           chega, salva os dados na variável <strong>produtos</strong>.
         </p>
 
-        <h2>Navegação e transferência de dados</h2>
+        <h2>Observable (RxJS)</h2>
+        <section>
+          <p>
+            Um <strong>Observable</strong> é uma estrutura que representa um
+            fluxo de dados ao longo do tempo. Ou seja, ele pode emitir vários
+            valores de forma assíncrona.
+          </p>
 
-        <h2>Passo a Passo: Criando exemplo prático com serviço, HTTP e navegação</h2>
+          <p>
+            No Angular, os Observables são muito utilizados principalmente em
+            requisições HTTP, eventos e operações assíncronas.
+          </p>
 
-        <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+          <h4>2. Características principais</h4>
+          <ul>
+            <li>
+              Pode emitir <strong>vários valores</strong> ao longo do tempo
+            </li>
+            <li>Funciona de forma <strong>assíncrona</strong></li>
+            <li>
+              Precisa de um <strong>subscribe()</strong> para ser executado
+            </li>
+            <li>Pode ser cancelado (unsubscribe)</li>
+          </ul>
 
-        <p>
-          Acesse novamente o repositório no GitHub e crie uma nova branch com o
-          nome:
-        </p>
+          <h4>3. Exemplo simples de Observable</h4>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
+          <div class="code-container">
+            <pre><code class="language-typescript">
+import { Observable } from 'rxjs';
+
+const meuObservable = new Observable(observer => {
+  observer.next('Primeiro valor');
+  observer.next('Segundo valor');
+  observer.complete();
+});
+
+meuObservable.subscribe(valor => {
+  console.log(valor);
+});
+    </code></pre>
+          </div>
+
+          <h4>4. Observable no Angular (HttpClient)</h4>
+
+          <p>
+            Quando usamos o <strong>HttpClient</strong>, o Angular retorna um
+            Observable.
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-typescript">
+listarProdutos(): Observable&lt;Product[]&gt; {
+  return this.http.get&lt;Product[]&gt;(this.apiUrl);
+}
+    </code></pre>
+          </div>
+
+          <p>
+            Isso significa que a requisição só será executada quando fizermos o
+            subscribe.
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-typescript">
+this.produtoService.listarProdutos().subscribe(dados => {
+  this.produtos = dados;
+});
+    </code></pre>
+          </div>
+
+          <h4>5. Ciclo de um Observable</h4>
+          <ul>
+            <li><strong>next:</strong> emite um valor</li>
+            <li><strong>error:</strong> emite um erro</li>
+            <li><strong>complete:</strong> finaliza o fluxo</li>
+          </ul>
+
+          <h4>6. Diferença entre Observable e Promise</h4>
+          <ul>
+            <li><strong>Promise:</strong> retorna apenas um valor</li>
+            <li><strong>Observable:</strong> pode retornar vários valores</li>
+            <li><strong>Observable:</strong> é cancelável</li>
+          </ul>
+
+          <section>
+            <h4>7. Async Pipe</h4>
+
+            <p>
+              Quando usamos <strong>subscribe()</strong> no componente,
+              precisamos:
+            </p>
+
+            <ul>
+              <li>Controlar quando os dados chegam</li>
+              <li>Atualizar variáveis manualmente</li>
+              <li>
+                Nos preocupar com <strong>unsubscribe</strong> (em alguns casos)
+              </li>
+            </ul>
+
+            <div class="code-container">
+              <pre><code class="language-typescript">
+produtos: Product[] = [];
+
+ngOnInit() {
+  this.produtoService.listarProdutos().subscribe(dados => {
+    this.produtos = dados;
+  });
+}
+    </code></pre>
+            </div>
+
+            <p>
+              Esse modelo funciona, mas aumenta o acoplamento e a
+              responsabilidade do componente.
+            </p>
+
+            <p>
+              O <strong>async pipe</strong> resolve isso automaticamente no
+              template.
+            </p>
+
+            <ul>
+              <li>Faz o <strong>subscribe automaticamente</strong></li>
+              <li>Atualiza a view quando os dados chegam</li>
+              <li>Faz <strong>unsubscribe automaticamente</strong></li>
+            </ul>
+
+            <p>
+              Ou seja, ele remove a necessidade de manipular manualmente
+              Observables no componente.
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ProdutoService, Product } from '../services/produto.service';
+
+@Component({
+  selector: 'app-produtos',
+  templateUrl: './produtos.html'
+})
+export class ProdutosComponent {
+  produtos$: Observable&lt;Product[]&gt;;
+
+  constructor(private produtoService: ProdutoService) {
+    this.produtos$ = this.produtoService.listarProdutos();
+  }
+}
+    </code></pre>
+            </div>
+
+            <p>Aqui não usamos subscribe. Apenas guardamos o Observable.</p>
+
+            <h5>Template (.html)</h5>
+
+            <div class="code-container">
+              <pre><code class="language-markup">
+&lt;h1&gt;Lista de Produtos&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li *ngFor="let produto of produtos$ | async"&gt;
+    {{ produto.title }} - {{ produto.price | currency:'BRL' }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+    </code></pre>
+            </div>
+
+            <p>
+              O <code>| async</code> pega o Observable, faz o subscribe e
+              entrega os dados diretamente para o template.
+            </p>
+
+            <hr />
+
+            <h4>4. Exemplo com loading e controle de estado</h4>
+
+            <div class="code-container">
+              <pre><code class="language-markup">
+&lt;h1&gt;Produtos&lt;/h1&gt;
+
+&lt;ul *ngIf="produtos$ | async as produtos; else loading"&gt;
+  &lt;li *ngFor="let produto of produtos"&gt;
+    {{ produto.title }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ng-template #loading&gt;
+  &lt;p&gt;Carregando produtos...&lt;/p&gt;
+&lt;/ng-template&gt;
+    </code></pre>
+            </div>
+
+            <p>
+              Aqui usamos <strong>"as produtos"</strong> para armazenar o
+              resultado do async pipe e reutilizar sem chamar novamente.
+            </p>
+
+            <hr />
+
+            <h4>5. Quando usar Async Pipe</h4>
+            <ul>
+              <li>
+                Quando estiver trabalhando com <strong>Observable</strong>
+              </li>
+              <li>Quando quiser código mais limpo</li>
+              <li>Quando quiser evitar vazamento de memória</li>
+            </ul>
+
+            <h4>6. Quando NÃO usar</h4>
+            <ul>
+              <li>
+                Quando precisar manipular dados antes de exibir (usar subscribe
+                + lógica)
+              </li>
+              <li>
+                Quando precisar combinar múltiplos fluxos complexos no
+                componente
+              </li>
+            </ul>
+
+            <hr />
+
+            <h4>Resumo direto</h4>
+            <ul>
+              <li><strong>subscribe:</strong> controle manual</li>
+              <li>
+                <strong>async pipe:</strong> controle automático (melhor para
+                UI)
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <h2>Signal no Angular</h2>
+        <section>
+          <p>
+            O <strong>signal</strong> é um novo mecanismo reativo do Angular que
+            permite armazenar estado e reagir automaticamente às mudanças desse
+            estado.
+          </p>
+
+          <ul>
+            <li>
+              Substitui parcialmente o uso de Observables em cenários simples
+            </li>
+            <li>Permite leitura reativa com <code>()</code></li>
+            <li>Atualização com <code>.set()</code></li>
+          </ul>
+
+          <div class="code-container">
+            <pre><code class="language-typescript">
+  const contador = signal(0);
+  
+  contador.set(1);
+  console.log(contador()); // 1
+      </code></pre>
+          </div>
+        </section>
+
+        <h2>
+          Passo a Passo: Criando exemplo prático com serviço, HTTP e navegação
+        </h2>
+        <section>
+          <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+          <p>
+            Acesse novamente o repositório no GitHub e crie uma nova branch
+            baseada na branch <strong>aula4</strong> com o nome:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
 aula5-servicos-di-http-navegacao
           </code></pre>
-        </div>
+          </div>
 
-        <p>Depois, no terminal do VSCode, execute:</p>
+          <p>Depois, no terminal do VSCode, execute:</p>
 
-        <div class="code-container">
-          <pre><code class="language-bash"> 
+          <div class="code-container">
+            <pre><code class="language-bash"> 
 git fetch
 git checkout aula5-servicos-di-http-navegacao
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <h3>Passo 1 — Criar os componentes</h3>
+          <h3>Passo 1 — Criar o serviço</h3>
 
-        <p>
-          Vamos criar dois componentes: um para listar produtos e outro para
-          mostrar o detalhe de um produto.
-        </p>
+          <p>
+            Agora vamos criar um serviço para centralizar a busca dos produtos.
+          </p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-ng g c pages/lista-produtos
-ng g c pages/detalhe-produto
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Criar o serviço</h3>
-
-        <p>
-          Agora vamos criar um serviço para centralizar a busca dos produtos.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
+          <div class="code-container">
+            <pre><code class="language-bash">
 ng g s services/produto
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <h3>Passo 3 — Inserir a lógica do serviço</h3>
+          <h3>Passo 2 — Inserir a lógica do serviço</h3>
 
-        <p>Abra o arquivo <strong>produto.service.ts</strong> e insira:</p>
+          <p>
+            Abra o arquivo <strong>produto.ts</strong> que está dentro da pasta
+            <code>services</code> e insira:
+          </p>
 
-        <div class="code-container">
-          <pre><code class="language-typescript">
+          <div class="code-container">
+            <pre><code class="language-typescript">
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Rating {
+  rate: number;
+  count: number;
+}
+
+export interface Product {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: Rating;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class ProdutoService {
-  private apiUrl = 'https://fakestoreapi.com/products';
+export class Produto {
+  private readonly apiUrl = 'https://fakestoreapi.com/products';
 
   constructor(private http: HttpClient) {}
 
-  listarProdutos() {
-    return this.http.get<any[]>(this.apiUrl);
+  listarProdutos(): Observable&lt;Product[]&gt; {
+    return this.http.get&lt;Product[]&gt;(this.apiUrl);
   }
 
-  buscarProdutoPorId(id: string | null) {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  buscarProdutoPorId(id: string | number): Observable&lt;Product&gt; {
+    return this.http.get&lt;Product&gt;(`${this.apiUrl}/${id}`);
   }
 }
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
 
-        <h3>Passo 4 — Configurar as rotas</h3>
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <p>
-          Agora abra o arquivo de rotas do projeto e insira a configuração
-          abaixo:
-        </p>
+          <h3>Passo 3 — Importar HttpClient e RouterOutlet</h3>
 
-        <div class="code-container">
-          <pre><code class="language-typescript">
-import { Routes } from '@angular/router';
-import { ListaProdutosComponent } from './pages/lista-produtos/lista-produtos';
-import { DetalheProdutoComponent } from './pages/detalhe-produto/detalhe-produto';
+          <p>
+            No componente principal da aplicação, no caso o
+            <strong>app.ts</strong>, adicione os imports necessários para o
+            roteamento funcionar.
+          </p>
 
-export const routes: Routes = [
-  { path: '', component: ListaProdutosComponent },
-  { path: 'produto/:id', component: DetalheProdutoComponent }
-];
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 5 — Importar HttpClient e RouterOutlet</h3>
-
-        <p>
-          No componente principal da aplicação, adicione os imports necessários
-          para o roteamento funcionar.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-typescript">
+          <div class="code-container">
+            <pre><code class="language-typescript">
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -455,132 +675,188 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {}
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <p>Agora no arquivo <strong>app.html</strong> deixe apenas:</p>
+          <h3>Passo 4 — Inserir a lógica da lista de produtos</h3>
 
-        <div class="code-container">
-          <pre><code class="language-markup">
-<router-outlet></router-outlet>
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+          <p>Abra o arquivo <strong>lista-produtos.ts</strong> e insira:</p>
 
-        <h3>Passo 6 — Inserir a lógica da lista de produtos</h3>
-
-        <p>Abra o arquivo <strong>lista-produtos.ts</strong> e insira:</p>
-
-        <div class="code-container">
-          <pre><code class="language-typescript">
-import { Component } from '@angular/core';
+          <div class="code-container">
+            <pre><code class="language-typescript">
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProdutoService } from '../../services/produto.service';
+import { Produto } from '../../services/produto';
+
+export interface Rating {
+  rate: number;
+  count: number;
+}
+
+export interface Product {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: Rating;
+}
 
 @Component({
   selector: 'app-lista-produtos',
   imports: [CommonModule, RouterModule],
   templateUrl: './lista-produtos.html',
-  styleUrl: './lista-produtos.css'
+  styleUrl: './lista-produtos.css',
 })
-export class ListaProdutosComponent {
-  produtos: any[] = [];
+export class ListaProdutos implements OnInit {
+  produtos = signal&lt;Product[]&gt;([]);
+  carregando = signal(true);
 
-  constructor(private produtoService: ProdutoService) {}
+  constructor(private produtoService: Produto) {}
 
-  ngOnInit() {
-    this.produtoService.listarProdutos().subscribe((dados) => {
-      this.produtos = dados;
+  ngOnInit(): void {
+    this.produtoService.listarProdutos().subscribe({
+      next: (dados: Product[]) => {
+        this.produtos.set(dados);
+        this.carregando.set(false);
+      },
+      error: (erro: any) => {
+        console.error(erro);
+        this.carregando.set(false);
+      },
     });
   }
 }
+
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <p>Agora abra o arquivo <strong>lista-produtos.html</strong> e insira:</p>
+          <p>
+            Agora abra o arquivo <strong>lista-produtos.html</strong> e insira:
+          </p>
 
-        <div class="code-container">
-          <pre><code class="language-markup">
-<h1>Lista de Produtos</h1>
+          <div class="code-container">
+            <pre><code class="language-markup">
+&lt;h1&gt;Lista de Produtos&lt;/h1&gt;
 
-<ul>
-  <li *ngFor="let produto of produtos">
-    {{ produto.title }} -
-    <a [routerLink]="['/produto', produto.id]">Ver detalhes</a>
-  </li>
-</ul>
+@if (carregando()) {
+  &lt;p&gt;Carregando produtos...&lt;/p&gt;
+} @else {
+  &lt;ul&gt;
+    @for (produto of produtos(); track produto.id) {
+      &lt;li&gt;
+        {{ produto.title }} -
+        &lt;a [routerLink]="['/produto', produto.id]">Ver detalhes&lt;/a&gt;
+      &lt;/li&gt;
+    }
+  &lt;/ul&gt;
+}
+
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <h3>Passo 7 — Inserir a lógica do detalhe do produto</h3>
+          <h3>Passo 5 — Inserir a lógica do detalhe do produto</h3>
 
-        <p>Abra o arquivo <strong>detalhe-produto.ts</strong> e insira:</p>
+          <p>Abra o arquivo <strong>detalhe-produto.ts</strong> e insira:</p>
 
-        <div class="code-container">
-          <pre><code class="language-typescript">
-import { Component } from '@angular/core';
+          <div class="code-container">
+            <pre><code class="language-typescript">
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ProdutoService } from '../../services/produto.service';
+import { Produto, Product } from '../../services/produto';
 
 @Component({
   selector: 'app-detalhe-produto',
+  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './detalhe-produto.html',
-  styleUrl: './detalhe-produto.css'
+  styleUrl: './detalhe-produto.css',
 })
-export class DetalheProdutoComponent {
-  produto: any;
+export class DetalheProduto implements OnInit {
+  produto = signal&lt;Product | null&gt;(null);
+  carregando = signal(true);
+  erro = signal(false);
 
   constructor(
     private route: ActivatedRoute,
-    private produtoService: ProdutoService
+    private produtoService: Produto,
   ) {}
 
-  ngOnInit() {
+  get produtoDetalhe(): Product | null {
+    return this.produto();
+  }
+
+  ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
-    this.produtoService.buscarProdutoPorId(id).subscribe((dados) => {
-      this.produto = dados;
+    if (!id) {
+      console.error('ID do produto não encontrado na rota');
+      this.carregando.set(false);
+      this.erro.set(true);
+      return;
+    }
+
+    this.produtoService.buscarProdutoPorId(id).subscribe({
+      next: (dados) => {
+        this.produto.set(dados);
+        this.carregando.set(false);
+      },
+      error: (erro) => {
+        console.error('Erro ao buscar produto:', erro);
+        this.carregando.set(false);
+        this.erro.set(true);
+      },
     });
   }
 }
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Inserir o template do detalhe do produto</h3>
+
+          <p>
+            Agora abra o arquivo <strong>detalhe-produto.html</strong> e insira:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-markup">
+@if (carregando()) {
+  &lt;p&gt;Carregando produto...&lt;/p&gt;
+} @else if (erro()) {
+  &lt;p&gt;Erro ao carregar o produto.&lt;/p&gt;
+  &lt;a routerLink="/"&gt;Voltar&lt;/a&gt;
+} @else if (produto(); as p) {
+  &lt;h1&gt;{{ p.title }}&lt;/h1&gt;
+  &lt;img [src]="p.image" [alt]="p.title" width="150" /&gt;
+  &lt;p&gt;{{ p.description }}&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;Preço:&lt;/strong&gt; {{ p.price | currency:'BRL' }}&lt;/p&gt;
+
+  &lt;a routerLink="/"&gt;Voltar&lt;/a&gt;
+}
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <p>Agora abra o arquivo <strong>detalhe-produto.html</strong> e insira:</p>
+          <h3>Passo 7 — Configurar o HttpClient</h3>
 
-        <div class="code-container">
-          <pre><code class="language-markup">
-<div *ngIf="produto">
-  <h1>{{ produto.title }}</h1>
-  <img [src]="produto.image" [alt]="produto.title" width="150" />
-  <p>{{ produto.description }}</p>
-  <p><strong>Preço:</strong> {{ produto.price | currency:'BRL' }}</p>
+          <p>
+            Para que o Angular consiga fazer requisições HTTP, precisamos ativar
+            o provider do HttpClient na configuração da aplicação.
+          </p>
 
-  <a routerLink="/">Voltar</a>
-</div>
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+          <p>
+            No arquivo principal de configuração da aplicação,
+            <strong>app.config.ts</strong>, insira algo como:
+          </p>
 
-        <h3>Passo 8 — Configurar o HttpClient</h3>
-
-        <p>
-          Para que o Angular consiga fazer requisições HTTP, precisamos ativar o
-          provider do HttpClient na configuração da aplicação.
-        </p>
-
-        <p>
-          No arquivo principal de configuração da aplicação, insira algo como:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-typescript">
+          <div class="code-container">
+            <pre><code class="language-typescript">
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -593,62 +869,60 @@ export const appConfig: ApplicationConfig = {
   ]
 };
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <h3>Passo 9 — Rodar a aplicação</h3>
+          <h3>Passo 8 — Rodar a aplicação</h3>
 
-        <p>No terminal, execute:</p>
+          <p>No terminal, execute:</p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
+          <div class="code-container">
+            <pre><code class="language-bash">
 ng serve
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
 
-        <p>Acesse:</p>
+          <p>Acesse:</p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
+          <div class="code-container">
+            <pre><code class="language-bash">
 http://localhost:4200
           </code></pre>
-        </div>
+          </div>
 
-        <p>
-          Você verá a listagem de produtos carregada a partir de uma API. Ao
-          clicar no link de detalhes, será feita a navegação para outra rota e o
-          identificador do produto será transferido pela URL.
-        </p>
+          <p>
+            Você verá a listagem de produtos carregada a partir de uma API. Ao
+            clicar no link de detalhes, será feita a navegação para outra rota e
+            o identificador do produto será transferido pela URL.
+          </p>
 
-        <h3>Passo 10 — Entendendo o que foi feito</h3>
+          <h3>Passo 10 — Entendendo o que foi feito</h3>
 
-        <p>Neste exemplo prático utilizamos:</p>
+          <p>Neste exemplo prático utilizamos:</p>
 
-        <ul>
-          <li><strong>Serviço</strong> para centralizar a busca de dados</li>
-          <li><strong>Injeção de Dependências</strong> para fornecer o serviço ao componente</li>
-          <li><strong>HttpClient</strong> para consumir uma API</li>
-          <li><strong>Rotas</strong> para mudar de página</li>
-          <li><strong>Parâmetros de rota</strong> para transferir dados</li>
-          <li><strong>Diretivas</strong> como *ngFor e *ngIf</li>
-          <li><strong>Pipes</strong> para formatar o preço</li>
-        </ul>
+          <ul>
+            <li><strong>Serviço</strong> para centralizar a busca de dados</li>
+            <li>
+              <strong>Injeção de Dependências</strong> para fornecer o serviço
+              ao componente
+            </li>
+            <li><strong>HttpClient</strong> para consumir uma API</li>
+          </ul>
 
-        <h3>Último Passo - Subindo para o Git</h3>
+          <h3>Último Passo - Subindo para o Git</h3>
 
-        <p>
-          Agora vamos salvar tudo no repositório:
-        </p>
+          <p>Agora vamos salvar tudo no repositório:</p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
+          <div class="code-container">
+            <pre><code class="language-bash">
 git add .
 git commit -m "aula 5 servicos di http navegacao"
 git push
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
       </section>
     </main>
 

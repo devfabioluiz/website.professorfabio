@@ -1,66 +1,126 @@
-<section>
-  <h3>17. O que é navegação no Angular?</h3>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula 4: Angular - Navegação, Rotas e Transferência de Dados entre Páginas
+    </title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
 
-  <p>
-    Navegação é o processo de mudar de uma tela para outra dentro da aplicação.
-  </p>
+  <body>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">
+        Navegação, Rotas e Transferência de Dados entre Páginas
+      </h4>
+    </header>
 
-  <p>Em aplicações Angular, isso normalmente é feito com rotas.</p>
+    <main class="container">
+      <section>
+        <h2>Roteamento e Navegação no Angular</h2>
 
-  <h3>18. O que são rotas?</h3>
+        <h3>O que é navegação no Angular?</h3>
 
-  <p>
-    Rotas definem qual componente será exibido quando um determinado caminho da
-    URL for acessado.
-  </p>
+        <p>
+          Navegação é o processo de mudar de uma tela para outra dentro da
+          aplicação.
+        </p>
 
-  <p>Exemplo:</p>
+        <p>Em aplicações Angular, isso normalmente é feito com rotas.</p>
 
-  <ul>
-    <li><strong>/home</strong> → página inicial</li>
-    <li><strong>/produtos</strong> → página de produtos</li>
-    <li><strong>/detalhe/1</strong> → detalhe de um produto</li>
-  </ul>
+        <h3>O que são rotas?</h3>
 
-  <h3>19. Exemplo de rotas</h3>
+        <p>
+          Rotas definem qual componente será exibido quando um determinado
+          caminho da URL for acessado.
+        </p>
 
-  <div class="code-container">
-    <pre><code class="language-typescript">
+        <p>Exemplo:</p>
+
+        <ul>
+          <li><strong>/home</strong> → página inicial</li>
+          <li><strong>/produtos</strong> → página de produtos</li>
+          <li><strong>/detalhe/1</strong> → detalhe de um produto</li>
+        </ul>
+
+        <h3>Exemplo de rotas</h3>
+
+                <div class="code-container">
+          <pre><code class="language-typescript">
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { ProdutosComponent } from './produtos/produtos.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'produtos', component: ProdutosComponent }
+  {
+    path: '',
+    loadComponent: () =>
+      import('./home/home').then(m => m.Home)
+  }
 ];
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <h3>20. Navegação pelo template</h3>
+        <p>
+          Esse formato é bastante usado no Angular moderno porque melhora a
+          organização e ajuda na performance.
+        </p>
 
-  <p>
-    Podemos navegar entre páginas usando a diretiva
-    <strong>routerLink</strong>.
-  </p>
+        <h3>Router Outlet</h3>
 
-  <div class="code-container">
-    <pre><code class="language-markup">
-<a routerLink="/produtos">Ir para produtos</a>
+        <p>
+          Para que as rotas funcionem corretamente, precisamos indicar no
+          template onde o componente da rota será exibido.
+        </p>
+
+        <p>
+          Isso é feito com a diretiva <strong>router-outlet</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;router-outlet&gt;&lt;/router-outlet&gt;
+
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <h3>21. Navegação pelo TypeScript</h3>
+        <p>
+          Sem o <strong>router-outlet</strong>, a navegação pode até mudar a
+          URL, mas o conteúdo da rota não será renderizado na tela.
+        </p>
 
-  <p>
-    Também podemos navegar por código usando o serviço
-    <strong>Router</strong>.
-  </p>
+        <h3>Navegação pelo template</h3>
 
-  <div class="code-container">
-    <pre><code class="language-typescript">
+        <p>
+          Podemos navegar entre páginas usando a diretiva
+          <strong>routerLink</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;a routerLink="/produtos"&gt;Ir para produtos&lt;/a&gt;
+
+          </code></pre>
+        </div>
+
+        <h3>Navegação pelo TypeScript</h3>
+
+        <p>
+          Também podemos navegar por código usando o serviço
+          <strong>Router</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
 import { Router } from '@angular/router';
 
 constructor(private router: Router) {}
@@ -69,59 +129,462 @@ irParaProdutos() {
   this.router.navigate(['/produtos']);
 }
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <h3>22. Transferência de dados entre rotas</h3>
+        <h3>Transferência de dados entre rotas</h3>
 
-  <p>
-    Existem várias formas de transferir dados de uma página para outra no
-    Angular.
-  </p>
+        <p>
+          Existem várias formas de transferir dados de uma página para outra no
+          Angular.
+        </p>
 
-  <ul>
-    <li>Parâmetros de rota</li>
-    <li>Query params</li>
-    <li>State de navegação</li>
-    <li>Uso de serviços compartilhados</li>
-  </ul>
+        <ul>
+          <li>Parâmetros de rota</li>
+          <li>Query params</li>
+          <li>State de navegação</li>
+          <li>Uso de serviços compartilhados</li>
+        </ul>
 
-  <h3>23. Exemplo com parâmetro de rota</h3>
+        <h3>Exemplo com parâmetro de rota</h3>
 
-  <div class="code-container">
-    <pre><code class="language-typescript">
-{ path: 'produto/:id', component: ProdutoDetalheComponent }
+        <div class="code-container">
+          <pre><code class="language-typescript">
+{ path: 'produto/:id', component: ProdutoDetalhe }
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <div class="code-container">
-    <pre><code class="language-markup">
-<a [routerLink]="['/produto', 10]">Ver produto 10</a>
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;a [routerLink]="['/produto', 10]"&gt;Ver produto 10&lt;/a&gt;
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <p>
-    Nesse caso, o número <strong>10</strong> será enviado na URL como
-    identificador do produto.
-  </p>
+        <p>
+          Nesse caso, o número <strong>10</strong> será enviado na URL como
+          identificador do produto.
+        </p>
 
-  <h3>24. Lendo o parâmetro da rota</h3>
+        <h3>Lendo o parâmetro da rota</h3>
 
-  <div class="code-container">
-    <pre><code class="language-typescript">
+        <p>Assim conseguimos recuperar o valor enviado na rota.</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
 import { ActivatedRoute } from '@angular/router';
 
 constructor(private route: ActivatedRoute) {}
 
 ngOnInit() {
-  const id = this.route.snapshot.paramMap.get('id');
-  console.log(id);
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id');
+    console.log(id);
+  });
 }
           </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        </div>
 
-  <p>Assim conseguimos recuperar o valor enviado na rota.</p>
-</section>
+        <p>
+          Dessa forma, o componente reage automaticamente às mudanças nos
+          parâmetros da URL.
+        </p>
+
+        <h3>Enviando query params</h3>
+
+        <p>
+          Os <strong>query params</strong> são muito usados para filtros,
+          paginação, ordenação e buscas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+this.router.navigate(['/produtos'], {
+  queryParams: {
+    pagina: 2,
+    categoria: 'eletronicos'
+  }
+});
+          </code></pre>
+        </div>
+
+        <p>A URL pode ficar parecida com esta:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+/produtos?pagina=2&categoria=eletronicos
+          </code></pre>
+        </div>
+
+        <h3>Lendo query params</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+this.route.queryParams.subscribe(params => {
+  console.log(params['pagina']);
+  console.log(params['categoria']);
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Essa técnica é muito útil quando queremos manter filtros e estado da
+          tela na URL.
+        </p>
+
+        <h3>Enviando dados com state</h3>
+
+        <p>
+          Outra forma de enviar dados entre páginas é usar o
+          <strong>state</strong> da navegação.
+        </p>
+
+        <p>
+          Essa abordagem é útil quando não queremos expor todas as informações na
+          URL.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+this.router.navigate(['/detalhe'], {
+  state: {
+    produto: {
+      id: 1,
+      nome: 'Notebook'
+    }
+  }
+});
+          </code></pre>
+        </div>
+
+        <h3>Recebendo dados enviados com state</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Router } from '@angular/router';
+
+constructor(private router: Router) {}
+
+ngOnInit() {
+  const navigation = this.router.getCurrentNavigation();
+  const produto = navigation?.extras.state?.['produto'];
+
+  console.log(produto);
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Essa estratégia pode ser útil para transferir objetos temporários entre
+          telas durante a navegação.
+        </p>
+
+        <h3>Usando o resolver</h3>
+
+        <p>
+          Outra funcionalidade importante é o <strong>resolver</strong>, usado
+          para carregar dados antes que a rota seja exibida.
+        </p>
+
+        <p>
+          Isso ajuda a evitar que a página carregue vazia enquanto espera dados
+          externos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { ResolveFn } from '@angular/router';
+
+export const produtoResolver: ResolveFn<any> = () => {
+  return fetch('https://api.exemplo.com/produto/1')
+    .then(res => res.json());
+};
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+{
+  path: 'produto/:id',
+  component: ProdutoDetalheComponent,
+  resolve: {
+    produto: produtoResolver
+  }
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse caso, a rota pode esperar os dados serem carregados antes de
+          mostrar o componente ao usuário.
+        </p>
+
+        <h3>Resumo</h3>
+
+        <p>
+          O sistema de rotas do Angular é responsável por controlar a navegação
+          entre páginas e também permite transferir informações de diferentes
+          formas.
+        </p>
+
+        <p>Entre os principais recursos, destacam-se:</p>
+
+        <ul>
+          <li>Definição de rotas com <strong>Routes</strong></li>
+          <li>Exibição de telas com <strong>router-outlet</strong></li>
+          <li>Navegação com <strong>routerLink</strong> e <strong>Router</strong></li>
+          <li>Envio de dados com parâmetros de rota</li>
+          <li>Uso de <strong>query params</strong></li>
+          <li>Transferência de objetos com <strong>state</strong></li>
+          <li>Compartilhamento de informações com serviços</li>
+          <li>Proteção de rotas com guards</li>
+          <li>Pré-carregamento de dados com resolvers</li>
+          <li>Uso de componentes standalone e lazy loading moderno</li>
+        </ul>
+
+        <p>
+          Esses recursos tornam a navegação mais organizada, flexível e adequada
+          para aplicações modernas.
+        </p>
+      </section>
+
+        <h2>Passo a Passo: Criando exemplo prático com serviço, HTTP e navegação</h2>
+        <section>
+        <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie uma nova branch baseada na branch <strong>aula3</strong> com o seguinte
+          nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula4-navegacao
+          </code></pre>
+        </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash"> 
+git fetch
+git checkout aula4-navegacao
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar os componentes</h3>
+
+        <p>
+          Vamos criar dois componentes: um para listar produtos e outro para
+          mostrar o detalhe de um produto.
+        </p>
+
+        <p>Perceba que usamos o <code>pages/</code>. Isso serve para criar uma pasta para os componentes de página. Assim, toda vez que precisarmos criar um novo componente de página, podemos organizá-lo dentro dessa pasta.</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c pages/lista-produtos
+ng g c pages/detalhe-produto
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Configurar as rotas</h3>
+
+        <p>
+          Agora abra o arquivo de rotas do projeto, no caso o arquivo <code>app.routes.ts</code> e insira o código
+          abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { ListaProdutos } from './pages/lista-produtos/lista-produtos';
+import { DetalheProduto } from './pages/detalhe-produto/detalhe-produto';
+
+export const routes: Routes = [
+  { path: '', component: ListaProdutos },
+  { path: 'produto/:id', component: DetalheProduto },
+];
+
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Importar RouterOutlet</h3>
+
+        <p>
+          No componente principal da aplicação, no caso o <code>app.ts</code>, adicione os imports necessários
+          para o roteamento funcionar.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+//adicione o RouterOutlet no imports
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Atualizar o app.html para receber as rotas</h3>
+
+        <p>Agora no arquivo <strong>app.html</strong>, apague tudo que está lá e deixe apenas o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;router-outlet&gt;&lt;/router-outlet&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 —  Criar o template da lista de produtos</h3>
+
+        <p>Agora abra o arquivo <strong>lista-produtos.html</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h1&gt;Lista de Produtos&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;a [routerLink]="['/produto', 10]">Ver detalhes&lt;/a&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+<h1>Lista de Produtos</h1>
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Por fim nesse etapa, atualize o <code>lista-produtos.ts</code> com o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-lista-produtos',
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: './lista-produtos.html',
+  styleUrl: './lista-produtos.css',
+})
+export class ListaProdutos {
+  produtos = [];
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Inserir a lógica do detalhe do produto</h3>
+
+        <p>Abra o arquivo <strong>detalhe-produto.ts</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-detalhe-produto',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './detalhe-produto.html',
+  styleUrl: './detalhe-produto.css',
+})
+export class DetalheProduto {
+  public id: string | null = null;
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    console.log('ID do produto selecionado na rota:', this.id);
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora abra o arquivo <strong>detalhe-produto.html</strong> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;Este é a página de detalhes do produto {{ id }}&lt;/p&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Rodar a aplicação</h3>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200
+          </code></pre>
+        </div>
+
+        <p>
+          Acesse as rotas <strong>http://localhost:4200/produtos</strong> e <strong>http://localhost:4200/produto/:id</strong>. Inserindo em :id o número do produto que deseja visualizar. 
+        </p>
+        <p>
+          Por exemplo: <strong>http://localhost:4200/produto/10</strong>.
+        </p>
+
+        <h3>Passo 10 — Entendendo o que foi feito</h3>
+
+        <p>Neste exemplo prático utilizamos:</p>
+
+        <ul>
+          <li><strong>Rotas</strong> para mudar de página</li>
+          <li><strong>Parâmetros de rota</strong> para transferir dados</li>
+        </ul>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>
+          Agora vamos salvar tudo no repositório:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 4 navegacao"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        
+        </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
