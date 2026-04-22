@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6: Angular - Guardiões de Rota (Route Guards)</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Guardiões de Rota (Route Guards)</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que são Guardiões de Rota?</h2>
+
+        <p>
+          Guardiões de rota (Route Guards) são mecanismos do Angular que
+          permitem controlar o acesso às rotas da aplicação.
+        </p>
+
+        <p>
+          Eles são usados para decidir se um usuário pode ou não acessar uma
+          determinada página.
+        </p>
+
+        <h3>Para que servem?</h3>
+
+        <ul>
+          <li>Proteger páginas privadas</li>
+          <li>Validar autenticação</li>
+          <li>Controlar permissões (admin, usuário comum, etc)</li>
+          <li>Evitar acesso indevido</li>
+        </ul>
+
+        <h3>Exemplo prático</h3>
+
+        <p>
+          Você pode impedir que um usuário acesse a rota
+          <code>/painel-adm</code> caso ele não esteja logado.
+        </p>
+
+        <h2>Tipos de Guards</h2>
+
+        <ul>
+          <li><strong>CanActivate</strong> → controla acesso à rota</li>
+          <li><strong>CanActivateChild</strong> → protege rotas filhas</li>
+          <li><strong>CanDeactivate</strong> → impede sair da página</li>
+          <li><strong>Resolve</strong> → carrega dados antes da rota</li>
+          <li>
+            <strong>CanMatch</strong> → controla se rota pode ser carregada
+          </li>
+        </ul>
+
+        <h2>Angular moderno (IMPORTANTE)</h2>
+
+        <p>
+          No Angular atual, usamos funções ao invés de classes para criar
+          guards.
+        </p>
+
+        <p>
+          Isso é feito usando <strong>CanActivateFn</strong> e a função
+          <strong>inject()</strong>.
+        </p>
+
+        <h3>Exemplo de Guard moderno</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { CanActivateFn } from '@angular/router';
+
+export const authGuard: CanActivateFn = () => {
+  return true;
+};
+          </code></pre>
+        </div>
+
+        <h3>Usando inject()</h3>
+
+        <p>
+          O <strong>inject()</strong> substitui o constructor para injeção de
+          dependência.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = () => {
+  const router = inject(Router);
+
+  const logado = false;
+
+  if (!logado) {
+    router.navigate(['/login']);
+    return false;
+  }
+
+  return true;
+};
+          </code></pre>
+        </div>
+
+        <h2>Aplicando o guard na rota</h2>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { authGuard } from './guards/auth.guard';
+
+export const routes = [
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(m => m.PainelAdm),
+    canActivate: [authGuard]
+  }
+];
+          </code></pre>
+        </div>
+
+        <p>Agora essa rota só será acessada se o guard permitir.</p>
+
+        <h2>Resumo</h2>
+
+        <ul>
+          <li>Guards protegem rotas</li>
+          <li>Podem bloquear acesso</li>
+          <li>São usados para autenticação e autorização</li>
+          <li>Hoje usamos funções (CanActivateFn)</li>
+          <li>inject() substitui constructor</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Passo a Passo: Criando um Guard de Autenticação</h2>
+
+        <h3>Passo 0 — Criar branch e acessar a branch</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          baseada na branch <strong>aula5</strong> com o nome abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula6-guards
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>No terminal, execute o comando abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula6-guards
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o guard</h3>
+
+        <p>No terminal, execute o comando abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g guard guards/auth
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Implementar o guard</h3>
+
+        <p>No arquivo <code>auth.guard.ts</code>, insira o seguinte código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = () => {
+  const router = inject(Router);
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    router.navigate(['/login']);
+    return false;
+  }
+
+  return true;
+};
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Aplicar na rota</h3>
+
+        <p>No arquivo <code>app.routes.ts</code>, insira o seguinte código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(
+        (m) => m.PainelAdm
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos',
+  }
+];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Rodar aplicação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 - Simule login</h3>
+
+        <p>No navegador abra o console e execute o comando abaixo:</p>
+
+        <p>
+          Assim, vamos inserir o token para simular o login, fazendo com que a
+          rota fique acessível.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+localStorage.setItem('token', '123456');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora, Acesse a rota <code>/painel-adm</code> com o token no
+          localStorage, e veja se terá acesso a rota.
+        </p>
+
+        <h3>Passo 6 - Simule logout</h3>
+
+        <p>No navegador abra o console e execute o comando abaixo:</p>
+
+        <p>
+          Assim, removeremos o token para simular o logout, fazendo com que a
+          rota fique inacessível.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+localStorage.removeItem('token');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora, Acesse a rota <code>/painel-adm</code> sem o token no
+          localStorage, e veja se terá acesso a rota.
+        </p>
+
+        <h3>Passo 7 — Teste a rota protegida</h3>
+        <p>
+          Acesse a rota <code>/painel-adm</code> sem estar logado para verificar
+          o funcionamento do guard.
+        </p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 6 guards"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Proteger rota detalhes-produto se usuário for admin</h3>
+
+            <p>
+              Implemente um guard chamado <code>role</code> que verifica se o
+              usuário for administrador, ele acessa a página detalhes-produto,
+              caso contrário, ele é redirecionado para a página de lista de
+              produtos
+            </p>
+
+            <p>
+              Você deve fazer o localStorage receber a propriedade
+              <strong>isAdmin</strong> e colocar um valor <code>true</code> ou
+              <code>false</code>
+            </p>
+
+            <p><strong>Obs</strong>: Suba o código para o Git após finalizar</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+
+            <div class="gabarito">
+              <strong>Gabarito:</strong>
+
+              <strong
+                >1. Inserir no localStorage a flag isAdmin no navegador</strong
+              >
+
+              <div class="code-container">
+                <pre>
+  <code class="language-bash">localStorage.setItem('isAdmin', 'true');</code>
+</pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <strong
+                >2. Criar o guard de role - arquivo
+                <code>role.guard.ts</code></strong
+              >
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+export const roleGuard: CanActivateFn = () => {
+  const router = inject(Router);
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  if (!isAdmin) {
+    router.navigate(['/produtos']);
+    return false;
+  }
+  return true;
+};
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <strong
+                >3. Inserir o guard na rota - arquivo
+                <code>app.routes.ts</code></strong
+              >
+
+              <div class="code-container">
+                <pre>
+                  <code class="language-typescript">
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+    canActivate: [roleGuard]
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(
+        (m) => m.PainelAdm
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos',
+  }
+];
+                  </code>
+                  <button class="btn-copy">Copiar Código</button>
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

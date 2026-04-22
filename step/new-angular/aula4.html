@@ -398,14 +398,33 @@ ng g c pages/detalhe-produto
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Routes } from '@angular/router';
-import { ListaProdutos } from './pages/lista-produtos/lista-produtos';
-import { DetalheProduto } from './pages/detalhe-produto/detalhe-produto';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: ListaProdutos },
-  { path: 'produto/:id', component: DetalheProduto },
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos', 
+  }
 ];
-
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -600,14 +619,39 @@ git push
               <div class="code-container">
                 <pre><code class="language-typescript">
 import { Routes } from '@angular/router';
-import { ListaProdutos } from './pages/lista-produtos/lista-produtos';
-import { DetalheProduto } from './pages/detalhe-produto/detalhe-produto';
-import { PainelAdm } from './painel-adm/painel-adm';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: ListaProdutos },
-  { path: 'produto/:id', component: DetalheProduto },
-  { path: 'painel-adm', component: PainelAdm }
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(
+        (m) => m.PainelAdm
+      ),
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos', 
+  }
 ];
 
           </code></pre>
