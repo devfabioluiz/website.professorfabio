@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula 7: Angular - Ciclo de Vida de Componentes e Passagem de Dados
+    </title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">
+        Ciclo de Vida de Componentes e Passagem de Dados
+      </h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Comunicação entre Componentes no Angular</h2>
+
+        <p>
+          Em aplicações Angular, é muito comum precisarmos trocar informações
+          entre componentes.
+        </p>
+
+        <p>Por exemplo:</p>
+
+        <ul>
+          <li>Um componente pai envia dados para um componente filho</li>
+          <li>Um componente filho avisa ao pai que algo aconteceu</li>
+          <li>
+            Dois componentes compartilham informações por meio de um serviço
+          </li>
+        </ul>
+
+        <p>As principais formas de comunicação entre componentes são:</p>
+
+        <ul>
+          <li><strong>@Input()</strong> → pai envia dados para o filho</li>
+          <li><strong>@Output()</strong> → filho envia eventos para o pai</li>
+          <li>
+            <strong>Serviços</strong> → compartilhamento entre componentes
+          </li>
+        </ul>
+
+        <h2>Usando Input</h2>
+
+        <p>
+          O <strong>@Input()</strong> permite que um componente receba dados de
+          outro componente.
+        </p>
+
+        <p>
+          Normalmente usamos Input quando um componente pai precisa enviar uma
+          informação para um componente filho.
+        </p>
+
+        <h3>Exemplo conceitual</h3>
+
+        <p>
+          Imagine que temos um componente pai com o nome de um usuário e
+          queremos mostrar esse nome em um componente filho.
+        </p>
+
+        <h3>Componente filho com Input</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-filho',
+  templateUrl: './filho.html',
+  styleUrl: './filho.css'
+})
+export class Filho {
+  @Input() nome = '';
+}
+          </code></pre>
+        </div>
+
+        <h3>Template do componente filho</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p&gt;Nome recebido do componente pai: {{ nome }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h3>Componente pai enviando o dado</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;app-filho [nome]="nomeUsuario"&gt;&lt;/app-filho&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse caso, o componente pai envia o valor da variável
+          <code>nomeUsuario</code> para a propriedade <code>nome</code> do
+          filho.
+        </p>
+
+        <h2>Usando Output</h2>
+
+        <p>
+          O <strong>@Output()</strong> permite que um componente filho envie um
+          evento para o componente pai.
+        </p>
+
+        <p>
+          Isso é muito útil quando o filho precisa avisar ao pai que alguma ação
+          aconteceu, como clicar em um botão, remover um item ou salvar dados.
+        </p>
+
+        <h3>Componente filho com Output</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-filho',
+  templateUrl: './filho.html',
+  styleUrl: './filho.css'
+})
+export class Filho {
+  @Output() mensagemEnviada = new EventEmitter&lt;string&gt;();
+
+  enviarMensagem() {
+    this.mensagemEnviada.emit('Olá, pai!');
+  }
+}
+          </code></pre>
+        </div>
+
+        <h3>Template do componente filho</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;button (click)="enviarMensagem()"&gt;Enviar mensagem para o pai&lt;/button&gt;
+          </code></pre>
+        </div>
+
+        <h3>Componente pai ouvindo o evento</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;app-filho (mensagemEnviada)="receberMensagem($event)"&gt;&lt;/app-filho&gt;
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+mensagem = '';
+
+receberMensagem(texto: string) {
+  this.mensagem = texto;
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Quando o botão do filho for clicado, o pai receberá o valor enviado no
+          método <code>receberMensagem()</code>.
+        </p>
+
+        <h2>Input e Output juntos</h2>
+
+        <p>
+          Em muitos casos, usamos <strong>Input</strong> e
+          <strong>Output</strong>
+          juntos.
+        </p>
+
+        <p>
+          O pai envia dados para o filho, e o filho responde enviando eventos de
+          volta.
+        </p>
+
+        <p>
+          Isso cria uma comunicação organizada e bastante comum em aplicações
+          Angular.
+        </p>
+
+        <h2>Outras formas de passar dados entre componentes</h2>
+
+        <h3>1. De pai para filho com Input</h3>
+        <p>
+          É a forma mais direta quando existe relação hierárquica entre os
+          componentes.
+        </p>
+
+        <h3>2. De filho para pai com Output</h3>
+        <p>É usada quando o filho precisa notificar o pai sobre alguma ação.</p>
+
+        <h3>3. Entre componentes sem relação direta usando serviço</h3>
+        <p>
+          Quando dois componentes não têm relação direta de pai e filho, uma
+          forma comum de comunicação é usar um
+          <strong>serviço compartilhado</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MensagemService {
+  mensagem = 'Mensagem compartilhada';
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse caso, múltiplos componentes podem usar o mesmo serviço e acessar
+          os mesmos dados.
+        </p>
+
+        <h3>4. Por rotas e parâmetros</h3>
+        <p>
+          Outra forma de passar dados é por rotas, query params ou state de
+          navegação, como vimos em aulas anteriores.
+        </p>
+      </section>
+      <section>
+        <h2>Ciclo de Vida de Componentes no Angular</h2>
+
+        <p>
+          Todo componente Angular passa por etapas desde o momento em que é
+          criado até o momento em que é destruído.
+        </p>
+
+        <p>
+          Essas etapas são chamadas de
+          <strong>ciclo de vida do componente</strong>.
+        </p>
+
+        <p>
+          O Angular disponibiliza métodos especiais, chamados de
+          <strong>hooks do ciclo de vida</strong>, para executarmos lógicas em
+          momentos específicos.
+        </p>
+
+        <h3>Para que serve o ciclo de vida?</h3>
+
+        <ul>
+          <li>Executar lógica quando o componente inicia</li>
+          <li>Reagir a alterações em dados recebidos</li>
+          <li>Manipular dados quando a interface estiver pronta</li>
+          <li>Limpar recursos quando o componente for destruído</li>
+        </ul>
+
+        <h3>Principais hooks do ciclo de vida</h3>
+
+        <table>
+          <tr>
+            <th>Hook</th>
+            <th>Função</th>
+          </tr>
+          <tr>
+            <td>ngOnChanges</td>
+            <td>Executa quando um valor recebido por Input muda</td>
+          </tr>
+          <tr>
+            <td>ngOnInit</td>
+            <td>Executa após a criação do componente</td>
+          </tr>
+          <tr>
+            <td>ngDoCheck</td>
+            <td>Permite verificações manuais de mudança</td>
+          </tr>
+          <tr>
+            <td>ngAfterViewInit</td>
+            <td>Executa após a view estar pronta</td>
+          </tr>
+          <tr>
+            <td>ngOnDestroy</td>
+            <td>Executa antes do componente ser destruído</td>
+          </tr>
+        </table>
+
+        <h3>Exemplo de ngOnInit</h3>
+
+        <p>
+          O <strong>ngOnInit</strong> é muito utilizado para inicializar dados,
+          chamar serviços e preparar o componente.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-exemplo',
+  template: '&lt;p&gt;Componente iniciado&lt;/p&gt;'
+})
+export class ExemploComponent implements OnInit {
+  ngOnInit(): void {
+    console.log('Componente iniciado com ngOnInit');
+  }
+}
+          </code></pre>
+        </div>
+
+        <h3>Exemplo de ngOnChanges</h3>
+
+        <p>
+          O <strong>ngOnChanges</strong> é útil quando o componente recebe dados
+          de outro componente através de <code>@Input()</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-filho',
+  template: '&lt;p&gt;{{ nome }}&lt;/p&gt;'
+})
+export class FilhoComponent implements OnChanges {
+  @Input() nome = '';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('Mudanças recebidas:', changes);
+  }
+}
+          </code></pre>
+        </div>
+
+        <h3>Exemplo de ngOnDestroy</h3>
+
+        <p>
+          O <strong>ngOnDestroy</strong> é usado para limpar intervalos,
+          subscriptions e outros recursos ativos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, OnDestroy } from '@angular/core';
+
+@Component({
+  selector: 'app-relogio',
+  template: '&lt;p&gt;Relógio ativo&lt;/p&gt;'
+})
+export class RelogioComponent implements OnDestroy {
+  intervalo: any;
+
+  constructor() {
+    this.intervalo = setInterval(() => {
+      console.log('Executando intervalo...');
+    }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.intervalo);
+    console.log('Componente destruído');
+  }
+}
+          </code></pre>
+        </div>
+
+        <h2>Resumo</h2>
+
+        <ul>
+          <li>O ciclo de vida controla o comportamento do componente</li>
+          <li><code>ngOnInit</code> é usado para inicialização</li>
+          <li><code>ngOnChanges</code> reage a mudanças em Inputs</li>
+          <li><code>ngOnDestroy</code> limpa recursos</li>
+          <li><code>@Input()</code> envia dados do pai para o filho</li>
+          <li><code>@Output()</code> envia eventos do filho para o pai</li>
+          <li>Serviços ajudam a compartilhar dados entre componentes</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>
+          Passo a Passo: Criando comunicação entre componentes com Input e
+          Output
+        </h2>
+
+        <h3>Passo 0 — Criar branch e acessar a branch</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          baseada na branch <strong>aula6-guards</strong> com o nome abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula7-ciclo-vida-input-output
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>No terminal, execute o comando abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula7-ciclo-vida-input-output
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar os componentes</h3>
+
+        <p>
+          Vamos criar dois componentes: um componente pai e um componente filho.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c pages/componente-pai
+ng g c components/componente-filho
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Configurar a rota do componente pai</h3>
+
+        <p>
+          Agora abra o arquivo <code>app.routes.ts</code> e adicione a rota
+          abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(
+        (m) => m.PainelAdm
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'componente-pai',
+    loadComponent: () =>
+      import('./pages/componente-pai/componente-pai').then(
+        (m) => m.ComponentePai
+      ),
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos',
+  }
+];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar a lógica do componente filho</h3>
+
+        <p>Agora abra o arquivo <code>componente-filho.ts</code> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+
+@Component({
+  selector: 'app-componente-filho',
+  imports: [],
+  templateUrl: './componente-filho.html',
+  styleUrl: './componente-filho.css'
+})
+export class ComponenteFilho implements OnChanges {
+  @Input() nome = '';
+  @Output() mensagemEnviada = new EventEmitter&lt;string&gt;();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('Valor recebido pelo filho mudou:', changes);
+  }
+
+  enviarMensagem(): void {
+    this.mensagemEnviada.emit('Mensagem enviada do filho para o pai');
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar o template do componente filho</h3>
+
+        <p>Agora abra o arquivo <code>componente-filho.html</code> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h2&gt;Componente Filho&lt;/h2&gt;
+&lt;p&gt;Nome recebido do pai: {{ nome }}&lt;/p&gt;
+
+&lt;button (click)="enviarMensagem()"&gt;
+  Enviar mensagem para o pai
+&lt;/button&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Criar a lógica do componente pai</h3>
+
+        <p>Agora abra o arquivo <code>componente-pai.ts</code> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ComponenteFilho } from '../../components/componente-filho/componente-filho';
+
+@Component({
+  selector: 'app-componente-pai',
+  imports: [CommonModule, RouterModule, ComponenteFilho],
+  templateUrl: './componente-pai.html',
+  styleUrl: './componente-pai.css'
+})
+export class ComponentePai implements OnInit, OnDestroy {
+  nomeUsuario = 'Fabio';
+  mensagemRecebida = '';
+
+  ngOnInit(): void {
+    console.log('Componente pai iniciado');
+  }
+
+  ngOnDestroy(): void {
+    console.log('Componente pai destruído');
+  }
+
+  receberMensagem(mensagem: string): void {
+    this.mensagemRecebida = mensagem;
+  }
+
+  alterarNome(): void {
+    this.nomeUsuario = 'Novo nome enviado pelo pai';
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar o template do componente pai</h3>
+
+        <p>Agora abra o arquivo <code>componente-pai.html</code> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h1&gt;Componente Pai&lt;/h1&gt;
+
+&lt;p&gt;Mensagem recebida do filho: {{ mensagemRecebida }}&lt;/p&gt;
+
+&lt;button (click)="alterarNome()"&gt;Alterar nome enviado ao filho&lt;/button&gt;
+
+&lt;hr /&gt;
+
+&lt;app-componente-filho
+  [nome]="nomeUsuario"
+  (mensagemEnviada)="receberMensagem($event)"
+&gt;&lt;/app-componente-filho&gt;
+
+&lt;br /&gt;
+&lt;br /&gt;
+
+&lt;a routerLink="/produtos"&gt;Voltar para produtos&lt;/a&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Entendendo o que foi feito</h3>
+
+        <p>O componente pai envia dados ao filho usando:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+[nome]="nomeUsuario"
+          </code></pre>
+        </div>
+
+        <p>Já o componente filho envia eventos de volta ao pai usando:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+(mensagemEnviada)="receberMensagem($event)"
+          </code></pre>
+        </div>
+
+        <p>Além disso:</p>
+
+        <ul>
+          <li>O pai usa <code>ngOnInit</code> e <code>ngOnDestroy</code></li>
+          <li>O filho usa <code>ngOnChanges</code> para reagir ao Input</li>
+          <li>O filho dispara um evento com <code>EventEmitter</code></li>
+        </ul>
+
+        <h3>Passo 8 — Rodar a aplicação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Depois, acesse a rota abaixo no navegador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200/componente-pai
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Testar a comunicação entre componentes</h3>
+
+        <p>
+          Ao abrir a página, o componente filho receberá o nome enviado pelo
+          pai.
+        </p>
+
+        <p>
+          Ao clicar no botão do pai, o valor enviado pelo Input mudará, e o
+          <code>ngOnChanges</code> do filho será executado.
+        </p>
+
+        <p>
+          Ao clicar no botão do filho, ele enviará uma mensagem para o pai
+          usando Output.
+        </p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 7 ciclo de vida input output"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar comunicação entre componente pai e componente filho</h3>
+
+            <p>
+              Crie um componente filho que receba uma propriedade chamada
+              <code>produto</code> via <code>@Input()</code>.
+            </p>
+
+            <p>Esse componente deve exibir o nome e o preço do produto.</p>
+
+            <p>
+              Além disso, o componente filho deve possuir um botão para avisar
+              ao pai que o produto foi selecionado, utilizando
+              <code>@Output()</code>.
+            </p>
+
+            <p>
+              Quando o evento for disparado, o componente pai deve exibir na
+              tela uma mensagem informando qual produto foi selecionado.
+            </p>
+
+            <p>
+              <strong>Obs</strong>: Suba o código para o Git após finalizar.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+
+            <div class="gabarito">
+              <strong>Gabarito:</strong>
+
+              <p>
+                <strong>1. Arquivo <code>produto-filho.ts</code></strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-produto-filho',
+  imports: [],
+  templateUrl: './produto-filho.html',
+  styleUrl: './produto-filho.css'
+})
+export class ProdutoFilho {
+  @Input() produto: any;
+  @Output() produtoSelecionado = new EventEmitter&lt;string&gt;();
+
+  selecionarProduto(): void {
+    this.produtoSelecionado.emit(this.produto.nome);
+  }
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>2. Arquivo <code>produto-filho.html</code></strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-markup">
+&lt;p&gt;Produto: {{ produto.nome }}&lt;/p&gt;
+&lt;p&gt;Preço: {{ produto.preco }}&lt;/p&gt;
+&lt;button (click)="selecionarProduto()"&gt;Selecionar produto&lt;/button&gt;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>3. Arquivo do componente pai</strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+produto = {
+  nome: 'Notebook',
+  preco: 3500
+};
+
+mensagem = '';
+
+receberProdutoSelecionado(nomeProduto: string): void {
+  this.mensagem = `Produto selecionado: ${nomeProduto}`;
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>4. Template do componente pai</strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-markup">
+&lt;p&gt;{{ mensagem }}&lt;/p&gt;
+
+&lt;app-produto-filho
+  [produto]="produto"
+  (produtoSelecionado)="receberProdutoSelecionado($event)"
+&gt;&lt;/app-produto-filho&gt;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8: Angular - Formulários</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">Formulários</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que são formulários?</h2>
+
+        <p>Formulários são estruturas usadas para capturar dados do usuário.</p>
+
+        <p>
+          Em praticamente toda aplicação web usamos formulários em situações
+          como:
+        </p>
+
+        <ul>
+          <li>Login</li>
+          <li>Cadastro</li>
+          <li>Busca</li>
+          <li>Filtros</li>
+          <li>Envio de informações</li>
+        </ul>
+
+        <p>
+          No Angular, existem duas formas principais de trabalhar com
+          formulários:
+        </p>
+
+        <ul>
+          <li><strong>Template-driven forms</strong></li>
+          <li><strong>Reactive forms</strong></li>
+        </ul>
+
+        <h2>Template-driven forms</h2>
+
+        <p>
+          Nos <strong>template-driven forms</strong>, a maior parte da lógica do
+          formulário fica no HTML.
+        </p>
+
+        <p>
+          Essa abordagem é mais simples e costuma ser usada em cenários menores
+          ou introdutórios.
+        </p>
+
+        <p>
+          Para utilizar esse tipo de formulário, normalmente precisamos importar
+          o <strong>FormsModule</strong>.
+        </p>
+
+        <h3>Exemplo simples com ngModel</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-exemplo-form',
+  imports: [FormsModule],
+  templateUrl: './exemplo-form.html'
+})
+export class ExemploForm {
+  nome = '';
+}
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;input type="text" [(ngModel)]="nome" name="nome" /&gt;
+&lt;p&gt;Nome digitado: {{ nome }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, usamos <code>[(ngModel)]</code> para fazer a ligação
+          entre o valor digitado no campo e a variável do componente.
+        </p>
+
+        <h2>Reactive forms</h2>
+
+        <p>
+          Nos <strong>reactive forms</strong>, a estrutura do formulário é
+          criada no TypeScript.
+        </p>
+
+        <p>
+          Essa é a abordagem mais robusta e muito usada em aplicações reais,
+          porque oferece mais controle sobre:
+        </p>
+
+        <ul>
+          <li>Validações</li>
+          <li>Estrutura do formulário</li>
+          <li>Manipulação de estados</li>
+          <li>Leitura dos valores</li>
+        </ul>
+
+        <p>
+          Para trabalhar com esse modelo, normalmente usamos o
+          <strong>ReactiveFormsModule</strong>.
+        </p>
+
+        <h3>Principais estruturas dos Reactive Forms</h3>
+
+        <ul>
+          <li><strong>FormGroup</strong> → representa o formulário</li>
+          <li><strong>FormControl</strong> → representa um campo</li>
+          <li><strong>Validators</strong> → valida os campos</li>
+        </ul>
+
+        <h3>Exemplo de estrutura com FormGroup</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { FormControl, FormGroup } from '@angular/forms';
+
+formulario = new FormGroup({
+  nome: new FormControl(''),
+  email: new FormControl('')
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse caso, criamos um formulário com dois campos:
+          <code>nome</code> e <code>email</code>.
+        </p>
+
+        <h2>Validações com Validators</h2>
+
+        <p>
+          O Angular oferece validadores prontos para verificarmos se os dados do
+          formulário estão corretos.
+        </p>
+
+        <p>Alguns validadores comuns são:</p>
+
+        <ul>
+          <li><code>Validators.required</code></li>
+          <li><code>Validators.email</code></li>
+          <li><code>Validators.minLength()</code></li>
+          <li><code>Validators.maxLength()</code></li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Validators } from '@angular/forms';
+
+formulario = new FormGroup({
+  nome: new FormControl('', [
+    Validators.required,
+    Validators.minLength(3)
+  ]),
+  email: new FormControl('', [
+    Validators.required,
+    Validators.email
+  ])
+});
+          </code></pre>
+        </div>
+
+        <h2>Exibindo erros no template</h2>
+
+        <p>
+          Podemos usar as informações do próprio formulário para mostrar
+          mensagens de erro ao usuário.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+@if (formulario.get('email')?.invalid && formulario.get('email')?.touched) {
+  &lt;p&gt;Informe um email válido.&lt;/p&gt;
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Assim, a mensagem aparece apenas quando o campo estiver inválido e já
+          tiver sido tocado pelo usuário.
+        </p>
+
+        <h2>Estados importantes de um formulário</h2>
+
+        <table>
+          <tr>
+            <th>Estado</th>
+            <th>Significado</th>
+          </tr>
+          <tr>
+            <td>valid</td>
+            <td>O campo ou formulário está válido</td>
+          </tr>
+          <tr>
+            <td>invalid</td>
+            <td>O campo ou formulário está inválido</td>
+          </tr>
+          <tr>
+            <td>touched</td>
+            <td>O usuário tocou no campo</td>
+          </tr>
+          <tr>
+            <td>untouched</td>
+            <td>O usuário ainda não tocou no campo</td>
+          </tr>
+          <tr>
+            <td>dirty</td>
+            <td>O valor foi alterado</td>
+          </tr>
+          <tr>
+            <td>pristine</td>
+            <td>O valor ainda não foi alterado</td>
+          </tr>
+        </table>
+
+        <h2>Resumo</h2>
+
+        <ul>
+          <li>Formulários capturam dados do usuário</li>
+          <li>Angular possui template-driven forms e reactive forms</li>
+          <li>FormsModule é usado com ngModel</li>
+          <li>ReactiveFormsModule é usado com FormGroup e FormControl</li>
+          <li>Validators ajudam a validar os dados</li>
+          <li>Podemos mostrar erros diretamente no template</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Passo a Passo: Criando um formulário reativo de cadastro</h2>
+
+        <h3>Passo 0 — Criar branch e acessar a branch</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          baseada na branch <strong>aula7-ciclo-vida-input-output</strong> com o
+          nome abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula8-formularios
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>No terminal, execute o comando abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula8-formularios
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o componente da página</h3>
+
+        <p>
+          Vamos criar um componente para trabalhar com um formulário de cadastro
+          de usuário.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c pages/cadastro-usuario
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Adicionar a rota</h3>
+
+        <p>
+          Agora abra o arquivo <code>app.routes.ts</code> e adicione a rota do
+          novo componente:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then(
+        (m) => m.ListaProdutos
+      ),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then(
+        (m) => m.DetalheProduto
+      ),
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () =>
+      import('./painel-adm/painel-adm').then(
+        (m) => m.PainelAdm
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'componente-pai',
+    loadComponent: () =>
+      import('./pages/componente-pai/componente-pai').then(
+        (m) => m.ComponentePai
+      ),
+  },
+  {
+    path: 'cadastro-usuario',
+    loadComponent: () =>
+      import('./pages/cadastro-usuario/cadastro-usuario').then(
+        (m) => m.CadastroUsuario
+      ),
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos',
+  }
+];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Entendendo o que vamos usar</h3>
+
+        <p>Neste exemplo vamos utilizar:</p>
+
+        <ul>
+          <li>
+            <strong>ReactiveFormsModule</strong> para ativar formulários
+            reativos
+          </li>
+          <li><strong>FormGroup</strong> para representar o formulário</li>
+          <li><strong>FormControl</strong> para representar os campos</li>
+          <li><strong>Validators</strong> para validar os dados</li>
+        </ul>
+
+        <h3>Passo 4 — Criar a lógica do componente</h3>
+
+        <p>
+          Agora abra o arquivo <code>cadastro-usuario.ts</code> e substitua o
+          conteúdo pelo código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-cadastro-usuario',
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './cadastro-usuario.html',
+  styleUrl: './cadastro-usuario.css',
+})
+export class CadastroUsuario {
+  mensagem = '';
+
+  formulario = new FormGroup({
+    nome: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.email,
+    ]),
+    senha: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+  });
+
+  enviarFormulario(): void {
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    console.log('Dados enviados:', this.formulario.value);
+    this.mensagem = 'Cadastro realizado com sucesso!';
+    this.formulario.reset();
+  }
+
+  get nome() {
+    return this.formulario.get('nome');
+  }
+
+  get email() {
+    return this.formulario.get('email');
+  }
+
+  get senha() {
+    return this.formulario.get('senha');
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Criar o template do formulário</h3>
+
+        <p>Agora abra o arquivo <code>cadastro-usuario.html</code> e insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;h1&gt;Cadastro de Usuário&lt;/h1&gt;
+
+&lt;form [formGroup]="formulario" (ngSubmit)="enviarFormulario()"&gt;
+  &lt;div&gt;
+    &lt;label for="nome"&gt;Nome&lt;/label&gt;
+    &lt;input id="nome" type="text" formControlName="nome" /&gt;
+
+    @if (nome?.invalid && nome?.touched) {
+      &lt;p&gt;O nome é obrigatório e deve ter pelo menos 3 caracteres.&lt;/p&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;label for="email"&gt;Email&lt;/label&gt;
+    &lt;input id="email" type="email" formControlName="email" /&gt;
+
+    @if (email?.invalid && email?.touched) {
+      &lt;p&gt;Informe um email válido.&lt;/p&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;label for="senha"&gt;Senha&lt;/label&gt;
+    &lt;input id="senha" type="password" formControlName="senha" /&gt;
+
+    @if (senha?.invalid && senha?.touched) {
+      &lt;p&gt;A senha é obrigatória e deve ter pelo menos 6 caracteres.&lt;/p&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+
+@if (mensagem) {
+  &lt;p&gt;{{ mensagem }}&lt;/p&gt;
+}
+
+&lt;br /&gt;
+&lt;a routerLink="/produtos"&gt;Voltar para produtos&lt;/a&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Estilo opcional</h3>
+
+        <p>
+          Se quiser melhorar a visualização, no arquivo
+          <code>cadastro-usuario.css</code> você pode inserir:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+}
+
+input {
+  padding: 8px;
+}
+
+button {
+  width: 120px;
+  padding: 10px;
+  cursor: pointer;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Entendendo o TypeScript do formulário</h3>
+
+        <p>
+          No TypeScript, criamos um <strong>FormGroup</strong> com três campos:
+          <code>nome</code>, <code>email</code> e <code>senha</code>.
+        </p>
+
+        <p>
+          Cada campo foi criado com <strong>FormControl</strong> e recebeu suas
+          próprias validações.
+        </p>
+
+        <p>
+          O método <code>enviarFormulario()</code> verifica se o formulário está
+          inválido. Se estiver, marcamos todos os campos como tocados com
+          <code>markAllAsTouched()</code>.
+        </p>
+
+        <p>
+          Se estiver válido, mostramos os dados no console e exibimos uma
+          mensagem de sucesso.
+        </p>
+
+        <h3>Passo 8 — Entendendo o HTML do formulário</h3>
+
+        <p>No template usamos:</p>
+
+        <ul>
+          <li><code>[formGroup]</code> para ligar o HTML ao formulário</li>
+          <li><code>formControlName</code> para ligar cada campo</li>
+          <li><code>(ngSubmit)</code> para tratar o envio do formulário</li>
+          <li><code>@ if</code> para mostrar mensagens de erro</li>
+        </ul>
+
+        <h3>Passo 9 — Rodar a aplicação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng serve
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Depois, acesse a rota abaixo no navegador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:4200/cadastro-usuario
+          </code></pre>
+        </div>
+
+        <h3>Passo 10 — Testar o formulário</h3>
+
+        <p>Tente enviar o formulário vazio.</p>
+
+        <p>Depois, preencha com email inválido.</p>
+
+        <p>Em seguida, preencha todos os dados corretamente.</p>
+
+        <p>Com isso, você verá:</p>
+
+        <ul>
+          <li>Mensagens de erro</li>
+          <li>Validações funcionando</li>
+          <li>Dados sendo exibidos no console</li>
+        </ul>
+
+        <h3>Passo 11 — Exemplo rápido de template-driven form</h3>
+
+        <p>
+          Além do reactive forms, o Angular também suporta template-driven
+          forms.
+        </p>
+
+        <p>Veja abaixo um exemplo simples apenas para comparação:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-exemplo-template-form',
+  imports: [FormsModule],
+  templateUrl: './exemplo-template-form.html'
+})
+export class ExemploTemplateForm {
+  nome = '';
+}
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;input type="text" [(ngModel)]="nome" name="nome" /&gt;
+&lt;p&gt;Nome digitado: {{ nome }}&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <p>
+          Esse modelo é mais simples, porém para aplicações maiores o reactive
+          forms costuma ser mais organizado.
+        </p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 8 formularios"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um formulário reativo de login</h3>
+
+            <p>
+              Crie um componente chamado <code>login-usuario</code> contendo um
+              formulário reativo com os campos <strong>email</strong> e
+              <strong>senha</strong>.
+            </p>
+
+            <p>
+              O campo <strong>email</strong> deve ser obrigatório e validar se o
+              valor informado é realmente um email.
+            </p>
+
+            <p>
+              O campo <strong>senha</strong> deve ser obrigatório e ter no
+              mínimo <strong>6 caracteres</strong>.
+            </p>
+
+            <p>
+              Ao enviar o formulário corretamente, mostre os dados no console.
+            </p>
+
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+
+            <div class="gabarito">
+              <strong>Gabarito:</strong>
+
+              <p>
+                <strong>1. Criar o componente</strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+ng g c pages/login-usuario
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>2. Arquivo <code>login-usuario.ts</code></strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-login-usuario',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './login-usuario.html',
+  styleUrl: './login-usuario.css',
+})
+export class LoginUsuario {
+  formulario = new FormGroup({
+    email: new FormControl('', [
+      Validators.required,
+      Validators.email,
+    ]),
+    senha: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+  });
+
+  enviarFormulario(): void {
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    console.log(this.formulario.value);
+  }
+
+  get email() {
+    return this.formulario.get('email');
+  }
+
+  get senha() {
+    return this.formulario.get('senha');
+  }
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>3. Arquivo <code>login-usuario.html</code></strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-markup">
+&lt;h1&gt;Login de Usuário&lt;/h1&gt;
+
+&lt;form [formGroup]="formulario" (ngSubmit)="enviarFormulario()"&gt;
+  &lt;div&gt;
+    &lt;label for="email"&gt;Email&lt;/label&gt;
+    &lt;input id="email" type="email" formControlName="email" /&gt;
+
+    @if (email?.invalid && email?.touched) {
+      &lt;p&gt;Informe um email válido.&lt;/p&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;div&gt;
+    &lt;label for="senha"&gt;Senha&lt;/label&gt;
+    &lt;input id="senha" type="password" formControlName="senha" /&gt;
+
+    @if (senha?.invalid && senha?.touched) {
+      &lt;p&gt;A senha deve ter pelo menos 6 caracteres.&lt;/p&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+&lt;/form&gt;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong
+                  >4. Exemplo de rota no <code>app.routes.ts</code></strong
+                >
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+{
+  path: 'login-usuario',
+  loadComponent: () =>
+    import('./pages/login-usuario/login-usuario').then(
+      (m) => m.LoginUsuario
+    ),
+},
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>5. Lembrete importante</strong>
+              </p>
+
+              <p>
+                No componente é necessário importar o
+                <code>ReactiveFormsModule</code>, senão o Angular não
+                reconhecerá diretivas como <code>[formGroup]</code> e
+                <code>formControlName</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
