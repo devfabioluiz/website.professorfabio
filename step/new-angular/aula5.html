@@ -924,6 +924,162 @@ git push
           </div>
         </section>
       </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um serviço para listar usuários da Fake Store API</h3>
+            <p>
+              Crie um serviço no Angular responsável por buscar a lista de
+              usuários da API <b>Fake Store API</b>, utilizando o endpoint
+              <code>https://fakestoreapi.com/users</code>.
+            </p>
+
+            <p>
+              Depois disso, faça a injeção desse serviço no componente
+              <b>painel-adm</b> para que, ao carregar o componente, os usuários
+              sejam buscados e exibidos na tela.
+            </p>
+
+            <p><b>Requisitos do dever de casa:</b></p>
+            <ul>
+              <li>Criar um serviço chamado <b>usuario.ts</b></li>
+              <li>
+                No serviço, criar um método chamado <b>listarUsuarios()</b> que
+                faça a requisição GET para a Fake Store API
+              </li>
+              <li>Injetar o serviço no componente <b>painel-adm</b></li>
+              <li>
+                Chamar o método <b>listarUsuarios()</b> no componente ao
+                inicializar a página do componente painel-adm
+              </li>
+              <li>
+                Armazenar os dados retornados em uma variável chamada
+                <b>usuarios</b>
+              </li>
+              <li>
+                Exibir na tela pelo menos o <b>firstname</b> e <b>email</b>
+                de cada usuário
+              </li>
+            </ul>
+
+            <p>
+              <b>Dica:</b> lembre-se de verificar se o
+              <code>provideHttpClient()</code> já foi configurado no
+              <code>app.config.ts</code>.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Serviço: <code>usuario.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class Usuario {
+  private http = inject(HttpClient);
+  private apiUrl = 'https://fakestoreapi.com/users';
+
+  listarUsuarios(): Observable&lt;any[]&gt; {
+    return this.http.get&lt;any[]&gt;(this.apiUrl);
+  }
+}
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Componente: <code>painel-adm.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UsuarioService } from '../services/usuario.service';
+
+@Component({
+  selector: 'app-painel-adm',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './painel-adm.html',
+  styleUrl: './painel-adm.css'
+})
+export class PainelAdm implements OnInit {
+  private usuarioService = inject(UsuarioService);
+
+  usuarios: any[] = [];
+
+  ngOnInit(): void {
+    this.usuarioService.listarUsuarios().subscribe({
+      next: (resposta) => {
+        this.usuarios = resposta;
+      },
+      error: (erro) => {
+        console.error('Erro ao buscar usuários:', erro);
+      }
+    });
+  }
+}
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>3. Template: <code>painel-adm.html</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-html">
+&lt;h2&gt;Painel Administrativo&lt;/h2&gt;
+
+&lt;ul&gt;
+  @for (usuario of usuarios; track usuario.id) {
+    &lt;li&gt;
+      &lt;strong&gt;Nome:&lt;/strong&gt; {{ usuario.name.firstname }} {{ usuario.name.lastname }} &lt;br&gt;
+      &lt;strong&gt;Username:&lt;/strong&gt; {{ usuario.username }} &lt;br&gt;
+      &lt;strong&gt;Email:&lt;/strong&gt; {{ usuario.email }}
+    &lt;/li&gt;
+  }
+&lt;/ul&gt;
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>4. Configuração do HTTP no <code>app.config.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()],
+};
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -937,5 +1093,6 @@ git push
     </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
