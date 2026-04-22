@@ -338,6 +338,89 @@ git push
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um for dentro do componente painel-adm</h3>
+            <p>
+              Crie <code>for</code> dentro do componente
+              <code>painel-adm</code> para renderizar uma lista de usuários
+              fictícios
+            </p>
+            <p>
+              Não se esqueça de usar o <code>interface</code> do TypeScript para
+              tipar o array de usuários
+            </p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Componente: <code>painel-adm.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+interface Usuario {
+  id: number;
+  nome: string;
+  email: string;
+}
+
+@Component({
+  selector: 'app-painel-adm',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './painel-adm.html',
+  styleUrl: './painel-adm.css'
+})
+export class PainelAdm implements {
+  usuarios: Usuario[] = [
+    { id: 1, nome: 'Alice', email: 'alice@example.com' },
+    { id: 2, nome: 'Bob', email: 'bob@example.com' },
+    { id: 3, nome: 'Charlie', email: 'charlie@example.com' }
+  ];
+}
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Template: <code>painel-adm.html</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-markup">
+&lt;h2&gt;Lista de Usuários&lt;/h2&gt;
+&lt;ul&gt;
+  @for (usuario of usuarios; track usuario.id) {
+    &lt;li&gt;
+      &lt;strong&gt;{{ usuario.nome }}&lt;/strong&gt; - {{ usuario.email }}
+    &lt;/li&gt;
+  } @empty {
+    &lt;li&gt;Nenhum usuário encontrado&lt;/li&gt;
+  }
+&lt;/ul&gt;
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -351,5 +434,6 @@ git push
     </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
