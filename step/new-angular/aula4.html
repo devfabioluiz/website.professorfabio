@@ -573,6 +573,52 @@ git push
         </div>
         
         </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar a rota para entrar no componente painel-adm</h3>
+            <p>
+              Crie uma rota para acessar o componente <code>painel-adm</code>
+            </p>
+
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Componente: <code>app.routes.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { ListaProdutos } from './pages/lista-produtos/lista-produtos';
+import { DetalheProduto } from './pages/detalhe-produto/detalhe-produto';
+import { PainelAdm } from './painel-adm/painel-adm';
+
+export const routes: Routes = [
+  { path: '', component: ListaProdutos },
+  { path: 'produto/:id', component: DetalheProduto },
+  { path: 'painel-adm', component: PainelAdm }
+];
+
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -586,5 +632,6 @@ git push
     </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
