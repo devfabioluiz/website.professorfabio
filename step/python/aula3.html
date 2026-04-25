@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 : Autenticação em APIs - Tokens e API Keys</title>
+    <title>Aula 3 : Autenticação em APIs - Tokens e API Keys</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -19,7 +19,7 @@
 
   <body>
     <header>
-      <h1>Aula 3 (REMODELAR)</h1>
+      <h1>Aula 3</h1>
       <h4 class="text-center">Autenticação em APIs</h4>
       <h4 class="text-center">Token, API Key e Login com Supabase</h4>
     </header>
@@ -147,7 +147,8 @@ def login_usuario(email, senha):
 from app.models import usuario_model
 
 def listar():
-    return usuarios = usuario_model.listar_usuarios()
+  usuarios = usuario_model.listar_usuarios()
+  return usuario_view.resposta_sucesso("Lista de usuários", usuarios)
 
 def cadastrar(email, senha):
     return usuario_model.cadastrar_usuario(email, senha)
@@ -166,6 +167,8 @@ def login(email, senha):
           <pre><code class="language-python">
 from fastapi import Header, HTTPException
 
+API_KEY = "123456"
+
 def verificar_token(authorization: str = Header(None)):
     if not authorization:
         raise HTTPException(status_code=401, detail="Token não enviado")
@@ -176,6 +179,11 @@ def verificar_token(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="Token inválido")
 
     return token
+
+def verificar_api_key(x_api_key: str = Header(None)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="API Key inválida")
+
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -192,7 +200,6 @@ from app.schemas.usuario_schema import UsuarioCreate, Login
 from app.auth.auth import verificar_token
 
 app = FastAPI()
-
 
 @app.get("/")
 def home():
@@ -216,23 +223,9 @@ def perfil(token: str = Depends(verificar_token)):
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <p>
 
-        <h3>Passo 10 — API Key</h3>
-
-        <div class="code-container">
-          <pre><code class="language-python">
-from fastapi import Header, HTTPException
-
-API_KEY = "123456"
-
-def verificar_api_key(x_api_key: str = Header(None)):
-    if x_api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="API Key inválida")
-</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 11 — Teste com curl</h3>
+        <h3>Passo 10 — Teste com curl</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -253,7 +246,7 @@ curl -X GET http://127.0.0.1:8000/perfil \
 
         ---
 
-        <h3>Passo 12 — Git</h3>
+        <h3>Último Passo — Git</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -265,7 +258,6 @@ git push
         </div>
       </section>
     </main>
-
     <script src="../../scripts/copy-clipboard.js"></script>
   </body>
 </html>
