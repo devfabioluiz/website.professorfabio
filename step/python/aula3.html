@@ -225,7 +225,19 @@ def perfil(token: str = Depends(verificar_token)):
         </div>
         <p>
 
-        <h3>Passo 10 — Teste com curl</h3>
+        <h3>Passo 10 — Rodar a aplicação e Teste com curl</h3>
+
+        <p>No terminal execute o código abaixo:</p>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-bash">
+uvicorn main:app --reload 
+            </code>
+          </pre>
+        </div>
+
+        <p>Agora teste no Postman usando esses curls abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
