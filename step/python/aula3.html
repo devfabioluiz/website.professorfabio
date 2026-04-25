@@ -47,8 +47,6 @@ Authorization: Bearer SEU_TOKEN_AQUI
         <h3>Passo 1 — Criar uma branch baseada na aula2-mvc</h3>
 
         <ul>
-          <li>Acesse o repositório no GitHub</li>
-
           <li>
             No VS Code, abra o terminal na opção Command Prompt e execute os
             comandos abaixo:
@@ -64,6 +62,7 @@ git checkout -b aula3-mvc-login-autenticacao
 cd projeto_api
 cd app
 mkdir auth
+type null > auth/auth.py
     </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -77,6 +76,8 @@ mkdir auth
         </div>
 
         <h3>Passo 5 — Schema</h3>
+
+        <p>Acesse o arquivo <strong>usuario_schema</strong> e substitua todo o código por este abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -93,14 +94,28 @@ class Login(BaseModel):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Passo 6 — Model</h3>
+
+        <p>Acesse o arquivo <strong>usuario_model.py</strong> e substitua o código pore este:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
 import requests
 from app.database.supabase_client import SUPABASE_URL, SUPABASE_KEY
+
+def listar_usuarios():
+    url = f"{SUPABASE_URL}/rest/v1/usuarios?select=*"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise Exception(f"Erro ao listar usuários: {response.text}")
+
+    return response.json()
 
 def cadastrar_usuario(email, senha):
     url = f"{SUPABASE_URL}/auth/v1/signup"
@@ -123,13 +138,16 @@ def login_usuario(email, senha):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Passo 7 — Controller</h3>
+
+        <p>Agora acesse o arquivo <strong>usuario_controller.py</strong> e substitua pelo código abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
 from app.models import usuario_model
+
+def listar():
+    return usuarios = usuario_model.listar_usuarios()
 
 def cadastrar(email, senha):
     return usuario_model.cadastrar_usuario(email, senha)
@@ -140,9 +158,9 @@ def login(email, senha):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Passo 8 — Middleware Token</h3>
+
+        <p>Agora acesse o arquivo <strong>auth.py</strong> e coloque o código abaixo nele:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -162,9 +180,9 @@ def verificar_token(authorization: str = Header(None)):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Passo 9 — Rotas</h3>
+
+        <p>Agora acesse o arquivo <strong>main.py</strong> e substitua pelo código abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -174,6 +192,15 @@ from app.schemas.usuario_schema import UsuarioCreate, Login
 from app.auth.auth import verificar_token
 
 app = FastAPI()
+
+
+@app.get("/")
+def home():
+    return {"msg": "API funcionando ðŸš€"}
+
+@app.get("/usuarios")
+def listar_usuarios():
+    return usuario_controller.listar()
 
 @app.post("/cadastro")
 def cadastro(user: UsuarioCreate):
@@ -190,8 +217,6 @@ def perfil(token: str = Depends(verificar_token)):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Passo 10 — API Key</h3>
 
         <div class="code-container">
@@ -206,8 +231,6 @@ def verificar_api_key(x_api_key: str = Header(None)):
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-
-        ---
 
         <h3>Passo 11 — Teste com curl</h3>
 
