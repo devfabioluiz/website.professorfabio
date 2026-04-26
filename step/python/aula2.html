@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aula 2 : Arquitetura de Software - Rest API com MVC</title>
 
-    ```
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
     <link
@@ -19,24 +18,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px;
-      }
-
-      th {
-        background-color: #f2f2f2;
-      }
-    </style>
   </head>
 
   <body>
@@ -170,11 +151,11 @@ mkdir database
 cd ..
 
 type nul > main.py
-type nul > app\models\usuario_model.py
-type nul > app\views\usuario_view.py
-type nul > app\controllers\usuario_controller.py
-type nul > app\schemas\usuario_schema.py
-type nul > app\database\supabase_client.py 
+type nul > app/models/usuario_model.py
+type nul > app/views/usuario_view.py
+type nul > app/controllers/usuario_controller.py
+type nul > app/schemas/usuario_schema.py
+type nul > app/database/supabase_client.py 
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -306,7 +287,7 @@ nome: str </code></pre>
 from app.database.supabase_client import supabase_request
 def listar_usuarios():
     response = supabase_request(
-        "rest/v1/usuarios?select=*",
+        "/usuarios?select=*",
         method="GET"
     )
     if response.status_code != 200:
@@ -315,7 +296,7 @@ def listar_usuarios():
 
 def criar_usuario(nome):
     response = supabase_request(
-        "rest/v1/usuarios",
+        "/usuarios",
         method="POST",
         data={"nome": nome}
     )
@@ -456,26 +437,24 @@ http://127.0.0.1:8000/docs </code></pre>
         <ul>
           <li>Abra o Postman e clique em New e depois em HTTP</li>
           <li>Dentro de "Enter URL..." cole o seguinte CURL: </li>
-          <li>
             <div class="code-container">
-              <pre>
-                <code class="language-bash">
-                  curl -X POST "http://127.0.0.1:8000/usuarios" \
+<pre>
+<code class="language-bash">
+curl -X POST "http://127.0.0.1:8000/usuarios" \
 -H "Content-Type: application/json" \
 -d '{"nome": "Teste"}'
-                </code>
+</code>
               </pre>
               <button class="btn-copy">Copiar Código</button>
             </div>
-          </li>
         </ul>
 
         <p>Faça o mesmo fluxo acima mas com esse outro CURL:</p>
          <div class="code-container">
               <pre>
-                <code class="language-bash">
-                  curl -X GET "http://127.0.0.1:8000/usuarios"
-                </code>
+<code class="language-bash">
+curl -X GET "http://127.0.0.1:8000/usuarios"
+</code>
               </pre>
               <button class="btn-copy">Copiar Código</button>
             </div>

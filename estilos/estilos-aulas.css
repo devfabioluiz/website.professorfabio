@@ -377,6 +377,24 @@ pre code {
   font-size: 24px;
 }
 
+.alert-explicando-codigo {
+  border: 1px solid #4f46e5;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+  margin-top: 25px;
+}
+
+.alert-explicando-codigo-title {
+  margin-top: 0;
+  color: #3730a3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 @media only screen and (max-width: 700px) {
   body {
     font-size: 18px;

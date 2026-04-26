@@ -70,14 +70,38 @@ type null > auth/auth.py
         <h3>Passo 2 — Dependências</h3>
 
         <div class="code-container">
-          <pre><code class="language-bash">pip install requests python-jose passlib[bcrypt]
+          <pre><code class="language-bash">pip install requests python-jose passlib[bcrypt] PyJWT
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 — Schema</h3>
+        <p>
+          Esse comando instala bibliotecas usadas para criar uma API com login e
+          autenticação:
+        </p>
 
-        <p>Acesse o arquivo <strong>usuario_schema</strong> e substitua todo o código por este abaixo:</p>
+        <ul>
+          <li>
+            <b>requests</b>: faz requisições HTTP para outras APIs, como o
+            Supabase.
+          </li>
+          <li><b>python-jose</b>: gera e valida tokens JWT.</li>
+          <li>
+            <b>passlib[bcrypt]</b>: cria e verifica senhas criptografadas com
+            bcrypt.
+          </li>
+          <li>
+            <b>PyJWT</b>: também trabalha com JWT, mas é redundante se você já
+            usa python-jose.
+          </li>
+        </ul>
+
+        <h3>Passo 3 — Schema</h3>
+
+        <p>
+          Acesse o arquivo <strong>usuario_schema</strong> e substitua todo o
+          código por este abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -94,57 +118,309 @@ class Login(BaseModel):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 — Model</h3>
+        <h3>Passo 4 — Atualizar seu .env</h3>
 
-        <p>Acesse o arquivo <strong>usuario_model.py</strong> e substitua o código pore este:</p>
+        <p>
+          Adicione as seguintes variáveis ao seu arquivo, mantendo os valores
+          SUPABASE_URL e SUPABASE_KEY que estão lá <strong>.env</strong>:
+        </p>
 
         <div class="code-container">
-          <pre><code class="language-python">
-import requests
-from app.database.supabase_client import SUPABASE_URL, SUPABASE_KEY
+          <pre>
+<code class="language-bash">SECRET_KEY=sua_chave_secreta_jwt
+EXPIRATION_MINUTES=60</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-def listar_usuarios():
-    url = f"{SUPABASE_URL}/rest/v1/usuarios?select=*"
+        <h3>Passo 5 - Model</h3>
+
+        <p>
+          Acesse o arquivo <strong>usuario_model.py</strong> e substitua o
+          código por este:
+        </p>
+
+        <div class="code-container">
+          <pre>
+<code class="language-python">
+import requests
+import bcrypt
+from app.database.supabase_client import SUPABASE_URL, SUPABASE_KEY
+import jwt
+from datetime import datetime, timedelta
+import os
+import os
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+EXPIRATION_MINUTES = int(os.getenv("EXPIRATION_MINUTES", 60))
+
+ALGORITHM = "HS256"
+
+def get_headers(extra_headers=None):
     headers = {
         "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json"
     }
 
-    response = requests.get(url, headers=headers)
+    if extra_headers:
+        headers.update(extra_headers)
+
+    return headers
+
+
+def listar_usuarios():
+    url = f"{SUPABASE_URL}/usuarios?select=*"
+
+    response = requests.get(url, headers=get_headers())
 
     if response.status_code != 200:
         raise Exception(f"Erro ao listar usuários: {response.text}")
 
     return response.json()
 
+
+def buscar_usuario_por_email(email):
+    url = f"{SUPABASE_URL}/usuarios?email=eq.{email}&select=*"
+
+    response = requests.get(url, headers=get_headers())
+
+    if response.status_code != 200:
+        raise Exception(f"Erro ao buscar usuário: {response.text}")
+
+    usuarios = response.json()
+
+    return usuarios[0] if usuarios else None
+
+
 def cadastrar_usuario(email, senha):
-    url = f"{SUPABASE_URL}/auth/v1/signup"
-    headers = {
-        "apikey": SUPABASE_KEY,
-        "Content-Type": "application/json"
+    if buscar_usuario_por_email(email):
+        raise Exception("Já existe um usuário cadastrado com este email.")
+
+    senha_hash = bcrypt.hashpw(
+        senha.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+    url = f"{SUPABASE_URL}/usuarios"
+
+    data = {
+        "email": email,
+        "senha": senha_hash
     }
-    data = {"email": email, "password": senha}
-    return requests.post(url, json=data, headers=headers).json()
+
+    response = requests.post(
+        url,
+        json=data,
+        headers=get_headers({"Prefer": "return=representation"})
+    )
+
+    if response.status_code not in [200, 201]:
+        raise Exception(f"Erro ao cadastrar usuário: {response.text}")
+
+    usuario_criado = response.json()[0]
+
+    return {
+        "mensagem": "Usuário cadastrado com sucesso.",
+        "usuario": {
+            "id": usuario_criado.get("id"),
+            "email": usuario_criado.get("email")
+        }
+    }
+
+def gerar_token(usuario_id, email):
+    payload = {
+        "sub": usuario_id,
+        "email": email,
+        "exp": datetime.utcnow() + timedelta(minutes=EXPIRATION_MINUTES)
+    }
+
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return token
+
 
 def login_usuario(email, senha):
-    url = f"{SUPABASE_URL}/auth/v1/token?grant_type=password"
-    headers = {
-        "apikey": SUPABASE_KEY,
-        "Content-Type": "application/json"
+    usuario = buscar_usuario_por_email(email)
+
+    if not usuario:
+        raise Exception("Email ou senha inválidos.")
+
+    senha_hash = usuario.get("senha")
+
+    if not bcrypt.checkpw(
+        senha.encode("utf-8"),
+        senha_hash.encode("utf-8")
+    ):
+        raise Exception("Email ou senha inválidos.")
+
+    token = gerar_token(usuario.get("id"), usuario.get("email"))
+
+    return {
+        "mensagem": "Login realizado com sucesso.",
+        "token": token,
+        "usuario": {
+            "id": usuario.get("id"),
+            "email": usuario.get("email")
+        }
     }
-    data = {"email": email, "password": senha}
-    return requests.post(url, json=data, headers=headers).json()
-</code></pre>
+</code>
+          </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 7 — Controller</h3>
+        <section>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
 
-        <p>Agora acesse o arquivo <strong>usuario_controller.py</strong> e substitua pelo código abaixo:</p>
+            <p>
+              Esse código implementa um pequeno serviço de autenticação de
+              usuários usando
+              <strong>Python</strong>, <strong>Supabase</strong>,
+              <strong>bcrypt</strong> e <strong>JWT</strong>. A ideia principal
+              é permitir que a aplicação consiga cadastrar usuários, salvar suas
+              senhas de forma segura, buscar usuários no banco de dados, validar
+              login e gerar um token de autenticação.
+            </p>
+
+            <p>
+              No início do código, são importadas algumas bibliotecas
+              importantes. A biblioteca <code>requests</code> é usada para fazer
+              requisições HTTP para a API REST do Supabase. A biblioteca
+              <code>bcrypt</code> é usada para gerar e verificar senhas
+              criptografadas. Também são utilizados <code>jwt</code>,
+              <code>datetime</code> e <code>timedelta</code> para geração e
+              controle de expiração de tokens.
+            </p>
+
+            <p>
+              O código define constantes importantes como a chave secreta
+              (<code>SECRET_KEY</code>), o algoritmo de criptografia
+              (<code>HS256</code>) e o tempo de expiração do token (60 minutos).
+              Em um sistema real, essa chave secreta deveria ficar em variáveis
+              de ambiente por segurança.
+            </p>
+
+            <h3>🔹 Função get_headers</h3>
+
+            <p>
+              Essa função monta os cabeçalhos das requisições HTTP para o
+              Supabase, incluindo autenticação e tipo de conteúdo.
+            </p>
+
+            <ul>
+              <li><code>apikey</code>: identifica o projeto</li>
+              <li>
+                <code>Authorization</code>: autenticação no formato Bearer
+              </li>
+              <li><code>Content-Type</code>: define JSON como formato</li>
+            </ul>
+
+            <p>
+              Ela também permite adicionar cabeçalhos extras dinamicamente, o
+              que é útil em requisições específicas.
+            </p>
+
+            <h3>🔹 Função listar_usuarios</h3>
+
+            <p>
+              Essa função busca todos os usuários cadastrados na tabela
+              <code>usuarios</code> do Supabase usando uma requisição GET. Caso
+              haja erro, uma exceção é lançada. Caso contrário, retorna os dados
+              em JSON.
+            </p>
+
+            <h3>🔹 Função buscar_usuario_por_email</h3>
+
+            <p>
+              Essa função busca um usuário específico pelo email usando o filtro
+              <code>email=eq.valor</code>. O Supabase retorna uma lista, então o
+              código retorna apenas o primeiro usuário encontrado ou
+              <code>None</code> se não existir.
+            </p>
+
+            <h3>🔹 Função cadastrar_usuario</h3>
+
+            <p>Responsável por cadastrar um novo usuário:</p>
+
+            <ul>
+              <li>Verifica se o email já existe</li>
+              <li>Gera um hash seguro da senha com bcrypt</li>
+              <li>Salva os dados no Supabase</li>
+              <li>Retorna os dados do usuário sem expor a senha</li>
+            </ul>
+
+            <p>
+              O uso do bcrypt garante que a senha nunca seja armazenada em texto
+              puro, aumentando significativamente a segurança.
+            </p>
+
+            <h3>🔹 Função gerar_token</h3>
+
+            <p>Essa função cria um token JWT contendo:</p>
+
+            <ul>
+              <li><code>sub</code>: ID do usuário</li>
+              <li><code>email</code>: email do usuário</li>
+              <li><code>exp</code>: tempo de expiração</li>
+            </ul>
+
+            <p>
+              O token é assinado com uma chave secreta e pode ser usado para
+              autenticar o usuário em requisições futuras.
+            </p>
+
+            <h3>🔹 Função login_usuario</h3>
+
+            <p>Essa função realiza o login:</p>
+
+            <ul>
+              <li>Busca o usuário pelo email</li>
+              <li>Compara a senha com bcrypt</li>
+              <li>Gera um token JWT se válido</li>
+              <li>Retorna dados do usuário + token</li>
+            </ul>
+
+            <p>
+              Um detalhe importante é que a mensagem de erro é sempre a mesma
+              para evitar que alguém descubra quais emails estão cadastrados no
+              sistema.
+            </p>
+
+            <h3>📌 Resumo geral</h3>
+
+            <ol>
+              <li>Usuário é cadastrado com senha criptografada</li>
+              <li>Login valida senha usando bcrypt</li>
+              <li>Token JWT é gerado após autenticação</li>
+              <li>Token pode ser usado em rotas protegidas</li>
+            </ol>
+
+            <p>
+              Em resumo, esse código implementa uma camada de autenticação
+              completa, combinando segurança de senha (bcrypt), comunicação com
+              banco via API (Supabase) e autenticação stateless com JWT.
+            </p>
+          </div>
+        </section>
+
+        <h3>Passo 6 — Controller</h3>
+
+        <p>
+          Agora acesse o arquivo <strong>usuario_controller.py</strong> e
+          substitua pelo código abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
 from app.models import usuario_model
+from app.views import usuario_view
 
 def listar():
   usuarios = usuario_model.listar_usuarios()
@@ -155,13 +431,17 @@ def cadastrar(email, senha):
 
 def login(email, senha):
     return usuario_model.login_usuario(email, senha)
+
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 8 — Middleware Token</h3>
+        <h3>Passo 7 — Middleware Token</h3>
 
-        <p>Agora acesse o arquivo <strong>auth.py</strong> e coloque o código abaixo nele:</p>
+        <p>
+          Agora acesse o arquivo <strong>auth.py</strong> e coloque o código
+          abaixo nele:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -188,9 +468,12 @@ def verificar_api_key(x_api_key: str = Header(None)):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 9 — Rotas</h3>
+        <h3>Passo 8 — Rotas</h3>
 
-        <p>Agora acesse o arquivo <strong>main.py</strong> e substitua pelo código abaixo:</p>
+        <p>
+          Agora acesse o arquivo <strong>main.py</strong> e substitua pelo
+          código abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -203,7 +486,7 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"msg": "API funcionando ðŸš€"}
+    return {"msg": "API rodando"}
 
 @app.get("/usuarios")
 def listar_usuarios():
@@ -223,22 +506,41 @@ def perfil(token: str = Depends(verificar_token)):
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <p>
 
-        <h3>Passo 10 — Rodar a aplicação e Teste com curl</h3>
+        <h3>Passo 9 — Criar campo de email e senha no Supabase</h3>
+
+        <p>
+          No Supabase, acesse a tabela <strong>usuarios</strong> e adicione os
+          campos <strong>email</strong> e <strong>senha</strong>.
+        </p>
+
+        <h3>Passo 10 - Rodar a aplicação e Teste com curl</h3>
 
         <p>No terminal execute o código abaixo:</p>
 
         <div class="code-container">
           <pre>
-            <code class="language-bash">
+<code class="language-bash">
+cd ..
+venv\Scripts\activate
 uvicorn main:app --reload 
-            </code>
-          </pre>
-                    <button class="btn-copy">Copiar Código</button>
+</code>
+</pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <h3>Passo 11 — Testando aplicação no Postman</h3>
+
         <p>Agora teste no Postman usando esses curls abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+curl -X POST http://127.0.0.1:8000/cadastro \
+-H "Content-Type: application/json" \
+-d '{"email":"teste@email.com","senha":"123456"}'
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -249,6 +551,11 @@ curl -X POST http://127.0.0.1:8000/login \
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <p>
+          No curl abaixo troque o SEU_TOKEN pelo valor do token que encontrar na
+          resposta do login do curl acima
+        </p>
+
         <div class="code-container">
           <pre><code class="language-bash">
 curl -X GET http://127.0.0.1:8000/perfil \
@@ -257,15 +564,13 @@ curl -X GET http://127.0.0.1:8000/perfil \
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        ---
-
         <h3>Último Passo — Git</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git add .
 git commit -m "auth com token"
-git push
+git push --set-upstream origin aula3-mvc-login-autenticacao
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
