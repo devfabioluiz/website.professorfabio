@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Node.js - Backend, Express e API REST</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Definição</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Introdução ao desenvolvimento backend com Node.js</h2>
+
+        <h3>1. Objetivo da aula</h3>
+
+        <p>
+          Esta aula tem como objetivo capacitar o estudante no desenvolvimento
+          de soluções backend utilizando a plataforma <strong>Node.js</strong>,
+          com ênfase na escolha adequada de mecanismos e estruturas para
+          resolver problemas típicos do desenvolvimento web.
+        </p>
+
+        <p>
+          Ao final, o estudante deverá compreender como criar um servidor,
+          organizar rotas, processar dados enviados por formulários, interagir
+          com banco de dados e criar uma API RESTful usando
+          <strong>Express</strong>.
+        </p>
+
+        <h3>2. O que é Node.js?</h3>
+
+        <p>
+          Node.js é uma plataforma que permite executar JavaScript fora do
+          navegador. Com ele, podemos criar aplicações backend, APIs, scripts,
+          servidores web, ferramentas de linha de comando e sistemas que lidam
+          com arquivos, eventos, conexões HTTP e bancos de dados.
+        </p>
+
+        <p>
+          Antes do Node.js, o JavaScript era usado principalmente no navegador.
+          Com o Node.js, a mesma linguagem também pode ser usada no servidor.
+        </p>
+
+        <h3>3. Para que serve o Node.js?</h3>
+
+        <ul>
+          <li>Criar servidores web</li>
+          <li>Criar APIs REST</li>
+          <li>Processar formulários</li>
+          <li>Interagir com bancos de dados</li>
+          <li>Ler e escrever arquivos</li>
+          <li>Trabalhar com eventos</li>
+          <li>Executar tarefas em linha de comando</li>
+          <li>Criar sistemas escaláveis</li>
+        </ul>
+
+        <h3>4. Características principais do Node.js</h3>
+
+        <ul>
+          <li>
+            <strong>Assíncrono</strong>: evita travar a aplicação enquanto uma
+            tarefa demora.
+          </li>
+          <li>
+            <strong>Orientado a eventos</strong>: reage a acontecimentos, como
+            requisições, cliques, leituras de arquivos e conexões.
+          </li>
+          <li>
+            <strong>Não bloqueante</strong>: consegue lidar com várias operações
+            sem esperar uma terminar para iniciar outra.
+          </li>
+          <li>
+            <strong>Baseado em JavaScript</strong>: permite usar a mesma
+            linguagem no frontend e no backend.
+          </li>
+          <li>
+            <strong>Possui grande ecossistema</strong>: usa o npm para instalar
+            bibliotecas prontas.
+          </li>
+        </ul>
+
+        <h3>5. Arquitetura orientada a eventos</h3>
+
+        <p>
+          No Node.js, muitas ações acontecem por meio de eventos. Uma requisição
+          HTTP chegando ao servidor, um arquivo sendo lido ou uma conexão sendo
+          encerrada são exemplos de eventos.
+        </p>
+
+        <p>
+          Em vez de executar tudo de forma linear e bloqueante, o Node.js
+          registra funções que serão chamadas quando determinado evento ocorrer.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const EventEmitter = require('events');
+
+const eventos = new EventEmitter();
+
+eventos.on('pedidoCriado', (pedido) => {
+  console.log('Novo pedido recebido:', pedido);
+});
+
+eventos.emit('pedidoCriado', {
+  id: 1,
+  cliente: 'Maria',
+  produto: 'Café'
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, primeiro registramos o evento
+          <strong>pedidoCriado</strong>. Depois, usamos <strong>emit</strong>
+          para disparar esse evento.
+        </p>
+
+        <h3>6. Gerenciador de pacotes npm</h3>
+
+        <p>
+          O <strong>npm</strong> é o gerenciador de pacotes do Node.js. Ele é
+          usado para instalar bibliotecas, criar projetos, executar scripts e
+          controlar dependências.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm init -y
+npm install express
+npm install nodemon --save-dev
+          </code></pre>
+        </div>
+
+        <p>
+          O arquivo <strong>package.json</strong> registra informações do
+          projeto, dependências instaladas e comandos personalizados.
+        </p>
+
+        <h3>7. REPL do Node.js</h3>
+
+        <p>
+          O REPL é uma interface interativa do Node.js. A sigla significa
+          <strong>Read, Evaluate, Print, Loop</strong>. Ele permite testar
+          comandos JavaScript diretamente no terminal.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+node
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+2 + 2
+'Node.js'.toUpperCase()
+const nome = 'João'
+nome
+          </code></pre>
+        </div>
+
+        <p>
+          Para sair do REPL, pressione <strong>Ctrl + C</strong> duas vezes ou
+          digite <strong>.exit</strong>.
+        </p>
+
+        <h3>8. Chamadas síncronas e assíncronas</h3>
+
+        <p>
+          Uma chamada <strong>síncrona</strong> bloqueia o fluxo da aplicação
+          até terminar. Já uma chamada <strong>assíncrona</strong> permite que a
+          aplicação continue executando outras tarefas enquanto aguarda o
+          resultado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+console.log('Início');
+
+const conteudo = fs.readFileSync('arquivo.txt', 'utf-8');
+console.log(conteudo);
+
+console.log('Fim');
+          </code></pre>
+        </div>
+
+        <p>
+          No exemplo acima, o Node.js espera a leitura terminar antes de seguir.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+console.log('Início');
+
+fs.readFile('arquivo.txt', 'utf-8', (erro, conteudo) => {
+  if (erro) {
+    console.log('Erro ao ler arquivo:', erro.message);
+    return;
+  }
+
+  console.log(conteudo);
+});
+
+console.log('Fim');
+          </code></pre>
+        </div>
+
+        <p>
+          No segundo exemplo, a leitura é assíncrona. O programa continua sua
+          execução enquanto o arquivo é lido.
+        </p>
+
+        <h3>9. Buffers</h3>
+
+        <p>
+          Buffers são áreas de memória usadas para lidar com dados binários.
+          Eles são úteis quando trabalhamos com arquivos, imagens, vídeos,
+          uploads ou dados recebidos pela rede.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const buffer = Buffer.from('Olá, Node.js');
+
+console.log(buffer);
+console.log(buffer.toString());
+          </code></pre>
+        </div>
+
+        <h3>10. Streams</h3>
+
+        <p>
+          Streams permitem processar dados em partes, sem carregar tudo de uma
+          vez na memória. Isso é importante para arquivos grandes, vídeos,
+          uploads e respostas HTTP extensas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+const leitura = fs.createReadStream('entrada.txt');
+const escrita = fs.createWriteStream('saida.txt');
+
+leitura.pipe(escrita);
+          </code></pre>
+        </div>
+
+        <h3>11. Objetos globais</h3>
+
+        <p>
+          O Node.js possui objetos e funções globais que podem ser usados sem
+          importação direta.
+        </p>
+
+        <ul>
+          <li><strong>console</strong>: exibe mensagens no terminal</li>
+          <li>
+            <strong>process</strong>: traz informações do processo em execução
+          </li>
+          <li><strong>__dirname</strong>: caminho da pasta atual</li>
+          <li><strong>__filename</strong>: caminho do arquivo atual</li>
+          <li><strong>setTimeout</strong>: executa algo depois de um tempo</li>
+          <li><strong>setInterval</strong>: executa algo repetidamente</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+console.log('Diretório atual:', __dirname);
+console.log('Arquivo atual:', __filename);
+console.log('Sistema operacional:', process.platform);
+          </code></pre>
+        </div>
+
+        <h3>12. Módulo Web no Node.js</h3>
+
+        <p>
+          O Node.js possui o módulo <strong>http</strong>, que permite criar
+          servidores web sem instalar bibliotecas externas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const http = require('http');
+
+const servidor = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end('Servidor Node.js funcionando!');
+});
+
+servidor.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Embora seja possível criar aplicações usando apenas o módulo
+          <strong>http</strong>, na prática usamos frameworks como o
+          <strong>Express</strong> para organizar melhor rotas, requisições,
+          respostas e middlewares.
+        </p>
+
+        <h3>13. O que é Express?</h3>
+
+        <p>
+          Express é um framework para Node.js que facilita a criação de
+          aplicações web e APIs. Ele simplifica o trabalho com rotas,
+          middlewares, arquivos estáticos, formulários, cookies, sessões e
+          integração com bancos de dados.
+        </p>
+
+        <h3>14. Request e Response</h3>
+
+        <p>
+          Em uma aplicação Express, cada rota normalmente recebe dois objetos
+          principais: <strong>req</strong> e <strong>res</strong>.
+        </p>
+
+        <ul>
+          <li>
+            <strong>req</strong>: representa a requisição feita pelo cliente.
+          </li>
+          <li>
+            <strong>res</strong>: representa a resposta que será enviada pelo
+            servidor.
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.get('/saudacao', (req, res) => {
+  res.send('Olá! Essa resposta veio do servidor.');
+});
+          </code></pre>
+        </div>
+
+        <h3>15. Roteamento</h3>
+
+        <p>
+          Roteamento é o mecanismo usado para definir o que a aplicação deve
+          fazer quando recebe uma requisição em determinado endereço e método
+          HTTP.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.get('/tarefas', listarTarefas);
+app.post('/tarefas', criarTarefa);
+app.put('/tarefas/:id', atualizarTarefa);
+app.delete('/tarefas/:id', removerTarefa);
+          </code></pre>
+        </div>
+
+        <h3>16. Cookies e sessões</h3>
+
+        <p>
+          Cookies são pequenas informações armazenadas no navegador do usuário.
+          Sessões são usadas para manter informações do usuário entre várias
+          requisições, como um login ativo.
+        </p>
+
+        <p>
+          Em aplicações reais, é comum guardar apenas um identificador no cookie
+          e manter os dados sensíveis no servidor.
+        </p>
+
+        <h3>17. Banco de dados relacional</h3>
+
+        <p>
+          Em um banco relacional, os dados são organizados em tabelas. Cada
+          tabela possui colunas e linhas. Esse modelo é útil quando precisamos
+          representar entidades e relações, como usuários, tarefas, produtos,
+          pedidos e pagamentos.
+        </p>
+
+        <p>
+          Nesta aula, usaremos PostgreSQL para armazenar tarefas de uma pequena
+          aplicação de controle pessoal.
+        </p>
+
+        <h3>18. Arquitetura REST</h3>
+
+        <p>
+          REST é um estilo de arquitetura para criação de serviços web. Em uma
+          API REST, usamos recursos, URLs, métodos HTTP e códigos de status para
+          organizar a comunicação entre cliente e servidor.
+        </p>
+
+        <ul>
+          <li><strong>GET</strong>: buscar dados</li>
+          <li><strong>POST</strong>: criar dados</li>
+          <li><strong>PUT</strong>: atualizar dados</li>
+          <li><strong>DELETE</strong>: remover dados</li>
+        </ul>
+
+        <h3>19. Códigos de status HTTP</h3>
+
+        <ul>
+          <li><strong>200</strong>: requisição bem-sucedida</li>
+          <li><strong>201</strong>: recurso criado com sucesso</li>
+          <li><strong>400</strong>: erro nos dados enviados pelo cliente</li>
+          <li><strong>404</strong>: recurso não encontrado</li>
+          <li><strong>500</strong>: erro interno no servidor</li>
+        </ul>
+
+        <h3>20. Escalabilidade em Node.js</h3>
+
+        <p>
+          Escalar uma aplicação significa prepará-la para lidar com mais
+          usuários, mais requisições e mais processamento. No Node.js, podemos
+          usar processos filhos, múltiplas instâncias, balanceadores de carga,
+          filas, cache e separação de responsabilidades.
+        </p>
+
+        <p>
+          O módulo <strong>child_process</strong> permite criar processos
+          separados usando recursos como <strong>exec</strong>,
+          <strong>spawn</strong> e <strong>fork</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const { exec } = require('child_process');
+
+exec('node -v', (erro, stdout, stderr) => {
+  if (erro) {
+    console.log('Erro:', erro.message);
+    return;
+  }
+
+  console.log('Versão do Node:', stdout);
+});
+          </code></pre>
+        </div>
+      </section>
+
+      <section>
+        <h2>
+          Passo a Passo: Criando uma API de tarefas com Node.js, Express e
+          PostgreSQL
+        </h2>
+
+        <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+        <p>
+          Acesse o repositório no GitHub e crie uma nova branch baseada na
+          branch principal do projeto com o nome abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula1-nodejs-express-rest
+          </code></pre>
+        </div>
+
+        <p>
+          Depois, no terminal do VSCode, dentro da pasta do projeto, execute:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula1-nodejs-express-rest
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar a pasta do projeto</h3>
+
+        <p>
+          Crie uma pasta para a aplicação backend. Neste exemplo, construiremos
+          uma API para controlar tarefas do dia a dia, como estudar, trabalhar,
+          pagar contas ou fazer compras.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir api-tarefas-node
+cd api-tarefas-node
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Iniciar o projeto com npm</h3>
+
+        <p>
+          Agora vamos criar o arquivo <strong>package.json</strong>, que
+          guardará os dados do projeto e suas dependências.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm init -y
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Instalar as dependências</h3>
+
+        <p>
+          Vamos instalar o Express, o driver do PostgreSQL, suporte para
+          cookies, sessões e uma ferramenta para reiniciar o servidor
+          automaticamente durante o desenvolvimento.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm install express pg cookie-parser express-session multer
+npm install nodemon --save-dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Configurar os scripts do package.json</h3>
+
+        <p>
+          Abra o arquivo <strong>package.json</strong> e altere a parte de
+          scripts para:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Não apague o restante do arquivo. Apenas ajuste a propriedade
+          <strong>scripts</strong>.
+        </p>
+
+        <h3>Passo 5 — Criar a estrutura de pastas</h3>
+
+        <p>
+          Vamos organizar a aplicação separando servidor, rotas, controllers,
+          banco de dados, arquivos públicos e uploads.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir src
+mkdir src/routes
+mkdir src/controllers
+mkdir src/database
+mkdir public
+mkdir uploads
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar o banco de dados PostgreSQL</h3>
+
+        <p>
+          No PostgreSQL, crie um banco chamado <strong>tarefas_db</strong>.
+          Depois, execute o comando SQL abaixo para criar a tabela de tarefas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE tarefas (
+  id SERIAL PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL,
+  descricao TEXT,
+  concluida BOOLEAN DEFAULT FALSE,
+  criada_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Essa tabela representa uma modelagem relacional simples: cada tarefa
+          possui um identificador, título, descrição, status de conclusão e data
+          de criação.
+        </p>
+
+        <h3>Passo 7 — Criar a conexão com o banco de dados</h3>
+
+        <p>
+          Crie o arquivo <strong>src/database/connection.js</strong> com o
+          código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  host: 'localhost',
+  port: 5432,
+  user: 'postgres',
+  password: 'sua_senha',
+  database: 'tarefas_db'
+});
+
+module.exports = pool;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Substitua <strong>sua_senha</strong> pela senha configurada no seu
+          PostgreSQL.
+        </p>
+
+        <h3>Passo 8 — Criar o controller de tarefas</h3>
+
+        <p>
+          Crie o arquivo <strong>src/controllers/tarefasController.js</strong>.
+          Ele concentrará as regras para listar, criar, atualizar e remover
+          tarefas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const pool = require('../database/connection');
+
+async function listarTarefas(req, res) {
+  try {
+    const resultado = await pool.query('SELECT * FROM tarefas ORDER BY id ASC');
+    res.status(200).json(resultado.rows);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao listar tarefas' });
+  }
+}
+
+async function buscarTarefaPorId(req, res) {
+  try {
+    const { id } = req.params;
+
+    const resultado = await pool.query('SELECT * FROM tarefas WHERE id = $1', [id]);
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ mensagem: 'Tarefa não encontrada' });
+    }
+
+    res.status(200).json(resultado.rows[0]);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao buscar tarefa' });
+  }
+}
+
+async function criarTarefa(req, res) {
+  try {
+    const { titulo, descricao } = req.body;
+
+    if (!titulo) {
+      return res.status(400).json({ mensagem: 'O título é obrigatório' });
+    }
+
+    const resultado = await pool.query(
+      'INSERT INTO tarefas (titulo, descricao) VALUES ($1, $2) RETURNING *',
+      [titulo, descricao]
+    );
+
+    res.status(201).json(resultado.rows[0]);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao criar tarefa' });
+  }
+}
+
+async function atualizarTarefa(req, res) {
+  try {
+    const { id } = req.params;
+    const { titulo, descricao, concluida } = req.body;
+
+    const resultado = await pool.query(
+      'UPDATE tarefas SET titulo = $1, descricao = $2, concluida = $3 WHERE id = $4 RETURNING *',
+      [titulo, descricao, concluida, id]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ mensagem: 'Tarefa não encontrada' });
+    }
+
+    res.status(200).json(resultado.rows[0]);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao atualizar tarefa' });
+  }
+}
+
+async function removerTarefa(req, res) {
+  try {
+    const { id } = req.params;
+
+    const resultado = await pool.query('DELETE FROM tarefas WHERE id = $1 RETURNING *', [id]);
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ mensagem: 'Tarefa não encontrada' });
+    }
+
+    res.status(200).json({ mensagem: 'Tarefa removida com sucesso' });
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao remover tarefa' });
+  }
+}
+
+module.exports = {
+  listarTarefas,
+  buscarTarefaPorId,
+  criarTarefa,
+  atualizarTarefa,
+  removerTarefa
+};
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Criar as rotas de tarefas</h3>
+
+        <p>
+          Crie o arquivo <strong>src/routes/tarefasRoutes.js</strong> com o
+          código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const express = require('express');
+
+const {
+  listarTarefas,
+  buscarTarefaPorId,
+  criarTarefa,
+  atualizarTarefa,
+  removerTarefa
+} = require('../controllers/tarefasController');
+
+const router = express.Router();
+
+router.get('/tarefas', listarTarefas);
+router.get('/tarefas/:id', buscarTarefaPorId);
+router.post('/tarefas', criarTarefa);
+router.put('/tarefas/:id', atualizarTarefa);
+router.delete('/tarefas/:id', removerTarefa);
+
+module.exports = router;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Criar o servidor Express</h3>
+
+        <p>
+          Crie o arquivo <strong>src/server.js</strong>. Ele será o ponto de
+          entrada da aplicação.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const multer = require('multer');
+const path = require('path');
+
+const tarefasRoutes = require('./routes/tarefasRoutes');
+
+const app = express();
+const upload = multer({ dest: 'uploads/' });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(
+  session({
+    secret: 'segredo-da-aula-nodejs',
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use('/api', tarefasRoutes);
+
+app.get('/', (req, res) => {
+  res.send('API de tarefas funcionando!');
+});
+
+app.post('/login', (req, res) => {
+  const { nome } = req.body;
+
+  if (!nome) {
+    return res.status(400).send('Informe um nome para entrar');
+  }
+
+  req.session.usuario = nome;
+  res.cookie('ultimoAcesso', new Date().toLocaleString('pt-BR'));
+  res.send(`Sessão criada para ${nome}`);
+});
+
+app.get('/perfil', (req, res) => {
+  if (!req.session.usuario) {
+    return res.status(401).send('Usuário não está logado');
+  }
+
+  res.send(`Usuário logado: ${req.session.usuario}`);
+});
+
+app.post('/upload', upload.single('arquivo'), (req, res) => {
+  res.json({
+    mensagem: 'Arquivo enviado com sucesso',
+    arquivo: req.file
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 11 — Criar uma página HTML simples para formulário</h3>
+
+        <p>
+          Crie o arquivo <strong>public/index.html</strong>. Essa página
+          representará um cliente web simples enviando dados para o servidor.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;!doctype html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Cadastro de Tarefas&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Cadastro de Tarefas&lt;/h1&gt;
+
+    &lt;form id="formTarefa"&gt;
+      &lt;input type="text" id="titulo" placeholder="Título da tarefa" required /&gt;
+      &lt;br /&gt;&lt;br /&gt;
+
+      &lt;textarea id="descricao" placeholder="Descrição da tarefa"&gt;&lt;/textarea&gt;
+      &lt;br /&gt;&lt;br /&gt;
+
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;h2&gt;Tarefas&lt;/h2&gt;
+    &lt;ul id="listaTarefas"&gt;&lt;/ul&gt;
+
+    &lt;script&gt;
+      async function carregarTarefas() {
+        const resposta = await fetch('/api/tarefas');
+        const tarefas = await resposta.json();
+
+        const lista = document.getElementById('listaTarefas');
+        lista.innerHTML = '';
+
+        tarefas.forEach((tarefa) =&gt; {
+          const item = document.createElement('li');
+          item.textContent = `${tarefa.id} - ${tarefa.titulo}`;
+          lista.appendChild(item);
+        });
+      }
+
+      document.getElementById('formTarefa').addEventListener('submit', async (evento) =&gt; {
+        evento.preventDefault();
+
+        const titulo = document.getElementById('titulo').value;
+        const descricao = document.getElementById('descricao').value;
+
+        await fetch('/api/tarefas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ titulo, descricao })
+        });
+
+        document.getElementById('titulo').value = '';
+        document.getElementById('descricao').value = '';
+
+        carregarTarefas();
+      });
+
+      carregarTarefas();
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 12 — Rodar a aplicação</h3>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:3000
+          </code></pre>
+        </div>
+
+        <p>
+          Você verá a aplicação rodando, com um formulário simples para cadastro
+          e listagem de tarefas.
+        </p>
+
+        <h3>Passo 13 — Testar a API REST</h3>
+
+        <p>
+          Também podemos testar a API usando ferramentas como Insomnia, Postman,
+          Thunder Client ou o próprio navegador para requisições GET.
+        </p>
+
+        <p>Listar tarefas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+GET http://localhost:3000/api/tarefas
+          </code></pre>
+        </div>
+
+        <p>Criar tarefa:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+POST http://localhost:3000/api/tarefas
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "titulo": "Estudar Node.js",
+  "descricao": "Revisar Express, rotas e banco de dados"
+}
+          </code></pre>
+        </div>
+
+        <p>Atualizar tarefa:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+PUT http://localhost:3000/api/tarefas/1
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "titulo": "Estudar Node.js e Express",
+  "descricao": "Praticar API REST com PostgreSQL",
+  "concluida": true
+}
+          </code></pre>
+        </div>
+
+        <p>Remover tarefa:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+DELETE http://localhost:3000/api/tarefas/1
+          </code></pre>
+        </div>
+
+        <h3>Passo 14 — Testar sessão e cookie</h3>
+
+        <p>
+          Envie uma requisição POST para <strong>/login</strong> com o corpo
+          abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "nome": "Ana"
+}
+          </code></pre>
+        </div>
+
+        <p>
+          Depois acesse <strong>/perfil</strong>. Se a sessão estiver ativa, o
+          servidor mostrará o nome do usuário logado.
+        </p>
+
+        <h3>Passo 15 — Criar exemplo de processo filho</h3>
+
+        <p>
+          Crie o arquivo <strong>src/verificarVersao.js</strong> para demonstrar
+          um recurso de escalabilidade e execução de processos externos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const { exec } = require('child_process');
+
+exec('node -v', (erro, stdout, stderr) => {
+  if (erro) {
+    console.log('Erro ao executar comando:', erro.message);
+    return;
+  }
+
+  if (stderr) {
+    console.log('Aviso:', stderr);
+  }
+
+  console.log('Versão instalada do Node.js:', stdout);
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+node src/verificarVersao.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 16 — Entendendo o que foi feito</h3>
+
+        <p>Nessa aplicação, usamos vários conceitos importantes:</p>
+
+        <ul>
+          <li><strong>npm</strong> para gerenciar dependências</li>
+          <li><strong>Express</strong> para criar o servidor</li>
+          <li><strong>Rotas</strong> para organizar endpoints</li>
+          <li>
+            <strong>Request e Response</strong> para tratar requisições e
+            respostas
+          </li>
+          <li>
+            <strong>Formulário HTML</strong> enviando dados para o backend
+          </li>
+          <li><strong>PostgreSQL</strong> para armazenar dados</li>
+          <li><strong>API REST</strong> com GET, POST, PUT e DELETE</li>
+          <li>
+            <strong>Cookies e sessões</strong> para manter estado entre
+            requisições
+          </li>
+          <li>
+            <strong>Processos filhos</strong> para executar tarefas externas
+          </li>
+        </ul>
+
+        <h3>Passo 17 — Testar alterações</h3>
+
+        <p>Faça alguns testes na aplicação:</p>
+
+        <ul>
+          <li>Cadastre uma tarefa pela página HTML</li>
+          <li>Liste as tarefas pela rota GET</li>
+          <li>Crie uma tarefa pelo Postman ou Insomnia</li>
+          <li>Atualize uma tarefa marcando como concluída</li>
+          <li>Remova uma tarefa</li>
+          <li>Teste o login e depois acesse o perfil</li>
+          <li>Envie um arquivo pela rota de upload</li>
+          <li>Execute o script de processo filho</li>
+        </ul>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar as alterações no repositório.</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 1 nodejs express api rest"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Criar uma rota para listar apenas tarefas concluídas</h3>
+            <p>
+              Crie uma nova rota <code>GET /api/tarefas/concluidas</code> que
+              retorne apenas as tarefas com <code>concluida = true</code>.
+            </p>
+            <p>
+              Essa tarefa reforça o uso de rotas, controller, SQL e filtros no
+              banco de dados.
+            </p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Controller: <code>tarefasController.js</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+async function listarTarefasConcluidas(req, res) {
+  try {
+    const resultado = await pool.query(
+      'SELECT * FROM tarefas WHERE concluida = true ORDER BY id ASC'
+    );
+
+    res.status(200).json(resultado.rows);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao listar tarefas concluídas' });
+  }
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>Depois, adicione a função no <code>module.exports</code>:</p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+module.exports = {
+  listarTarefas,
+  buscarTarefaPorId,
+  criarTarefa,
+  atualizarTarefa,
+  removerTarefa,
+  listarTarefasConcluidas
+};
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Rota: <code>tarefasRoutes.js</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const {
+  listarTarefas,
+  buscarTarefaPorId,
+  criarTarefa,
+  atualizarTarefa,
+  removerTarefa,
+  listarTarefasConcluidas
+} = require('../controllers/tarefasController');
+
+router.get('/tarefas/concluidas', listarTarefasConcluidas);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Criar uma rota para tarefas pendentes</h3>
+            <p>
+              Crie uma rota <code>GET /api/tarefas/pendentes</code> que retorne
+              apenas tarefas ainda não concluídas.
+            </p>
+            <p>
+              Essa rota será parecida com a rota de tarefas concluídas, mas o
+              filtro deverá usar <code>concluida = false</code>.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Controller: <code>tarefasController.js</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+async function listarTarefasPendentes(req, res) {
+  try {
+    const resultado = await pool.query(
+      'SELECT * FROM tarefas WHERE concluida = false ORDER BY id ASC'
+    );
+
+    res.status(200).json(resultado.rows);
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao listar tarefas pendentes' });
+  }
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Rota: <code>tarefasRoutes.js</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+router.get('/tarefas/pendentes', listarTarefasPendentes);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Criar uma tabela de categorias</h3>
+            <p>
+              Crie uma tabela chamada <code>categorias</code> e relacione cada
+              tarefa a uma categoria. Exemplo: estudo, trabalho, casa ou saúde.
+            </p>
+            <p>Esse exercício trabalha princípios de modelagem relacional.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Criar tabela de categorias</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE categorias (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL
+);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Alterar tabela de tarefas</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-sql">
+ALTER TABLE tarefas
+ADD COLUMN categoria_id INTEGER REFERENCES categorias(id);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>3. Inserir categorias iniciais</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-sql">
+INSERT INTO categorias (nome) VALUES
+('Estudo'),
+('Trabalho'),
+('Casa'),
+('Saúde');
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Criar uma rota para upload de comprovante</h3>
+            <p>
+              Crie uma rota para enviar um arquivo relacionado a uma tarefa,
+              como um comprovante, imagem ou documento.
+            </p>
+            <p>Use o middleware <code>multer</code> já instalado na aula.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.post('/tarefas/:id/comprovante', upload.single('arquivo'), (req, res) => {
+  const { id } = req.params;
+
+  res.json({
+    mensagem: `Comprovante enviado para a tarefa ${id}`,
+    arquivo: req.file
+  });
+});
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>5. Criar um pequeno cliente Node.js para consumir a API</h3>
+            <p>
+              Crie um arquivo chamado <code>src/cliente.js</code> que faça uma
+              requisição para listar tarefas usando <code>fetch</code>.
+            </p>
+            <p>
+              Esse exercício mostra que o Node.js pode ser usado tanto no
+              servidor quanto como cliente consumindo serviços web.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+async function buscarTarefas() {
+  try {
+    const resposta = await fetch('http://localhost:3000/api/tarefas');
+    const tarefas = await resposta.json();
+
+    console.log(tarefas);
+  } catch (erro) {
+    console.log('Erro ao buscar tarefas:', erro.message);
+  }
+}
+
+buscarTarefas();
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>Execute com:</p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+node src/cliente.js
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

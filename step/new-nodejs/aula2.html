@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">EM CONSTRUÇÃO</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h3>8. Chamadas síncronas e assíncronas</h3>
+
+        <p>
+          Uma chamada <strong>síncrona</strong> bloqueia o fluxo da aplicação
+          até terminar. Já uma chamada <strong>assíncrona</strong> permite que a
+          aplicação continue executando outras tarefas enquanto aguarda o
+          resultado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+console.log('Início');
+
+const conteudo = fs.readFileSync('arquivo.txt', 'utf-8');
+console.log(conteudo);
+
+console.log('Fim');
+          </code></pre>
+        </div>
+
+        <p>
+          No exemplo acima, o Node.js espera a leitura terminar antes de seguir.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+console.log('Início');
+
+fs.readFile('arquivo.txt', 'utf-8', (erro, conteudo) => {
+  if (erro) {
+    console.log('Erro ao ler arquivo:', erro.message);
+    return;
+  }
+
+  console.log(conteudo);
+});
+
+console.log('Fim');
+          </code></pre>
+        </div>
+
+        <p>
+          No segundo exemplo, a leitura é assíncrona. O programa continua sua
+          execução enquanto o arquivo é lido.
+        </p>
+
+        <h3>9. Buffers</h3>
+
+        <p>
+          Buffers são áreas de memória usadas para lidar com dados binários.
+          Eles são úteis quando trabalhamos com arquivos, imagens, vídeos,
+          uploads ou dados recebidos pela rede.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const buffer = Buffer.from('Olá, Node.js');
+
+console.log(buffer);
+console.log(buffer.toString());
+          </code></pre>
+        </div>
+
+        <h3>10. Streams</h3>
+
+        <p>
+          Streams permitem processar dados em partes, sem carregar tudo de uma
+          vez na memória. Isso é importante para arquivos grandes, vídeos,
+          uploads e respostas HTTP extensas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const fs = require('fs');
+
+const leitura = fs.createReadStream('entrada.txt');
+const escrita = fs.createWriteStream('saida.txt');
+
+leitura.pipe(escrita);
+          </code></pre>
+        </div>
+
+        <h3>11. Objetos globais</h3>
+
+        <p>
+          O Node.js possui objetos e funções globais que podem ser usados sem
+          importação direta.
+        </p>
+
+        <ul>
+          <li><strong>console</strong>: exibe mensagens no terminal</li>
+          <li>
+            <strong>process</strong>: traz informações do processo em execução
+          </li>
+          <li><strong>__dirname</strong>: caminho da pasta atual</li>
+          <li><strong>__filename</strong>: caminho do arquivo atual</li>
+          <li><strong>setTimeout</strong>: executa algo depois de um tempo</li>
+          <li><strong>setInterval</strong>: executa algo repetidamente</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+console.log('Diretório atual:', __dirname);
+console.log('Arquivo atual:', __filename);
+console.log('Sistema operacional:', process.platform);
+          </code></pre>
+        </div>
+
+        <h3>12. Módulo Web no Node.js</h3>
+
+        <p>
+          O Node.js possui o módulo <strong>http</strong>, que permite criar
+          servidores web sem instalar bibliotecas externas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const http = require('http');
+
+const servidor = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end('Servidor Node.js funcionando!');
+});
+
+servidor.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Embora seja possível criar aplicações usando apenas o módulo
+          <strong>http</strong>, na prática usamos frameworks como o
+          <strong>Express</strong> para organizar melhor rotas, requisições,
+          respostas e middlewares.
+        </p>
+
+        <h3>13. O que é Express?</h3>
+
+        <p>
+          Express é um framework para Node.js que facilita a criação de
+          aplicações web e APIs. Ele simplifica o trabalho com rotas,
+          middlewares, arquivos estáticos, formulários, cookies, sessões e
+          integração com bancos de dados.
+        </p>
+
+        <h3>14. Request e Response</h3>
+
+        <p>
+          Em uma aplicação Express, cada rota normalmente recebe dois objetos
+          principais: <strong>req</strong> e <strong>res</strong>.
+        </p>
+
+        <ul>
+          <li>
+            <strong>req</strong>: representa a requisição feita pelo cliente.
+          </li>
+          <li>
+            <strong>res</strong>: representa a resposta que será enviada pelo
+            servidor.
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.get('/saudacao', (req, res) => {
+  res.send('Olá! Essa resposta veio do servidor.');
+});
+          </code></pre>
+        </div>
+
+        <h3>15. Roteamento</h3>
+
+        <p>
+          Roteamento é o mecanismo usado para definir o que a aplicação deve
+          fazer quando recebe uma requisição em determinado endereço e método
+          HTTP.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.get('/tarefas', listarTarefas);
+app.post('/tarefas', criarTarefa);
+app.put('/tarefas/:id', atualizarTarefa);
+app.delete('/tarefas/:id', removerTarefa);
+          </code></pre>
+        </div>
+
+        <h3>16. Cookies e sessões</h3>
+
+        <p>
+          Cookies são pequenas informações armazenadas no navegador do usuário.
+          Sessões são usadas para manter informações do usuário entre várias
+          requisições, como um login ativo.
+        </p>
+
+        <p>
+          Em aplicações reais, é comum guardar apenas um identificador no cookie
+          e manter os dados sensíveis no servidor.
+        </p>
+
+        <h3>17. Banco de dados relacional</h3>
+
+        <p>
+          Em um banco relacional, os dados são organizados em tabelas. Cada
+          tabela possui colunas e linhas. Esse modelo é útil quando precisamos
+          representar entidades e relações, como usuários, tarefas, produtos,
+          pedidos e pagamentos.
+        </p>
+
+        <p>
+          Nesta aula, usaremos PostgreSQL para armazenar tarefas de uma pequena
+          aplicação de controle pessoal.
+        </p>
+
+        <h3>18. Arquitetura REST</h3>
+
+        <p>
+          REST é um estilo de arquitetura para criação de serviços web. Em uma
+          API REST, usamos recursos, URLs, métodos HTTP e códigos de status para
+          organizar a comunicação entre cliente e servidor.
+        </p>
+
+        <ul>
+          <li><strong>GET</strong>: buscar dados</li>
+          <li><strong>POST</strong>: criar dados</li>
+          <li><strong>PUT</strong>: atualizar dados</li>
+          <li><strong>DELETE</strong>: remover dados</li>
+        </ul>
+
+        <h3>19. Códigos de status HTTP</h3>
+
+        <ul>
+          <li><strong>200</strong>: requisição bem-sucedida</li>
+          <li><strong>201</strong>: recurso criado com sucesso</li>
+          <li><strong>400</strong>: erro nos dados enviados pelo cliente</li>
+          <li><strong>404</strong>: recurso não encontrado</li>
+          <li><strong>500</strong>: erro interno no servidor</li>
+        </ul>
+
+        <h3>20. Escalabilidade em Node.js</h3>
+
+        <p>
+          Escalar uma aplicação significa prepará-la para lidar com mais
+          usuários, mais requisições e mais processamento. No Node.js, podemos
+          usar processos filhos, múltiplas instâncias, balanceadores de carga,
+          filas, cache e separação de responsabilidades.
+        </p>
+
+        <p>
+          O módulo <strong>child_process</strong> permite criar processos
+          separados usando recursos como <strong>exec</strong>,
+          <strong>spawn</strong> e <strong>fork</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const { exec } = require('child_process');
+
+exec('node -v', (erro, stdout, stderr) => {
+  if (erro) {
+    console.log('Erro:', erro.message);
+    return;
+  }
+
+  console.log('Versão do Node:', stdout);
+});
+          </code></pre>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
