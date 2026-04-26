@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <header>
+    <h1>Aula 4</h1>
+    <h4 class="text-center">Docker</h4>
+    <h4 class="text-center">Volumes no Docker</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Volumes no Docker</h2>
+
+      <h3>1. Formas de armazenamento de dados no Docker</h3>
+
+      <p>
+        Por padrão, os dados dentro de um container são temporários. Se o
+        container for removido, os dados também são perdidos.
+      </p>
+
+      <p>
+        Para resolver isso, o Docker oferece diferentes formas de persistência
+        de dados.
+      </p>
+
+      <h4>a. Volumes de dados (docker volumes)</h4>
+
+      <p>São a forma mais recomendada de persistência no Docker.</p>
+
+      <p>
+        O Docker gerencia esses volumes automaticamente e garante melhor
+        desempenho e segurança.
+      </p>
+
+      <h4>b. Bind mount (montagem de diretório do host)</h4>
+
+      <p>
+        Permite mapear uma pasta do computador diretamente para dentro do
+        container.
+      </p>
+
+      <p>
+        Muito usado em desenvolvimento, pois permite editar arquivos localmente
+        e refletir no container.
+      </p>
+
+      <h4>c. Named pipes (Windows)</h4>
+
+      <p>
+        Usado para comunicação entre processos no Windows. É um caso mais
+        específico e pouco utilizado em aplicações comuns.
+      </p>
+
+      <h4>d. tmpfs (Linux)</h4>
+
+      <p>
+        Armazena dados em memória (RAM). É muito rápido, mas os dados são
+        perdidos quando o container é parado.
+      </p>
+
+      <h3>2. Propriedades dos volumes</h3>
+
+      <ul>
+        <li>Persistem mesmo após o container ser removido</li>
+        <li>Podem ser compartilhados entre containers</li>
+        <li>São gerenciados pelo Docker</li>
+        <li>Possuem melhor desempenho que bind mounts em produção</li>
+      </ul>
+
+      <h3>3. Para que servem os volumes</h3>
+
+      <h4>a. Compartilhamento entre containers</h4>
+
+      <p>
+        Dois ou mais containers podem acessar o mesmo volume e compartilhar
+        dados.
+      </p>
+
+      <h4>b. Armazenamento remoto</h4>
+
+      <p>
+        Volumes podem ser usados com drivers externos para armazenar dados fora
+        da máquina local.
+      </p>
+
+      <h4>c. Backup e migração</h4>
+
+      <p>
+        Podemos copiar volumes e transferir dados entre ambientes diferentes.
+      </p>
+
+      <h3>4. Comandos para trabalhar com volumes</h3>
+
+      <h4>a. docker volume create</h4>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker volume create meu-volume
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>b. docker volume ls</h4>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker volume ls
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>c. docker volume inspect</h4>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker volume inspect meu-volume
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>d. docker volume rm</h4>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker volume rm meu-volume
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>e. docker volume</h4>
+
+      <p>Grupo de comandos para gerenciamento de volumes.</p>
+
+      <h4>f. docker system prune</h4>
+
+      <p>
+        Remove recursos não utilizados, incluindo volumes (com flag específica).
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker system prune -a --volumes
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>g. Flags --mount e --volume</h4>
+
+      <p>Existem duas formas de montar volumes:</p>
+
+      <p><strong>Forma antiga (mais simples):</strong></p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+-v meu-volume:/app
+      </code></pre>
+      </div>
+
+      <p><strong>Forma moderna (recomendada):</strong></p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+--mount type=volume,source=meu-volume,target=/app
+      </code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Trabalhando com Volumes</h2>
+
+      <h3>Passo 0 — Criar branch</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git checkout -b aula4-volumes-docker
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Criar volume</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker volume create dados-app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Criar container usando volume</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name nginx-volume \
+-v dados-app:/usr/share/nginx/html nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar conteúdo dentro do volume</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker exec -it nginx-volume bash
+
+echo "&lt;h1&gt;Site com volume&lt;/h1&gt;" &gt; /usr/share/nginx/html/index.html
+exit
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:8080
+      </code></pre>
+      </div>
+
+      <h3>Passo 4 — Remover container</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop nginx-volume
+docker rm nginx-volume
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 5 — Criar novo container com mesmo volume</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name nginx-volume2 \
+-v dados-app:/usr/share/nginx/html nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        O conteúdo continuará lá, pois o volume persiste mesmo após remover o
+        container.
+      </p>
+
+      <h3>Passo 6 — Testar bind mount</h3>
+
+      <p>Crie uma pasta local:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+mkdir site-local
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Crie um index.html:</p>
+
+      <div class="code-container">
+        <pre><code class="language-markup">
+&lt;h1&gt;Site local com bind mount&lt;/h1&gt;
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8081:80 --name nginx-bind \
+-v ${PWD}/site-local:/usr/share/nginx/html nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:8081
+      </code></pre>
+      </div>
+
+      <h3>Passo 7 — Limpar recursos</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop nginx-volume2 nginx-bind
+docker rm nginx-volume2 nginx-bind
+docker volume rm dados-app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Último Passo — Subir para o Git</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 4 volumes docker"
+git push -u origin aula4-volumes-docker
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Persistência de dados com Docker</h3>
+
+          <p>
+            Crie um volume chamado <code>meu-volume-dever</code> e utilize um
+            container nginx para armazenar um arquivo HTML dentro dele.
+          </p>
+
+          <p>Depois:</p>
+
+          <ul>
+            <li>Remova o container</li>
+            <li>Crie outro container com o mesmo volume</li>
+            <li>Verifique se o conteúdo continua existindo</li>
+          </ul>
+
+          <p>
+            <strong>Obs:</strong> Criar branch
+            <code>dever-volumes-docker</code> e subir no Git.
+          </p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-volumes-docker
+
+docker volume create meu-volume-dever
+
+docker run -d -p 8080:80 --name app1 \
+-v meu-volume-dever:/usr/share/nginx/html nginx
+
+docker exec -it app1 bash
+echo "&lt;h1&gt;Persistência OK&lt;/h1&gt;" > /usr/share/nginx/html/index.html
+exit
+
+docker stop app1
+docker rm app1
+
+docker run -d -p 8080:80 --name app2 \
+-v meu-volume-dever:/usr/share/nginx/html nginx
+
+# acessar localhost:8080
+
+docker stop app2
+docker rm app2
+docker volume rm meu-volume-dever
+
+git add .
+git commit -m "dever volumes docker"
+git push -u origin dever-volumes-docker
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>

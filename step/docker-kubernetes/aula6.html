@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <header>
+    <h1>Aula 6</h1>
+    <h4 class="text-center">Docker</h4>
+    <h4 class="text-center">Docker Compose</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Docker Compose</h2>
+
+      <h3>1. Fundamentos do Docker Compose</h3>
+
+      <h4>a. História do Docker Compose</h4>
+
+      <p>
+        O Docker Compose surgiu para facilitar a execução de aplicações que
+        precisam de mais de um container.
+      </p>
+
+      <p>
+        Antes dele, era comum executar vários comandos
+        <code>docker run</code> para subir banco de dados, backend, frontend,
+        servidores web e outros serviços.
+      </p>
+
+      <p>
+        Com o Docker Compose, conseguimos descrever todos esses serviços em um
+        único arquivo chamado <code>docker-compose.yml</code>.
+      </p>
+
+      <h4>b. Para que é utilizado o Docker Compose?</h4>
+
+      <p>
+        O Docker Compose é utilizado para definir, configurar e executar
+        aplicações multi-container.
+      </p>
+
+      <p>
+        Ele é muito usado em ambientes de desenvolvimento, testes, estudos e
+        também em alguns cenários controlados de produção.
+      </p>
+
+      <p>Cenários comuns de uso:</p>
+
+      <ul>
+        <li>Aplicação Node.js com banco PostgreSQL</li>
+        <li>Frontend com backend e banco de dados</li>
+        <li>API com Redis para cache</li>
+        <li>Ambiente local semelhante ao ambiente de produção</li>
+        <li>Execução de vários serviços com apenas um comando</li>
+      </ul>
+
+      <h3>2. Instalação do Docker Compose</h3>
+
+      <h4>a. Instalação no Windows</h4>
+
+      <p>
+        No Windows, o Docker Compose normalmente já vem instalado junto com o
+        Docker Desktop.
+      </p>
+
+      <p>Para verificar, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose version
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Se o comando retornar a versão instalada, o Docker Compose está pronto
+        para uso.
+      </p>
+
+      <h4>b. Instalação no Linux e MacOS</h4>
+
+      <p>
+        No MacOS, o Docker Compose também costuma vir junto com o Docker
+        Desktop.
+      </p>
+
+      <p>
+        No Linux, dependendo da instalação, pode ser necessário instalar o
+        plugin do Compose.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+sudo apt update
+sudo apt install docker-compose-plugin
+docker compose version
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>3. Estrutura do arquivo docker-compose.yml</h3>
+
+      <p>
+        O arquivo <code>docker-compose.yml</code> é escrito em YAML e descreve
+        os serviços, imagens, portas, volumes, redes e variáveis de ambiente da
+        aplicação.
+      </p>
+
+      <p>Exemplo simples:</p>
+
+      <div class="code-container">
+        <pre><code class="language-yaml">
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Nesse exemplo, criamos um serviço chamado <code>web</code> usando a
+        imagem <code>nginx</code> e mapeando a porta <code>8080</code> do
+        computador para a porta <code>80</code> do container.
+      </p>
+
+      <h4>a. Diferença entre versões do docker-compose.yml</h4>
+
+      <h4>i. Versão 1 — formato obsoleto</h4>
+
+      <p>
+        A versão 1 do formato do Compose era mais simples e antiga. Ela não
+        oferecia o mesmo suporte moderno para redes, volumes e organização de
+        serviços.
+      </p>
+
+      <p>Atualmente, seu uso não é recomendado.</p>
+
+      <h4>ii. Versão 2 — formato moderno</h4>
+
+      <p>
+        A versão 2 trouxe melhor suporte para redes, volumes e configuração de
+        múltiplos serviços.
+      </p>
+
+      <p>
+        Hoje, em muitos projetos atuais, o Compose permite usar o arquivo sem
+        declarar explicitamente a propriedade <code>version</code>.
+      </p>
+
+      <p>
+        O importante é organizar bem os serviços dentro da chave
+        <code>services</code>.
+      </p>
+
+      <h3>4. Principais campos do docker-compose.yml</h3>
+
+      <h4>services</h4>
+
+      <p>Define os containers que farão parte da aplicação.</p>
+
+      <h4>image</h4>
+
+      <p>Define uma imagem pronta que será usada pelo serviço.</p>
+
+      <h4>build</h4>
+
+      <p>Indica que a imagem será construída a partir de um Dockerfile.</p>
+
+      <h4>ports</h4>
+
+      <p>Faz o mapeamento de portas entre o computador e o container.</p>
+
+      <h4>volumes</h4>
+
+      <p>Define persistência de dados ou montagem de diretórios.</p>
+
+      <h4>environment</h4>
+
+      <p>Define variáveis de ambiente usadas pelos containers.</p>
+
+      <h4>depends_on</h4>
+
+      <p>Indica dependência de inicialização entre serviços.</p>
+
+      <h4>networks</h4>
+
+      <p>Define redes personalizadas para comunicação entre containers.</p>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Criando uma aplicação multi-container</h2>
+
+      <h3>Passo 0 — Criar branch da aula</h3>
+
+      <p>
+        No repositório <code>projeto-docker-step</code>, crie uma nova branch:
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git checkout -b aula6-docker-compose
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Criar a estrutura de pastas</h3>
+
+      <p>Crie a seguinte estrutura no projeto:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+mkdir aula6-compose
+cd aula6-compose
+mkdir app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Criar package.json</h3>
+
+      <p>
+        Dentro da pasta <code>app</code>, crie o arquivo
+        <code>package.json</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-json">
+{
+  "name": "app-compose",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  }
+}
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar aplicação Node.js</h3>
+
+      <p>
+        Ainda dentro da pasta <code>app</code>, crie o arquivo
+        <code>index.js</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">
+const express = require('express');
+const { Client } = require('pg');
+
+const app = express();
+const port = 3000;
+
+const client = new Client({
+  host: 'db',
+  user: 'postgres',
+  password: 'postgres',
+  database: 'aula_docker',
+  port: 5432,
+});
+
+client.connect()
+  .then(() => console.log('Conectado ao PostgreSQL'))
+  .catch((erro) => console.log('Erro ao conectar no banco:', erro.message));
+
+app.get('/', (req, res) => {
+  res.send(`
+    &lt;h1&gt;Aplicação multi-container com Docker Compose&lt;/h1&gt;
+    &lt;p&gt;Backend Node.js rodando junto com PostgreSQL.&lt;/p&gt;
+  `);
+});
+
+app.get('/banco', async (req, res) => {
+  try {
+    const resultado = await client.query('SELECT NOW()');
+    res.json({
+      mensagem: 'Banco conectado com sucesso!',
+      horario: resultado.rows[0].now
+    });
+  } catch (erro) {
+    res.status(500).json({
+      mensagem: 'Erro ao consultar o banco',
+      erro: erro.message
+    });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Aplicação rodando na porta ${port}`);
+});
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Criar Dockerfile da aplicação</h3>
+
+      <p>
+        Dentro da pasta <code>app</code>, crie o arquivo
+        <code>Dockerfile</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-docker">
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 5 — Criar arquivo .dockerignore</h3>
+
+      <p>
+        Dentro da pasta <code>app</code>, crie o arquivo
+        <code>.dockerignore</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+node_modules
+npm-debug.log
+.git
+.env
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 6 — Criar docker-compose.yml</h3>
+
+      <p>
+        Agora volte para a pasta <code>aula6-compose</code> e crie o arquivo
+        <code>docker-compose.yml</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-yaml">
+services:
+  app:
+    build: ./app
+    container_name: app-node-compose
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: aula_docker
+
+  db:
+    image: postgres:16
+    container_name: banco-postgres-compose
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aula_docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+
+volumes:
+  dados-postgres:
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 7 — Entendendo o docker-compose.yml</h3>
+
+      <ul>
+        <li><strong>app</strong>: serviço da aplicação Node.js.</li>
+        <li>
+          <strong>build: ./app</strong>: cria a imagem usando o Dockerfile da
+          pasta app.
+        </li>
+        <li>
+          <strong>ports</strong>: libera a porta 3000 para acesso no navegador.
+        </li>
+        <li>
+          <strong>depends_on</strong>: indica que o serviço app depende do
+          serviço db.
+        </li>
+        <li><strong>db</strong>: serviço do banco PostgreSQL.</li>
+        <li>
+          <strong>volumes</strong>: mantém os dados do banco mesmo se o
+          container for removido.
+        </li>
+      </ul>
+
+      <h3>Passo 8 — Subir os containers</h3>
+
+      <p>
+        Na pasta onde está o arquivo <code>docker-compose.yml</code>, execute:
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose up
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Para executar em segundo plano:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose up -d
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 9 — Testar no navegador</h3>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:3000
+      </code></pre>
+      </div>
+
+      <p>Depois teste também:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:3000/banco
+      </code></pre>
+      </div>
+
+      <h3>Passo 10 — Listar serviços do Compose</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose ps
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 11 — Ver logs</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose logs
+docker compose logs app
+docker compose logs db
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 12 — Parar os containers</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose stop
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 13 — Subir novamente</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose start
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 14 — Remover containers da aplicação</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose down
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Para remover também os volumes criados:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker compose down -v
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Último Passo — Subindo para o Git</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 6 docker compose"
+git push -u origin aula6-docker-compose
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Criar aplicação multi-container com Docker Compose</h3>
+
+          <p>Crie uma branch chamada <code>dever-docker-compose</code>.</p>
+
+          <p>
+            Dentro dela, crie uma aplicação usando Docker Compose com dois
+            serviços:
+          </p>
+
+          <ul>
+            <li>Um serviço Node.js chamado <code>app</code></li>
+            <li>Um serviço PostgreSQL chamado <code>db</code></li>
+          </ul>
+
+          <p>
+            A aplicação Node.js deve ter uma rota principal
+            <code>/</code> exibindo uma mensagem em HTML e uma rota
+            <code>/status</code> retornando um JSON simples.
+          </p>
+
+          <p>
+            O banco PostgreSQL deve usar volume nomeado para persistência dos
+            dados.
+          </p>
+
+          <p>
+            <strong>Obs:</strong> Não se esqueça de subir as alterações para o
+            Git na branch do dever.
+          </p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <p><b>1. Criar branch</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-docker-compose
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>2. Criar estrutura</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+mkdir dever-compose
+cd dever-compose
+mkdir app
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>3. Criar app/package.json</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-json">
+{
+  "name": "dever-compose",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>4. Criar app/index.js</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-javascript">
+const express = require('express');
+
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send(`
+    &lt;h1&gt;Dever Docker Compose&lt;/h1&gt;
+    &lt;p&gt;Aplicação Node.js rodando com Docker Compose.&lt;/p&gt;
+  `);
+});
+
+app.get('/status', (req, res) => {
+  res.json({
+    status: 'ok',
+    mensagem: 'Aplicação funcionando corretamente'
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
+});
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>5. Criar app/Dockerfile</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-docker">
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>6. Criar docker-compose.yml</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-yaml">
+services:
+  app:
+    build: ./app
+    container_name: dever-app-compose
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: dever-db-compose
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dever_docker
+    volumes:
+      - dever-postgres:/var/lib/postgresql/data
+
+volumes:
+  dever-postgres:
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>7. Executar aplicação</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker compose up -d
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>8. Testar no navegador</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+http://localhost:3000
+http://localhost:3000/status
+            </code></pre>
+            </div>
+
+            <p><b>9. Parar e remover</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker compose down
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><b>10. Subir para o Git</b></p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git add .
+git commit -m "dever docker compose"
+git push -u origin dever-docker-compose
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>

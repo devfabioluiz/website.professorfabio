@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Docker</h4>
+      <h4 class="text-center">Fundamentos do Docker</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Fundamentos do Docker</h2>
+
+        <h3>1. História do surgimento dos containers</h3>
+
+        <p>
+          Antes do Docker, muitos sistemas eram publicados diretamente em
+          servidores físicos ou máquinas virtuais. Isso gerava um problema muito
+          comum: a aplicação funcionava no computador do desenvolvedor, mas não
+          funcionava corretamente no servidor.
+        </p>
+
+        <p>
+          Os containers surgiram como uma forma de empacotar uma aplicação junto
+          com tudo aquilo que ela precisa para funcionar: bibliotecas,
+          dependências, configurações e arquivos necessários.
+        </p>
+
+        <p>
+          A ideia principal é simples: se a aplicação roda dentro de um
+          container, ela tende a rodar da mesma forma em diferentes ambientes.
+        </p>
+
+        <h3>2. Sistemas de virtualização baseados em hipervisores</h3>
+
+        <p>
+          A virtualização tradicional usa um software chamado
+          <strong>hipervisor</strong>. Ele permite criar máquinas virtuais
+          completas dentro de uma máquina física.
+        </p>
+
+        <p>
+          Cada máquina virtual possui seu próprio sistema operacional, memória,
+          disco, processos e bibliotecas.
+        </p>
+
+        <p>Exemplos de ferramentas de virtualização:</p>
+
+        <ul>
+          <li>VirtualBox</li>
+          <li>VMware</li>
+          <li>Hyper-V</li>
+        </ul>
+
+        <p>
+          A vantagem é o isolamento. A desvantagem é que máquinas virtuais
+          costumam consumir mais memória, mais processamento e mais espaço em
+          disco.
+        </p>
+
+        <h3>3. Sistemas de virtualização a nível de kernel</h3>
+
+        <p>
+          Na virtualização a nível de kernel, não criamos um sistema operacional
+          completo para cada aplicação.
+        </p>
+
+        <p>
+          Em vez disso, os containers compartilham o kernel do sistema
+          operacional principal, mas continuam isolados em relação a processos,
+          arquivos, rede e recursos.
+        </p>
+
+        <p>
+          Isso torna os containers mais leves e rápidos do que máquinas virtuais
+          tradicionais.
+        </p>
+
+        <h3>4. Diferença entre virtualização e containerização</h3>
+
+        <p>
+          A virtualização cria máquinas virtuais completas. Cada máquina virtual
+          precisa de um sistema operacional próprio.
+        </p>
+
+        <p>
+          A containerização cria ambientes isolados, mas que compartilham o
+          kernel do sistema operacional da máquina hospedeira.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Máquina virtual:</strong> mais pesada, possui sistema
+            operacional completo.
+          </li>
+          <li>
+            <strong>Container:</strong> mais leve, compartilha o kernel do
+            sistema operacional.
+          </li>
+        </ul>
+
+        <h3>5. Conceito de arquitetura de microsserviços</h3>
+
+        <p>
+          Microsserviços são uma forma de organizar uma aplicação em partes
+          menores e independentes.
+        </p>
+
+        <p>
+          Em vez de criar uma única aplicação enorme, dividimos o sistema em
+          serviços menores. Cada serviço pode ser responsável por uma função
+          específica.
+        </p>
+
+        <p>Exemplo:</p>
+
+        <ul>
+          <li>Serviço de usuários</li>
+          <li>Serviço de produtos</li>
+          <li>Serviço de pagamentos</li>
+          <li>Serviço de notificações</li>
+        </ul>
+
+        <p>
+          O Docker é muito usado em arquiteturas de microsserviços porque
+          permite executar cada serviço em um container separado.
+        </p>
+
+        <h3>6. Componentes do Docker</h3>
+
+        <h4>a. Docker Daemon</h4>
+
+        <p>
+          O <strong>Docker Daemon</strong> é o serviço principal do Docker. Ele
+          fica rodando em segundo plano e é responsável por criar, executar,
+          parar e remover containers.
+        </p>
+
+        <h4>b. Docker CLI</h4>
+
+        <p>
+          O <strong>Docker CLI</strong> é a ferramenta de linha de comando usada
+          para enviar comandos ao Docker.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker --version
+docker ps
+docker images
+          </code></pre>
+        </div>
+
+        <h4>c. Dockerfile</h4>
+
+        <p>
+          O <strong>Dockerfile</strong> é um arquivo de instruções usado para
+          criar uma imagem Docker.
+        </p>
+
+        <p>
+          Nele informamos qual imagem base será usada, quais arquivos serão
+          copiados, quais comandos serão executados e como a aplicação será
+          iniciada.
+        </p>
+
+        <h4>d. Image</h4>
+
+        <p>
+          Uma <strong>imagem</strong> é um modelo usado para criar containers.
+          Ela contém a aplicação, as dependências e as configurações
+          necessárias.
+        </p>
+
+        <h4>e. Container</h4>
+
+        <p>
+          Um <strong>container</strong> é uma instância em execução de uma
+          imagem.
+        </p>
+
+        <p>
+          Podemos pensar assim: a imagem é o molde, e o container é a aplicação
+          rodando a partir desse molde.
+        </p>
+
+        <h4>f. Docker Registry</h4>
+
+        <p>
+          O <strong>Docker Registry</strong> é um local onde imagens Docker
+          podem ser armazenadas e compartilhadas.
+        </p>
+
+        <p>
+          O registry mais conhecido é o <strong>Docker Hub</strong>, onde
+          podemos encontrar imagens prontas de sistemas como Node.js, MySQL,
+          Nginx, Python, Java e muitos outros.
+        </p>
+
+        <h3>7. Instalação do Docker</h3>
+
+        <h4>a. Instalação do Docker no Windows</h4>
+
+        <p>No Windows, normalmente usamos o <strong>Docker Desktop</strong>.</p>
+
+        <ol>
+          <li>Acesse o site oficial do Docker.</li>
+          <li>Baixe o Docker Desktop para Windows.</li>
+          <li>Execute o instalador.</li>
+          <li>Reinicie o computador, se necessário.</li>
+          <li>Abra o Docker Desktop.</li>
+        </ol>
+
+        <p>
+          Em muitos computadores Windows, pode ser necessário ativar o WSL 2 ou
+          a virtualização na BIOS.
+        </p>
+
+        <h4>b. Instalação do Docker no Linux</h4>
+
+        <p>
+          No Linux, a instalação pode variar conforme a distribuição. Em
+          distribuições baseadas em Ubuntu, a instalação geralmente é feita pelo
+          terminal.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+sudo apt update
+sudo apt install docker.io
+docker --version
+          </code></pre>
+        </div>
+
+        <h3>8. Verificação do funcionamento da instalação</h3>
+
+        <p>
+          Para verificar se o Docker está instalado corretamente, usamos o
+          comando:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker run hello-world
+          </code></pre>
+        </div>
+
+        <p>
+          Esse comando baixa uma imagem de teste e executa um container simples.
+          Se tudo estiver funcionando, o Docker exibirá uma mensagem confirmando
+          que a instalação foi realizada com sucesso.
+        </p>
+      </section>
+
+      <section>
+        <h2>Passo a Passo: Criando o primeiro projeto com Docker</h2>
+
+        <h3>Passo 0 — Criar o repositório no GitHub</h3>
+
+        <p>Acesse o GitHub e crie um novo repositório com o nome:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+projeto-docker-step
+          </code></pre>
+        </div>
+
+        <p>
+          Depois, clone o repositório no seu computador usando o terminal do
+          VSCode:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git clone URL_DO_REPOSITORIO
+cd projeto-docker-step
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar uma branch para a aula</h3>
+
+        <p>Dentro do projeto, crie uma branch chamada:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula1-fundamentos-docker
+          </code></pre>
+        </div>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git checkout -b aula1-fundamentos-docker
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo da aplicação</h3>
+
+        <p>
+          Crie um arquivo chamado <strong>index.js</strong> na raiz do projeto.
+        </p>
+
+        <p>Dentro dele, coloque o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const http = require('http');
+
+const servidor = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+
+  res.end(`
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="pt-BR"&gt;
+      &lt;head&gt;
+        &lt;meta charset="UTF-8" /&gt;
+        &lt;title&gt;Primeira aplicação com Docker&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Minha primeira aplicação Node.js com Docker&lt;/h1&gt;
+        &lt;p&gt;Essa página está sendo executada dentro de um container Docker.&lt;/p&gt;
+
+        &lt;h2&gt;Lista de tecnologias estudadas&lt;/h2&gt;
+        &lt;ul&gt;
+          &lt;li&gt;Node.js&lt;/li&gt;
+          &lt;li&gt;Docker&lt;/li&gt;
+          &lt;li&gt;Containers&lt;/li&gt;
+          &lt;li&gt;GitHub&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  `);
+});
+
+servidor.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Testar a aplicação sem Docker</h3>
+
+        <p>
+          Antes de criar o container, podemos testar a aplicação diretamente com
+          Node.js.
+        </p>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+node index.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Depois acesse no navegador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:3000
+          </code></pre>
+        </div>
+
+        <h3>Passo 4 — Criar o Dockerfile</h3>
+
+        <p>
+          Agora vamos criar o arquivo que ensinará o Docker a montar a imagem da
+          nossa aplicação.
+        </p>
+
+        <p>
+          Crie um arquivo chamado <strong>Dockerfile</strong>, sem extensão, na
+          raiz do projeto.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-docker">
+FROM node:20
+
+WORKDIR /app
+
+COPY index.js .
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Entendendo o Dockerfile</h3>
+
+        <ul>
+          <li>
+            <strong>FROM node:20</strong>: usa uma imagem pronta do Node.js.
+          </li>
+          <li>
+            <strong>WORKDIR /app</strong>: define a pasta de trabalho dentro do
+            container.
+          </li>
+          <li>
+            <strong>COPY index.js .</strong>: copia o arquivo index.js para
+            dentro do container.
+          </li>
+          <li>
+            <strong>EXPOSE 3000</strong>: informa que a aplicação usa a porta
+            3000.
+          </li>
+          <li>
+            <strong>CMD ["node", "index.js"]</strong>: comando executado quando
+            o container iniciar.
+          </li>
+        </ul>
+
+        <h3>Passo 6 — Criar a imagem Docker</h3>
+
+        <p>Agora vamos transformar nosso projeto em uma imagem Docker.</p>
+
+        <p>No terminal, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker build -t minha-primeira-app-docker .
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O parâmetro <code>-t</code> define o nome da imagem. O ponto final
+          indica que o Dockerfile está na pasta atual.
+        </p>
+
+        <h3>Passo 7 — Executar o container</h3>
+
+        <p>Agora vamos executar a aplicação dentro de um container.</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker run -p 3000:3000 minha-primeira-app-docker
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O parâmetro <code>-p 3000:3000</code> conecta a porta 3000 do seu
+          computador com a porta 3000 do container.
+        </p>
+
+        <p>Acesse novamente:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:3000
+          </code></pre>
+        </div>
+
+        <h3>Passo 8 — Verificar containers em execução</h3>
+
+        <p>Para listar os containers que estão rodando, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker ps
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Parar um container</h3>
+
+        <p>
+          Caso queira parar o container, primeiro copie o ID dele usando
+          <code>docker ps</code>.
+        </p>
+
+        <p>Depois execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker stop ID_DO_CONTAINER
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Verificar imagens criadas</h3>
+
+        <p>
+          Para listar as imagens Docker disponíveis no seu computador, execute:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+docker images
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <p>
+          Depois de criar a aplicação, o Dockerfile e testar o container, salve
+          tudo no Git.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 1 fundamentos do docker"
+git push -u origin aula1-fundamentos-docker
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar uma aplicação Node.js executada com Docker</h3>
+
+            <p>
+              Crie um repositório no GitHub chamado
+              <code>atividade-docker-node</code>.
+            </p>
+
+            <p>
+              Dentro dele, crie uma aplicação simples em Node.js que exiba uma
+              página HTML com:
+            </p>
+
+            <ul>
+              <li>Um título principal</li>
+              <li>Um parágrafo explicando o que é Docker</li>
+              <li>Uma lista com pelo menos 4 comandos Docker</li>
+              <li>Um Dockerfile para executar a aplicação</li>
+            </ul>
+
+            <p>A aplicação deve rodar na porta <code>3000</code>.</p>
+
+            <p>
+              <strong>Obs:</strong> Não se esqueça de criar uma branch chamada
+              <code>dever-docker-node</code> e subir as alterações para o
+              GitHub.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p>
+                <b>1. Criar o repositório e a branch</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+git clone URL_DO_REPOSITORIO
+cd atividade-docker-node
+git checkout -b dever-docker-node
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Arquivo: <code>index.js</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const http = require('http');
+
+const servidor = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+
+  res.end(`
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="pt-BR"&gt;
+      &lt;head&gt;
+        &lt;meta charset="UTF-8" /&gt;
+        &lt;title&gt;Atividade Docker&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Atividade Docker com Node.js&lt;/h1&gt;
+
+        &lt;p&gt;
+          Docker é uma ferramenta usada para executar aplicações em containers.
+          Ele ajuda a padronizar o ambiente da aplicação e facilita a execução
+          em diferentes computadores.
+        &lt;/p&gt;
+
+        &lt;h2&gt;Comandos Docker&lt;/h2&gt;
+
+        &lt;ul&gt;
+          &lt;li&gt;docker --version&lt;/li&gt;
+          &lt;li&gt;docker run hello-world&lt;/li&gt;
+          &lt;li&gt;docker build -t nome-da-imagem .&lt;/li&gt;
+          &lt;li&gt;docker ps&lt;/li&gt;
+          &lt;li&gt;docker images&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  `);
+});
+
+servidor.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>3. Arquivo: <code>Dockerfile</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-docker">
+FROM node:20
+
+WORKDIR /app
+
+COPY index.js .
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>4. Criar a imagem Docker</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+docker build -t atividade-docker-node .
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>5. Executar o container</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+docker run -p 3000:3000 atividade-docker-node
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>6. Subir para o GitHub</b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-bash">
+git add .
+git commit -m "dever de casa docker com node"
+git push -u origin dever-docker-node
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+  <header>
+    <h1>Aula 2</h1>
+    <h4 class="text-center">Docker</h4>
+    <h4 class="text-center">Trabalhando com Containers Docker</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Trabalhando com Containers Docker</h2>
+
+      <h3>1. Comandos básicos para trabalhar com containers</h3>
+
+      <p>
+        Depois de entender o que é Docker, imagem e container, precisamos
+        aprender os principais comandos usados no dia a dia.
+      </p>
+
+      <p>
+        Um container é uma aplicação em execução a partir de uma imagem. Por
+        isso, os comandos de container servem para criar, executar, parar,
+        reiniciar, remover e consultar aplicações em execução.
+      </p>
+
+      <h3>a. docker ps</h3>
+
+      <p>
+        O comando <code>docker ps</code> mostra os containers que estão em
+        execução no momento.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker ps
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Para listar também os containers parados, usamos:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker ps -a
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>b. docker run</h3>
+
+      <p>
+        O comando <code>docker run</code> cria e executa um container a partir
+        de uma imagem.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run hello-world
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Também podemos executar uma aplicação mapeando portas:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -p 3000:3000 minha-primeira-app-docker
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        O parâmetro <code>-p</code> conecta uma porta do computador com uma
+        porta do container.
+      </p>
+
+      <h3>c. docker rm</h3>
+
+      <p>O comando <code>docker rm</code> remove containers parados.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker rm ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Para remover um container que ainda está rodando, primeiro pare o
+        container ou use o parâmetro <code>-f</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker rm -f ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>d. docker logs</h3>
+
+      <p>
+        O comando <code>docker logs</code> mostra os logs gerados por um
+        container.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker logs ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Esse comando é muito usado para verificar erros, mensagens do servidor e
+        informações de inicialização da aplicação.
+      </p>
+
+      <h3>e. docker start, stop e restart</h3>
+
+      <p>
+        O comando <code>docker start</code> inicia um container que está parado.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker start ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>O comando <code>docker stop</code> para um container em execução.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>O comando <code>docker restart</code> reinicia um container.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker restart ID_DO_CONTAINER
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>f. Outros comandos úteis para containers</h3>
+
+      <p>
+        Também existem outros comandos importantes para o uso diário do Docker.
+      </p>
+
+      <ul>
+        <li>
+          <code>docker inspect</code>: mostra detalhes técnicos de um container.
+        </li>
+        <li>
+          <code>docker exec</code>: executa comandos dentro de um container em
+          execução.
+        </li>
+        <li><code>docker rename</code>: renomeia um container.</li>
+        <li>
+          <code>docker stats</code>: mostra uso de CPU, memória e rede dos
+          containers.
+        </li>
+      </ul>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker inspect ID_DO_CONTAINER
+docker exec -it ID_DO_CONTAINER bash
+docker stats
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Comandos básicos para trabalhar com imagens</h2>
+
+      <h3>2. O que são imagens Docker?</h3>
+
+      <p>
+        Uma imagem Docker é um modelo usado para criar containers. Ela contém os
+        arquivos, dependências e configurações necessárias para executar uma
+        aplicação.
+      </p>
+
+      <p>
+        Podemos baixar imagens prontas do Docker Hub ou criar nossas próprias
+        imagens usando um arquivo chamado <code>Dockerfile</code>.
+      </p>
+
+      <h3>a. docker images</h3>
+
+      <p>
+        O comando <code>docker images</code> lista as imagens disponíveis no
+        computador.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker images
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>b. docker search</h3>
+
+      <p>
+        O comando <code>docker search</code> pesquisa imagens disponíveis no
+        Docker Hub.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker search nginx
+docker search node
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>c. docker pull</h3>
+
+      <p>
+        O comando <code>docker pull</code> baixa uma imagem para o computador.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker pull nginx
+docker pull node:20
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>d. docker build</h3>
+
+      <p>
+        O comando <code>docker build</code> cria uma imagem a partir de um
+        Dockerfile.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker build -t nome-da-imagem .
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        O parâmetro <code>-t</code> define o nome da imagem. O ponto final
+        indica que o Dockerfile está na pasta atual.
+      </p>
+
+      <h3>e. docker rmi</h3>
+
+      <p>O comando <code>docker rmi</code> remove uma imagem Docker.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker rmi NOME_DA_IMAGEM
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Caso exista algum container usando essa imagem, talvez seja necessário
+        remover o container antes.
+      </p>
+
+      <h3>f. Outros comandos úteis para imagens</h3>
+
+      <ul>
+        <li>
+          <code>docker image inspect</code>: mostra detalhes técnicos de uma
+          imagem.
+        </li>
+        <li><code>docker tag</code>: cria uma nova tag para uma imagem.</li>
+        <li><code>docker history</code>: mostra as camadas de uma imagem.</li>
+        <li><code>docker image prune</code>: remove imagens não utilizadas.</li>
+      </ul>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker image inspect node:20
+docker history node:20
+docker image prune
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Trabalhando com containers e imagens</h2>
+
+      <h3>Passo 0 — Criar uma nova branch no GitHub</h3>
+
+      <p>
+        Acesse o repositório <code>projeto-docker-step</code> no GitHub e crie
+        uma nova branch baseada na branch anterior.
+      </p>
+
+      <p>O nome da branch será:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+aula2-containers-imagens
+      </code></pre>
+      </div>
+
+      <p>Depois, no terminal do VSCode, dentro da pasta do projeto, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git fetch
+git checkout aula2-containers-imagens
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Verificar a versão do Docker</h3>
+
+      <p>Antes de começar, confirme se o Docker está funcionando.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker --version
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Executar um container simples</h3>
+
+      <p>
+        Execute um container de teste usando a imagem <code>hello-world</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run hello-world
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Esse comando baixa a imagem, cria o container, executa a mensagem de
+        teste e finaliza o container.
+      </p>
+
+      <h3>Passo 3 — Listar containers</h3>
+
+      <p>Agora liste apenas os containers em execução.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker ps
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Como o container <code>hello-world</code> já terminou, ele provavelmente
+        não aparecerá nessa lista.
+      </p>
+
+      <p>Para listar todos os containers, inclusive os parados, use:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker ps -a
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Baixar uma imagem do Docker Hub</h3>
+
+      <p>Agora vamos baixar a imagem do Nginx.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker pull nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        O Nginx é um servidor web muito usado para servir páginas e aplicações.
+      </p>
+
+      <h3>Passo 5 — Listar imagens baixadas</h3>
+
+      <p>Para verificar se a imagem foi baixada, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker images
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 6 — Executar o Nginx em um container</h3>
+
+      <p>Agora vamos executar o Nginx na porta 8080 do computador.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name servidor-nginx nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Nesse comando:</p>
+
+      <ul>
+        <li><code>-d</code>: executa o container em segundo plano.</li>
+        <li>
+          <code>-p 8080:80</code>: conecta a porta 8080 do computador com a
+          porta 80 do container.
+        </li>
+        <li>
+          <code>--name servidor-nginx</code>: define um nome para o container.
+        </li>
+        <li><code>nginx</code>: é a imagem usada para criar o container.</li>
+      </ul>
+
+      <p>Depois acesse no navegador:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:8080
+      </code></pre>
+      </div>
+
+      <h3>Passo 7 — Verificar logs do container</h3>
+
+      <p>Para visualizar os logs do container, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker logs servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 8 — Parar o container</h3>
+
+      <p>Para parar o container do Nginx, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 9 — Iniciar novamente o container</h3>
+
+      <p>Para iniciar novamente o mesmo container, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker start servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 10 — Reiniciar o container</h3>
+
+      <p>Para reiniciar o container, execute:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker restart servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 11 — Remover o container</h3>
+
+      <p>Primeiro, pare o container:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Depois, remova o container:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker rm servidor-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 12 — Criar uma aplicação simples com HTML</h3>
+
+      <p>Crie uma pasta chamada <code>site</code>.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+mkdir site
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Dentro dela, crie um arquivo chamado <code>index.html</code>.</p>
+
+      <div class="code-container">
+        <pre><code class="language-markup">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Site com Docker e Nginx&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Meu site rodando com Docker&lt;/h1&gt;
+    &lt;p&gt;Esta página está sendo servida por um container Nginx.&lt;/p&gt;
+
+    &lt;h2&gt;Comandos praticados&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;docker run&lt;/li&gt;
+      &lt;li&gt;docker ps&lt;/li&gt;
+      &lt;li&gt;docker logs&lt;/li&gt;
+      &lt;li&gt;docker stop&lt;/li&gt;
+      &lt;li&gt;docker start&lt;/li&gt;
+      &lt;li&gt;docker rm&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 13 — Rodar o site com Nginx usando volume</h3>
+
+      <p>
+        Agora vamos executar o Nginx usando o arquivo HTML criado no projeto.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name site-nginx -v ${PWD}/site:/usr/share/nginx/html nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>No Windows PowerShell, caso o comando acima não funcione, use:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name site-nginx -v ${PWD}\site:/usr/share/nginx/html nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:8080
+      </code></pre>
+      </div>
+
+      <h3>Passo 14 — Remover imagem</h3>
+
+      <p>Primeiro, pare e remova o container:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop site-nginx
+docker rm site-nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Depois, remova a imagem:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker rmi nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Último Passo — Subindo para o Git</h3>
+
+      <p>Agora vamos salvar os arquivos criados na branch da aula.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 2 containers e imagens docker"
+git push -u origin aula2-containers-imagens
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Criar um site simples e executá-lo em um container Nginx</h3>
+
+          <p>Crie uma nova branch chamada <code>dever-aula2-nginx</code>.</p>
+
+          <p>
+            Dentro do projeto, crie uma pasta chamada
+            <code>atividade-nginx</code> com um arquivo <code>index.html</code>.
+          </p>
+
+          <p>O arquivo HTML deve conter:</p>
+
+          <ul>
+            <li>Um título principal</li>
+            <li>Um parágrafo explicando o que é um container</li>
+            <li>
+              Uma lista com pelo menos 5 comandos Docker estudados nesta aula
+            </li>
+            <li>
+              Uma pequena seção explicando a diferença entre imagem e container
+            </li>
+          </ul>
+
+          <p>
+            Depois, execute esse HTML usando um container Nginx na porta
+            <code>8080</code>.
+          </p>
+
+          <p>
+            <strong>Obs:</strong> Não se esqueça de subir as alterações para o
+            Git na branch do dever.
+          </p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <p>
+              <b>1. Criar a branch</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-aula2-nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>2. Criar a pasta da atividade</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+mkdir atividade-nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>3. Criar o arquivo <code>atividade-nginx/index.html</code></b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-markup">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Atividade Docker Nginx&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Atividade com Docker e Nginx&lt;/h1&gt;
+
+    &lt;p&gt;
+      Um container é um ambiente isolado usado para executar uma aplicação
+      junto com suas dependências.
+    &lt;/p&gt;
+
+    &lt;h2&gt;Comandos Docker estudados&lt;/h2&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;docker ps&lt;/li&gt;
+      &lt;li&gt;docker run&lt;/li&gt;
+      &lt;li&gt;docker rm&lt;/li&gt;
+      &lt;li&gt;docker logs&lt;/li&gt;
+      &lt;li&gt;docker start&lt;/li&gt;
+      &lt;li&gt;docker stop&lt;/li&gt;
+      &lt;li&gt;docker images&lt;/li&gt;
+      &lt;li&gt;docker pull&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;h2&gt;Imagem x Container&lt;/h2&gt;
+
+    &lt;p&gt;
+      A imagem é o modelo usado para criar containers. O container é a imagem em
+      execução.
+    &lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>4. Executar o arquivo com Nginx</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker run -d -p 8080:80 --name atividade-nginx -v ${PWD}/atividade-nginx:/usr/share/nginx/html nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>No Windows PowerShell, caso necessário, use:</p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker run -d -p 8080:80 --name atividade-nginx -v ${PWD}\atividade-nginx:/usr/share/nginx/html nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>5. Acessar no navegador</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+http://localhost:8080
+            </code></pre>
+            </div>
+
+            <p>
+              <b>6. Verificar containers e logs</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker ps
+docker logs atividade-nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>7. Parar e remover o container</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+docker stop atividade-nginx
+docker rm atividade-nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p>
+              <b>8. Subir para o GitHub</b>
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git add .
+git commit -m "dever aula 2 docker nginx"
+git push -u origin dever-aula2-nginx
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>

@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <header>
+    <h1>Aula 3</h1>
+    <h4 class="text-center">Docker</h4>
+    <h4 class="text-center">Redes no Docker</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Redes no Docker</h2>
+
+      <h3>1. Modelo de rede no Docker</h3>
+
+      <p>
+        O Docker possui um modelo de rede próprio que permite que containers se
+        comuniquem entre si e também com o mundo externo.
+      </p>
+
+      <p>
+        Quando instalamos o Docker, ele já cria automaticamente uma rede padrão
+        chamada <strong>bridge</strong>.
+      </p>
+
+      <p>
+        Essa rede funciona como um "switch virtual", permitindo que containers
+        conectados a ela se comuniquem usando IP interno.
+      </p>
+
+      <p>Por padrão:</p>
+
+      <ul>
+        <li>Todo container recebe um IP interno</li>
+        <li>Containers na mesma rede conseguem se comunicar</li>
+        <li>Para acessar externamente, usamos mapeamento de portas</li>
+      </ul>
+
+      <h3>Configuração do modelo de rede padrão</h3>
+
+      <p>Podemos visualizar a rede padrão com o comando:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network ls
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>2. Interface de rede virtual</h3>
+
+      <p>
+        Cada container possui uma interface de rede virtual, semelhante a uma
+        placa de rede em um computador real.
+      </p>
+
+      <p>Essa interface permite que o container:</p>
+
+      <ul>
+        <li>Receba um endereço IP</li>
+        <li>Se comunique com outros containers</li>
+        <li>Acesse redes externas</li>
+      </ul>
+
+      <p>
+        Esse isolamento garante segurança e organização dentro do ambiente
+        Docker.
+      </p>
+
+      <h3>3. Drivers de rede disponíveis no Docker</h3>
+
+      <h4>a. bridge</h4>
+
+      <p>
+        É o driver padrão do Docker. Permite comunicação entre containers dentro
+        da mesma máquina.
+      </p>
+
+      <h4>b. macvlan</h4>
+
+      <p>
+        Permite que containers tenham um IP próprio na rede física, como se
+        fossem dispositivos reais na rede.
+      </p>
+
+      <h4>c. host</h4>
+
+      <p>
+        O container compartilha a rede do host, ou seja, não há isolamento de
+        rede.
+      </p>
+
+      <h4>d. none</h4>
+
+      <p>O container não possui rede. Ele fica completamente isolado.</p>
+
+      <h3>4. Comandos para configuração de rede no Docker</h3>
+
+      <h4>a. docker network ls</h4>
+
+      <p>Lista todas as redes disponíveis.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network ls
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>b. docker network inspect</h4>
+
+      <p>Mostra detalhes de uma rede específica.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network inspect bridge
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>c. docker network create</h4>
+
+      <p>Cria uma nova rede.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network create minha-rede
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>d. docker network connect</h4>
+
+      <p>Conecta um container a uma rede.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network connect minha-rede meu-container
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>e. docker network disconnect</h4>
+
+      <p>Remove um container de uma rede.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network disconnect minha-rede meu-container
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>f. docker network rm</h4>
+
+      <p>Remove uma rede.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network rm minha-rede
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>g. docker network prune</h4>
+
+      <p>Remove redes não utilizadas.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network prune
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>5. Mapeamento de portas no Docker</h3>
+
+      <p>
+        O mapeamento de portas permite acessar um container a partir do seu
+        computador.
+      </p>
+
+      <p>Exemplo:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -p 8080:80 nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Nesse caso:</p>
+
+      <ul>
+        <li>8080 → porta do seu computador</li>
+        <li>80 → porta do container</li>
+      </ul>
+
+      <p>
+        Ao acessar <code>http://localhost:8080</code>, você estará acessando o
+        container.
+      </p>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Trabalhando com redes Docker</h2>
+
+      <h3>Passo 0 — Criar branch no GitHub</h3>
+
+      <p>Crie uma nova branch chamada:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+aula3-redes-docker
+      </code></pre>
+      </div>
+
+      <p>No terminal:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git fetch
+git checkout aula3-redes-docker
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Listar redes existentes</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network ls
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Criar uma rede personalizada</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network create rede-app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar dois containers na mesma rede</h3>
+
+      <p>Container 1:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d --name app1 --network rede-app nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Container 2:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d --name app2 --network rede-app nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Testar comunicação entre containers</h3>
+
+      <p>
+        Vamos acessar o container <code>app1</code> e tentar comunicar com o
+        <code>app2</code>.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker exec -it app1 bash
+apt update
+apt install curl -y
+curl http://app2
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        Se tudo estiver correto, o container <code>app1</code> conseguirá
+        acessar o <code>app2</code> usando o nome do container.
+      </p>
+
+      <h3>Passo 5 — Criar um container com mapeamento de porta</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -d -p 8080:80 --name web-app nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:8080
+      </code></pre>
+      </div>
+
+      <h3>Passo 6 — Inspecionar rede</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker network inspect rede-app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 7 — Remover containers e rede</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker stop app1 app2 web-app
+docker rm app1 app2 web-app
+docker network rm rede-app
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Último Passo — Subindo para o Git</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 3 redes docker"
+git push -u origin aula3-redes-docker
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Criar comunicação entre containers</h3>
+
+          <p>
+            Crie uma rede chamada <code>rede-dever</code> e dois containers:
+          </p>
+
+          <ul>
+            <li>um container nginx</li>
+            <li>um container ubuntu</li>
+          </ul>
+
+          <p>O container ubuntu deve acessar o nginx via nome do container.</p>
+
+          <p>
+            <strong>Obs:</strong> Criar branch <code>dever-redes-docker</code> e
+            subir no Git.
+          </p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-redes-docker
+
+docker network create rede-dever
+
+docker run -d --name nginx-dever --network rede-dever nginx
+
+docker run -it --name ubuntu-dever --network rede-dever ubuntu bash
+
+apt update
+apt install curl -y
+curl http://nginx-dever
+
+docker stop nginx-dever ubuntu-dever
+docker rm nginx-dever ubuntu-dever
+docker network rm rede-dever
+
+git add .
+git commit -m "dever redes docker"
+git push -u origin dever-redes-docker
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>
