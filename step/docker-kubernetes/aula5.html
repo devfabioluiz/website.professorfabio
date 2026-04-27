@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <header>
+    <h1>Aula 5</h1>
+    <h4 class="text-center">Docker</h4>
+    <h4 class="text-center">Dockerfile</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Dockerfile</h2>
+
+      <h3>1. Fundamentos da estrutura dos containers</h3>
+
+      <h4>a. Organização em camadas</h4>
+
+      <p>
+        As imagens Docker são construídas em camadas (layers). Cada instrução no
+        Dockerfile cria uma nova camada.
+      </p>
+
+      <p>
+        Essas camadas são reaproveitadas (cache), o que torna o processo de
+        build mais rápido quando não há alterações.
+      </p>
+
+      <h4>b. Imagem base (imagem pai)</h4>
+
+      <p>
+        Toda imagem começa a partir de uma imagem base. Essa imagem já possui um
+        sistema mínimo e, muitas vezes, uma linguagem instalada.
+      </p>
+
+      <p>Exemplos:</p>
+
+      <ul>
+        <li>node:20</li>
+        <li>python:3.11</li>
+        <li>nginx</li>
+        <li>alpine</li>
+      </ul>
+
+      <h3>2. Objetivo do Dockerfile</h3>
+
+      <p>
+        O Dockerfile é um arquivo de texto com instruções que descrevem como uma
+        imagem Docker deve ser construída.
+      </p>
+
+      <p>
+        Ele garante que qualquer pessoa consiga gerar a mesma imagem de forma
+        padronizada.
+      </p>
+
+      <h3>3. Estrutura do Dockerfile</h3>
+
+      <p>Um Dockerfile é composto por instruções executadas em sequência.</p>
+
+      <div class="code-container">
+        <pre><code class="language-docker">
+FROM node:20
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+CMD ["node", "index.js"]
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>4. Instruções do Dockerfile</h3>
+
+      <h4>a. FROM</h4>
+      <p>Define a imagem base.</p>
+
+      <h4>b. RUN</h4>
+      <p>Executa comandos durante o build.</p>
+
+      <h4>c. COPY</h4>
+      <p>Copia arquivos do host para o container.</p>
+
+      <h4>d. ADD</h4>
+      <p>Semelhante ao COPY, mas com funcionalidades extras.</p>
+
+      <h4>e. LABEL</h4>
+      <p>Adiciona metadados à imagem.</p>
+
+      <h4>f. ENV</h4>
+      <p>Define variáveis de ambiente.</p>
+
+      <h4>g. CMD</h4>
+      <p>Define o comando padrão ao iniciar o container.</p>
+
+      <h4>h. WORKDIR</h4>
+      <p>Define o diretório de trabalho.</p>
+
+      <h4>i. ARG</h4>
+      <p>Define variáveis usadas no build.</p>
+
+      <h4>j. ENTRYPOINT</h4>
+      <p>Define o ponto de entrada do container.</p>
+
+      <h4>k. EXPOSE</h4>
+      <p>Indica a porta usada pela aplicação.</p>
+
+      <h4>l. VOLUME</h4>
+      <p>Define diretórios persistentes.</p>
+
+      <h4>m. USER</h4>
+      <p>Define o usuário que executa o container.</p>
+
+      <h4>n. HEALTHCHECK</h4>
+      <p>Verifica se o container está saudável.</p>
+
+      <h4>o. SHELL</h4>
+      <p>Define o shell padrão.</p>
+
+      <h3>5. Otimização do tamanho da imagem</h3>
+
+      <h4>a. Cache de build</h4>
+
+      <p>
+        Docker reutiliza camadas já construídas. Alterações em camadas iniciais
+        invalidam o cache das próximas.
+      </p>
+
+      <h4>b. Escolha da imagem base</h4>
+
+      <p>
+        Usar imagens menores como <code>alpine</code> reduz o tamanho final.
+      </p>
+
+      <h4>c. Multi-stage build</h4>
+
+      <p>
+        Permite separar etapas de build e execução, reduzindo o tamanho final da
+        imagem.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-docker">
+FROM node:20 AS build
+WORKDIR /app
+COPY . .
+RUN npm install
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=build /app .
+CMD ["node", "index.js"]
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h4>d. .dockerignore</h4>
+
+      <p>Arquivo usado para ignorar arquivos desnecessários no build.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+node_modules
+.git
+.env
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Criando Dockerfile otimizado</h2>
+
+      <h3>Passo 0 — Criar branch</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git checkout -b aula5-dockerfile
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Criar projeto Node</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+npm init -y
+npm install express
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Criar index.js</h3>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Dockerfile funcionando!');
+});
+
+app.listen(3000);
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar Dockerfile</h3>
+
+      <div class="code-container">
+        <pre><code class="language-docker">
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Criar .dockerignore</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+node_modules
+.git
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 5 — Build da imagem</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker build -t app-dockerfile .
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 6 — Rodar container</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+docker run -p 3000:3000 app-dockerfile
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Acesse:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+http://localhost:3000
+      </code></pre>
+      </div>
+
+      <h3>Passo 7 — Testar multi-stage</h3>
+
+      <p>Substitua o Dockerfile por versão multi-stage e refaça o build.</p>
+
+      <h3>Último Passo — Subir para o Git</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 5 dockerfile"
+git push -u origin aula5-dockerfile
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Criar Dockerfile com boas práticas</h3>
+
+          <p>Crie um projeto Node.js com Dockerfile otimizado contendo:</p>
+
+          <ul>
+            <li>Uso de imagem alpine</li>
+            <li>Uso de .dockerignore</li>
+            <li>EXPOSE</li>
+            <li>CMD</li>
+          </ul>
+
+          <p>Opcional: implementar multi-stage.</p>
+
+          <p>Criar branch <code>dever-dockerfile</code> e subir no Git.</p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-dockerfile
+
+docker build -t app .
+docker run -p 3000:3000 app
+
+git add .
+git commit -m "dever dockerfile"
+git push -u origin dever-dockerfile
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>

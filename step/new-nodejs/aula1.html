@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : O que é o Node.js</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Definição</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que é o Node.js</h2>
+
+        <p>
+          Node.js é uma plataforma que permite executar JavaScript fora do
+          navegador. Com ele, podemos criar aplicações backend, APIs, scripts,
+          servidores web, ferramentas de linha de comando e sistemas que lidam
+          com arquivos, eventos, conexões HTTP e bancos de dados.
+        </p>
+
+        <p>
+          Antes do Node.js, o JavaScript era usado principalmente no navegador.
+          Com o Node.js, a mesma linguagem também pode ser usada no servidor.
+        </p>
+
+        <h3>Para que serve o Node.js?</h3>
+
+        <ul>
+          <li>Criar servidores web</li>
+          <li>Criar APIs REST</li>
+          <li>Processar formulários</li>
+          <li>Interagir com bancos de dados</li>
+          <li>Ler e escrever arquivos</li>
+          <li>Trabalhar com eventos</li>
+          <li>Executar tarefas em linha de comando</li>
+          <li>Criar sistemas escaláveis</li>
+        </ul>
+
+        <h3>Características principais do Node.js</h3>
+
+        <ul>
+          <li>
+            <strong>Assíncrono</strong>: evita travar a aplicação enquanto uma
+            tarefa demora.
+          </li>
+          <li>
+            <strong>Orientado a eventos</strong>: reage a acontecimentos, como
+            requisições, cliques, leituras de arquivos e conexões.
+          </li>
+          <li>
+            <strong>Não bloqueante</strong>: consegue lidar com várias operações
+            sem esperar uma terminar para iniciar outra.
+          </li>
+          <li>
+            <strong>Baseado em JavaScript</strong>: permite usar a mesma
+            linguagem no frontend e no backend.
+          </li>
+          <li>
+            <strong>Possui grande ecossistema</strong>: usa o npm para instalar
+            bibliotecas prontas.
+          </li>
+        </ul>
+
+        <h3>Arquitetura orientada a eventos</h3>
+
+        <p>
+          No Node.js, muitas ações acontecem por meio de eventos. Uma requisição
+          HTTP chegando ao servidor, um arquivo sendo lido ou uma conexão sendo
+          encerrada são exemplos de eventos.
+        </p>
+
+        <p>
+          Em vez de executar tudo de forma linear e bloqueante, o Node.js
+          registra funções que serão chamadas quando determinado evento ocorrer.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const EventEmitter = require('events');
+
+const eventos = new EventEmitter();
+
+eventos.on('pedidoCriado', (pedido) => {
+  console.log('Novo pedido recebido:', pedido);
+});
+
+eventos.emit('pedidoCriado', {
+  id: 1,
+  cliente: 'Maria',
+  produto: 'Café'
+});
+          </code></pre>
+        </div>
+
+        <p>
+          Nesse exemplo, primeiro registramos o evento
+          <strong>pedidoCriado</strong>. Depois, usamos <strong>emit</strong>
+          para disparar esse evento.
+        </p>
+
+        <h3>Gerenciador de pacotes npm</h3>
+
+        <p>
+          O <strong>npm</strong> é o gerenciador de pacotes do Node.js. Ele é
+          usado para instalar bibliotecas, criar projetos, executar scripts e
+          controlar dependências.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm init -y
+npm install express
+npm install nodemon --save-dev
+          </code></pre>
+        </div>
+
+        <p>
+          O arquivo <strong>package.json</strong> registra informações do
+          projeto, dependências instaladas e comandos personalizados.
+        </p>
+
+        <h3>REPL do Node.js</h3>
+
+        <p>
+          O REPL é uma interface interativa do Node.js. A sigla significa
+          <strong>Read, Evaluate, Print, Loop</strong>. Ele permite testar
+          comandos JavaScript diretamente no terminal.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+node
+          </code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+2 + 2
+'Node.js'.toUpperCase()
+const nome = 'João'
+nome
+          </code></pre>
+        </div>
+
+        <p>
+          Para sair do REPL, pressione <strong>Ctrl + C</strong> duas vezes ou
+          digite <strong>.exit</strong>.
+        </p>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Criando uma aplicação Node.js simples com HTML</h2>
+
+          <h3>Passo 0 — Criar o repositório no GitHub</h3>
+
+          <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+projeto-nodejs-step
+    </code></pre>
+          </div>
+
+          <p>
+            Agora crie uma branch chamada <strong>aula1-introducao-node</strong>
+          </p>
+
+          <p>
+            Depois, clone o repositório no seu computador, preferencialmente no
+            Disco Local (C:/) se estiver usando o Windows, pelo terminal do
+            VSCode:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git clone https://github.com/{{AQUI-DEVE-SER-SEU-USERNAME-NO-GITHUB}}/projeto-nodejs-step.git
+cd projeto-nodejs-step
+git fetch
+git switch aula1-introducao-node
+git pull
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Iniciar o projeto Node.js</h3>
+
+          <p>
+            Dentro da pasta do projeto, ainda no terminal, execute o comando
+            abaixo para criar o arquivo
+            <code>package.json</code>:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+npm init -y
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Criar o arquivo principal</h3>
+
+          <p>
+            Agora crie o arquivo <strong>index.js</strong>. Ele será o arquivo
+            principal da nossa aplicação.
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+type nul > index.js
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Inserir o código da aplicação</h3>
+
+          <p>
+            Abra o arquivo <strong>index.js</strong> e insira o código abaixo:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+const http = require('http');
+
+const produtos = [
+  'Notebook',
+  'Mouse',
+  'Teclado',
+  'Monitor'
+];
+
+const server = http.createServer((req, res) =&gt; {
+  const listaProdutos = produtos
+    .map((produto) =&gt; `&lt;li&gt;${produto}&lt;/li&gt;`)
+    .join('');
+
+  const html = `
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="pt-br"&gt;
+    &lt;head&gt;
+      &lt;meta charset="UTF-8"&gt;
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+      &lt;title&gt;Aplicação Node.js&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Lista de Produtos&lt;/h1&gt;
+
+      &lt;ul&gt;
+        ${listaProdutos}
+      &lt;/ul&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+  `;
+
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+  res.end(html);
+});
+
+server.listen(3000, () =&gt; {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <!-- EXPLICANDO O CÓDIGO -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 Explicando o código 📝
+              </h2>
+
+              <p>
+                Quando utilizamos <code>const http = require('http');</code>,
+                estamos importando um módulo nativo do
+                <strong>Node.js</strong> responsável por permitir a criação de
+                servidores web. Esse módulo implementa o protocolo HTTP, que é o
+                mesmo utilizado pelos navegadores para acessar sites.
+              </p>
+
+              <p>
+                Com o <code>http</code>, conseguimos criar aplicações backend
+                que recebem requisições e retornam respostas, como páginas HTML,
+                dados JSON ou textos simples.
+              </p>
+
+              <h3>🔹 O que o require('http') faz</h3>
+
+              <p>
+                O <code>require</code> é utilizado para importar módulos no
+                Node.js. Quando fazemos <code>require('http')</code>, estamos
+                carregando o módulo HTTP nativo e armazenando suas
+                funcionalidades dentro da variável <code>http</code>.
+              </p>
+
+              <p>
+                A partir disso, podemos usar métodos como
+                <code>http.createServer()</code> para criar servidores.
+              </p>
+
+              <h3>🔹 Criando um servidor</h3>
+
+              <p>
+                O principal uso do módulo HTTP é criar um servidor que escuta
+                requisições. Isso é feito com o método
+                <code>createServer</code>.
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end('Olá mundo');
+});
+
+server.listen(3000);
+      </code></pre>
+              </div>
+
+              <h3>🔹 Entendendo req e res</h3>
+
+              <p>
+                Dentro do <code>createServer</code>, temos dois parâmetros
+                importantes:
+              </p>
+
+              <ul>
+                <li>
+                  <code>req</code> (request): representa a requisição feita pelo
+                  usuário
+                </li>
+                <li>
+                  <code>res</code> (response): representa a resposta que o
+                  servidor irá enviar
+                </li>
+              </ul>
+
+              <p>
+                Com o <code>req</code>, conseguimos acessar informações como a
+                URL e o método da requisição. Com o <code>res</code>,
+                conseguimos enviar dados de volta para o navegador.
+              </p>
+
+              <h3>🔹 Enviando uma resposta</h3>
+
+              <p>
+                Para enviar uma resposta ao navegador, utilizamos o método
+                <code>res.end()</code>. Ele finaliza a requisição e envia o
+                conteúdo.
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+res.end('Resposta enviada com sucesso');
+      </code></pre>
+              </div>
+
+              <h3>🔹 Definindo tipo de conteúdo (HTML)</h3>
+
+              <p>
+                Quando queremos retornar HTML, precisamos informar o tipo da
+                resposta usando headers:
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+res.writeHead(200, {
+  'Content-Type': 'text/html; charset=utf-8'
+});
+      </code></pre>
+              </div>
+
+              <h3>🔹 Exemplo com HTML</h3>
+
+              <p>
+                Abaixo um exemplo simples de um servidor que retorna uma página
+                HTML:
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+
+  res.end(`
+    &lt;h1&gt;Minha aplicação Node&lt;/h1&gt;
+    &lt;p&gt;Funcionando com HTTP&lt;/p&gt;
+  `);
+});
+
+server.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+      </code></pre>
+              </div>
+
+              <h3>🔹 Como funciona na prática</h3>
+
+              <ol>
+                <li>O servidor é criado com <code>createServer</code></li>
+                <li>Ele fica escutando uma porta (ex: 3000)</li>
+                <li>Quando alguém acessa, a função é executada</li>
+                <li>
+                  O servidor envia uma resposta com <code>res.end()</code>
+                </li>
+              </ol>
+
+              <h3>🔹 Quando usar o módulo HTTP</h3>
+
+              <ul>
+                <li>Para aprender como funciona o backend na base</li>
+                <li>Para criar servidores simples</li>
+                <li>Para entender requisições e respostas HTTP</li>
+              </ul>
+
+              <h3>📌 Observação importante</h3>
+
+              <p>
+                Apesar de ser muito útil para aprendizado, o módulo
+                <code>http</code>
+                sozinho não é ideal para aplicações grandes, pois não possui
+                recursos como roteamento organizado ou middlewares. Por isso, em
+                projetos reais, utilizamos frameworks como Express ou Fastify.
+              </p>
+
+              <p>
+                Mesmo assim, entender o <code>http</code> é essencial, pois ele
+                é a base de tudo que acontece no backend com Node.js.
+              </p>
+            </div>
+          </section>
+
+          <h3>Passo 4 — Entendendo o que foi feito</h3>
+
+          <p>Nesse exemplo, criamos uma aplicação Node.js simples usando:</p>
+
+          <ul>
+            <li><strong>http</strong> para criar um servidor web</li>
+            <li><strong>array</strong> para armazenar uma lista de produtos</li>
+            <li>
+              <strong>map</strong> para transformar os produtos em itens HTML
+            </li>
+            <li>
+              <strong>template string</strong> para montar o HTML dentro do
+              JavaScript
+            </li>
+            <li>
+              <strong>res.end</strong> para enviar o HTML como resposta ao
+              navegador
+            </li>
+          </ul>
+
+          <h3>Passo 5 — Rodar a aplicação</h3>
+
+          <p>No terminal, execute:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+node index.js
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Acesse no navegador:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+http://localhost:3000
+    </code></pre>
+          </div>
+
+          <p>
+            Você verá uma página HTML simples renderizando uma lista de
+            produtos.
+          </p>
+
+          <h3>Passo 6 — Testar alterações</h3>
+
+          <p>Faça alguns testes na aplicação:</p>
+
+          <ul>
+            <li>Adicione novos produtos no array <code>produtos</code></li>
+            <li>Altere o título da página</li>
+            <li>Modifique o texto do <code>h1</code></li>
+            <li>Atualize a página no navegador e veja as mudanças</li>
+          </ul>
+
+          <h3>Último Passo - Subindo para o Git</h3>
+
+          <p>Agora vamos salvar as alterações no repositório.</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git add .
+git commit -m "cria aplicacao nodejs com lista em html"
+git push
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar aplicação simples em Node.js</h3>
+              <p>
+                Crie uma branch no seu repositório chamada
+                <strong>dever-de-casa-aula1</strong> e dentro dela desenvolva
+                uma aplicação simples em Node.js.
+              </p>
+              <p>
+                A aplicação deve conter um arquivo <code>index.js</code> que
+                execute uma operação matemática simples (por exemplo: soma,
+                multiplicação, etc) e exiba o resultado no terminal.
+              </p>
+              <p>
+                <strong>Obs</strong>: Não se esqueça de subir o projeto para o
+                Git na branch dessa aula após terminar o dever.
+              </p>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <p>
+                  <b>Arquivo: <code>index.js</code></b>
+                </p>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+// Operação simples
+const numero1 = 10;
+const numero2 = 5;
+
+// Soma
+const resultado = numero1 + numero2;
+
+// Exibir resultado no terminal
+console.log("Resultado da soma:", resultado);
+        </code></pre>
+
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+      </div>
+    </footer>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Docker - Fundamentos do Docker</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+  <header>
+    <h1>Aula 7</h1>
+    <h4 class="text-center">Kubernetes</h4>
+    <h4 class="text-center">Fundamentos e Implantação</h4>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Kubernetes</h2>
+
+      <h3>1. História do surgimento do Kubernetes</h3>
+
+      <p>
+        O Kubernetes surgiu no Google, inspirado em um sistema interno chamado
+        Borg, que já era utilizado para gerenciar containers em larga escala.
+      </p>
+
+      <p>
+        Com o crescimento do uso de containers, especialmente com Docker, surgiu
+        a necessidade de uma ferramenta que automatizasse a orquestração desses
+        containers.
+      </p>
+
+      <p>
+        Assim nasceu o Kubernetes, uma plataforma open source para gerenciar,
+        escalar e manter aplicações em containers.
+      </p>
+
+      <h3>2. Quando utilizar (e quando não utilizar) Kubernetes</h3>
+
+      <h4>Quando utilizar:</h4>
+
+      <ul>
+        <li>Aplicações com muitos containers</li>
+        <li>Arquitetura de microsserviços</li>
+        <li>Necessidade de alta disponibilidade</li>
+        <li>Escalabilidade automática</li>
+        <li>Ambientes distribuídos</li>
+      </ul>
+
+      <h4>Quando não utilizar:</h4>
+
+      <ul>
+        <li>Projetos pequenos ou simples</li>
+        <li>Aplicações monolíticas simples</li>
+        <li>Ambientes com poucos recursos</li>
+        <li>Quando Docker Compose já resolve</li>
+      </ul>
+
+      <p>
+        Kubernetes adiciona complexidade. Nem sempre é a melhor escolha para
+        todos os cenários.
+      </p>
+
+      <h3>3. Principais termos e conceitos</h3>
+
+      <h4>a. Nodes</h4>
+      <p>Máquinas (físicas ou virtuais) que executam containers.</p>
+
+      <h4>b. Pods</h4>
+      <p>
+        Unidade básica do Kubernetes. Um Pod pode conter um ou mais containers.
+      </p>
+
+      <h4>c. Replication Controllers</h4>
+      <p>
+        Garantem que um número específico de Pods esteja sempre em execução.
+      </p>
+
+      <h4>d. Services</h4>
+      <p>
+        Permitem acessar Pods de forma estável, mesmo que eles sejam recriados.
+      </p>
+
+      <h4>e. Volumes</h4>
+      <p>Permitem persistência de dados entre Pods.</p>
+
+      <h4>f. Labels</h4>
+      <p>Metadados usados para organizar e selecionar recursos.</p>
+
+      <h4>g. Kubectl</h4>
+      <p>
+        Ferramenta de linha de comando usada para interagir com o Kubernetes.
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl get pods
+kubectl get nodes
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>4. Arquitetura do Kubernetes</h3>
+
+      <h4>a. Node</h4>
+      <p>Máquina onde os containers são executados.</p>
+
+      <h4>b. Kubelet</h4>
+      <p>
+        Agente que roda em cada node e garante que os containers estejam
+        funcionando.
+      </p>
+
+      <h4>c. Kube-Proxy</h4>
+      <p>Gerencia a comunicação de rede entre Pods e serviços.</p>
+
+      <h4>d. Componentes de controle</h4>
+
+      <h5>i. Etcd</h5>
+      <p>Banco de dados chave-valor que armazena o estado do cluster.</p>
+
+      <h5>ii. API Server</h5>
+      <p>Porta de entrada do Kubernetes. Todos os comandos passam por ele.</p>
+
+      <h5>iii. Scheduler</h5>
+      <p>Decide em qual node um Pod será executado.</p>
+
+      <h4>e. Controller Manager</h4>
+
+      <p>
+        Controla o estado desejado do cluster, garantindo que tudo funcione como
+        esperado.
+      </p>
+
+      <h3>5. Planejamento e implantação</h3>
+
+      <h4>a. Hardware físico</h4>
+      <p>Utilizado em grandes empresas com infraestrutura própria.</p>
+
+      <h4>b. Máquinas virtuais</h4>
+      <p>Muito usado para testes e ambientes corporativos.</p>
+
+      <h4>c. Nuvem</h4>
+
+      <p>
+        Forma mais comum atualmente. Serviços como AWS, Azure e Google Cloud
+        oferecem Kubernetes gerenciado.
+      </p>
+
+      <p>Exemplos:</p>
+
+      <ul>
+        <li>EKS (AWS)</li>
+        <li>AKS (Azure)</li>
+        <li>GKE (Google Cloud)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Passo a Passo: Executando Kubernetes local</h2>
+
+      <h3>Passo 0 — Criar branch</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git checkout -b aula7-kubernetes
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Instalar Minikube</h3>
+
+      <p>O Minikube permite rodar um cluster Kubernetes localmente.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+minikube start
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Verificar cluster</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl get nodes
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar deployment</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl create deployment nginx-deploy --image=nginx
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Ver pods</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl get pods
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 5 — Expor serviço</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl expose deployment nginx-deploy --type=NodePort --port=80
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 6 — Acessar aplicação</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+minikube service nginx-deploy
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 7 — Escalar aplicação</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl scale deployment nginx-deploy --replicas=3
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 8 — Ver pods novamente</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl get pods
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 9 — Remover recursos</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+kubectl delete deployment nginx-deploy
+kubectl delete service nginx-deploy
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Último Passo — Subir para o Git</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
+git add .
+git commit -m "aula 7 kubernetes"
+git push -u origin aula7-kubernetes
+      </code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dever de Casa</h2>
+
+      <div id="question-container-casa">
+        <div class="question">
+          <h3>Deploy com Kubernetes</h3>
+
+          <p>
+            Crie um deployment com uma aplicação nginx e escale para 2 réplicas.
+          </p>
+
+          <p>Depois:</p>
+
+          <ul>
+            <li>Exponha como serviço</li>
+            <li>Acesse via browser</li>
+            <li>Liste os pods</li>
+          </ul>
+
+          <p>Criar branch <code>dever-kubernetes</code> e subir no Git.</p>
+
+          <button class="btn-gabarito">Ver gabarito</button>
+
+          <div class="gabarito">
+            <b>Gabarito:</b>
+
+            <div class="code-container">
+              <pre><code class="language-bash">
+git checkout -b dever-kubernetes
+
+kubectl create deployment nginx --image=nginx
+kubectl scale deployment nginx --replicas=2
+
+kubectl expose deployment nginx --type=NodePort --port=80
+
+kubectl get pods
+
+minikube service nginx
+
+kubectl delete deployment nginx
+kubectl delete service nginx
+
+git add .
+git commit -m "dever kubernetes"
+git push -u origin dever-kubernetes
+            </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/copy-clipboard.js"></script>
+  <script src="../../scripts/check-gabarito.js"></script>
+</html>
