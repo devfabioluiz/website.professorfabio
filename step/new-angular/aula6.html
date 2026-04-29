@@ -371,12 +371,14 @@ git push
               </div>
 
               <strong
-                >2. Criar o guard de role - arquivo
+                >2. Criar o guard de role
                 <code>role.guard.ts</code></strong
               >
 
               <div class="code-container">
                 <pre><code class="language-typescript">
+import {Inject} from "@angular/core"
+import {CanActivateFn, Router} from "@angular/router"
 export const roleGuard: CanActivateFn = () => {
   const router = inject(Router);
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -428,7 +430,7 @@ export const routes: Routes = [
       import('./painel-adm/painel-adm').then(
         (m) => m.PainelAdm
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: '**',
