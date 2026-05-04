@@ -1013,7 +1013,7 @@ export class Usuario {
                 <pre><code class="language-typescript">
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsuarioService } from '../services/usuario.service';
+import { Usuario } from '../services/usuario';
 
 @Component({
   selector: 'app-painel-adm',
@@ -1023,7 +1023,7 @@ import { UsuarioService } from '../services/usuario.service';
   styleUrl: './painel-adm.css'
 })
 export class PainelAdm implements OnInit {
-  private usuarioService = inject(UsuarioService);
+  private usuarioService = inject(Usuario);
 
   usuarios: any[] = [];
 

@@ -186,6 +186,8 @@ ng g guard guards/auth
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+                <p>Escolha a opção <strong>CanActivate</strong></p>
+
         <h3>Passo 2 — Implementar o guard</h3>
 
         <p>No arquivo <code>auth.guard.ts</code>, insira o seguinte código:</p>
@@ -359,6 +361,8 @@ git push
                 >1. Inserir no localStorage a flag isAdmin no navegador</strong
               >
 
+              <p>Para fazer isso, você precisa clicar com botão direito na página no navegador, clicar em "Inspecionar" e digitar o código abaixo no console</p>
+
               <div class="code-container">
                 <pre>
   <code class="language-bash">localStorage.setItem('isAdmin', 'true');</code>
@@ -367,12 +371,14 @@ git push
               </div>
 
               <strong
-                >2. Criar o guard de role - arquivo
+                >2. Criar o guard de role
                 <code>role.guard.ts</code></strong
               >
 
               <div class="code-container">
                 <pre><code class="language-typescript">
+import {Inject} from "@angular/core"
+import {CanActivateFn, Router} from "@angular/router"
 export const roleGuard: CanActivateFn = () => {
   const router = inject(Router);
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -424,7 +430,7 @@ export const routes: Routes = [
       import('./painel-adm/painel-adm').then(
         (m) => m.PainelAdm
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: '**',
