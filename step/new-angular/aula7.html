@@ -759,27 +759,39 @@ export class ProdutoFilho {
               </div>
 
               <p>
-                <strong>3. Arquivo do componente pai</strong>
+                <strong>3. Arquivo <code>produto-pai.ts</code></strong>
               </p>
 
               <div class="code-container">
                 <pre><code class="language-typescript">
-produto = {
-  nome: 'Notebook',
-  preco: 3500
-};
+import { Component } from '@angular/core';
+import { ProdutoFilho } from '../produto-filho/produto-filho';
+import { CommonModule } from '@angular/common';
 
-mensagem = '';
+@Component({
+  selector: 'app-produto-pai',
+  imports: [CommonModule, ProdutoFilho],
+  templateUrl: './produto-pai.html',
+  styleUrl: './produto-pai.css',
+})
+export class ProdutoPai {
+  produto = {
+    nome: 'Notebook',
+    preco: 3500,
+  };
 
-receberProdutoSelecionado(nomeProduto: string): void {
-  this.mensagem = `Produto selecionado: ${nomeProduto}`;
+  mensagem = '';
+
+  receberProdutoSelecionado(nomeProduto: string): void {
+    this.mensagem = `Produto selecionado: ${nomeProduto}`;
+  }
 }
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
               <p>
-                <strong>4. Template do componente pai</strong>
+                <strong>4. Arquivo <code>produto-pai.html</code></strong>
               </p>
 
               <div class="code-container">
@@ -790,6 +802,55 @@ receberProdutoSelecionado(nomeProduto: string): void {
   [produto]="produto"
   (produtoSelecionado)="receberProdutoSelecionado($event)"
 &gt;&lt;/app-produto-filho&gt;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <strong>5. Arquivo <code>app.routes.ts</code></strong>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'produtos',
+    pathMatch: 'full',
+  },
+  {
+    path: 'produtos',
+    loadComponent: () =>
+      import('./pages/lista-produtos/lista-produtos').then((m) => m.ListaProdutos),
+  },
+  {
+    path: 'produto/:id',
+    loadComponent: () =>
+      import('./pages/detalhe-produto/detalhe-produto').then((m) => m.DetalheProduto),
+  },
+  {
+    path: 'painel-adm',
+    loadComponent: () => import('./painel-adm/painel-adm').then((m) => m.PainelAdm),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'componente-pai',
+    loadComponent: () =>
+      import('./pages/componente-pai/componente-pai').then((m) => m.ComponentePai),
+  },
+  {
+    path: 'produto-pai',
+    loadComponent: () => import('./produto-pai/produto-pai').then((m) => m.ProdutoPai),
+  },
+  {
+    path: '**',
+    redirectTo: 'produtos',
+  },
+];
+
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
