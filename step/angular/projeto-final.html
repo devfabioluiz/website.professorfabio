@@ -1,349 +1,394 @@
-<section>
-  <h2>Projeto Final — Controle de Estoque</h2>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula 7: Angular - Ciclo de Vida de Componentes e Passagem de Dados
+    </title>
 
-  <p>
-    Neste projeto final, você deverá criar uma aplicação Angular chamada
-    <strong>controle-estoque</strong>, com autenticação, controle de perfil de
-    usuário, consumo de APIs externas e organização por componentes e serviços.
-  </p>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
-  <h3>1. Branch do projeto</h3>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
 
-  <p>
-    Crie uma branch chamada <strong>projeto-final</strong> baseada na branch
-    <strong>main</strong>.
-  </p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
 
-  <p>Todo o desenvolvimento do projeto final deverá ser feito nessa branch.</p>
+  <body>
+    <header>
+      <h1>Projeto Final</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">
+        Instruções para desenvolvimento do projeto final de Angular
+      </h4>
+      <h4>Prazo: 20/05/2026</h4>
+    </header>
+    <section>
+      <h2>Projeto Final — Controle de Estoque</h2>
 
-  <h3>2. Criação da aplicação</h3>
+      <p>
+        Neste projeto final, você deverá criar uma aplicação Angular chamada
+        <strong>controle-estoque</strong>, com autenticação, controle de perfil
+        de usuário, consumo de APIs externas e organização por componentes e
+        serviços.
+      </p>
 
-  <p>
-    Dentro da branch <strong>projeto-final</strong>, crie uma nova aplicação
-    Angular chamada:
-  </p>
+      <h3>1. Branch do projeto</h3>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <p>
+        Crie uma branch chamada <strong>projeto-final</strong> baseada na branch
+        <strong>main</strong>.
+      </p>
+
+      <p>
+        Todo o desenvolvimento do projeto final deverá ser feito nessa branch.
+      </p>
+
+      <h3>2. Criação da aplicação</h3>
+
+      <p>
+        Dentro da branch <strong>projeto-final</strong>, crie uma nova aplicação
+        Angular chamada:
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">
 controle-estoque
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-  <p>
-    Após criar a aplicação, entre na pasta do projeto e rode a aplicação para
-    verificar se tudo foi criado corretamente.
-  </p>
+      <p>
+        Após criar a aplicação, entre na pasta do projeto e rode a aplicação
+        para verificar se tudo foi criado corretamente.
+      </p>
 
-  <h3>3. Componentes obrigatórios</h3>
+      <h3>3. Componentes obrigatórios</h3>
 
-  <p>A aplicação deverá conter os seguintes componentes:</p>
+      <p>A aplicação deverá conter os seguintes componentes:</p>
 
-  <ul>
-    <li><strong>login</strong></li>
-    <li><strong>dashboard</strong></li>
-    <li><strong>painel-adm</strong></li>
-    <li><strong>formulario-registro</strong></li>
-  </ul>
+      <ul>
+        <li><strong>login</strong></li>
+        <li><strong>dashboard</strong></li>
+        <li><strong>painel-adm</strong></li>
+        <li><strong>formulario-registro</strong></li>
+      </ul>
 
-  <p>
-    O componente <strong>formulario-registro</strong> deverá ser criado como
-    componente filho do componente <strong>painel-adm</strong>.
-  </p>
+      <p>
+        O componente <strong>formulario-registro</strong> deverá ser criado como
+        componente filho do componente <strong>painel-adm</strong>.
+      </p>
 
-  <p>
-    Isso significa que o formulário de registro não deve ser acessado
-    diretamente por uma rota própria. Ele deve aparecer dentro da tela do painel
-    administrativo.
-  </p>
+      <p>
+        Isso significa que o formulário de registro não deve ser acessado
+        diretamente por uma rota própria. Ele deve aparecer dentro da tela do
+        painel administrativo.
+      </p>
 
-  <h3>4. Tela de login</h3>
+      <h3>4. Tela de login</h3>
 
-  <p>
-    O componente <strong>login</strong> deverá conter um formulário para entrada
-    do usuário no sistema.
-  </p>
+      <p>
+        O componente <strong>login</strong> deverá conter um formulário para
+        entrada do usuário no sistema.
+      </p>
 
-  <p>Esse formulário deverá possuir, no mínimo:</p>
+      <p>Esse formulário deverá possuir, no mínimo:</p>
 
-  <ul>
-    <li>Campo de e-mail</li>
-    <li>Campo de senha</li>
-    <li>Botão para realizar login</li>
-    <li>Mensagem de erro caso o login falhe</li>
-  </ul>
+      <ul>
+        <li>Campo de e-mail</li>
+        <li>Campo de senha</li>
+        <li>Botão para realizar login</li>
+        <li>Mensagem de erro caso o login falhe</li>
+      </ul>
 
-  <p>
-    Ao enviar o formulário, o componente deverá chamar um serviço de
-    autenticação responsável por fazer a integração com a API de login.
-  </p>
+      <p>
+        Ao enviar o formulário, o componente deverá chamar um serviço de
+        autenticação responsável por fazer a integração com a API de login.
+      </p>
 
-  <p>A API de login que deverá ser utilizada é:</p>
+      <p>A API de login que deverá ser utilizada é:</p>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <div class="code-container">
+        <pre><code class="language-bash">
 https://projeto-node-step-git-main-fabios-projects-d2648344.vercel.app/api/auth/login
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-  <p>
-    Quando o login for realizado com sucesso, o token retornado pela API deverá
-    ser salvo no <strong>localStorage</strong>.
-  </p>
+      <p>
+        Quando o login for realizado com sucesso, o token retornado pela API
+        deverá ser salvo no <strong>localStorage</strong>.
+      </p>
 
-  <p>
-    Após o login, o usuário deverá ser redirecionado para a tela de
-    <strong>dashboard</strong>.
-  </p>
+      <p>
+        Após o login, o usuário deverá ser redirecionado para a tela de
+        <strong>dashboard</strong>.
+      </p>
 
-  <h3>5. Dashboard</h3>
+      <h3>5. Dashboard</h3>
 
-  <p>
-    O componente <strong>dashboard</strong> deverá ser responsável por exibir a
-    lista de produtos do sistema.
-  </p>
+      <p>
+        O componente <strong>dashboard</strong> deverá ser responsável por
+        exibir a lista de produtos do sistema.
+      </p>
 
-  <p>Essa lista deverá ser carregada por meio de uma integração com a API:</p>
+      <p>
+        Essa lista deverá ser carregada por meio de uma integração com a API:
+      </p>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <div class="code-container">
+        <pre><code class="language-bash">
 https://fakestoreapi.com/products
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-  <p>
-    A chamada para essa API deverá ser feita por meio de um serviço Angular
-    específico para produtos.
-  </p>
+      <p>
+        A chamada para essa API deverá ser feita por meio de um serviço Angular
+        específico para produtos.
+      </p>
 
-  <p>
-    O dashboard deverá exibir, no mínimo, as seguintes informações de cada
-    produto:
-  </p>
+      <p>
+        O dashboard deverá exibir, no mínimo, as seguintes informações de cada
+        produto:
+      </p>
 
-  <ul>
-    <li>Nome ou título do produto</li>
-    <li>Categoria</li>
-    <li>Preço</li>
-    <li>Imagem do produto</li>
-  </ul>
+      <ul>
+        <li>Nome ou título do produto</li>
+        <li>Categoria</li>
+        <li>Preço</li>
+        <li>Imagem do produto</li>
+      </ul>
 
-  <p>
-    Também é recomendado exibir uma mensagem de carregamento enquanto os
-    produtos estão sendo buscados.
-  </p>
+      <p>
+        Também é recomendado exibir uma mensagem de carregamento enquanto os
+        produtos estão sendo buscados.
+      </p>
 
-  <h3>6. Painel administrativo</h3>
+      <h3>6. Painel administrativo</h3>
 
-  <p>
-    O componente <strong>painel-adm</strong> deverá representar uma área
-    restrita da aplicação.
-  </p>
+      <p>
+        O componente <strong>painel-adm</strong> deverá representar uma área
+        restrita da aplicação.
+      </p>
 
-  <p>
-    Essa tela só deverá ser acessível por usuários com perfil de administrador.
-  </p>
+      <p>
+        Essa tela só deverá ser acessível por usuários com perfil de
+        administrador.
+      </p>
 
-  <p>
-    Dentro do painel administrativo deverá aparecer o componente filho
-    <strong>formulario-registro</strong>.
-  </p>
+      <p>
+        Dentro do painel administrativo deverá aparecer o componente filho
+        <strong>formulario-registro</strong>.
+      </p>
 
-  <p>
-    O painel administrativo poderá conter também um título, uma breve descrição
-    e um link ou botão para voltar ao dashboard.
-  </p>
+      <p>
+        O painel administrativo poderá conter também um título, uma breve
+        descrição e um link ou botão para voltar ao dashboard.
+      </p>
 
-  <h3>7. Formulário de registro</h3>
+      <h3>7. Formulário de registro</h3>
 
-  <p>
-    O componente <strong>formulario-registro</strong> deverá conter um
-    formulário para cadastro de novos usuários.
-  </p>
+      <p>
+        O componente <strong>formulario-registro</strong> deverá conter um
+        formulário para cadastro de novos usuários.
+      </p>
 
-  <p>Esse formulário deverá possuir, no mínimo:</p>
+      <p>Esse formulário deverá possuir, no mínimo:</p>
 
-  <ul>
-    <li>Campo de nome</li>
-    <li>Campo de e-mail</li>
-    <li>Campo de senha</li>
-    <li>Campo para seleção do perfil do usuário</li>
-    <li>Botão para registrar o usuário</li>
-    <li>Mensagem de sucesso ou erro após tentativa de cadastro</li>
-  </ul>
+      <ul>
+        <li>Campo de nome</li>
+        <li>Campo de e-mail</li>
+        <li>Campo de senha</li>
+        <li>Campo para seleção do perfil do usuário</li>
+        <li>Botão para registrar o usuário</li>
+        <li>Mensagem de sucesso ou erro após tentativa de cadastro</li>
+      </ul>
 
-  <p>
-    O campo de perfil deverá permitir escolher entre usuário comum e
-    administrador.
-  </p>
+      <p>
+        O campo de perfil deverá permitir escolher entre usuário comum e
+        administrador.
+      </p>
 
-  <p>
-    Ao enviar o formulário, o componente deverá chamar o serviço de autenticação
-    responsável por fazer a integração com a API de registro.
-  </p>
+      <p>
+        Ao enviar o formulário, o componente deverá chamar o serviço de
+        autenticação responsável por fazer a integração com a API de registro.
+      </p>
 
-  <p>A API de registro que deverá ser utilizada é:</p>
+      <p>A API de registro que deverá ser utilizada é:</p>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <div class="code-container">
+        <pre><code class="language-bash">
 https://projeto-node-step-git-main-fabios-projects-d2648344.vercel.app/api/auth/register
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-  <h3>8. Serviços obrigatórios</h3>
+      <h3>8. Serviços obrigatórios</h3>
 
-  <p>O projeto deverá possuir, no mínimo, dois serviços:</p>
+      <p>O projeto deverá possuir, no mínimo, dois serviços:</p>
 
-  <ul>
-    <li><strong>AuthService</strong></li>
-    <li><strong>ProdutoService</strong></li>
-  </ul>
+      <ul>
+        <li><strong>AuthService</strong></li>
+        <li><strong>ProdutoService</strong></li>
+      </ul>
 
-  <h4>AuthService</h4>
+      <h4>AuthService</h4>
 
-  <p>
-    O serviço de autenticação deverá centralizar toda a lógica relacionada ao
-    usuário.
-  </p>
+      <p>
+        O serviço de autenticação deverá centralizar toda a lógica relacionada
+        ao usuário.
+      </p>
 
-  <p>Ele deverá ser responsável por:</p>
+      <p>Ele deverá ser responsável por:</p>
 
-  <ul>
-    <li>Fazer login</li>
-    <li>Fazer registro de usuário</li>
-    <li>Salvar o token no localStorage</li>
-    <li>Buscar o token salvo</li>
-    <li>Remover o token em caso de logout</li>
-    <li>Buscar os dados do usuário logado</li>
-  </ul>
+      <ul>
+        <li>Fazer login</li>
+        <li>Fazer registro de usuário</li>
+        <li>Salvar o token no localStorage</li>
+        <li>Buscar o token salvo</li>
+        <li>Remover o token em caso de logout</li>
+        <li>Buscar os dados do usuário logado</li>
+      </ul>
 
-  <p>Para buscar os dados do usuário logado, deverá ser utilizada a API:</p>
+      <p>Para buscar os dados do usuário logado, deverá ser utilizada a API:</p>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <div class="code-container">
+        <pre><code class="language-bash">
 https://projeto-node-step-git-main-fabios-projects-d2648344.vercel.app/api/auth/me
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
 
-  <p>
-    Essa requisição deverá enviar o token salvo no
-    <strong>localStorage</strong>.
-  </p>
+      <p>
+        Essa requisição deverá enviar o token salvo no
+        <strong>localStorage</strong>.
+      </p>
 
-  <h4>ProdutoService</h4>
+      <h4>ProdutoService</h4>
 
-  <p>
-    O serviço de produtos deverá centralizar a chamada para buscar os produtos
-    da Fake Store API.
-  </p>
+      <p>
+        O serviço de produtos deverá centralizar a chamada para buscar os
+        produtos da Fake Store API.
+      </p>
 
-  <p>
-    O componente <strong>dashboard</strong> não deve chamar a API diretamente.
-    Ele deve chamar o serviço de produtos.
-  </p>
+      <p>
+        O componente <strong>dashboard</strong> não deve chamar a API
+        diretamente. Ele deve chamar o serviço de produtos.
+      </p>
 
-  <h3>9. Guardião de rota</h3>
+      <h3>9. Guardião de rota</h3>
 
-  <p>
-    O projeto deverá possuir um guardião de rota chamado
-    <strong>roleGuard</strong>.
-  </p>
+      <p>
+        O projeto deverá possuir um guardião de rota chamado
+        <strong>roleGuard</strong>.
+      </p>
 
-  <p>Esse guardião deverá proteger a rota do painel administrativo.</p>
+      <p>Esse guardião deverá proteger a rota do painel administrativo.</p>
 
-  <p>O <strong>roleGuard</strong> deverá:</p>
+      <p>O <strong>roleGuard</strong> deverá:</p>
 
-  <ul>
-    <li>Verificar se existe token salvo no localStorage</li>
-    <li>
-      Buscar os dados do usuário logado usando a rota <code>/auth/me</code>
-    </li>
-    <li>Verificar o perfil do usuário retornado pela API</li>
-    <li>Permitir acesso apenas se o usuário tiver perfil de administrador</li>
-    <li>Redirecionar usuários não autorizados</li>
-  </ul>
+      <ul>
+        <li>Verificar se existe token salvo no localStorage</li>
+        <li>
+          Buscar os dados do usuário logado usando a rota <code>/auth/me</code>
+        </li>
+        <li>Verificar o perfil do usuário retornado pela API</li>
+        <li>
+          Permitir acesso apenas se o usuário tiver perfil de administrador
+        </li>
+        <li>Redirecionar usuários não autorizados</li>
+      </ul>
 
-  <p>
-    Caso não exista token, o usuário deverá ser redirecionado para a tela de
-    login.
-  </p>
+      <p>
+        Caso não exista token, o usuário deverá ser redirecionado para a tela de
+        login.
+      </p>
 
-  <p>
-    Caso exista token, mas o usuário não seja administrador, ele deverá ser
-    redirecionado para o dashboard.
-  </p>
+      <p>
+        Caso exista token, mas o usuário não seja administrador, ele deverá ser
+        redirecionado para o dashboard.
+      </p>
 
-  <h3>10. Rotas obrigatórias</h3>
+      <h3>10. Rotas obrigatórias</h3>
 
-  <p>A aplicação deverá possuir as seguintes rotas:</p>
+      <p>A aplicação deverá possuir as seguintes rotas:</p>
 
-  <ul>
-    <li><code>/login</code> — tela de login</li>
-    <li><code>/dashboard</code> — tela com lista de produtos</li>
-    <li><code>/painel-adm</code> — tela administrativa protegida</li>
-  </ul>
+      <ul>
+        <li><code>/login</code> — tela de login</li>
+        <li><code>/dashboard</code> — tela com lista de produtos</li>
+        <li><code>/painel-adm</code> — tela administrativa protegida</li>
+      </ul>
 
-  <p>
-    A rota <code>/painel-adm</code> deverá usar o <strong>roleGuard</strong>.
-  </p>
+      <p>
+        A rota <code>/painel-adm</code> deverá usar o
+        <strong>roleGuard</strong>.
+      </p>
 
-  <p>
-    A rota inicial da aplicação poderá redirecionar o usuário para
-    <code>/login</code>.
-  </p>
+      <p>
+        A rota inicial da aplicação poderá redirecionar o usuário para
+        <code>/login</code>.
+      </p>
 
-  <h3>11. Requisitos técnicos obrigatórios</h3>
+      <h3>11. Requisitos técnicos obrigatórios</h3>
 
-  <ul>
-    <li>Usar Angular</li>
-    <li>Usar componentes standalone</li>
-    <li>Usar services para chamadas HTTP</li>
-    <li>Usar HttpClient</li>
-    <li>Usar localStorage para armazenar o token</li>
-    <li>Usar guardião de rota para controle de acesso</li>
-    <li>Usar rotas para navegação entre telas</li>
-    <li>Consumir a Fake Store API no dashboard</li>
-    <li>Consumir a API de login</li>
-    <li>Consumir a API de registro</li>
-    <li>Consumir a API de usuário logado no guardião</li>
-  </ul>
+      <ul>
+        <li>Usar Angular</li>
+        <li>Usar componentes standalone</li>
+        <li>Usar services para chamadas HTTP</li>
+        <li>Usar HttpClient</li>
+        <li>Usar localStorage para armazenar o token</li>
+        <li>Usar guardião de rota para controle de acesso</li>
+        <li>Usar rotas para navegação entre telas</li>
+        <li>Consumir a Fake Store API no dashboard</li>
+        <li>Consumir a API de login</li>
+        <li>Consumir a API de registro</li>
+        <li>Consumir a API de usuário logado no guardião</li>
+        <li>
+          Os formulários devem utilizar os componentes do Angular Material
+        </li>
+      </ul>
 
-  <h3>12. Fluxo esperado da aplicação</h3>
+      <h3>12. Fluxo esperado da aplicação</h3>
 
-  <ol>
-    <li>Usuário acessa a aplicação</li>
-    <li>Usuário é direcionado para a tela de login</li>
-    <li>Usuário informa e-mail e senha</li>
-    <li>Aplicação chama a API de login</li>
-    <li>API retorna um token</li>
-    <li>Token é salvo no localStorage</li>
-    <li>Usuário é redirecionado para o dashboard</li>
-    <li>Dashboard carrega produtos da Fake Store API</li>
-    <li>Usuário administrador pode acessar o painel administrativo</li>
-    <li>roleGuard verifica o token e o perfil do usuário</li>
-    <li>Painel administrativo exibe o formulário de registro</li>
-    <li>Administrador pode cadastrar novos usuários</li>
-  </ol>
+      <ol>
+        <li>Usuário acessa a aplicação</li>
+        <li>Usuário é direcionado para a tela de login</li>
+        <li>Usuário informa e-mail e senha</li>
+        <li>Aplicação chama a API de login</li>
+        <li>API retorna um token</li>
+        <li>Token é salvo no localStorage</li>
+        <li>Usuário é redirecionado para o dashboard</li>
+        <li>Dashboard carrega produtos da Fake Store API</li>
+        <li>Usuário administrador pode acessar o painel administrativo</li>
+        <li>roleGuard verifica o token e o perfil do usuário</li>
+        <li>Painel administrativo exibe o formulário de registro</li>
+        <li>Administrador pode cadastrar novos usuários</li>
+      </ol>
 
-  <h3>13. Entrega do projeto</h3>
+      <h3>13. Entrega do projeto</h3>
 
-  <p>
-    Ao finalizar o projeto, suba o código para o Git na branch
-    <strong>projeto-final</strong>.
-  </p>
+      <p>
+        Ao finalizar o projeto, suba o código para o Git na branch
+        <strong>projeto-final</strong>.
+      </p>
 
-  <p>O commit final deverá indicar que o projeto final foi concluído.</p>
+      <p>O commit final deverá indicar que o projeto final foi concluído.</p>
 
-  <div class="code-container">
-    <pre><code class="language-bash">
+      <div class="code-container">
+        <pre><code class="language-bash">
 git add .
 git commit -m "projeto final controle de estoque"
 git push
     </code></pre>
-    <button class="btn-copy">Copiar Código</button>
-  </div>
-</section>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+    </section>
+  </body>
+</html>
