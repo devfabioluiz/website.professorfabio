@@ -482,30 +482,87 @@ from fastapi import FastAPI, Depends
 from app.controllers import usuario_controller
 from app.schemas.usuario_schema import UsuarioCreate, Login
 from app.auth.auth import verificar_token
+from app.auth.api_key import validar_api_key
 
 app = FastAPI()
+
 
 @app.get("/")
 def home():
     return {"msg": "API rodando"}
 
+
 @app.get("/usuarios")
-def listar_usuarios():
+def listar_usuarios(
+    api_key: str = Depends(validar_api_key)
+):
     return usuario_controller.listar()
 
+
 @app.post("/cadastro")
-def cadastro(user: UsuarioCreate):
-    return usuario_controller.cadastrar(user.email, user.senha)
+def cadastro(
+    user: UsuarioCreate,
+    api_key: str = Depends(validar_api_key)
+):
+    return usuario_controller.cadastrar(
+        user.email,
+        user.senha
+    )
+
 
 @app.post("/login")
-def login(user: Login):
-    return usuario_controller.login(user.email, user.senha)
+def login(
+    user: Login,
+    api_key: str = Depends(validar_api_key)
+):
+    return usuario_controller.login(
+        user.email,
+        user.senha
+    )
+
 
 @app.get("/perfil")
-def perfil(token: str = Depends(verificar_token)):
+def perfil(
+    token: str = Depends(verificar_token),
+    api_key: str = Depends(validar_api_key)
+):
     return {"msg": "Usuário autenticado"}
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 - Criar arquivo para api-key</h3>
+
+        <p>Agora crie o arquivo <code>api_key.py</code> e insira o código abaixo:</p>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-python">
+from fastapi import Header, HTTPException
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
+
+
+def validar_api_key(x_api_key: str = Header(None)):
+    if not x_api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="Header X-API-Key é obrigatório"
+        )
+
+    if x_api_key != API_KEY:
+        raise HTTPException(
+            status_code=403,
+            detail="API Key inválida"
+        )
+
+    return x_api_key
+            </code>
+          </pre>
         </div>
 
         <h3>Passo 9 — Criar campo de email e senha no Supabase</h3>
@@ -536,18 +593,20 @@ uvicorn main:app --reload
 
         <div class="code-container">
           <pre><code class="language-bash">
-curl -X POST http://127.0.0.1:8000/cadastro \
--H "Content-Type: application/json" \
--d '{"email":"teste@email.com","senha":"123456"}'
+curl --location 'http://127.0.0.1:8000/cadastro' \
+--header 'Content-Type: application/json' \
+--header 'x-api-key: Step@2026' \
+--data-raw '{"email":"usuario-teste@email.com","senha":"123456"}'
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="code-container">
           <pre><code class="language-bash">
-curl -X POST http://127.0.0.1:8000/login \
--H "Content-Type: application/json" \
--d '{"email":"teste@email.com","senha":"123456"}'
+curl --location 'http://127.0.0.1:8000/login' \
+--header 'Content-Type: application/json' \
+--header 'x-api-key: Step@2026' \
+--data-raw '{"email":"usuario-teste@email.com","senha":"123456"}'
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -559,8 +618,10 @@ curl -X POST http://127.0.0.1:8000/login \
 
         <div class="code-container">
           <pre><code class="language-bash">
-curl -X GET http://127.0.0.1:8000/perfil \
--H "Authorization: Bearer SEU_TOKEN"
+curl --location 'http://127.0.0.1:8000/perfil' \
+--header 'Content-Type: application/json' \
+--header 'x-api-key: Step@2026' \
+--header 'Authorization: Bearer SEU_TOKEN_AQUI
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
