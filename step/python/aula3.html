@@ -448,8 +448,12 @@ def login(email, senha):
         <div class="code-container">
           <pre><code class="language-python">
 from fastapi import Header, HTTPException
+import os
+from dotenv import load_dotenv
 
-API_KEY = "123456"
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
 
 def verificar_token(authorization: str = Header(None)):
     if not authorization:
@@ -462,10 +466,20 @@ def verificar_token(authorization: str = Header(None)):
 
     return token
 
-def verificar_api_key(x_api_key: str = Header(None)):
-    if x_api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="API Key inválida")
+def validar_api_key(x_api_key: str = Header(None)):
+    if not x_api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="Header X-API-Key é obrigatório"
+        )
 
+    if x_api_key != API_KEY:
+        raise HTTPException(
+            status_code=403,
+            detail="API Key inválida"
+        )
+
+    return x_api_key
 </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -482,8 +496,7 @@ def verificar_api_key(x_api_key: str = Header(None)):
 from fastapi import FastAPI, Depends
 from app.controllers import usuario_controller
 from app.schemas.usuario_schema import UsuarioCreate, Login
-from app.auth.auth import verificar_token
-from app.auth.api_key import validar_api_key
+from app.auth.auth import verificar_token, validar_api_key
 
 app = FastAPI()
 
@@ -532,48 +545,14 @@ def perfil(
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 9 - Criar arquivo para api-key</h3>
-
-        <p>Agora crie o arquivo <code>api_key.py</code> dentro da pasta <code>auth</code> e insira o código abaixo:</p>
-
-        <div class="code-container">
-          <pre>
-            <code class="language-python">
-from fastapi import Header, HTTPException
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
-
-
-def validar_api_key(x_api_key: str = Header(None)):
-    if not x_api_key:
-        raise HTTPException(
-            status_code=400,
-            detail="Header X-API-Key é obrigatório"
-        )
-
-    if x_api_key != API_KEY:
-        raise HTTPException(
-            status_code=403,
-            detail="API Key inválida"
-        )
-
-    return x_api_key
-            </code>
-          </pre>
-        </div>
-
-        <h3>Passo 10 — Criar campo de email e senha no Supabase</h3>
+        <h3>Passo 9 — Criar campo de email e senha no Supabase</h3>
 
         <p>
           No Supabase, acesse a tabela <strong>usuarios</strong> e adicione os
           campos <strong>email</strong> e <strong>senha</strong>.
         </p>
 
-        <h3>Passo 11 - Rodar a aplicação e Teste com curl</h3>
+        <h3>Passo 10 - Rodar a aplicação e Teste com curl</h3>
 
         <p>No terminal execute o código abaixo:</p>
 
@@ -588,7 +567,7 @@ uvicorn main:app --reload
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 12 — Testando aplicação no Postman</h3>
+        <h3>Passo 11 — Testando aplicação no Postman</h3>
 
         <p>Agora teste no Postman usando esses curls abaixo:</p>
 
