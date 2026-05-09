@@ -128,7 +128,8 @@ class Login(BaseModel):
         <div class="code-container">
           <pre>
 <code class="language-bash">SECRET_KEY=sua_chave_secreta_jwt
-EXPIRATION_MINUTES=60</code></pre>
+EXPIRATION_MINUTES=60
+API_KEY=Step@2026</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -572,7 +573,7 @@ def validar_api_key(x_api_key: str = Header(None)):
           campos <strong>email</strong> e <strong>senha</strong>.
         </p>
 
-        <h3>Passo 10 - Rodar a aplicação e Teste com curl</h3>
+        <h3>Passo 11 - Rodar a aplicação e Teste com curl</h3>
 
         <p>No terminal execute o código abaixo:</p>
 
@@ -587,7 +588,7 @@ uvicorn main:app --reload
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 11 — Testando aplicação no Postman</h3>
+        <h3>Passo 12 — Testando aplicação no Postman</h3>
 
         <p>Agora teste no Postman usando esses curls abaixo:</p>
 
