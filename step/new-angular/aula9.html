@@ -1,0 +1,429 @@
+<!doctype html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9: Angular - RxJS e Operadores na Prática</title>
+
+
+<link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+
+  </head>
+
+  <body>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Angular</h4>
+      <h4 class="text-center">RxJS e Operadores na Prática</h4>
+    </header>
+
+
+<main class="container">
+  <section>
+    <h2>O que é RxJS?</h2>
+
+    <p>
+      RxJS é uma biblioteca para trabalhar com <strong>dados assíncronos</strong>
+      usando Observables.
+    </p>
+
+    <p>
+      Diferente de valores simples, um Observable pode emitir vários valores
+      ao longo do tempo.
+    </p>
+
+    <h3>Exemplo simples</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of } from 'rxjs';
+
+of(1, 2, 3).subscribe(console.log); </code></pre> </div>
+
+
+    <h2>Transformando dados com operadores</h2>
+
+    <p>
+      No mundo real, raramente usamos Observable puro. Usamos operadores.
+    </p>
+
+    <h3>map</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, map } from 'rxjs';
+
+of(1, 2, 3)
+.pipe(map(v => v * 10))
+.subscribe(console.log); </code></pre> </div>
+
+
+    <h3>filter</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, filter } from 'rxjs';
+
+of(1,2,3,4)
+.pipe(filter(v => v % 2 === 0))
+.subscribe(console.log); </code></pre> </div>
+
+
+    <h3>tap (debug)</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, tap } from 'rxjs';
+
+of(1,2,3)
+.pipe(tap(v => console.log('antes:', v)))
+.subscribe(); </code></pre> </div>
+
+
+    <h2>Controlando eventos (debounceTime)</h2>
+
+    <p>
+      Evita execuções excessivas (muito usado em busca).
+    </p>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+debounceTime(500) </code></pre> </div>
+
+
+    <h2>Chamadas HTTP com switchMap</h2>
+
+    <p>
+      O <strong>switchMap</strong> cancela chamadas anteriores e mantém apenas a última.
+    </p>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+switchMap(termo => this.http.get(`/api?q=${termo}`)) </code></pre> </div> </section>
+
+
+  <section>
+    <h2>Passo a Passo: Busca com RxJS (caso real)</h2>
+
+    <h3>Passo 0 — Criar branch</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+aula9-rxjs-operadores </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+git fetch
+git checkout -b aula9-rxjs-operadores </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 1 — Criar componente</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+ng g c pages/busca-produtos </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 2 — Criar input reativo</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { debounceTime, switchMap, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+selector: 'app-busca-produtos',
+templateUrl: './busca-produtos.html'
+})
+export class BuscaProdutos {
+campoBusca = new FormControl('');
+resultados: any[] = [];
+
+constructor(private http: HttpClient) {
+this.campoBusca.valueChanges
+.pipe(
+debounceTime(500),
+tap(valor => console.log('Buscando:', valor)),
+switchMap(valor =>
+this.http.get<any[]>(`https://fakestoreapi.com/products`)
+)
+)
+.subscribe(res => {
+this.resultados = res;
+});
+}
+} </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 3 — Template</h3>
+
+    <div class="code-container">
+      <pre><code class="language-markup">
+
+
+<h1>Busca de Produtos</h1>
+
+<input [formControl]="campoBusca" placeholder="Digite para buscar..." />
+
+<ul>
+<li *ngFor="let item of resultados">
+{{ item.title }}
+</li>
+</ul> </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 4 — Importar módulos</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'; </code></pre> </div>
+
+
+    <h3>Passo 5 — Rota</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+{
+path: 'rxjs-busca',
+loadComponent: () =>
+import('./pages/busca-produtos/busca-produtos')
+.then(m => m.BuscaProdutos)
+} </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 6 — Rodar</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+ng serve </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <p>Acesse:</p>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+http://localhost:4200/rxjs-busca </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>O que foi usado aqui?</h3>
+
+    <ul>
+      <li><strong>valueChanges</strong> → escuta input</li>
+      <li><strong>debounceTime</strong> → evita excesso</li>
+      <li><strong>tap</strong> → debug</li>
+      <li><strong>switchMap</strong> → chamada HTTP segura</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Resumo</h2>
+
+    <ul>
+      <li>RxJS é essencial para Angular</li>
+      <li>Observables representam fluxos de dados</li>
+      <li>Operadores transformam e controlam esses fluxos</li>
+      <li>debounceTime + switchMap = padrão de mercado</li>
+    </ul>
+  </section>
+
+  <section>
+  <h2>Signals vs RxJS — Quando usar cada um?</h2>
+
+  <p>
+    Com as versões mais recentes do Angular, surgiu uma dúvida muito comum:
+  </p>
+
+  <p>
+    <strong>Signals substituem RxJS?</strong>
+  </p>
+
+  <p><strong>Resposta curta: NÃO.</strong></p>
+
+  <p>
+    Eles resolvem problemas diferentes e, na prática, são usados juntos.
+  </p>
+
+  <h3>Diferença principal</h3>
+
+  <table>
+    <tr>
+      <th>Signals</th>
+      <th>RxJS</th>
+    </tr>
+    <tr>
+      <td>Estado local e reatividade simples</td>
+      <td>Fluxos assíncronos complexos</td>
+    </tr>
+    <tr>
+      <td>Mais simples e direto</td>
+      <td>Mais poderoso e flexível</td>
+    </tr>
+    <tr>
+      <td>Atualização automática</td>
+      <td>Baseado em streams</td>
+    </tr>
+  </table>
+
+  <h3>Quando usar Signals</h3>
+
+  <ul>
+    <li>Estado de UI (contador, toggle, loading)</li>
+    <li>Dados locais de um componente</li>
+    <li>Substituir variáveis simples</li>
+    <li>Reatividade direta sem complexidade</li>
+  </ul>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+contador = signal(0);
+
+incrementar() {
+  this.contador.update(v => v + 1);
+}
+    </code></pre>
+  </div>
+
+  <h3>Quando usar RxJS</h3>
+
+  <ul>
+    <li>Chamadas HTTP</li>
+    <li>Eventos (input, scroll, clique)</li>
+    <li>Fluxos assíncronos complexos</li>
+    <li>Combinar múltiplas fontes de dados</li>
+  </ul>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+this.campoBusca.valueChanges.pipe(
+  debounceTime(300),
+  switchMap(valor => this.http.get(`/api?q=${valor}`))
+);
+    </code></pre>
+  </div>
+
+  <h3>Comparação prática</h3>
+
+  <p>
+    Imagine um campo de busca:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Signal:</strong> guarda o valor atual
+    </li>
+    <li>
+      <strong>RxJS:</strong> controla o fluxo de busca (tempo, requisições, etc)
+    </li>
+  </ul>
+
+  <h3>Usando os dois juntos</h3>
+
+  <p>
+    Em aplicações reais, é comum usar RxJS para buscar dados e Signals para armazenar o estado.
+  </p>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+resultados = signal([]);
+
+this.campoBusca.valueChanges.pipe(
+  debounceTime(300),
+  switchMap(valor => this.http.get<any[]>(`/api?q=${valor}`))
+).subscribe(res => {
+  this.resultados.set(res);
+});
+    </code></pre>
+  </div>
+
+  <h3>Resumo prático</h3>
+
+  <ul>
+    <li>Signals = estado simples</li>
+    <li>RxJS = fluxo assíncrono</li>
+    <li>Signals não substituem RxJS</li>
+    <li>RxJS não substitui Signals</li>
+    <li>Os dois juntos = arquitetura moderna Angular</li>
+  </ul>
+</section>
+
+  <section>
+    <h2>Dever de Casa</h2>
+
+    <div class="question">
+      <h3>Criar busca com filtro local</h3>
+
+      <p>
+        Use <code>debounceTime</code>, <code>map</code> e
+        <code>filter</code> para filtrar uma lista local de produtos.
+      </p>
+
+      <button class="btn-gabarito">Ver gabarito</button>
+
+      <div class="gabarito">
+        <div class="code-container">
+          <pre><code class="language-typescript">
+
+
+this.campoBusca.valueChanges.pipe(
+debounceTime(300),
+map(valor => valor.toLowerCase()),
+map(valor =>
+this.lista.filter(item =>
+item.nome.toLowerCase().includes(valor)
+)
+)
+).subscribe(res => this.resultados = res); </code></pre> </div> </div> </div> </section>
+
+
+</main>
+
+<footer>
+  <button onclick="window.print()">Imprimir</button>
+</footer>
+
+  </body>
+</html>
