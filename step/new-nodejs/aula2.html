@@ -45,9 +45,7 @@
           um formulário ou buscamos dados de uma API, estamos utilizando HTTP.
         </p>
 
-        <p>
-          O HTTP funciona através de:
-        </p>
+        <p>O HTTP funciona através de:</p>
 
         <ul>
           <li><strong>Request (requisição)</strong></li>
@@ -61,9 +59,7 @@
           servidor. O servidor processa essa requisição e retorna uma resposta.
         </p>
 
-        <p>
-          Exemplo:
-        </p>
+        <p>Exemplo:</p>
 
         <ol>
           <li>O navegador acessa: <code>http://localhost:3000</code></li>
@@ -85,9 +81,7 @@
 
         <h3>Métodos HTTP</h3>
 
-        <p>
-          Os métodos HTTP definem qual ação desejamos executar no servidor.
-        </p>
+        <p>Os métodos HTTP definem qual ação desejamos executar no servidor.</p>
 
         <table border="1" cellpadding="10">
           <thead>
@@ -153,9 +147,7 @@ Host: localhost:3000
           devolver respostas.
         </p>
 
-        <p>
-          No backend, o servidor normalmente:
-        </p>
+        <p>No backend, o servidor normalmente:</p>
 
         <ul>
           <li>Recebe requisições HTTP</li>
@@ -168,9 +160,7 @@ Host: localhost:3000
 
         <h3>Servidor Node.js</h3>
 
-        <p>
-          O Node.js permite criar servidores utilizando JavaScript.
-        </p>
+        <p>O Node.js permite criar servidores utilizando JavaScript.</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -191,9 +181,7 @@ server.listen(3000, () => {
           </code></pre>
         </div>
 
-        <p>
-          Nesse exemplo:
-        </p>
+        <p>Nesse exemplo:</p>
 
         <ul>
           <li><code>createServer</code> cria o servidor</li>
@@ -204,13 +192,9 @@ server.listen(3000, () => {
 
         <h2>O que é REST API?</h2>
 
-        <p>
-          REST API é um padrão utilizado para construção de APIs.
-        </p>
+        <p>REST API é um padrão utilizado para construção de APIs.</p>
 
-        <p>
-          REST significa:
-        </p>
+        <p>REST significa:</p>
 
         <p>
           <strong>Representational State Transfer</strong>
@@ -260,9 +244,7 @@ server.listen(3000, () => {
 
         <h3>Resposta em JSON</h3>
 
-        <p>
-          APIs normalmente retornam dados em JSON.
-        </p>
+        <p>APIs normalmente retornam dados em JSON.</p>
 
         <div class="code-container">
           <pre><code class="language-json">
@@ -333,9 +315,7 @@ app.listen(3000, () => {
 
         <h2>Rotas no Express</h2>
 
-        <p>
-          Rotas definem os caminhos da aplicação.
-        </p>
+        <p>Rotas definem os caminhos da aplicação.</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -355,9 +335,7 @@ app.post('/usuarios', (req, res) => {
           Middlewares são funções executadas entre a requisição e a resposta.
         </p>
 
-        <p>
-          Eles podem:
-        </p>
+        <p>Eles podem:</p>
 
         <ul>
           <li>Validar dados</li>
@@ -378,9 +356,7 @@ app.use((req, res, next) => {
           </code></pre>
         </div>
 
-        <p>
-          O <code>next()</code> permite que a execução continue.
-        </p>
+        <p>O <code>next()</code> permite que a execução continue.</p>
 
         <!-- PASSO A PASSO -->
         <section>
@@ -388,13 +364,11 @@ app.use((req, res, next) => {
 
           <h3>Passo 0 — Criar a branch da aula</h3>
 
-          <p>
-            Crie uma nova branch:
-          </p>
+          <p>Crie uma nova branch:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">
-git switch -c aula2-http-rest-express
+git checkout -b aula2-http-rest-express
             </code></pre>
 
             <button class="btn-copy">Copiar Código</button>
@@ -432,9 +406,7 @@ type nul > index.js
 
           <h3>Passo 4 — Criar a API</h3>
 
-          <p>
-            Abra o arquivo <strong>index.js</strong> e adicione:
-          </p>
+          <p>Abra o arquivo <strong>index.js</strong> e adicione:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">
@@ -493,9 +465,7 @@ app.listen(3000, () => {
 
               <h3>🔹 express()</h3>
 
-              <p>
-                O <code>express()</code> cria nossa aplicação backend.
-              </p>
+              <p>O <code>express()</code> cria nossa aplicação backend.</p>
 
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -518,9 +488,7 @@ app.use(express.json());
 
               <h3>🔹 Rotas GET</h3>
 
-              <p>
-                Rotas GET são utilizadas para buscar informações.
-              </p>
+              <p>Rotas GET são utilizadas para buscar informações.</p>
 
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -536,9 +504,7 @@ app.get('/produtos', (req, res) => {
 
               <h3>🔹 Rotas POST</h3>
 
-              <p>
-                Rotas POST são utilizadas para criar novos dados.
-              </p>
+              <p>Rotas POST são utilizadas para criar novos dados.</p>
 
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -627,9 +593,7 @@ node index.js
 
           <h3>Passo 6 — Testar no navegador</h3>
 
-          <p>
-            Acesse:
-          </p>
+          <p>Acesse:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">
@@ -637,19 +601,13 @@ http://localhost:3000/produtos
             </code></pre>
           </div>
 
-          <p>
-            Você verá o JSON da API.
-          </p>
+          <p>Você verá o JSON da API.</p>
 
           <h3>Passo 7 — Testar requisição POST</h3>
 
-          <p>
-            Você pode usar o Insomnia ou Postman.
-          </p>
+          <p>Você pode usar o Insomnia ou Postman.</p>
 
-          <p>
-            URL:
-          </p>
+          <p>URL:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">
@@ -657,9 +615,7 @@ POST http://localhost:3000/produtos
             </code></pre>
           </div>
 
-          <p>
-            Body JSON:
-          </p>
+          <p>Body JSON:</p>
 
           <div class="code-container">
             <pre><code class="language-json">
@@ -672,9 +628,7 @@ POST http://localhost:3000/produtos
 
           <h3>Passo 8 — Criar rota DELETE</h3>
 
-          <p>
-            Adicione:
-          </p>
+          <p>Adicione:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">
@@ -706,13 +660,9 @@ app.delete('/produtos/:id', (req, res) => {
 
           <h3>Passo 9 — Entendendo req.params</h3>
 
-          <p>
-            O <code>req.params</code> captura parâmetros da URL.
-          </p>
+          <p>O <code>req.params</code> captura parâmetros da URL.</p>
 
-          <p>
-            Exemplo:
-          </p>
+          <p>Exemplo:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">
@@ -720,9 +670,7 @@ app.delete('/produtos/:id', (req, res) => {
             </code></pre>
           </div>
 
-          <p>
-            Nesse caso:
-          </p>
+          <p>Nesse caso:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">
@@ -730,9 +678,7 @@ req.params.id
             </code></pre>
           </div>
 
-          <p>
-            retornará:
-          </p>
+          <p>retornará:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">
@@ -766,13 +712,9 @@ git push
                 <strong>dever-de-casa-aula2</strong>.
               </p>
 
-              <p>
-                Dentro dela, desenvolva uma API REST utilizando Express.
-              </p>
+              <p>Dentro dela, desenvolva uma API REST utilizando Express.</p>
 
-              <p>
-                Sua API deve conter:
-              </p>
+              <p>Sua API deve conter:</p>
 
               <ul>
                 <li>Uma rota GET para listar usuários</li>
@@ -780,9 +722,7 @@ git push
                 <li>Uma rota DELETE para remover usuários</li>
               </ul>
 
-              <p>
-                O array de usuários deve conter:
-              </p>
+              <p>O array de usuários deve conter:</p>
 
               <ul>
                 <li>id</li>
@@ -790,9 +730,7 @@ git push
                 <li>email</li>
               </ul>
 
-              <p>
-                Utilize JSON nas respostas.
-              </p>
+              <p>Utilize JSON nas respostas.</p>
 
               <button class="btn-gabarito">Ver gabarito</button>
 
@@ -870,15 +808,11 @@ app.listen(3000, () => {
 
     <footer>
       <div class="button-container">
-        <button class="btn-print" onclick="window.print()">
-          Imprimir
-        </button>
+        <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
 
       <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">
-          Ir para o índice
-        </a>
+        <a class="btn-indice" href="../indice-step.html"> Ir para o índice </a>
       </div>
     </footer>
 
