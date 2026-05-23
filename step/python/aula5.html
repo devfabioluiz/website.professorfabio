@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula - Fundamentos Avançados de Python - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  
+    <style>
+      body.dark-mode {
+        background-color: #121212;
+        color: #f1f1f1;
+      }
+
+      body.dark-mode main,
+      body.dark-mode section,
+      body.dark-mode header,
+      body.dark-mode footer {
+        background-color: #1e1e1e;
+        color: #f1f1f1;
+      }
+
+      body.dark-mode table,
+      body.dark-mode th,
+      body.dark-mode td {
+        border-color: #555;
+      }
+
+      body.dark-mode th {
+        background-color: #333;
+      }
+
+      body.dark-mode pre,
+      body.dark-mode code {
+        background-color: #2b2b2b;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        z-index: 999;
+      }
+    </style>
+
+</head>
+
+  <body class='dark-mode'>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+      Alternar Tema
+    </button>
+
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Fundamentos Avançados de Python</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Objetivo da aula</h2>
+        <p>
+          Nesta aula, vamos estudar recursos importantes da linguagem Python que aparecem em projetos reais de backend,
+          automações, APIs, análise de dados e organização de código. O objetivo é compreender como tuplas, dicionários,
+          funções lambda, geradores, closures e decoradores ajudam a escrever códigos mais limpos, reutilizáveis e eficientes.
+        </p>
+
+        <h3>Conteúdos da aula</h3>
+        <ul>
+          <li>Tuplas</li>
+          <li>Dicionários</li>
+          <li>Funções Lambda</li>
+          <li>Geradores</li>
+          <li>Closures</li>
+          <li>Decoradores</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>1. Tuplas</h2>
+
+        <p>
+          Tuplas são coleções ordenadas e imutáveis. Isso significa que seus valores podem ser acessados por índice,
+          mas não podem ser alterados depois da criação.
+        </p>
+
+        <h3>Características das tuplas</h3>
+        <ul>
+          <li>São imutáveis</li>
+          <li>Permitem acesso por índice</li>
+          <li>Podem armazenar valores de tipos diferentes</li>
+          <li>São úteis para dados fixos</li>
+          <li>Podem ser desempacotadas em variáveis</li>
+        </ul>
+
+        <h3>Exemplo básico</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+coordenada = (10, 20)
+
+print(coordenada[0])
+print(coordenada[1])
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo com desempacotamento</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+usuario = ("Fabio", "Desenvolvedor", "Admin")
+
+nome, cargo, perfil = usuario
+
+print(nome)
+print(cargo)
+print(perfil)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: retorno de função</h3>
+        <p>
+          Uma função pode retornar uma tupla quando precisamos devolver mais de uma informação.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+def calcular_total(preco, quantidade):
+    total = preco * quantidade
+    mensagem = "Compra calculada com sucesso"
+    return total, mensagem
+
+valor, texto = calcular_total(50, 3)
+
+print(valor)
+print(texto)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Dicionários</h2>
+
+        <p>
+          Dicionários são estruturas que armazenam dados no formato chave e valor. Eles são muito usados para representar
+          objetos, usuários, produtos, respostas de APIs e configurações de sistemas.
+        </p>
+
+        <h3>Mapas associativos</h3>
+        <p>
+          Um dicionário funciona como um mapa associativo porque associa uma chave a um valor.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+usuario = {
+    "nome": "Fabio",
+    "idade": 32,
+    "profissao": "Desenvolvedor"
+}
+
+print(usuario["nome"])
+print(usuario["profissao"])
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tabelas hash</h3>
+        <p>
+          Internamente, dicionários utilizam uma estrutura baseada em tabela hash. Isso permite localizar valores de forma
+          rápida a partir de uma chave.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+usuarios = {
+    1: "Ana",
+    2: "Carlos",
+    3: "Marina"
+}
+
+print(usuarios[2])
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Métodos principais</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>get()</td>
+              <td>Busca um valor sem gerar erro caso a chave não exista</td>
+            </tr>
+            <tr>
+              <td>keys()</td>
+              <td>Retorna as chaves do dicionário</td>
+            </tr>
+            <tr>
+              <td>values()</td>
+              <td>Retorna os valores do dicionário</td>
+            </tr>
+            <tr>
+              <td>items()</td>
+              <td>Retorna pares de chave e valor</td>
+            </tr>
+            <tr>
+              <td>update()</td>
+              <td>Atualiza ou adiciona dados</td>
+            </tr>
+            <tr>
+              <td>pop()</td>
+              <td>Remove uma chave e retorna o valor removido</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo com métodos</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+produto = {
+    "nome": "Notebook",
+    "preco": 3500,
+    "estoque": 10
+}
+
+print(produto.get("nome"))
+print(produto.get("categoria", "Sem categoria"))
+
+produto.update({"preco": 3200, "categoria": "Informática"})
+
+for chave, valor in produto.items():
+    print(chave, valor)
+
+estoque_removido = produto.pop("estoque")
+print(estoque_removido)
+print(produto)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: controle de estoque</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+estoque = {
+    "notebook": 10,
+    "mouse": 25,
+    "teclado": 15
+}
+
+produto = "mouse"
+
+if estoque.get(produto, 0) > 0:
+    print("Produto disponível")
+else:
+    print("Produto indisponível")
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Funções Lambda</h2>
+
+        <p>
+          Funções lambda são funções anônimas, geralmente usadas para operações simples e rápidas. Elas são comuns em
+          ordenações, filtros e transformações de listas.
+        </p>
+
+        <h3>Função comum</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def dobro(numero):
+    return numero * 2
+
+print(dobro(5))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Mesma lógica com lambda</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+dobro = lambda numero: numero * 2
+
+print(dobro(5))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo com map()</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+numeros = [1, 2, 3, 4]
+
+dobrados = list(map(lambda numero: numero * 2, numeros))
+
+print(dobrados)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo com filter()</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+numeros = [1, 2, 3, 4, 5, 6]
+
+pares = list(filter(lambda numero: numero % 2 == 0, numeros))
+
+print(pares)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: ordenar usuários por idade</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+usuarios = [
+    {"nome": "Ana", "idade": 25},
+    {"nome": "Carlos", "idade": 20},
+    {"nome": "Marina", "idade": 30}
+]
+
+usuarios_ordenados = sorted(usuarios, key=lambda usuario: usuario["idade"])
+
+print(usuarios_ordenados)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Geradores</h2>
+
+        <p>
+          Geradores são funções que produzem valores sob demanda. Em vez de retornar todos os dados de uma vez, eles usam
+          a palavra-chave yield para entregar um valor por vez.
+        </p>
+
+        <h3>Exemplo básico</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def contador():
+    yield 1
+    yield 2
+    yield 3
+
+for numero in contador():
+    print(numero)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: gerar números até um limite</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def gerar_numeros(limite):
+    numero = 1
+
+    while numero <= limite:
+        yield numero
+        numero += 1
+
+for n in gerar_numeros(5):
+    print(n)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Comparação com lista</h3>
+        <p>
+          Uma lista cria todos os valores na memória. Um gerador cria os valores aos poucos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+lista = [numero for numero in range(1000000)]
+gerador = (numero for numero in range(1000000))
+
+print(type(lista))
+print(type(gerador))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Closures</h2>
+
+        <p>
+          Closure acontece quando uma função interna guarda acesso às variáveis da função externa, mesmo depois que a função
+          externa terminou sua execução.
+        </p>
+
+        <h3>Exemplo básico</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def criar_multiplicador(fator):
+    def multiplicar(numero):
+        return numero * fator
+
+    return multiplicar
+
+dobrar = criar_multiplicador(2)
+triplicar = criar_multiplicador(3)
+
+print(dobrar(10))
+print(triplicar(10))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: validador de senha</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def criar_validador(tamanho_minimo):
+    def validar(texto):
+        return len(texto) >= tamanho_minimo
+
+    return validar
+
+validar_senha = criar_validador(8)
+
+print(validar_senha("abc"))
+print(validar_senha("abc12345"))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Decoradores</h2>
+
+        <p>
+          Decoradores permitem modificar ou adicionar comportamento a uma função sem alterar diretamente o código principal
+          dela. Eles são muito usados em APIs, autenticação, logs, permissões e validações.
+        </p>
+
+        <h3>Exemplo básico</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def meu_decorador(funcao):
+    def wrapper():
+        print("Antes da função")
+        funcao()
+        print("Depois da função")
+
+    return wrapper
+
+@meu_decorador
+def saudacao():
+    print("Olá!")
+
+saudacao()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Decorador com argumentos</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def logar_execucao(funcao):
+    def wrapper(*args, **kwargs):
+        print(f"Executando a função {funcao.__name__}")
+        resultado = funcao(*args, **kwargs)
+        print("Execução finalizada")
+        return resultado
+
+    return wrapper
+
+@logar_execucao
+def somar(a, b):
+    return a + b
+
+resultado = somar(10, 5)
+print(resultado)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: verificar login</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+def exige_login(funcao):
+    def wrapper(usuario):
+        if not usuario.get("logado"):
+            return "Acesso negado"
+
+        return funcao(usuario)
+
+    return wrapper
+
+@exige_login
+def acessar_painel(usuario):
+    return f"Bem-vindo, {usuario['nome']}"
+
+usuario1 = {
+    "nome": "Fabio",
+    "logado": True
+}
+
+usuario2 = {
+    "nome": "Ana",
+    "logado": False
+}
+
+print(acessar_painel(usuario1))
+print(acessar_painel(usuario2))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Passo a passo: praticando os fundamentos avançados</h2>
+
+        <h3>Passo 0 - Versionamento com Git</h3>
+        <p>
+          Antes de iniciar os exercícios, vamos criar uma branch para registrar a aula no repositório.
+        </p>
+
+        <h3>Criar nova branch no GitHub</h3>
+        <ul>
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>No seletor de branch, clique em <strong>main</strong></li>
+          <li>Digite o nome da nova branch: <strong>aula2-fundamentos-avancados-python</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o projeto no VS Code</li>
+          <li>No terminal do VS Code, execute o comando abaixo</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Acessar a branch pelo VS Code</h3>
+        <ul>
+          <li>No canto inferior esquerdo do VS Code, clique no nome da branch atual</li>
+          <li>Selecione a branch <strong>aula2-fundamentos-avancados-python</strong></li>
+          <li>Confirme que o VS Code trocou para a branch correta</li>
+        </ul>
+
+        <h3>Passo 1 - Criar a pasta da aula</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir aula2_fundamentos_avancados
+cd aula2_fundamentos_avancados
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 - Criar o arquivo principal</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+type nul > main.py
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 - Criar exemplos por etapa</h3>
+        <ul>
+          <li>No arquivo <strong>main.py</strong>, primeiro crie exemplos de tuplas</li>
+          <li>Depois crie exemplos de dicionários</li>
+          <li>Depois teste funções lambda com listas</li>
+          <li>Depois crie um gerador usando yield</li>
+          <li>Depois crie uma closure</li>
+          <li>Por fim, crie um decorador simples</li>
+        </ul>
+
+        <h3>Passo 4 - Executar o arquivo</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+python main.py
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 - Salvar as alterações no Git</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+git status
+git add .
+git commit -m "Adiciona aula de fundamentos avancados de Python"
+git push origin aula2-fundamentos-avancados-python
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo da aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>Ideia principal</th>
+              <th>Exemplo de uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tupla</td>
+              <td>Coleção imutável</td>
+              <td>Coordenadas, retornos de função e dados fixos</td>
+            </tr>
+            <tr>
+              <td>Dicionário</td>
+              <td>Estrutura chave-valor</td>
+              <td>Usuários, produtos, configurações e respostas de API</td>
+            </tr>
+            <tr>
+              <td>Lambda</td>
+              <td>Função pequena e anônima</td>
+              <td>Ordenações, filtros e transformações</td>
+            </tr>
+            <tr>
+              <td>Gerador</td>
+              <td>Produz valores sob demanda</td>
+              <td>Leitura de arquivos grandes e sequências</td>
+            </tr>
+            <tr>
+              <td>Closure</td>
+              <td>Função que lembra contexto externo</td>
+              <td>Validações e funções configuráveis</td>
+            </tr>
+            <tr>
+              <td>Decorador</td>
+              <td>Modifica o comportamento de outra função</td>
+              <td>Logs, autenticação e permissões</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Crie uma tupla com os dados de um produto</h3>
+            <p>
+              A tupla deve conter nome, preço e quantidade. Depois, desempacote os valores em variáveis e exiba o total da compra.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+produto = ("Notebook", 3500, 2)
+
+nome, preco, quantidade = produto
+
+total = preco * quantidade
+
+print(f"Produto: {nome}")
+print(f"Total: R$ {total}")
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie um dicionário para representar um aluno</h3>
+            <p>
+              O dicionário deve ter nome, notas e situação. Calcule a média e informe se o aluno foi aprovado ou reprovado.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+aluno = {
+    "nome": "João",
+    "notas": [8, 7, 9]
+}
+
+media = sum(aluno["notas"]) / len(aluno["notas"])
+
+if media >= 7:
+    aluno["situacao"] = "Aprovado"
+else:
+    aluno["situacao"] = "Reprovado"
+
+print(aluno)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Use lambda para filtrar produtos caros</h3>
+            <p>
+              Crie uma lista de produtos e filtre apenas os produtos com preço maior que 1000.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+produtos = [
+    {"nome": "Mouse", "preco": 80},
+    {"nome": "Notebook", "preco": 3500},
+    {"nome": "Monitor", "preco": 1200}
+]
+
+produtos_caros = list(filter(lambda produto: produto["preco"] > 1000, produtos))
+
+print(produtos_caros)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Crie um gerador de números pares</h3>
+            <p>
+              O gerador deve receber um limite e retornar apenas números pares até esse limite.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+def gerar_pares(limite):
+    numero = 0
+
+    while numero <= limite:
+        yield numero
+        numero += 2
+
+for par in gerar_pares(10):
+    print(par)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>5. Crie uma closure para aplicar desconto</h3>
+            <p>
+              A função externa deve receber o percentual de desconto. A função interna deve receber o preço e retornar o valor com desconto.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+def criar_desconto(percentual):
+    def aplicar(preco):
+        return preco - (preco * percentual / 100)
+
+    return aplicar
+
+desconto_10 = criar_desconto(10)
+
+print(desconto_10(1000))
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>6. Crie um decorador de log</h3>
+            <p>
+              O decorador deve mostrar uma mensagem antes e depois da execução de uma função.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+def log(funcao):
+    def wrapper(*args, **kwargs):
+        print("Iniciando execução")
+        resultado = funcao(*args, **kwargs)
+        print("Finalizando execução")
+        return resultado
+
+    return wrapper
+
+@log
+def cadastrar_usuario(nome):
+    print(f"Usuário {nome} cadastrado")
+
+cadastrar_usuario("Fabio")
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="button-container">
+        <a class="btn-indice" href="../indice-step.html"> Ir para o índice </a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  
+    <script>
+      function toggleTheme() {
+        document.body.classList.toggle("dark-mode");
+      }
+    </script>
+
+</body>
+</html>
