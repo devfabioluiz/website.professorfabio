@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 6: Django Avançado — ORM, Admin, Autenticação, Sessões, Templates e Migrations</title>
+    <title>Aula 6: Django ORM, Admin e Autenticação</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
     <style>
       table {
         border-collapse: collapse;
@@ -33,89 +34,133 @@
   <body>
     <header>
       <h1>aula 6</h1>
-      <h4 class="text-center">Django Avançado — Ferramentas do dia a dia</h4>
-      <h4 class="text-center">ORM, Admin, Login, Permissões, Sessões, Templates e Migrations</h4>
+      <h4 class="text-center">Django ORM, Admin e Autenticação</h4>
+      <h4 class="text-center">Manipulando banco de dados, painel administrativo e sistema de login</h4>
     </header>
 
     <main class="container">
       <section>
-
-        <h2>Introdução</h2>
+        <h2>O que é ORM?</h2>
         <p>
-          Nesta aula vamos explorar os recursos mais importantes que você usará
-          <strong>diariamente</strong> ao desenvolver com Django. Diferente de
-          frameworks onde você escreve SQL manualmente, gerencia login do zero
-          ou cria painéis administrativos sozinho, o Django já vem com tudo
-          isso pronto — basta saber usar.
-        </p>
-        <p>
-          Continuaremos a partir do projeto criado na Aula 4
-          (<code>projeto_django_mvt</code>). Se você não tiver o projeto,
-          volte na Aula 4 e execute os passos iniciais.
+          <strong>ORM (Object-Relational Mapping)</strong> é uma técnica que permite
+          manipular bancos de dados relacionais usando classes e objetos da
+          linguagem de programação, em vez de escrever SQL diretamente.
         </p>
 
-        <!-- ============================================================ -->
-        <!-- PASSO 0 — BRANCH -->
-        <!-- ============================================================ -->
-        <h2>Passo a passo</h2>
+        <p>
+          Em outras palavras, o ORM traduz automaticamente:
+        </p>
 
-        <h3>Passo 0 — Criar uma branch no GitHub</h3>
         <ul>
-          <li>Acesse o repositório no GitHub</li>
-          <li>Clique no seletor de branch (main)</li>
           <li>
-            Digite o nome <b>aula6-django-avancado</b> na opção "Find or
-            create a branch..."
+            <strong>Classe Python</strong> → <strong>Tabela no banco de dados</strong>
           </li>
-          <li>No VS Code, abra o terminal e execute:</li>
+          <li>
+            <strong>Atributo da classe</strong> → <strong>Coluna da tabela</strong>
+          </li>
+          <li>
+            <strong>Objeto (instância)</strong> → <strong>Linha (registro) da tabela</strong>
+          </li>
+          <li>
+            <strong>Métodos como <code>.save()</code>, <code>.filter()</code></strong> →
+            <strong>Comandos SQL como INSERT, SELECT</strong>
+          </li>
         </ul>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-git fetch
-git checkout aula6-django-avancado
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+        <h3>Vantagens do ORM</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Vantagem</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Produtividade</td>
+              <td>Escreve menos código, mais rápido</td>
+            </tr>
+            <tr>
+              <td>Segurança</td>
+              <td>Proteção automática contra SQL Injection</td>
+            </tr>
+            <tr>
+              <td>Portabilidade</td>
+              <td>Troca de banco (SQLite → PostgreSQL) sem reescrever queries</td>
+            </tr>
+            <tr>
+              <td>Manutenibilidade</td>
+              <td>Código Python puro, mais fácil de entender e manter</td>
+            </tr>
+            <tr>
+              <td>Abstração</td>
+              <td>Você pensa em objetos, não em tabelas e joins</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <!-- ============================================================ -->
-        <!-- PASSO 1 — ORM -->
-        <!-- ============================================================ -->
-        <h3>Passo 1 — ORM: Object-Relational Mapping</h3>
-        <p>
-          <strong>ORM</strong> é a ponte entre o mundo orientado a objetos
-          (Python) e o mundo relacional (banco de dados SQL). Em vez de escrever
-          <code>SELECT * FROM usuarios WHERE nome = 'João'</code>, você escreve
-          <code>Usuario.objects.filter(nome='João')</code>.
-        </p>
-        <p>
-          O Django traduz automaticamente suas chamadas Python para SQL. Isso
-          significa que o mesmo código funciona com SQLite, PostgreSQL, MySQL,
-          Oracle, etc. — sem mudar nada.
-        </p>
+        <h3>Comparação: SQL puro vs ORM (Django)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Operação</th>
+              <th>SQL Puro</th>
+              <th>Django ORM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Criar tabela</td>
+              <td><code>CREATE TABLE produto (...)</code></td>
+              <td>Define a classe <code>class Produto(models.Model)</code></td>
+            </tr>
+            <tr>
+              <td>Inserir registro</td>
+              <td><code>INSERT INTO produto VALUES (...)</code></td>
+              <td><code>Produto.objects.create(...)</code></td>
+            </tr>
+            <tr>
+              <td>Buscar todos</td>
+              <td><code>SELECT * FROM produto</code></td>
+              <td><code>Produto.objects.all()</code></td>
+            </tr>
+            <tr>
+              <td>Filtrar</td>
+              <td><code>SELECT * FROM produto WHERE preco > 100</code></td>
+              <td><code>Produto.objects.filter(preco__gt=100)</code></td>
+            </tr>
+            <tr>
+              <td>Atualizar</td>
+              <td><code>UPDATE produto SET preco=50 WHERE id=1</code></td>
+              <td><code>produto.preco = 50; produto.save()</code></td>
+            </tr>
+            <tr>
+              <td>Deletar</td>
+              <td><code>DELETE FROM produto WHERE id=1</code></td>
+              <td><code>produto.delete()</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-        <h4>1.1 — O Model (tabela no banco)</h4>
+      <section>
+        <h2>Django ORM na prática</h2>
+
+        <h3>1. Definindo Models</h3>
         <p>
-          Vamos criar um model mais completo no arquivo
-          <code>usuarios/models.py</code>. Apague o conteúdo antigo e coloque:
+          Um Model é uma classe Python que herda de <code>models.Model</code>.
+          Cada atributo da classe representa uma coluna no banco.
         </p>
 
         <div class="code-container">
           <pre><code class="language-python">
 from django.db import models
 
-class Categoria(models.Model):
-    nome = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nome
-
-class Usuario(models.Model):
+class Produto(models.Model):
     nome = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    idade = models.IntegerField(default=0)
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    estoque = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -124,1108 +169,980 @@ class Usuario(models.Model):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p><strong>Explicação dos campos:</strong></p>
-        <ul>
-          <li><code>CharField(max_length=50)</code> — texto curto (VARCHAR no SQL)</li>
-          <li><code>EmailField(unique=True)</code> — e-mail com validação e índice único</li>
-          <li><code>IntegerField(default=0)</code> — número inteiro com valor padrão</li>
-          <li><code>BooleanField(default=True)</code> — verdadeiro/falso</li>
-          <li><code>ForeignKey(Categoria, on_delete=models.CASCADE)</code> — relacionamento 1:N (um Usuario pertence a uma Categoria)</li>
-          <li><code>DateTimeField(auto_now_add=True)</code> — data/hora preenchida automaticamente na criação</li>
-        </ul>
-
-        <h4>1.2 — CRUD completo com o ORM (shell do Django)</h4>
-        <p>
-          O <strong>shell</strong> do Django é um terminal interativo onde você
-          testa comandos diretamente. É a ferramenta ideal para aprender ORM.
-          Abra um terminal na pasta do projeto e execute:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-venv\Scripts\activate
-cd projeto_django_mvt
-python manage.py shell
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>Dentro do shell, teste cada operação:</p>
-
-        <div class="code-container">
-          <pre><code class="language-python">
-from usuarios.models import Usuario, Categoria
-
-# ========== CREATE (criar) ==========
-# Criando uma categoria
-cat_dev = Categoria.objects.create(nome="Desenvolvedores")
-cat_design = Categoria.objects.create(nome="Designers")
-
-# Criando usuários
-Usuario.objects.create(nome="Ana", email="ana@email.com", idade=25, categoria=cat_dev)
-Usuario.objects.create(nome="Bruno", email="bruno@email.com", idade=30, categoria=cat_dev)
-Usuario.objects.create(nome="Carla", email="carla@email.com", idade=22, categoria=cat_design)
-Usuario.objects.create(nome="Diego", email="diego@email.com", idade=35, categoria=cat_design)
-Usuario.objects.create(nome="Eduarda", email="eduarda@email.com", idade=28, categoria=cat_dev)
-
-# ========== READ (ler / consultar) ==========
-
-# all() — todos os registros
-todos = Usuario.objects.all()
-print(todos)   # QuerySet com todos os usuários
-
-# get() — um único registro (lança erro se não encontrar)
-ana = Usuario.objects.get(nome="Ana")
-print(ana.email)   # ana@email.com
-
-# filter() — filtra com condições
-devs = Usuario.objects.filter(categoria__nome="Desenvolvedores")
-print(devs)   # Ana, Bruno, Eduarda
-
-# exclude() — exclui da consulta
-nao_devs = Usuario.objects.exclude(categoria__nome="Desenvolvedores")
-print(nao_devs)   # Carla, Diego
-
-# first() e last() — primeiro e último registro
-primeiro = Usuario.objects.first()
-ultimo = Usuario.objects.last()
-
-# count() — conta registros
-total = Usuario.objects.count()
-print(total)   # 5
-
-# exists() — verifica se existe
-tem_admin = Usuario.objects.filter(nome="Admin").exists()
-print(tem_admin)   # False
-
-# order_by() — ordena
-por_idade = Usuario.objects.all().order_by('idade')   # crescente
-por_idade_desc = Usuario.objects.all().order_by('-idade')   # decrescente
-
-# values() — retorna dicionários (mais leve, sem objetos)
-nomes = Usuario.objects.values('nome', 'email')
-for item in nomes:
-    print(item)   # {'nome': 'Ana', 'email': 'ana@email.com'}
-
-# values_list() — retorna tuplas
-lista_plana = Usuario.objects.values_list('nome', flat=True)
-print(list(lista_plana))   # ['Ana', 'Bruno', 'Carla', 'Diego', 'Eduarda']
-
-# ========== UPDATE (atualizar) ==========
-
-# Método 1: instância
-ana = Usuario.objects.get(nome="Ana")
-ana.idade = 26
-ana.save()
-
-# Método 2: update() no QuerySet (mais eficiente para vários)
-Usuario.objects.filter(categoria__nome="Designers").update(idade=40)
-
-# ========== DELETE (deletar) ==========
-
-# Método 1: instância
-diego = Usuario.objects.get(nome="Diego")
-diego.delete()
-
-# Método 2: delete() no QuerySet
-Usuario.objects.filter(idade__gt=30).delete()   # deleta quem tem idade > 30
-
-# ========== FILTROS AVANÇADOS ==========
-
-# __gt (greater than / maior que)
-maiores = Usuario.objects.filter(idade__gt=25)
-
-# __gte (greater than or equal / maior ou igual)
-maiores_ou_25 = Usuario.objects.filter(idade__gte=25)
-
-# __lt (less than / menor que)
-menores = Usuario.objects.filter(idade__lt=25)
-
-# __lte (less than or equal / menor ou igual)
-menores_ou_25 = Usuario.objects.filter(idade__lte=25)
-
-# __contains (contém — case sensitive)
-contem_na = Usuario.objects.filter(nome__contains="na")
-
-# __icontains (contém — case insensitive)
-contem_na_i = Usuario.objects.filter(nome__icontains="NA")
-
-# __startswith / __endswith (começa com / termina com)
-comeca_com_a = Usuario.objects.filter(nome__startswith="A")
-
-# __in (está na lista)
-ids = [1, 3, 5]
-usuarios_por_id = Usuario.objects.filter(id__in=ids)
-
-# __range (intervalo — funciona com datas e números)
-entre_20_e_30 = Usuario.objects.filter(idade__range=(20, 30))
-
-# _______________ AGREGACOES _______________
-
-from django.db.models import Count, Avg, Max, Min, Sum
-
-# Quantos usuários por categoria
-por_categoria = Categoria.objects.annotate(total=Count('usuario'))
-for cat in por_categoria:
-    print(f"{cat.nome}: {cat.total} usuários")
-
-# Média de idade
-media = Usuario.objects.aggregate(media_idade=Avg('idade'))
-print(media)   # {'media_idade': 28.0}
-
-# idade máxima, mínima e soma
-estatisticas = Usuario.objects.aggregate(
-    maximo=Max('idade'),
-    minimo=Min('idade'),
-    soma=Sum('idade')
-)
-print(estatisticas)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>1.3 — ORM no dia a dia (boas práticas)</h4>
+        <h3>2. Principais tipos de campos</h3>
         <table>
           <thead>
-            <tr><th>Situação</th><th>Use</th><th>Evite</th></tr>
+            <tr>
+              <th>Tipo de Campo</th>
+              <th>Uso</th>
+              <th>Equivalente SQL</th>
+            </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Buscar 1 objeto</td>
-              <td><code>.get(pk=1)</code></td>
-              <td><code>.filter(pk=1)[0]</code></td>
-            </tr>
-            <tr>
-              <td>Saber se existe</td>
-              <td><code>.filter(...).exists()</code></td>
-              <td><code>if .filter(...):</code></td>
-            </tr>
-            <tr>
-              <td>Atualizar vários</td>
-              <td><code>.filter(...).update(...)</code></td>
-              <td>loop + <code>.save()</code></td>
-            </tr>
-            <tr>
-              <td>Pegar só um campo</td>
-              <td><code>.values_list('nome', flat=True)</code></td>
-              <td><code>.all()</code> + list comprehension</td>
-            </tr>
-            <tr>
-              <td>Contar registros</td>
-              <td><code>.count()</code></td>
-              <td><code>len(.all())</code></td>
-            </tr>
-            <tr>
-              <td>Pegar ou criar</td>
-              <td><code>.get_or_create(...)</code></td>
-              <td>try/except manual</td>
-            </tr>
+            <tr><td><code>CharField(max_length=N)</code></td><td>Texto curto (nome, título)</td><td>VARCHAR(N)</td></tr>
+            <tr><td><code>TextField()</code></td><td>Texto longo (descrição, conteúdo)</td><td>TEXT</td></tr>
+            <tr><td><code>IntegerField()</code></td><td>Números inteiros</td><td>INTEGER</td></tr>
+            <tr><td><code>DecimalField(max_digits, decimal_places)</code></td><td>Valores monetários</td><td>DECIMAL</td></tr>
+            <tr><td><code>BooleanField()</code></td><td>Verdadeiro/Falso</td><td>BOOLEAN</td></tr>
+            <tr><td><code>DateTimeField(auto_now_add=True)</code></td><td>Data/hora de criação automática</td><td>DATETIME</td></tr>
+            <tr><td><code>DateField()</code></td><td>Apenas data</td><td>DATE</td></tr>
+            <tr><td><code>EmailField()</code></td><td>E-mail com validação</td><td>VARCHAR</td></tr>
+            <tr><td><code>ForeignKey(Model, on_delete=...)</code></td><td>Relacionamento 1:N</td><td>FOREIGN KEY</td></tr>
+            <tr><td><code>ManyToManyField(Model)</code></td><td>Relacionamento N:N</td><td>Tabela intermediária</td></tr>
           </tbody>
         </table>
 
-        <!-- ============================================================ -->
-        <!-- PASSO 2 — ADMIN -->
-        <!-- ============================================================ -->
-        <h3>Passo 2 — Admin do Django</h3>
+        <h3>3. Migrações</h3>
         <p>
-          O <strong>Django Admin</strong> é um painel administrativo completo
-          gerado automaticamente. Ele lê seus models e cria telas de CRUD com
-          filtros, buscas, ordenação e paginação — tudo sem você escrever HTML.
-          No mercado de trabalho, usamos o Admin para:
+          Migrações são arquivos gerados pelo Django que contêm as instruções
+          para criar ou alterar tabelas no banco. Elas são a "ponte" entre o
+          Model Python e o banco de dados real.
         </p>
-        <ul>
-          <li>Gerenciar dados internamente (equipe de suporte, por exemplo)</li>
-          <li>Fazer testes manuais durante o desenvolvimento</li>
-          <li>Prototipar rapidamente um backoffice</li>
-          <li>Visualizar dados sem abrir o banco diretamente</li>
-        </ul>
+        <p><strong>Fluxo de migração:</strong></p>
+        <ol>
+          <li>Você cria ou modifica um <code>Model</code> em <code>models.py</code></li>
+          <li>Executa <code>python manage.py makemigrations</code> → gera o arquivo de migração</li>
+          <li>Executa <code>python manage.py migrate</code> → aplica as mudanças no banco</li>
+        </ol>
 
-        <h4>2.1 — Registrar models no Admin</h4>
-        <p>Arquivo: <code>usuarios/admin.py</code></p>
-
+        <h3>4. CRUD completo com Django ORM</h3>
+        <p><strong>CREATE (Criar)</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
+# Opção 1: create()
+Produto.objects.create(nome="Notebook", preco=3500.00, estoque=10)
+
+# Opção 2: instanciar + save()
+produto = Produto(nome="Mouse", preco=80.00, estoque=50)
+produto.save()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>READ (Ler)</strong></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+# Buscar todos
+todos = Produto.objects.all()
+
+# Buscar um pelo id (erro se não existir)
+produto = Produto.objects.get(id=1)
+
+# Buscar um pelo id (sem erro se não existir)
+from django.shortcuts import get_object_or_404
+produto = get_object_or_404(Produto, id=1)
+
+# Filtrar com condições
+caros = Produto.objects.filter(preco__gt=100)
+ativos = Produto.objects.filter(ativo=True)
+
+# Ordenar
+ordenados = Produto.objects.all().order_by('nome')
+ordenados_desc = Produto.objects.all().order_by('-preco')
+
+# Limitar resultados
+primeiros_5 = Produto.objects.all()[:5]
+
+# Buscar pelo primeiro que atende a condição
+primeiro = Produto.objects.filter(ativo=True).first()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>Lookups (filtros avançados)</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Lookup</th>
+              <th>Significado</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>__exact</code></td><td>Igual a</td><td><code>nome__exact="Notebook"</code></td></tr>
+            <tr><td><code>__iexact</code></td><td>Igual a (case insensitive)</td><td><code>nome__iexact="notebook"</code></td></tr>
+            <tr><td><code>__contains</code></td><td>Contém</td><td><code>nome__contains="book"</code></td></tr>
+            <tr><td><code>__icontains</code></td><td>Contém (case insensitive)</td><td><code>nome__icontains="NOTE"</code></td></tr>
+            <tr><td><code>__gt</code></td><td>Maior que</td><td><code>preco__gt=100</code></td></tr>
+            <tr><td><code>__gte</code></td><td>Maior ou igual a</td><td><code>preco__gte=100</code></td></tr>
+            <tr><td><code>__lt</code></td><td>Menor que</td><td><code>preco__lt=500</code></td></tr>
+            <tr><td><code>__lte</code></td><td>Menor ou igual a</td><td><code>preco__lte=500</code></td></tr>
+            <tr><td><code>__startswith</code></td><td>Começa com</td><td><code>nome__startswith="Note"</code></td></tr>
+            <tr><td><code>__in</code></td><td>Está na lista</td><td><code>id__in=[1, 2, 3]</code></td></tr>
+            <tr><td><code>__range</code></td><td>Entre dois valores</td><td><code>preco__range=(100, 500)</code></td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>UPDATE (Atualizar)</strong></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+# Atualizar um registro específico
+produto = Produto.objects.get(id=1)
+produto.preco = 3200.00
+produto.estoque = 8
+produto.save()
+
+# Atualizar vários de uma vez
+Produto.objects.filter(ativo=False).update(estoque=0)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>DELETE (Deletar)</strong></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+# Deletar um registro
+produto = Produto.objects.get(id=1)
+produto.delete()
+
+# Deletar vários de uma vez
+Produto.objects.filter(ativo=False).delete()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5. Relacionamentos entre Models</h3>
+        <p>
+          O ORM do Django permite criar relacionamentos entre tabelas de forma
+          simples, usando campos especiais.
+        </p>
+
+        <p><strong>ForeignKey (1:N — Um para Muitos)</strong></p>
+        <p>
+          Exemplo: Uma <strong>Categoria</strong> pode ter vários
+          <strong>Produtos</strong>, mas cada Produto pertence a apenas uma Categoria.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-python">
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class Produto(models.Model):
+    nome = models.CharField(max_length=100)
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nome
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O parâmetro <code>on_delete</code> define o que acontece quando o
+          registro pai é deletado:
+        </p>
+        <ul>
+          <li><code>models.CASCADE</code> — deleta os filhos junto com o pai</li>
+          <li><code>models.PROTECT</code> — impede deletar o pai se houver filhos</li>
+          <li><code>models.SET_NULL</code> — define o campo como NULL nos filhos</li>
+          <li><code>models.SET_DEFAULT</code> — define o valor padrão nos filhos</li>
+        </ul>
+
+        <p><strong>ManyToManyField (N:N — Muitos para Muitos)</strong></p>
+        <p>
+          Exemplo: Um <strong>Aluno</strong> pode se matricular em várias
+          <strong>Turmas</strong>, e cada Turma pode ter vários Alunos.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-python">
+class Aluno(models.Model):
+    nome = models.CharField(max_length=100)
+
+class Turma(models.Model):
+    nome = models.CharField(max_length=100)
+    alunos = models.ManyToManyField(Aluno)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Para usar o relacionamento ManyToMany:</p>
+        <div class="code-container">
+          <pre><code class="language-python">
+turma = Turma.objects.get(id=1)
+aluno = Aluno.objects.get(id=1)
+
+turma.alunos.add(aluno)            # adiciona aluno na turma
+turma.alunos.all()                 # lista todos os alunos da turma
+aluno.turma_set.all()              # lista todas as turmas do aluno
+turma.alunos.remove(aluno)         # remove aluno da turma
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Django Admin</h2>
+        <p>
+          O Django Admin é um painel administrativo gerado automaticamente que
+          permite gerenciar os dados da aplicação por meio de uma interface web.
+          Ele é um dos recursos mais poderosos do Django, pois com poucas linhas
+          de código você tem um CRUD visual completo para seus Models.
+        </p>
+
+        <h3>Para que serve o Admin?</h3>
+        <ul>
+          <li>Cadastrar, editar e excluir registros do banco de dados</li>
+          <li>Gerenciar usuários e permissões</li>
+          <li>Visualizar dados de forma organizada com filtros e buscas</li>
+          <li>Administrar o conteúdo do site sem precisar escrever queries SQL</li>
+          <li>Prototipar rapidamente a administração de dados</li>
+        </ul>
+
+        <h3>Registrando Models no Admin</h3>
+        <p>
+          Para que um Model apareça no painel Admin, é necessário registrá-lo
+          no arquivo <code>admin.py</code> do seu app.
+        </p>
+
+        <p><strong>Registro simples:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+# admin.py
 from django.contrib import admin
-from .models import Usuario, Categoria
+from .models import Produto, Categoria
 
-# Registro simples
+admin.site.register(Produto)
 admin.site.register(Categoria)
-
-# Registro com personalização
-@admin.register(Usuario)
-class UsuarioAdmin(admin.ModelAdmin):
-    # Colunas na listagem
-    list_display = ('id', 'nome', 'email', 'idade', 'ativo', 'categoria', 'criado_em')
-
-    # Filtros laterais
-    list_filter = ('ativo', 'categoria', 'criado_em')
-
-    # Campo de busca
-    search_fields = ('nome', 'email')
-
-    # Campos clicáveis na listagem
-    list_display_links = ('id', 'nome')
-
-    # Paginação: quantos itens por página
-    list_per_page = 20
-
-    # Ordenação padrão
-    ordering = ('-criado_em',)
-
-    # Campos somente leitura (não editáveis)
-    readonly_fields = ('criado_em',)
-
-    # Organizar campos no formulário de edição
-    fieldsets = (
-        ('Dados Pessoais', {
-            'fields': ('nome', 'email', 'idade', 'categoria')
-        }),
-        ('Status', {
-            'fields': ('ativo', 'criado_em')
-        }),
-    )
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>2.2 — Criar superusuário para acessar o Admin</h4>
-        <p>No terminal, com o venv ativado:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py createsuperuser
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>Preencha os campos (nome de usuário, e-mail, senha). Depois rode o servidor e acesse:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py runserver
-# Acesse: http://localhost:8000/admin/
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p><strong>O que você verá:</strong></p>
-        <ul>
-          <li>Tela de login do admin</li>
-          <li>Dashboard com os apps registrados (Usuarios)</li>
-          <li>Ao clicar em "Usuários": tabela com busca, filtros laterais e paginação</li>
-          <li>Botão "Adicionar usuário" no canto superior direito</li>
-        </ul>
-
-        <h4>2.3 — Personalizações extras úteis</h4>
+        <p><strong>Registro com personalização (recomendado):</strong></p>
         <div class="code-container">
           <pre><code class="language-python">
-# ações em massa (ex: ativar/desativar vários de uma vez)
-@admin.action(description="Ativar usuários selecionados")
-def ativar_usuarios(modeladmin, request, queryset):
-    queryset.update(ativo=True)
+# admin.py
+from django.contrib import admin
+from .models import Produto
 
-@admin.action(description="Desativar usuários selecionados")
-def desativar_usuarios(modeladmin, request, queryset):
-    queryset.update(ativo=False)
-
-class UsuarioAdmin(admin.ModelAdmin):
-    actions = [ativar_usuarios, desativar_usuarios]
-    # ... demais configurações
+@admin.register(Produto)
+class ProdutoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'preco', 'estoque', 'ativo', 'criado_em')
+    list_filter = ('ativo', 'criado_em')
+    search_fields = ('nome',)
+    ordering = ('-criado_em',)
+    list_per_page = 20
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <p><strong>Opções de personalização do Admin:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Opção</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>list_display</code></td><td>Colunas exibidas na listagem</td></tr>
+            <tr><td><code>list_filter</code></td><td>Filtros laterais por campo</td></tr>
+            <tr><td><code>search_fields</code></td><td>Campos pesquisáveis na barra de busca</td></tr>
+            <tr><td><code>ordering</code></td><td>Ordenação padrão dos registros</td></tr>
+            <tr><td><code>list_per_page</code></td><td>Quantidade de itens por página</td></tr>
+            <tr><td><code>fields</code></td><td>Campos exibidos no formulário de edição</td></tr>
+            <tr><td><code>readonly_fields</code></td><td>Campos somente leitura</td></tr>
+            <tr><td><code>date_hierarchy</code></td><td>Navegação por data (ex: ano → mês → dia)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Autenticação e Login no Django</h2>
         <p>
-          Essas ações aparecem em um dropdown acima da tabela. Basta selecionar
-          os registros desejados, escolher a ação e clicar em "Ir".
+          O Django inclui um sistema de autenticação completo pronto para uso.
+          Ele fornece models de usuário, views de login/logout, formulários e
+          todo o fluxo de autenticação.
         </p>
 
-        <!-- ============================================================ -->
-        <!-- PASSO 3 — TEMPLATES -->
-        <!-- ============================================================ -->
-        <h3>Passo 3 — Templates (aprofundamento)</h3>
-        <p>
-          Na Aula 4 criamos um template simples. Agora vamos explorar o poder
-          real do sistema de templates do Django, começando pela funcionalidade
-          mais importante para projetos reais: <strong>herança de templates</strong>.
-        </p>
+        <h3>Componentes do sistema de autenticação</h3>
+        <ul>
+          <li><strong>User Model</strong> — <code>django.contrib.auth.models.User</code> (usuário, senha, e-mail, permissões)</li>
+          <li><strong>Authenticate</strong> — verifica se as credenciais são válidas</li>
+          <li><strong>Login</strong> — cria uma sessão para o usuário autenticado</li>
+          <li><strong>Logout</strong> — encerra a sessão do usuário</li>
+          <li><strong>LoginRequiredMixin / @login_required</strong> — protege views para usuários logados</li>
+        </ul>
 
-        <h4>3.1 — Template base (herança)</h4>
-        <p>
-          A ideia é criar um layout comum (cabeçalho, menu, rodapé) e fazer
-          cada página apenas preencher o conteúdo específico. Sem herança,
-          você repetiria HTML em toda página. Com herança, o layout fica
-          em um só lugar.
-        </p>
-        <p>
-          Crie o arquivo <code>usuarios/templates/base.html</code>:
-        </p>
+        <h3>Fluxo de autenticação</h3>
+        <ol>
+          <li>Usuário acessa a página de login e preenche usuário e senha</li>
+          <li>Django chama <code>authenticate()</code> para validar as credenciais</li>
+          <li>Se válidas, <code>login()</code> cria a sessão</li>
+          <li>Usuário é redirecionado para a página principal</li>
+          <li>Em views protegidas, <code>@login_required</code> verifica a sessão</li>
+        </ol>
 
+        <h3>Login manual (view personalizada)</h3>
+        <div class="code-container">
+          <pre><code class="language-python">
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+def fazer_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        senha = request.POST.get('senha')
+
+        usuario = authenticate(request, username=username, password=senha)
+
+        if usuario is not None:
+            login(request, usuario)
+            return redirect('pagina_inicial')
+        else:
+            messages.error(request, 'Usuário ou senha inválidos.')
+
+    return render(request, 'login.html')
+
+@login_required
+def pagina_inicial(request):
+    return render(request, 'inicial.html')
+
+def fazer_logout(request):
+    logout(request)
+    return redirect('login')
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Template de login</h3>
         <div class="code-container">
           <pre><code class="language-html">
 &lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;{% block title %}Meu Site{% endblock %}&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;header&gt;
-        &lt;h1&gt;Sistema de Usuários&lt;/h1&gt;
-        &lt;nav&gt;
-            &lt;a href="/"&gt;Home&lt;/a&gt; |
-            &lt;a href="/usuarios/"&gt;Lista&lt;/a&gt; |
-            {% if user.is_authenticated %}
-                Olá, {{ user.username }} |
-                &lt;a href="/logout/"&gt;Sair&lt;/a&gt;
-            {% else %}
-                &lt;a href="/login/"&gt;Entrar&lt;/a&gt;
-            {% endif %}
-        &lt;/nav&gt;
-        &lt;hr&gt;
-    &lt;/header&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Login&lt;/h1&gt;
 
-    &lt;main&gt;
-        {% block content %}
-        &lt;p&gt;Conteúdo padrão (será substituído pelas páginas filhas).&lt;/p&gt;
-        {% endblock %}
-    &lt;/main&gt;
+    {% if messages %}
+      {% for message in messages %}
+        &lt;p style="color: red;"&gt;{{ message }}&lt;/p&gt;
+      {% endfor %}
+    {% endif %}
 
-    &lt;footer&gt;
-        &lt;hr&gt;
-        &lt;p&gt;&amp;copy; 2025 - Todos os direitos reservados.&lt;/p&gt;
-    &lt;/footer&gt;
-&lt;/body&gt;
+    &lt;form method="POST"&gt;
+      {% csrf_token %}
+      &lt;label&gt;Usuário:&lt;/label&gt;
+      &lt;input type="text" name="username" required /&gt;
+      &lt;br /&gt;&lt;br /&gt;
+      &lt;label&gt;Senha:&lt;/label&gt;
+      &lt;input type="password" name="senha" required /&gt;
+      &lt;br /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
 &lt;/html&gt;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Agora reescreva <code>usuarios/templates/usuarios/lista.html</code> herdando da base:</p>
-
-        <div class="code-container">
-          <pre><code class="language-html">
-{% extends "base.html" %}
-
-{% block title %}Lista de Usuários{% endblock %}
-
-{% block content %}
-    &lt;h2&gt;Usuários cadastrados&lt;/h2&gt;
-
-    {% if usuarios %}
-        &lt;table border="1" cellpadding="8" cellspacing="0"&gt;
-            &lt;thead&gt;
-                &lt;tr&gt;
-                    &lt;th&gt;ID&lt;/th&gt;
-                    &lt;th&gt;Nome&lt;/th&gt;
-                    &lt;th&gt;E-mail&lt;/th&gt;
-                    &lt;th&gt;Idade&lt;/th&gt;
-                    &lt;th&gt;Ativo&lt;/th&gt;
-                    &lt;th&gt;Categoria&lt;/th&gt;
-                &lt;/tr&gt;
-            &lt;/thead&gt;
-            &lt;tbody&gt;
-                {% for usuario in usuarios %}
-                    &lt;tr&gt;
-                        &lt;td&gt;{{ usuario.id }}&lt;/td&gt;
-                        &lt;td&gt;{{ usuario.nome }}&lt;/td&gt;
-                        &lt;td&gt;{{ usuario.email }}&lt;/td&gt;
-                        &lt;td&gt;{{ usuario.idade }}&lt;/td&gt;
-                        &lt;td&gt;
-                            {% if usuario.ativo %}
-                                Sim
-                            {% else %}
-                                Não
-                            {% endif %}
-                        &lt;/td&gt;
-                        &lt;td&gt;{{ usuario.categoria.nome }}&lt;/td&gt;
-                    &lt;/tr&gt;
-                {% endfor %}
-            &lt;/tbody&gt;
-        &lt;/table&gt;
-    {% else %}
-        &lt;p&gt;Nenhum usuário cadastrado.&lt;/p&gt;
-    {% endif %}
-
-    &lt;p&gt;Total de usuários: {{ usuarios|length }}&lt;/p&gt;
-{% endblock %}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>3.2 — Tags e filtros mais usados no dia a dia</h4>
-        <table>
-          <thead>
-            <tr><th>Recurso</th><th>Sintaxe</th><th>Para que serve</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Variável</td><td><code>{{ variavel }}</code></td><td>Exibe o valor de uma variável</td></tr>
-            <tr><td>Tag if</td><td><code>{% if condicao %}...{% endif %}</code></td><td>Condicional</td></tr>
-            <tr><td>Tag for</td><td><code>{% for item in lista %}...{% endfor %}</code></td><td>Loop</td></tr>
-            <tr><td>Tag empty</td><td><code>{% for ... %}...{% empty %}...{% endfor %}</code></td><td>Executa se a lista estiver vazia</td></tr>
-            <tr><td>Tag url</td><td><code>{% url 'nome_da_url' %}</code></td><td>Gera URL pelo nome da rota (evita hardcode)</td></tr>
-            <tr><td>Tag block</td><td><code>{% block nome %}...{% endblock %}</code></td><td>Define área substituível (herança)</td></tr>
-            <tr><td>Tag extends</td><td><code>{% extends "base.html" %}</code></td><td>Herda de um template pai</td></tr>
-            <tr><td>Tag include</td><td><code>{% include "menu.html" %}</code></td><td>Inclui outro template (componentes reutilizáveis)</td></tr>
-            <tr><td>Tag csrf_token</td><td><code>{% csrf_token %}</code></td><td>Proteção CSRF em formulários POST</td></tr>
-            <tr><td>Filtro length</td><td><code>{{ lista|length }}</code></td><td>Tamanho da lista</td></tr>
-            <tr><td>Filtro date</td><td><code>{{ data|date:"d/m/Y" }}</code></td><td>Formata data</td></tr>
-            <tr><td>Filtro default</td><td><code>{{ valor|default:"--" }}</code></td><td>Valor padrão se variável for vazia</td></tr>
-            <tr><td>Filtro lower/upper</td><td><code>{{ texto|lower }}</code></td><td>Converte para minúsculas/maiúsculas</td></tr>
-            <tr><td>Filtro truncatechars</td><td><code>{{ texto|truncatechars:30 }}</code></td><td>Corta texto com "..."</td></tr>
-            <tr><td>Filtro safe</td><td><code>{{ html|safe }}</code></td><td>Renderiza HTML (use com cuidado!)</td></tr>
-          </tbody>
-        </table>
-
-        <h4>3.3 — Template tags na View (como passamos dados)</h4>
-        <p>
-          No <code>render()</code>, o terceiro argumento é o <strong>contexto</strong>
-          — um dicionário Python cujas chaves viram variáveis dentro do template.
-        </p>
-
+        <h3>URLs de autenticação</h3>
         <div class="code-container">
           <pre><code class="language-python">
-def listar_template(request):
-    usuarios = Usuario.objects.all().order_by('nome')
-    total = usuarios.count()
-    hoje = date.today()
-
-    contexto = {
-        'usuarios': usuarios,
-        'total': total,
-        'hoje': hoje,
-        'titulo': 'Lista de Usuários',
-    }
-    return render(request, 'usuarios/lista.html', contexto)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 4 — LOGIN / AUTENTICAÇÃO -->
-        <!-- ============================================================ -->
-        <h3>Passo 4 — Login e Autenticação</h3>
-        <p>
-          O Django tem um sistema de autenticação completo e pronto para uso:
-          login, logout, criação de usuários, grupos, permissões. Tudo já
-          incluso via <code>django.contrib.auth</code>. Você só precisa criar
-          as views e templates.
-        </p>
-
-        <h4>4.1 — Configurar URLs de autenticação</h4>
-        <p>Adicione no arquivo <code>usuarios/urls.py</code>:</p>
-
-        <div class="code-container">
-          <pre><code class="language-python">
+# urls.py
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    # API (já existentes)
-    path('api/usuarios/', views.listar_usuarios),
-    path('api/usuarios/criar/', views.criar_usuario),
-
-    # Templates
-    path('usuarios/', views.listar_template, name='lista_usuarios'),
-    path('', views.home, name='home'),
-
-    # Autenticação
-    path('login/', views.fazer_login, name='login'),
+    path('', views.fazer_login, name='login'),
+    path('inicial/', views.pagina_inicial, name='pagina_inicial'),
     path('logout/', views.fazer_logout, name='logout'),
 ]
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>4.2 — Criar as views de autenticação</h4>
-        <p>Adicione no arquivo <code>usuarios/views.py</code> (mantendo o que já existe):</p>
+        <h3>Verificando login nos templates</h3>
+        <div class="code-container">
+          <pre><code class="language-html">
+{% if user.is_authenticated %}
+  &lt;p&gt;Bem-vindo, {{ user.username }}!&lt;/p&gt;
+  &lt;a href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
+{% else %}
+  &lt;a href="{% url 'login' %}"&gt;Fazer login&lt;/a&gt;
+{% endif %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
 
+      <section>
+        <h2>Passo a passo: Projeto completo com ORM, Admin e Login</h2>
+
+        <h3>Passo 0 — Criar uma branch no GitHub</h3>
+        <ul>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique no seletor de branch (main)</li>
+          <li>
+            Digite o nome <b>aula6-orm-admin-login</b> da nova branch na opção "Find
+            or create a branch..."
+          </li>
+          <li>
+            No VS Code, abra o terminal na opção Command Prompt e execute o
+            seguinte comando:
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula6-orm-admin-login
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar projeto Django e o app</h3>
+        <ul>
+          <li>Delete toda a pasta projeto_django_mvt do seu projeto</li>
+          <li>Abra o terminal e execute os seguintes comandos:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+py -3.11 -m venv venv
+venv\Scripts\activate
+pip install django
+django-admin startproject projeto_orm
+cd projeto_orm
+python manage.py startapp loja
+cd loja
+type nul > urls.py
+mkdir templates
+cd templates
+mkdir loja
+cd loja
+type nul > login.html
+type nul > inicial.html
+cd ..\..\..
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Configurar settings.py</h3>
+        <p>Arquivo: <code>projeto_orm/settings.py</code></p>
+        <p>
+          Adicione o app <code>loja</code> em <code>INSTALLED_APPS</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'loja',
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Estrutura do projeto</h3>
+        <pre><code class="language-bash">
+projeto_orm/
+ ├── manage.py
+ ├── projeto_orm/
+ │    ├── settings.py
+ │    ├── urls.py
+ │    └── wsgi.py
+ └── loja/
+      ├── admin.py
+      ├── models.py
+      ├── views.py
+      ├── urls.py
+      └── templates/
+           └── loja/
+                ├── login.html
+                └── inicial.html
+        </code></pre>
+
+        <h3>Passo 4 — Criar os Models (ORM)</h3>
+        <p>Arquivo: <code>loja/models.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.db import models
+
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class Produto(models.Model):
+    nome = models.CharField(max_length=100)
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
+    estoque = models.IntegerField(default=0)
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nome} — R$ {self.preco}"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Registrar Models no Admin</h3>
+        <p>Arquivo: <code>loja/admin.py</code></p>
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.contrib import admin
+from .models import Categoria, Produto
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome')
+    search_fields = ('nome',)
+
+@admin.register(Produto)
+class ProdutoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome', 'preco', 'estoque', 'ativo', 'categoria', 'criado_em')
+    list_filter = ('ativo', 'categoria')
+    search_fields = ('nome',)
+    ordering = ('-criado_em',)
+    list_per_page = 15
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar as Views (com Login)</h3>
+        <p>Arquivo: <code>loja/views.py</code></p>
         <div class="code-container">
           <pre><code class="language-python">
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import Usuario
-from .serializers import UsuarioSerializer
-
-# ... (manter listar_usuarios, criar_usuario, listar_template) ...
-
-def home(request):
-    return render(request, 'base.html')
+from .models import Produto
 
 def fazer_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        password = request.POST.get('password')
+        senha = request.POST.get('senha')
 
-        user = authenticate(request, username=username, password=password)
+        usuario = authenticate(request, username=username, password=senha)
 
-        if user is not None:
-            login(request, user)
-            messages.success(request, f'Bem-vindo, {user.username}!')
-            return redirect('lista_usuarios')
+        if usuario is not None:
+            login(request, usuario)
+            return redirect('pagina_inicial')
         else:
             messages.error(request, 'Usuário ou senha inválidos.')
 
-    return render(request, 'usuarios/login.html')
+    return render(request, 'loja/login.html')
+
+@login_required
+def pagina_inicial(request):
+    produtos = Produto.objects.filter(ativo=True).order_by('nome')
+    return render(request, 'loja/inicial.html', {'produtos': produtos})
 
 def fazer_logout(request):
     logout(request)
-    messages.info(request, 'Você saiu do sistema.')
-    return redirect('home')
+    return redirect('login')
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>4.3 — Template de login</h4>
-        <p>Crie <code>usuarios/templates/usuarios/login.html</code>:</p>
-
+        <h3>Passo 7 — Criar os Templates</h3>
+        <p>Arquivo: <code>loja/templates/loja/login.html</code></p>
         <div class="code-container">
           <pre><code class="language-html">
-{% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
-
-{% block content %}
-    &lt;h2&gt;Entrar no sistema&lt;/h2&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Login&lt;/h1&gt;
 
     {% if messages %}
-        {% for message in messages %}
-            &lt;p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};"&gt;
-                {{ message }}
-            &lt;/p&gt;
-        {% endfor %}
+      {% for message in messages %}
+        &lt;p style="color: red;"&gt;{{ message }}&lt;/p&gt;
+      {% endfor %}
     {% endif %}
 
     &lt;form method="POST"&gt;
-        {% csrf_token %}
-        &lt;label&gt;Usuário:&lt;/label&gt;
-        &lt;input type="text" name="username" required&gt;
-        &lt;br&gt;&lt;br&gt;
-
-        &lt;label&gt;Senha:&lt;/label&gt;
-        &lt;input type="password" name="password" required&gt;
-        &lt;br&gt;&lt;br&gt;
-
-        &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+      {% csrf_token %}
+      &lt;label&gt;Usuário:&lt;/label&gt;
+      &lt;input type="text" name="username" required /&gt;
+      &lt;br /&gt;&lt;br /&gt;
+      &lt;label&gt;Senha:&lt;/label&gt;
+      &lt;input type="password" name="senha" required /&gt;
+      &lt;br /&gt;&lt;br /&gt;
+      &lt;button type="submit"&gt;Entrar&lt;/button&gt;
     &lt;/form&gt;
-{% endblock %}
+  &lt;/body&gt;
+&lt;/html&gt;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>4.4 — Protegendo views com @login_required</h4>
-        <p>
-          O decorator <code>@login_required</code> bloqueia o acesso de usuários
-          não autenticados. Se alguém tentar acessar a página sem login, é
-          redirecionado automaticamente para a página de login.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-python">
-from django.contrib.auth.decorators import login_required
-
-@login_required(login_url='/login/')
-def listar_template(request):
-    usuarios = Usuario.objects.all()
-    contexto = {'usuarios': usuarios}
-    return render(request, 'usuarios/lista.html', contexto)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>
-          Note que definimos <code>login_url='/login/'</code> para que o Django
-          saiba para onde enviar o usuário não autenticado.
-        </p>
-
-        <h4>4.5 — No template: verificando se está logado</h4>
+        <p>Arquivo: <code>loja/templates/loja/inicial.html</code></p>
         <div class="code-container">
           <pre><code class="language-html">
-{% if user.is_authenticated %}
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Página Inicial&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Produtos da Loja&lt;/h1&gt;
+
     &lt;p&gt;Bem-vindo, {{ user.username }}!&lt;/p&gt;
-    &lt;a href="/logout/"&gt;Sair&lt;/a&gt;
-{% else %}
-    &lt;p&gt;Você não está logado.&lt;/p&gt;
-    &lt;a href="/login/"&gt;Entrar&lt;/a&gt;
-{% endif %}
+    &lt;a href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
+
+    &lt;hr /&gt;
+
+    &lt;table border="1" cellpadding="5"&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;Nome&lt;/th&gt;
+          &lt;th&gt;Preço&lt;/th&gt;
+          &lt;th&gt;Estoque&lt;/th&gt;
+          &lt;th&gt;Categoria&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        {% for produto in produtos %}
+          &lt;tr&gt;
+            &lt;td&gt;{{ produto.nome }}&lt;/td&gt;
+            &lt;td&gt;R$ {{ produto.preco }}&lt;/td&gt;
+            &lt;td&gt;{{ produto.estoque }}&lt;/td&gt;
+            &lt;td&gt;{{ produto.categoria.nome }}&lt;/td&gt;
+          &lt;/tr&gt;
+        {% empty %}
+          &lt;tr&gt;
+            &lt;td colspan="4"&gt;Nenhum produto cadastrado.&lt;/td&gt;
+          &lt;/tr&gt;
+        {% endfor %}
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p><strong>Resumo rápido de autenticação:</strong></p>
-        <table>
-          <thead>
-            <tr><th>Etapa</th><th>O que fazer</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Criar usuário</td><td><code>python manage.py createsuperuser</code> ou <code>User.objects.create_user(...)</code></td></tr>
-            <tr><td>Login</td><td><code>authenticate()</code> + <code>login()</code></td></tr>
-            <tr><td>Logout</td><td><code>logout(request)</code></td></tr>
-            <tr><td>Proteger view</td><td><code>@login_required</code></td></tr>
-            <tr><td>Checar no template</td><td><code>{% if user.is_authenticated %}</code></td></tr>
-            <tr><td>Usuário na view</td><td><code>request.user</code></td></tr>
-          </tbody>
-        </table>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 5 — PERMISSÕES -->
-        <!-- ============================================================ -->
-        <h3>Passo 5 — Permissões</h3>
-        <p>
-          Autenticação diz <strong>quem</strong> é o usuário. Permissão diz
-          <strong>o que</strong> ele pode fazer. O Django tem um sistema de
-          permissões baseado em models: cada model gera automaticamente 3
-          permissões — <em>add</em> (criar), <em>change</em> (editar) e
-          <em>delete</em> (deletar).
-        </p>
-
-        <h4>5.1 — Verificar permissão na view</h4>
+        <h3>Passo 8 — Configurar URLs</h3>
+        <p>Arquivo: <code>loja/urls.py</code></p>
         <div class="code-container">
           <pre><code class="language-python">
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
+from django.urls import path
+from . import views
 
-# Permite acesso apenas a quem tem a permissão especificada
-@permission_required('usuarios.add_usuario', login_url='/login/')
-def criar_usuario_view(request):
-    if request.method == 'POST':
-        # lógica de criação
-        pass
-    return render(request, 'usuarios/form.html')
+urlpatterns = [
+    path('', views.fazer_login, name='login'),
+    path('inicial/', views.pagina_inicial, name='pagina_inicial'),
+    path('logout/', views.fazer_logout, name='logout'),
+]
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>O formato da permissão é: <code>app_label.codename</code>. Exemplos:</p>
-        <ul>
-          <li><code>usuarios.add_usuario</code> — pode criar usuário</li>
-          <li><code>usuarios.change_usuario</code> — pode editar usuário</li>
-          <li><code>usuarios.delete_usuario</code> — pode deletar usuário</li>
-          <li><code>usuarios.view_usuario</code> — pode visualizar usuário</li>
-        </ul>
-
-        <h4>5.2 — Verificar permissão no template</h4>
-        <div class="code-container">
-          <pre><code class="language-html">
-{% if perms.usuarios.add_usuario %}
-    &lt;a href="/admin/usuarios/usuario/add/"&gt;Adicionar Usuário&lt;/a&gt;
-{% endif %}
-
-{% if perms.usuarios.delete_usuario %}
-    &lt;button&gt;Excluir&lt;/button&gt;
-{% endif %}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>5.3 — Grupos (atribuir permissões em lote)</h4>
-        <p>
-          Em projetos reais, você não atribui permissões usuário por usuário.
-          Você cria <strong>grupos</strong> (ex: "Editores", "Administradores")
-          e associa usuários a grupos. Grupos recebem permissões; usuários
-          herdam do grupo.
-        </p>
-
+        <p>Arquivo: <code>projeto_orm/urls.py</code></p>
         <div class="code-container">
           <pre><code class="language-python">
-from django.contrib.auth.models import Group, Permission
+from django.contrib import admin
+from django.urls import path, include
 
-# Criar um grupo
-editores, created = Group.objects.get_or_create(name='Editores')
-
-# Buscar permissões específicas
-perm_add = Permission.objects.get(codename='add_usuario')
-perm_change = Permission.objects.get(codename='change_usuario')
-perm_view = Permission.objects.get(codename='view_usuario')
-
-# Atribuir permissões ao grupo
-editores.permissions.add(perm_add, perm_change, perm_view)
-
-# Adicionar um usuário existente ao grupo
-user = User.objects.get(username='maria')
-user.groups.add(editores)
-
-# Verificar se usuário tem permissão (via grupo ou direta)
-print(user.has_perm('usuarios.add_usuario'))   # True
-print(user.has_perm('usuarios.delete_usuario'))   # False
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('loja.urls')),
+]
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>
-          No admin do Django, vá em "Groups" para gerenciar grupos e permissões
-          graficamente, sem código.
-        </p>
-
-        <h4>5.4 — Programaticamente na view (sem decorator)</h4>
-        <div class="code-container">
-          <pre><code class="language-python">
-def deletar_usuario(request, pk):
-    if not request.user.has_perm('usuarios.delete_usuario'):
-        messages.error(request, 'Você não tem permissão para excluir.')
-        return redirect('lista_usuarios')
-
-    usuario = get_object_or_404(Usuario, pk=pk)
-    usuario.delete()
-    messages.success(request, 'Usuário excluído.')
-    return redirect('lista_usuarios')
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 6 — SESSÕES -->
-        <!-- ============================================================ -->
-        <h3>Passo 6 — Sessões</h3>
-        <p>
-          Uma <strong>sessão</strong> é um pequeno armazenamento temporário no
-          servidor vinculado ao navegador do usuário por um cookie. Serve para
-          guardar dados entre requisições, como carrinho de compras, preferências
-          ou etapa de um formulário longo.
-        </p>
-        <p>
-          O Django já vem com <code>django.contrib.sessions</code> instalado
-          (está no <code>INSTALLED_APPS</code>). Funciona sem configuração
-          adicional.
-        </p>
-
-        <h4>6.1 — Ler e escrever na sessão</h4>
-        <div class="code-container">
-          <pre><code class="language-python">
-# ESCREVER na sessão (como um dicionário)
-request.session['tema'] = 'escuro'
-request.session['visitou_pagina'] = True
-request.session['carrinho'] = ['produto1', 'produto2']
-
-# LER da sessão
-tema = request.session.get('tema', 'claro')   # 'claro' é o valor padrão
-carrinho = request.session.get('carrinho', [])
-
-# DELETAR um valor específico
-if 'tema' in request.session:
-    del request.session['tema']
-
-# LIMPAR toda a sessão
-request.session.flush()
-
-# Definir tempo de expiração (em segundos)
-request.session.set_expiry(3600)   # expira em 1 hora
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>6.2 — Contador de visitas (exemplo prático)</h4>
-        <div class="code-container">
-          <pre><code class="language-python">
-def home(request):
-    # Incrementa o contador a cada visita
-    visitas = request.session.get('visitas', 0)
-    visitas += 1
-    request.session['visitas'] = visitas
-
-    return render(request, 'base.html', {'visitas': visitas})
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>No template <code>base.html</code>:</p>
-        <div class="code-container">
-          <pre><code class="language-html">
-{% if visitas %}
-    &lt;p&gt;Você visitou esta página {{ visitas }} vez(es) nesta sessão.&lt;/p&gt;
-{% endif %}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>6.3 — Onde as sessões são armazenadas?</h4>
-        <p>
-          Por padrão, o Django armazena sessões no banco de dados (tabela
-          <code>django_session</code>). Você pode mudar isso no
-          <code>settings.py</code> com a variável
-          <code>SESSION_ENGINE</code>. Opções comuns:
-        </p>
-        <table>
-          <thead>
-            <tr><th>Engine</th><th>Onde armazena</th><th>Quando usar</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>django.contrib.sessions.backends.db</code></td><td>Banco de dados (padrão)</td><td>Uso geral</td></tr>
-            <tr><td><code>django.contrib.sessions.backends.cache</code></td><td>Cache (Redis, Memcached)</td><td>Alta performance</td></tr>
-            <tr><td><code>django.contrib.sessions.backends.file</code></td><td>Arquivos no disco</td><td>Sem banco de dados</td></tr>
-            <tr><td><code>django.contrib.sessions.backends.signed_cookies</code></td><td>No cookie do navegador</td><td>Sem armazenamento no servidor</td></tr>
-          </tbody>
-        </table>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 7 — MIGRATIONS -->
-        <!-- ============================================================ -->
-        <h3>Passo 7 — Migrations</h3>
-        <p>
-          <strong>Migrations</strong> são arquivos que descrevem mudanças no
-          banco de dados (criar tabelas, adicionar colunas, criar índices, etc.)
-          escritos em Python. Elas são versionáveis (vão pro Git) e permitem
-          que todos os desenvolvedores do time tenham o banco sincronizado.
-        </p>
-        <p>
-          Sempre que você altera um model, precisa gerar e aplicar uma migration.
-          Esse fluxo de 2 passos é algo que você fará <strong>todos os dias</strong>
-          como dev Django.
-        </p>
-
-        <h4>7.1 — O ciclo de vida de uma migration</h4>
-        <ol>
-          <li><strong>Você altera um model</strong> em <code>models.py</code></li>
-          <li><strong>Gera a migration:</strong> <code>python manage.py makemigrations</code></li>
-          <li><strong>Aplica a migration:</strong> <code>python manage.py migrate</code></li>
-        </ol>
-
-        <h4>7.2 — Comandos essenciais</h4>
-        <table>
-          <thead>
-            <tr><th>Comando</th><th>O que faz</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>python manage.py makemigrations</code></td><td>Gera arquivos de migration baseados nas mudanças dos models</td></tr>
-            <tr><td><code>python manage.py migrate</code></td><td>Aplica as migrations pendentes no banco</td></tr>
-            <tr><td><code>python manage.py showmigrations</code></td><td>Lista todas as migrations e quais foram aplicadas</td></tr>
-            <tr><td><code>python manage.py sqlmigrate usuarios 0001</code></td><td>Mostra o SQL que aquela migration executa</td></tr>
-            <tr><td><code>python manage.py migrate usuarios 0001</code></td><td>Volta (ou avança) para uma migration específica</td></tr>
-            <tr><td><code>python manage.py migrate usuarios zero</code></td><td>Desfaz TODAS as migrations do app usuarios</td></tr>
-          </tbody>
-        </table>
-
-        <h4>7.3 — Exemplo prático completo</h4>
-
-        <p><strong>Situação:</strong> você precisa adicionar um campo <code>telefone</code>
-        ao model <code>Usuario</code>.</p>
-
-        <p><strong>Passo 1:</strong> Edite <code>usuarios/models.py</code> e adicione:</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-class Usuario(models.Model):
-    # ... campos existentes ...
-    telefone = models.CharField(max_length=20, blank=True, null=True)
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p><strong>Passo 2:</strong> Gere a migration:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py makemigrations
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <p>Saída esperada:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-Migrations for 'usuarios':
-  usuarios\migrations\0002_usuario_telefone.py
-    - Add field telefone to usuario
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p><strong>Passo 3:</strong> Veja qual SQL será executado:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py sqlmigrate usuarios 0002
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <p>Saída (com SQLite):</p>
-        <div class="code-container">
-          <pre><code class="language-sql">
-ALTER TABLE "usuarios_usuario" ADD COLUMN "telefone" varchar(20) NULL;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p><strong>Passo 4:</strong> Aplique no banco:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py migrate
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p><strong>Passo 5:</strong> Confira que foi aplicada:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py showmigrations usuarios
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h4>7.4 — Cuidados importantes com migrations</h4>
-        <ul>
-          <li>
-            <strong>Nunca delete arquivos de migration</strong> que já foram
-            aplicados em produção. Isso quebra o histórico.
-          </li>
-          <li>
-            <strong>Sempre faça commit das migrations</strong> no Git. Elas são
-            código e precisam ser versionadas.
-          </li>
-          <li>
-            <strong>Se der conflito de migration no merge</strong>, resolva
-            manualmente ou use <code>python manage.py makemigrations --merge</code>.
-          </li>
-          <li>
-            <strong>Para reverter</strong> uma migration não aplicada em
-            produção, delete o arquivo .py da migration e rode
-            <code>makemigrations</code> novamente.
-          </li>
-          <li>
-            <strong>Não edite migrations manualmente</strong> a menos que saiba
-            exatamente o que está fazendo. O Django gera migrations corretas
-            automaticamente na maioria dos casos.
-          </li>
-        </ul>
-
-        <!-- ============================================================ -->
-        <!-- ATUALIZAÇÃO DOS ARQUIVOS DO PROJETO -->
-        <!-- ============================================================ -->
-        <h3>Passo 8 — Atualizando settings.py e rodando</h3>
-        <p>
-          Agora que alteramos os models, precisamos gerar e aplicar as
-          migrations. No terminal:
-        </p>
-
+        <h3>Passo 9 — Migrar o banco e criar superusuário</h3>
+        <p>Abra um novo terminal e execute:</p>
         <div class="code-container">
           <pre><code class="language-bash">
 venv\Scripts\activate
-cd projeto_django_mvt
+cd projeto_orm
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Depois, acesse no navegador:</p>
+        <p>
+          Na criação do superusuário, informe um nome de usuário, e-mail (opcional)
+          e senha. Este será o usuário que você usará para acessar o Admin e a
+          página inicial.
+        </p>
+
+        <h3>Passo 10 — Testar</h3>
         <ul>
-          <li><code>http://localhost:8000/</code> — página inicial</li>
-          <li><code>http://localhost:8000/admin/</code> — painel admin</li>
-          <li><code>http://localhost:8000/login/</code> — página de login</li>
-          <li><code>http://localhost:8000/usuarios/</code> — lista (protegida por login)</li>
+          <li>
+            <strong>Admin Django:</strong>
+            <code>http://localhost:8000/admin/</code>
+            — faça login com o superusuário criado
+          </li>
+          <li>
+            No Admin, crie algumas <strong>Categorias</strong> (ex: Eletrônicos, Informática, Móveis)
+          </li>
+          <li>
+            No Admin, crie alguns <strong>Produtos</strong> associando a uma Categoria
+          </li>
+          <li>
+            <strong>Página de Login:</strong>
+            <code>http://localhost:8000/</code>
+            — faça login com o superusuário
+          </li>
+          <li>
+            <strong>Página Inicial (protegida):</strong>
+            <code>http://localhost:8000/inicial/</code>
+            — veja a lista de produtos cadastrados
+          </li>
         </ul>
 
-        <!-- ============================================================ -->
-        <!-- RESUMO -->
-        <!-- ============================================================ -->
-        <h2>Resumo da Aula</h2>
-        <table>
-          <thead>
-            <tr><th>Recurso</th><th>Para que serve</th><th>Como usar</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>ORM</strong></td>
-              <td>Consultar banco sem escrever SQL</td>
-              <td><code>Model.objects.filter(...)</code>, <code>.get()</code>, <code>.all()</code>, <code>.create()</code></td>
-            </tr>
-            <tr>
-              <td><strong>Admin</strong></td>
-              <td>Painel administrativo automático</td>
-              <td>Registrar model no <code>admin.py</code>, acessar <code>/admin/</code></td>
-            </tr>
-            <tr>
-              <td><strong>Templates</strong></td>
-              <td>Renderizar HTML com dados dinâmicos</td>
-              <td><code>{% extends %}</code>, <code>{% block %}</code>, <code>{{ variavel }}</code></td>
-            </tr>
-            <tr>
-              <td><strong>Login</strong></td>
-              <td>Autenticar usuários</td>
-              <td><code>authenticate()</code> + <code>login()</code>, <code>@login_required</code></td>
-            </tr>
-            <tr>
-              <td><strong>Permissões</strong></td>
-              <td>Controlar o que cada usuário pode fazer</td>
-              <td><code>@permission_required</code>, <code>request.user.has_perm()</code>, Grupos</td>
-            </tr>
-            <tr>
-              <td><strong>Sessões</strong></td>
-              <td>Guardar dados entre requisições</td>
-              <td><code>request.session['chave'] = valor</code></td>
-            </tr>
-            <tr>
-              <td><strong>Migrations</strong></td>
-              <td>Versionar e sincronizar banco de dados</td>
-              <td><code>makemigrations</code> → <code>migrate</code></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- ============================================================ -->
-        <!-- DEVER DE CASA -->
-        <!-- ============================================================ -->
-        <h2>Dever de Casa</h2>
-        <ol>
-          <li>
-            <strong>Expandir o Admin:</strong> adicione ao
-            <code>UsuarioAdmin</code> as ações em massa para ativar e desativar
-            usuários. Teste selecionando vários usuários na listagem do admin.
-          </li>
-          <li>
-            <strong>Template com herança:</strong> crie uma nova página
-            <code>/usuarios/{{ id }}/</code> que exiba os <strong>detalhes</strong>
-            de um único usuário (nome, e-mail, idade, categoria, data de criação).
-            Use herança de template (extendendo <code>base.html</code>).
-          </li>
-          <li>
-            <strong>Proteger a página de detalhes:</strong> use o decorator
-            <code>@login_required</code> na view que você criou no exercício 2.
-            Teste acessando sem login e depois logado.
-          </li>
-          <li>
-            <strong>Criar um grupo "Visitantes":</strong> pelo shell do Django,
-            crie um grupo chamado "Visitantes" que tenha apenas a permissão
-            <code>view_usuario</code>. Crie um usuário novo e adicione-o a esse
-            grupo. Teste tentando acessar ações restritas.
-          </li>
-          <li>
-            <strong>Contador de visitas com sessão:</strong> implemente um
-            contador de visitas na página inicial que mostre quantas vezes o
-            usuário visitou o site durante aquela sessão. Reinicie o navegador
-            (ou abra em anônimo) e veja o contador resetar.
-          </li>
-          <li>
-            <strong>Criar uma migration:</strong> adicione um campo
-            <code>bio = models.TextField(blank=True)</code> ao model
-            <code>Usuario</code>. Gere a migration com
-            <code>makemigrations</code>, veja o SQL com
-            <code>sqlmigrate</code> e aplique com <code>migrate</code>. Depois
-            reverta com <code>migrate usuarios 0001</code> e veja o campo sumir.
-            Por fim, aplique novamente com <code>migrate</code>.
-          </li>
-        </ol>
-
-        <!-- ============================================================ -->
-        <!-- GIT PUSH -->
-        <!-- ============================================================ -->
-        <h3>Último passo — Subindo para o Git nossas alterações</h3>
+        <h3>Último passo — Subindo para o Git</h3>
         <ul>
           <li>
-            Abra um novo terminal e vamos salvar na nuvem do Git:
+            Abra um novo terminal e agora vamos salvar na nuvem do Git:
           </li>
         </ul>
         <div class="code-container">
           <pre><code class="language-bash">
 git add .
-git commit -m "minha aula 6 de Django Avançado: ORM, Admin, Login, Permissões, Sessões, Templates e Migrations"
+git commit -m "minha aula 6 de ORM, Admin e Login com Django"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+      </section>
 
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Explique o que é ORM com suas palavras</h3>
+            <p>
+              Escreva um pequeno parágrafo explicando o que é Object-Relational Mapping,
+              qual problema ele resolve e cite pelo menos duas vantagens.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito (resposta sugerida):</b>
+              <p>
+                ORM (Object-Relational Mapping) é uma técnica que permite manipular
+                bancos de dados usando classes e objetos da linguagem de programação,
+                em vez de escrever SQL diretamente. Ele resolve o problema de ter
+                que misturar SQL com código Python e de ter que reescrever queries
+                ao trocar de banco de dados. Vantagens: evita SQL Injection, aumenta
+                a produtividade, permite trocar de banco sem reescrever código e
+                torna o código mais legível.
+              </p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie um Model chamado Cliente</h3>
+            <p>
+              Crie um Model com os campos: <code>nome</code> (CharField de 100),
+              <code>email</code> (EmailField), <code>telefone</code> (CharField de 20),
+              <code>ativo</code> (BooleanField, padrão True) e
+              <code>criado_em</code> (DateTimeField com auto_now_add). Registre no Admin
+              com busca por nome e e-mail.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito — models.py:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# models.py
+from django.db import models
+
+class Cliente(models.Model):
+    nome = models.CharField(max_length=100)
+    email = models.EmailField()
+    telefone = models.CharField(max_length=20)
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <b>Gabarito — admin.py:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# admin.py
+from django.contrib import admin
+from .models import Cliente
+
+@admin.register(Cliente)
+class ClienteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome', 'email', 'telefone', 'ativo', 'criado_em')
+    search_fields = ('nome', 'email')
+    list_filter = ('ativo',)
+    ordering = ('nome',)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Consultas com Django ORM</h3>
+            <p>
+              Supondo que já exista o Model <code>Produto</code> com os campos
+              <code>nome</code>, <code>preco</code>, <code>estoque</code> e
+              <code>ativo</code>, escreva o código Django ORM para cada uma das
+              situações abaixo:
+            </p>
+            <ol type="a">
+              <li>Buscar todos os produtos com preço maior que R$ 100,00</li>
+              <li>Buscar todos os produtos inativos</li>
+              <li>Buscar produtos cujo nome contém a palavra "Notebook"</li>
+              <li>Buscar o produto com id = 5 (sem erro caso não exista)</li>
+            </ol>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# a) Preço maior que 100
+produtos_caros = Produto.objects.filter(preco__gt=100)
+
+# b) Produtos inativos
+inativos = Produto.objects.filter(ativo=False)
+
+# c) Nome contém "Notebook"
+notebooks = Produto.objects.filter(nome__icontains="Notebook")
+
+# d) Buscar por id = 5 (sem erro se não existir)
+from django.shortcuts import get_object_or_404
+produto = get_object_or_404(Produto, id=5)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Relacionamento ForeignKey</h3>
+            <p>
+              Crie dois Models: <code>Autor</code> (nome, email) e
+              <code>Livro</code> (titulo, ano_publicacao, autor). O campo
+              <code>autor</code> em Livro deve ser uma <strong>ForeignKey</strong>
+              para Autor com <code>on_delete=models.CASCADE</code>. Em seguida,
+              registre ambos no Admin.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito — models.py:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+from django.db import models
+
+class Autor(models.Model):
+    nome = models.CharField(max_length=100)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.nome
+
+class Livro(models.Model):
+    titulo = models.CharField(max_length=200)
+    ano_publicacao = models.IntegerField()
+    autor = models.ForeignKey(Autor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.titulo} ({self.ano_publicacao})"
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <b>Gabarito — admin.py:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+from django.contrib import admin
+from .models import Autor, Livro
+
+@admin.register(Autor)
+class AutorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome', 'email')
+    search_fields = ('nome',)
+
+@admin.register(Livro)
+class LivroAdmin(admin.ModelAdmin):
+    list_display = ('id', 'titulo', 'ano_publicacao', 'autor')
+    search_fields = ('titulo',)
+    list_filter = ('autor',)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>5. Proteja uma view com login</h3>
+            <p>
+              Crie uma view chamada <code>dashboard</code> que só pode ser acessada
+              por usuários autenticados. Se o usuário não estiver logado, ele deve
+              ser redirecionado para a página de login. Use o decorador
+              <code>@login_required</code>. A view deve exibir uma mensagem de
+              boas-vindas com o nome do usuário.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard(request):
+    return render(request, 'dashboard.html')
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <b>Template dashboard.html:</b>
+              <div class="code-container">
+                <pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Dashboard&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Bem-vindo ao Dashboard, {{ user.username }}!&lt;/h1&gt;
+    &lt;a href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -1239,5 +1156,6 @@ git push
     </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
