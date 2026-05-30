@@ -649,17 +649,17 @@ def criar_usuario_api(request):
 {% block title %}Lista de Usuários{% endblock %}
 
 {% block content %}
-<h1>Usuários cadastrados</h1>
+&lt;h1&gt;Usuários cadastrados</h1&gt;
 
-<ul>
+&lt;ul&gt;
     {% for usuario in usuarios %}
-        <li>{{ usuario.name }} ({{ usuario.email|default:"Sem email" }})</li>
+        &lt;li&gt;{{ usuario.name }} ({{ usuario.email|default:"Sem email" }})&lt;/li&gt;
     {% empty %}
-        <li>Nenhum usuário cadastrado.</li>
+        &lt;li&gt;Nenhum usuário cadastrado.&lt;/li&gt;
     {% endfor %}
-</ul>
+&lt;/ul&gt;
 
-<a href="{% url 'register' %}" class="btn" style="margin-top: 20px;">Adicionar Usuário via API</a>
+&lt;a href="{% url 'register' %}" class="btn" style="margin-top: 20px;"&gt;Adicionar Usuário via API&lt;/a&gt;
 {% endblock %}</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
