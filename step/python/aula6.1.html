@@ -643,23 +643,24 @@ def criar_usuario_api(request):
           para herdar do base:
         </p>
         <p><strong>Arquivo:</strong> <code>usuarios/templates/usuarios/lista.html</code></p>
-        <div class="code-container">
-          <pre><code class="language-html">{% extends 'usuarios/base.html' %}
+        <div class="code-container"><pre><code class="language-html">{% extends 'usuarios/base.html' %}
 
 {% block title %}Lista de Usuários{% endblock %}
 
 {% block content %}
-&lt;h1&gt;Usuários cadastrados</h1&gt;
+<h1>Usuários cadastrados</h1>
 
-&lt;ul&gt;
+<ul>
     {% for usuario in usuarios %}
-        &lt;li&gt;{{ usuario.name }} ({{ usuario.email|default:"Sem email" }})&lt;/li&gt;
+        <li>{{ usuario.name }} ({{ usuario.email|default:"Sem email" }})</li>
     {% empty %}
-        &lt;li&gt;Nenhum usuário cadastrado.&lt;/li&gt;
+        <li>Nenhum usuário cadastrado.</li>
     {% endfor %}
-&lt;/ul&gt;
+</ul>
 
-&lt;a href="{% url 'register' %}" class="btn" style="margin-top: 20px;"&gt;Adicionar Usuário via API&lt;/a&gt;
+<a href="{% url 'register' %}" class="btn" style="margin-top: 20px;">
+    Adicionar Usuário via API
+</a>
 {% endblock %}</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
