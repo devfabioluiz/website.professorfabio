@@ -652,7 +652,7 @@ def criar_usuario_api(request):
 
 &lt;ul&gt;
     {% for usuario in usuarios %}
-        &lt;li&gt;{{ usuario.name }} ({{ usuario.email|default:"Sem email" }})&lt;/li&gt;
+        &lt;li&gt;{{ usuario.username }} ({{ usuario.email|default:"Sem email" }})&lt;/li&gt;
     {% empty %}
         &lt;li&gt;Nenhum usuário cadastrado.&lt;/li&gt;
     {% endfor %}
