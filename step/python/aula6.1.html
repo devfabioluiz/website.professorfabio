@@ -652,6 +652,7 @@ def criar_usuario_api(request):
 &lt;form method="post"&gt;
     {% csrf_token %}
     &lt;input type="text" name="username" placeholder="Usuário" required&gt;
+    &lt;input type="email" name="email" placeholder="Email" required&gt;
     &lt;input type="password" name="password" placeholder="Senha" required&gt;
     &lt;input type="password" name="password2" placeholder="Confirmar Senha" required&gt;
     {% if erro %}
