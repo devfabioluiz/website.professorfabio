@@ -281,56 +281,12 @@ git checkout aula6-orm-admin-login
         <h3>Passo 1: ORM do Django</h3>
                 <p>O django possui sua própria shell. No terminal do VSCode digite o seguinte:</p>
                 <div class="code-container">
-                  <pre><code class="language-bash">
-        cd projeto_django_mvt
-        python manage.py shell
-                  </code></pre>
+                  <pre><code class="language-bash">cd projeto_django_mvt</code></pre>
                   <button class="btn-copy">Copiar Código</button>
                 </div>
         </section>
-        <section>
-              <h3>Passo 2: Importando modelos no ORM</h3>
-
-                <p>No shell, importe o model e faça testes:</p>
-                <div class="code-container">
-                  <pre><code class="language-python">
-        from usuarios.models import Usuario
-
-        # CREATE - Criar um novo usuário
-        usuario = Usuario.objects.create(nome="Ana Silva")
-        print(usuario.id, usuario.nome)
-
-        # READ - Listar todos os usuários
-        todos = Usuario.objects.all()
-        for u in todos:
-            print(f"ID: {u.id}, Nome: {u.nome}")
-
-        # READ - Filtrar usuários
-        ana = Usuario.objects.filter(nome__icontains="Ana")
-        print(ana.count())
-
-        # READ - Buscar um único usuário
-        usuario = Usuario.objects.get(id=1)
-        print(usuario.nome)
-
-        # UPDATE - Atualizar um usuário
-        usuario = Usuario.objects.get(id=1)
-        usuario.nome = "Ana Carolina"
-        usuario.save()
-
-        # DELETE - Remover um usuário
-        usuario = Usuario.objects.get(id=1)
-        usuario.delete()
-                  </code></pre>
-                  <button class="btn-copy">Copiar Código</button>
-                </div>
-
-                <div class="info-box">
-                  <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
-                </div>
-        </section>
-        <section>
-                <h3>Passo 3: Migrações - Controle de versão do banco</h3>
+         <section>
+                <h3>Passo 2: Migrações - Controle de versão do banco</h3>
                 <p>
               Vamos adicionar novos campos ao model <code>
                 Usuario
@@ -341,33 +297,31 @@ git checkout aula6-orm-admin-login
                   <code>Usuario</code>:
                 </p>
                 <div class="code-container">
-                  <pre><code class="language-python">
-        from django.db import models
-        from django.contrib.auth.models import AbstractUser
-        from django.utils import timezone
+                  <pre><code class="language-python">from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
-        class Usuario(models.Model):
-            nome = models.CharField(max_length=100)
-            email = models.EmailField(unique=True, null=True, blank=True)
-            idade = models.IntegerField(null=True, blank=True)
-            data_cadastro = models.DateTimeField(default=timezone.now)
-            ativo = models.BooleanField(default=True)
-            
-            def __str__(self):
-                return self.nome
+class Usuario(models.Model):
+    nome = models.CharField(max_length=100)
+    email = models.EmailField(unique=True, null=True, blank=True)
+    idade = models.IntegerField(null=True, blank=True)
+    data_cadastro = models.DateTimeField(default=timezone.now)
+    ativo = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.nome
                   </code></pre>
                   <button class="btn-copy">Copiar Código</button>
                 </div>
         </section>
-        <section>
-        <h3>Passo 4: Criar e aplicar migrações</h3>
+         <section>
+        <h3>Passo 3: Criar e aplicar migrações</h3>
                 <div class="code-container">
-                  <pre><code class="language-bash">
-        python manage.py makemigrations
-        python manage.py showmigrations
-        python manage.py sqlmigrate usuarios 0002
-        python manage.py migrate
-                  </code></pre>
+                  <pre><code class="language-bash">python manage.py makemigrations
+python manage.py showmigrations
+python manage.py sqlmigrate usuarios 0002
+python manage.py migrate
+</code></pre>
                   <button class="btn-copy">Copiar Código</button>
                 </div>
 
@@ -407,6 +361,35 @@ git checkout aula6-orm-admin-login
         </table>
         </section>
 
+        <section>
+              <h3>Passo 4: Importando modelos no ORM</h3>
+
+                <p>No shell, importe o model e faça testes:</p>
+                <div class="code-container">
+                  <pre><code class="language-python">from usuarios.models import Usuario
+usuario = Usuario.objects.create(nome="Ana Silva")
+print(usuario.id, usuario.nome)
+todos = Usuario.objects.all()
+for u in todos:
+    print(f"ID: {u.id}, Nome: {u.nome}")
+
+ana = Usuario.objects.filter(nome__icontains="Ana")
+print(ana.count())
+usuario = Usuario.objects.get(id=1)
+print(usuario.nome)
+usuario = Usuario.objects.get(id=1)
+usuario.nome = "Ana Carolina"
+usuario.save()
+usuario = Usuario.objects.get(id=1)
+usuario.delete()
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <div class="info-box">
+                  <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
+                </div>
+        </section>
         <h3>Passo 5: Django Admin</h3>
         <p>
           O Django Admin é uma interface administrativa gerada automaticamente
@@ -416,11 +399,15 @@ git checkout aula6-orm-admin-login
         <div class="code-container">
           <pre><code class="language-bash">
 python manage.py createsuperuser
-# Informe: usuário, email e senha
-# Exemplo: admin / admin@example.com / admin12345678
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <p>
+          # Informe: usuário, email e senha
+        </p>
+          <p>
+          # Exemplo: admin / admin@example.com / admin12345678
+        </p>
 
         <h3>Passo 6: Registrar o model no admin</h3>
         <p>Arquivo: <code>usuarios/admin.py</code></p>
@@ -570,7 +557,7 @@ def criar_usuario_api(request):
         if serializer.is_valid():
             serializer.save()
             return redirect('listar_template')
-    return render(request, 'usuarios/criar_usuario.html')
+    return render(request, 'usuarios/register.html')
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -703,25 +690,23 @@ def criar_usuario_api(request):
         </p>
         <p><strong>Arquivo:</strong> <code>usuarios/templates/usuarios/lista.html</code></p>
         <div class="code-container">
-          <pre><code class="language-html">
-{% extends 'usuarios/base.html' %}
+          <pre><code class="language-html">{% extends 'usuarios/base.html' %}
 
 {% block title %}Lista de Usuários{% endblock %}
 
 {% block content %}
-&lt;h1&gt;Usuários cadastrados&lt;/h1&gt;
+<h1>Usuários cadastrados</h1>
 
-&lt;ul&gt;
+<ul>
     {% for usuario in usuarios %}
-        &lt;li&gt;{{ usuario.nome }} ({{ usuario.email|default:"Sem email" }})&lt;/li&gt;
+        <li>{{ usuario.nome }} ({{ usuario.email|default:"Sem email" }})</li>
     {% empty %}
-        &lt;li&gt;Nenhum usuário cadastrado.&lt;/li&gt;
+        <li>Nenhum usuário cadastrado.</li>
     {% endfor %}
-&lt;/ul&gt;
+</ul>
 
-&lt;a href="{% url 'criar_usuario_api' %}" class="btn" style="margin-top: 20px;"&gt;Adicionar Usuário via API&lt;/a&gt;
-{% endblock %}
-          </code></pre>
+<a href="{% url 'register' %}" class="btn" style="margin-top: 20px;">Adicionar Usuário via API</a>
+{% endblock %}</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -750,10 +735,6 @@ urlpatterns = [
 
         <h3>Passo 15: Testar tudo</h3>
         <ol>
-          <li>Execute as migrações: <code>python manage.py migrate</code></li>
-          <li>
-            Crie um superusuário: <code>python manage.py createsuperuser</code>
-          </li>
           <li>Inicie o servidor: <code>python manage.py runserver</code></li>
           <li>
             Acesse <code>http://localhost:8000/</code> → será redirecionado para
