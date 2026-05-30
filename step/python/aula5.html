@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula - Fundamentos Avançados de Python - IT Step</title>
+    <title>Aula 5 - Fundamentos Avançados de Python - IT Step</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -34,7 +34,7 @@
         background-color: #f2f2f2;
       }
     </style>
-  
+
     <style>
       body.dark-mode {
         background-color: #121212;
@@ -76,14 +76,10 @@
         z-index: 999;
       }
     </style>
+  </head>
 
-</head>
-
-  <body class='dark-mode'>
-
-    <button class="theme-toggle" onclick="toggleTheme()">
-      Alternar Tema
-    </button>
+  <body class="dark-mode">
+    <button class="theme-toggle" onclick="toggleTheme()">Alternar Tema</button>
 
     <header>
       <h1>Aula 5</h1>
@@ -95,9 +91,11 @@
       <section>
         <h2>Objetivo da aula</h2>
         <p>
-          Nesta aula, vamos estudar recursos importantes da linguagem Python que aparecem em projetos reais de backend,
-          automações, APIs, análise de dados e organização de código. O objetivo é compreender como tuplas, dicionários,
-          funções lambda, geradores, closures e decoradores ajudam a escrever códigos mais limpos, reutilizáveis e eficientes.
+          Nesta aula, vamos estudar recursos importantes da linguagem Python que
+          aparecem em projetos reais de backend, automações, APIs, análise de
+          dados e organização de código. O objetivo é compreender como tuplas,
+          dicionários, funções lambda, geradores, closures e decoradores ajudam
+          a escrever códigos mais limpos, reutilizáveis e eficientes.
         </p>
 
         <h3>Conteúdos da aula</h3>
@@ -115,8 +113,9 @@
         <h2>1. Tuplas</h2>
 
         <p>
-          Tuplas são coleções ordenadas e imutáveis. Isso significa que seus valores podem ser acessados por índice,
-          mas não podem ser alterados depois da criação.
+          Tuplas são coleções ordenadas e imutáveis. Isso significa que seus
+          valores podem ser acessados por índice, mas não podem ser alterados
+          depois da criação.
         </p>
 
         <h3>Características das tuplas</h3>
@@ -155,7 +154,8 @@ print(perfil)
 
         <h3>Exemplo prático: retorno de função</h3>
         <p>
-          Uma função pode retornar uma tupla quando precisamos devolver mais de uma informação.
+          Uma função pode retornar uma tupla quando precisamos devolver mais de
+          uma informação.
         </p>
 
         <div class="code-container">
@@ -178,13 +178,15 @@ print(texto)
         <h2>2. Dicionários</h2>
 
         <p>
-          Dicionários são estruturas que armazenam dados no formato chave e valor. Eles são muito usados para representar
-          objetos, usuários, produtos, respostas de APIs e configurações de sistemas.
+          Dicionários são estruturas que armazenam dados no formato chave e
+          valor. Eles são muito usados para representar objetos, usuários,
+          produtos, respostas de APIs e configurações de sistemas.
         </p>
 
         <h3>Mapas associativos</h3>
         <p>
-          Um dicionário funciona como um mapa associativo porque associa uma chave a um valor.
+          Um dicionário funciona como um mapa associativo porque associa uma
+          chave a um valor.
         </p>
 
         <div class="code-container">
@@ -203,8 +205,9 @@ print(usuario["profissao"])
 
         <h3>Tabelas hash</h3>
         <p>
-          Internamente, dicionários utilizam uma estrutura baseada em tabela hash. Isso permite localizar valores de forma
-          rápida a partir de uma chave.
+          Internamente, dicionários utilizam uma estrutura baseada em tabela
+          hash. Isso permite localizar valores de forma rápida a partir de uma
+          chave.
         </p>
 
         <div class="code-container">
@@ -304,8 +307,9 @@ else:
         <h2>3. Funções Lambda</h2>
 
         <p>
-          Funções lambda são funções anônimas, geralmente usadas para operações simples e rápidas. Elas são comuns em
-          ordenações, filtros e transformações de listas.
+          Funções lambda são funções anônimas, geralmente usadas para operações
+          simples e rápidas. Elas são comuns em ordenações, filtros e
+          transformações de listas.
         </p>
 
         <h3>Função comum</h3>
@@ -374,8 +378,9 @@ print(usuarios_ordenados)
         <h2>4. Geradores</h2>
 
         <p>
-          Geradores são funções que produzem valores sob demanda. Em vez de retornar todos os dados de uma vez, eles usam
-          a palavra-chave yield para entregar um valor por vez.
+          Geradores são funções que produzem valores sob demanda. Em vez de
+          retornar todos os dados de uma vez, eles usam a palavra-chave yield
+          para entregar um valor por vez.
         </p>
 
         <h3>Exemplo básico</h3>
@@ -410,7 +415,8 @@ for n in gerar_numeros(5):
 
         <h3>Comparação com lista</h3>
         <p>
-          Uma lista cria todos os valores na memória. Um gerador cria os valores aos poucos.
+          Uma lista cria todos os valores na memória. Um gerador cria os valores
+          aos poucos.
         </p>
 
         <div class="code-container">
@@ -429,8 +435,9 @@ print(type(gerador))
         <h2>5. Closures</h2>
 
         <p>
-          Closure acontece quando uma função interna guarda acesso às variáveis da função externa, mesmo depois que a função
-          externa terminou sua execução.
+          Closure acontece quando uma função interna guarda acesso às variáveis
+          da função externa, mesmo depois que a função externa terminou sua
+          execução.
         </p>
 
         <h3>Exemplo básico</h3>
@@ -473,8 +480,9 @@ print(validar_senha("abc12345"))
         <h2>6. Decoradores</h2>
 
         <p>
-          Decoradores permitem modificar ou adicionar comportamento a uma função sem alterar diretamente o código principal
-          dela. Eles são muito usados em APIs, autenticação, logs, permissões e validações.
+          Decoradores permitem modificar ou adicionar comportamento a uma função
+          sem alterar diretamente o código principal dela. Eles são muito usados
+          em APIs, autenticação, logs, permissões e validações.
         </p>
 
         <h3>Exemplo básico</h3>
@@ -557,14 +565,20 @@ print(acessar_painel(usuario2))
 
         <h3>Passo 0 - Versionamento com Git</h3>
         <p>
-          Antes de iniciar os exercícios, vamos criar uma branch para registrar a aula no repositório.
+          Antes de iniciar os exercícios, vamos criar uma branch para registrar
+          a aula no repositório.
         </p>
 
         <h3>Criar nova branch no GitHub</h3>
         <ul>
-          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>
+            Acesse o repositório <strong>projeto-python-step</strong> no GitHub
+          </li>
           <li>No seletor de branch, clique em <strong>main</strong></li>
-          <li>Digite o nome da nova branch: <strong>aula5-fundamentos-avancados-python</strong></li>
+          <li>
+            Digite o nome da nova branch:
+            <strong>aula5-fundamentos-avancados-python</strong>
+          </li>
           <li>Clique em <strong>Create branch</strong></li>
           <li>Abra o projeto no VS Code</li>
           <li>No terminal do VS Code, execute o comando abaixo</li>
@@ -579,8 +593,14 @@ git fetch
 
         <h3>Acessar a branch pelo VS Code</h3>
         <ul>
-          <li>No canto inferior esquerdo do VS Code, clique no nome da branch atual</li>
-          <li>Selecione a branch <strong>aula5-fundamentos-avancados-python</strong></li>
+          <li>
+            No canto inferior esquerdo do VS Code, clique no nome da branch
+            atual
+          </li>
+          <li>
+            Selecione a branch
+            <strong>aula5-fundamentos-avancados-python</strong>
+          </li>
           <li>Confirme que o VS Code trocou para a branch correta</li>
         </ul>
 
@@ -603,7 +623,10 @@ type nul > main.py
 
         <h3>Passo 3 - Criar exemplos por etapa</h3>
         <ul>
-          <li>No arquivo <strong>main.py</strong>, primeiro crie exemplos de tuplas</li>
+          <li>
+            No arquivo <strong>main.py</strong>, primeiro crie exemplos de
+            tuplas
+          </li>
           <li>Depois crie exemplos de dicionários</li>
           <li>Depois teste funções lambda com listas</li>
           <li>Depois crie um gerador usando yield</li>
@@ -684,7 +707,8 @@ git push origin aula5-fundamentos-avancados-python
           <div class="question">
             <h3>1. Crie uma tupla com os dados de um produto</h3>
             <p>
-              A tupla deve conter nome, preço e quantidade. Depois, desempacote os valores em variáveis e exiba o total da compra.
+              A tupla deve conter nome, preço e quantidade. Depois, desempacote
+              os valores em variáveis e exiba o total da compra.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -709,7 +733,8 @@ print(f"Total: R$ {total}")
           <div class="question">
             <h3>2. Crie um dicionário para representar um aluno</h3>
             <p>
-              O dicionário deve ter nome, notas e situação. Calcule a média e informe se o aluno foi aprovado ou reprovado.
+              O dicionário deve ter nome, notas e situação. Calcule a média e
+              informe se o aluno foi aprovado ou reprovado.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -739,7 +764,8 @@ print(aluno)
           <div class="question">
             <h3>3. Use lambda para filtrar produtos caros</h3>
             <p>
-              Crie uma lista de produtos e filtre apenas os produtos com preço maior que 1000.
+              Crie uma lista de produtos e filtre apenas os produtos com preço
+              maior que 1000.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -765,7 +791,8 @@ print(produtos_caros)
           <div class="question">
             <h3>4. Crie um gerador de números pares</h3>
             <p>
-              O gerador deve receber um limite e retornar apenas números pares até esse limite.
+              O gerador deve receber um limite e retornar apenas números pares
+              até esse limite.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -791,7 +818,8 @@ for par in gerar_pares(10):
           <div class="question">
             <h3>5. Crie uma closure para aplicar desconto</h3>
             <p>
-              A função externa deve receber o percentual de desconto. A função interna deve receber o preço e retornar o valor com desconto.
+              A função externa deve receber o percentual de desconto. A função
+              interna deve receber o preço e retornar o valor com desconto.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -817,7 +845,8 @@ print(desconto_10(1000))
           <div class="question">
             <h3>6. Crie um decorador de log</h3>
             <p>
-              O decorador deve mostrar uma mensagem antes e depois da execução de uma função.
+              O decorador deve mostrar uma mensagem antes e depois da execução
+              de uma função.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -856,12 +885,11 @@ cadastrar_usuario("Fabio")
 
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="../../scripts/check-gabarito.js"></script>
-  
+
     <script>
       function toggleTheme() {
         document.body.classList.toggle("dark-mode");
       }
     </script>
-
-</body>
+  </body>
 </html>
