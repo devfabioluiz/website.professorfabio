@@ -54,9 +54,9 @@
   </head>
   <body>
     <header>
-      <h1>aula 6</h1>
-      <h4 class="text-center">Complemento da Aula 4: ORM, Admin e Autenticação</h4>
-      <h4 class="text-center">Aprofundando no Django com Models, Migrações, Django Admin e Sistema de Login</h4>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">ORM, Admin e Autenticação em Django</h4>
     </header>
 
     <main class="container">
@@ -87,72 +87,108 @@
           </li>
         </ul>
 
-        <h2>Passo a passo: Projeto completo com ORM, Admin e Login</h2>
+        <h2>ORM</h2>
+        <section>
+        <h3>O que é ORM?</h3>
+        <p>
+          <strong>ORM (Object-Relational Mapping)</strong> é uma técnica que permite
+          manipular bancos de dados relacionais usando classes e objetos da
+          linguagem de programação, em vez de escrever SQL diretamente.
+        </p>
 
-        <h3>Passo 0 — Criar uma branch no GitHub</h3>
+        <p>
+          Em outras palavras, o ORM traduz automaticamente:
+        </p>
+
         <ul>
           <li>
-            No VS Code, abra o terminal na opção Command Prompt e execute o
-            seguinte comando:
+            <strong>Classe Python</strong> → <strong>Tabela no banco de dados</strong>
+          </li>
+          <li>
+            <strong>Atributo da classe</strong> → <strong>Coluna da tabela</strong>
+          </li>
+          <li>
+            <strong>Objeto (instância)</strong> → <strong>Linha (registro) da tabela</strong>
+          </li>
+          <li>
+            <strong>Métodos como <code>.save()</code>, <code>.filter()</code></strong> →
+            <strong>Comandos SQL como INSERT, SELECT</strong>
           </li>
         </ul>
+         <h3>Vantagens do ORM</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Vantagem</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Produtividade</td>
+              <td>Escreve menos código, mais rápido</td>
+            </tr>
+            <tr>
+              <td>Segurança</td>
+              <td>Proteção automática contra SQL Injection</td>
+            </tr>
+            <tr>
+              <td>Portabilidade</td>
+              <td>Troca de banco (SQLite → PostgreSQL) sem reescrever queries</td>
+            </tr>
+            <tr>
+              <td>Manutenibilidade</td>
+              <td>Código Python puro, mais fácil de entender e manter</td>
+            </tr>
+            <tr>
+              <td>Abstração</td>
+              <td>Você pensa em objetos, não em tabelas e joins</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-git checkout aula4-mvt-django
-git fetch
-git checkout aula6-orm-admin-login
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h2>Parte 1: ORM do Django</h2>
-        <p>No terminal do VSCode digite o seguinte:</p>
-        <div class="code-container">
-          <pre><code class="language-bash">
-cd projeto_django_mvt
-python manage.py shell
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>No shell, importe o model e faça testes:</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-from usuarios.models import Usuario
-
-# CREATE - Criar um novo usuário
-usuario = Usuario.objects.create(nome="Ana Silva")
-print(usuario.id, usuario.nome)
-
-# READ - Listar todos os usuários
-todos = Usuario.objects.all()
-for u in todos:
-    print(f"ID: {u.id}, Nome: {u.nome}")
-
-# READ - Filtrar usuários
-ana = Usuario.objects.filter(nome__icontains="Ana")
-print(ana.count())
-
-# READ - Buscar um único usuário
-usuario = Usuario.objects.get(id=1)
-print(usuario.nome)
-
-# UPDATE - Atualizar um usuário
-usuario = Usuario.objects.get(id=1)
-usuario.nome = "Ana Carolina"
-usuario.save()
-
-# DELETE - Remover um usuário
-usuario = Usuario.objects.get(id=1)
-usuario.delete()
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="info-box">
-          <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
-        </div>
+          <h3>Comparação: SQL puro vs ORM (Django)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Operação</th>
+              <th>SQL Puro</th>
+              <th>Django ORM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Criar tabela</td>
+              <td><code>CREATE TABLE produto (...)</code></td>
+              <td>Define a classe <code>class Produto(models.Model)</code></td>
+            </tr>
+            <tr>
+              <td>Inserir registro</td>
+              <td><code>INSERT INTO produto VALUES (...)</code></td>
+              <td><code>Produto.objects.create(...)</code></td>
+            </tr>
+            <tr>
+              <td>Buscar todos</td>
+              <td><code>SELECT * FROM produto</code></td>
+              <td><code>Produto.objects.all()</code></td>
+            </tr>
+            <tr>
+              <td>Filtrar</td>
+              <td><code>SELECT * FROM produto WHERE preco > 100</code></td>
+              <td><code>Produto.objects.filter(preco__gt=100)</code></td>
+            </tr>
+            <tr>
+              <td>Atualizar</td>
+              <td><code>UPDATE produto SET preco=50 WHERE id=1</code></td>
+              <td><code>produto.preco = 50; produto.save()</code></td>
+            </tr>
+            <tr>
+              <td>Deletar</td>
+              <td><code>DELETE FROM produto WHERE id=1</code></td>
+              <td><code>produto.delete()</code></td>
+            </tr>
+          </tbody>
+        </table>
 
         <h3>Principais métodos do ORM</h3>
         <table>
@@ -206,56 +242,143 @@ usuario.delete()
             </tr>
           </tbody>
         </table>
+              
+        </section>
 
-        <h2>Parte 2: Migrações - Controle de versão do banco</h2>
+        <h2>Migrações</h2>
         <p>
-          Migrações são a forma do Django de propagar mudanças nos models para o
-          esquema do banco de dados.
+          Migrações são arquivos gerados pelo Django que contêm as instruções
+          para criar ou alterar tabelas no banco. Elas são a "ponte" entre o
+          Model Python e o banco de dados real.
         </p>
+        <p><strong>Fluxo de migração:</strong></p>
+        <ol>
+          <li>Você cria ou modifica um <code>Model</code> em <code>models.py</code></li>
+          <li>Executa <code>python manage.py makemigrations</code> → gera o arquivo de migração</li>
+          <li>Executa <code>python manage.py migrate</code> → aplica as mudanças no banco</li>
+        </ol>
 
-        <h3>Vamos adicionar novos campos ao model Usuario</h3>
-        <p>
-          Abra o arquivo <code>usuarios/models.py</code> e atualize a classe
-          <code>Usuario</code>:
+
+        <h2>Passo a passo: Projeto completo com ORM, Admin e Login</h2>
+        <section>
+        <h3>Passo 0 — Criar uma branch no GitHub</h3>
+        <p>Como iremos continuar trabalhando com o Django, devemos entrar na branch da aula 4.
         </p>
+          <p>
+        No VS Code, abra o terminal na opção Command Prompt e execute o
+        seguinte comando:
+      </p>
+
         <div class="code-container">
-          <pre><code class="language-python">
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-
-class Usuario(models.Model):
-    nome = models.CharField(max_length=100)
-    email = models.EmailField(unique=True, null=True, blank=True)
-    idade = models.IntegerField(null=True, blank=True)
-    data_cadastro = models.DateTimeField(default=timezone.now)
-    ativo = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return self.nome
+          <pre><code class="language-bash">git checkout aula4-mvt-django
+git fetch
+git checkout aula6-orm-admin-login
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        </section>
+        <section>
+        <h3>Passo 1: ORM do Django</h3>
+                <p>O django possui sua própria shell. No terminal do VSCode digite o seguinte:</p>
+                <div class="code-container">
+                  <pre><code class="language-bash">
+        cd projeto_django_mvt
+        python manage.py shell
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+        </section>
+        <section>
+              <h3>Passo 2: Importando modelos no ORM</h3>
 
-        <h3>Criar e aplicar migrações</h3>
-        <div class="code-container">
-          <pre><code class="language-bash">
-python manage.py makemigrations
-python manage.py showmigrations
-python manage.py sqlmigrate usuarios 0002
-python manage.py migrate
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+                <p>No shell, importe o model e faça testes:</p>
+                <div class="code-container">
+                  <pre><code class="language-python">
+        from usuarios.models import Usuario
 
-        <div class="warning-box">
-          <strong>⚠️ Atenção:</strong> Se você adicionar um campo com
-          <code>null=False</code> e sem valor padrão, o Django vai pedir para
-          você fornecer um valor padrão. Por isso usamos
-          <code>null=True, blank=True</code> nos campos novos.
-        </div>
+        # CREATE - Criar um novo usuário
+        usuario = Usuario.objects.create(nome="Ana Silva")
+        print(usuario.id, usuario.nome)
 
-        <h3>Comandos úteis para migrações</h3>
+        # READ - Listar todos os usuários
+        todos = Usuario.objects.all()
+        for u in todos:
+            print(f"ID: {u.id}, Nome: {u.nome}")
+
+        # READ - Filtrar usuários
+        ana = Usuario.objects.filter(nome__icontains="Ana")
+        print(ana.count())
+
+        # READ - Buscar um único usuário
+        usuario = Usuario.objects.get(id=1)
+        print(usuario.nome)
+
+        # UPDATE - Atualizar um usuário
+        usuario = Usuario.objects.get(id=1)
+        usuario.nome = "Ana Carolina"
+        usuario.save()
+
+        # DELETE - Remover um usuário
+        usuario = Usuario.objects.get(id=1)
+        usuario.delete()
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <div class="info-box">
+                  <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
+                </div>
+        </section>
+        <section>
+                <h3>Passo 3: Migrações - Controle de versão do banco</h3>
+                <p>
+              Vamos adicionar novos campos ao model <code>
+                Usuario
+              </code>
+                </p>
+                <p>
+                  Abra o arquivo <code>usuarios/models.py</code> e atualize a classe
+                  <code>Usuario</code>:
+                </p>
+                <div class="code-container">
+                  <pre><code class="language-python">
+        from django.db import models
+        from django.contrib.auth.models import AbstractUser
+        from django.utils import timezone
+
+        class Usuario(models.Model):
+            nome = models.CharField(max_length=100)
+            email = models.EmailField(unique=True, null=True, blank=True)
+            idade = models.IntegerField(null=True, blank=True)
+            data_cadastro = models.DateTimeField(default=timezone.now)
+            ativo = models.BooleanField(default=True)
+            
+            def __str__(self):
+                return self.nome
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+        </section>
+        <section>
+        <h3>Passo 4: Criar e aplicar migrações</h3>
+                <div class="code-container">
+                  <pre><code class="language-bash">
+        python manage.py makemigrations
+        python manage.py showmigrations
+        python manage.py sqlmigrate usuarios 0002
+        python manage.py migrate
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <div class="warning-box">
+                  <strong>⚠️ Atenção:</strong> Se você adicionar um campo com
+                  <code>null=False</code> e sem valor padrão, o Django vai pedir para
+                  você fornecer um valor padrão. Por isso usamos
+                  <code>null=True, blank=True</code> nos campos novos.
+                </div>
+
+        <h4>Comandos úteis para migrações</h4>
         <table>
           <thead>
             <tr>
@@ -282,14 +405,14 @@ python manage.py migrate
             </tr>
           </tbody>
         </table>
+        </section>
 
-        <h2>Parte 3: Django Admin</h2>
+        <h3>Passo 5: Django Admin</h3>
         <p>
           O Django Admin é uma interface administrativa gerada automaticamente
           que permite gerenciar os dados da aplicação.
         </p>
 
-        <h3>Passo 1: Criar um superusuário</h3>
         <div class="code-container">
           <pre><code class="language-bash">
 python manage.py createsuperuser
@@ -299,7 +422,7 @@ python manage.py createsuperuser
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2: Registrar o model no admin</h3>
+        <h3>Passo 6: Registrar o model no admin</h3>
         <p>Arquivo: <code>usuarios/admin.py</code></p>
         <div class="code-container">
           <pre><code class="language-python">
@@ -340,7 +463,7 @@ print(f"Novo nome: {usuario.nome}")
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 3: Acessar o admin</h3>
+        <h3>Passo 7: Acessar o admin</h3>
         <ul>
           <li>Inicie o servidor: <code>python manage.py runserver</code></li>
           <li>Acesse: <code>http://localhost:8000/admin/</code></li>
@@ -354,14 +477,14 @@ print(f"Novo nome: {usuario.nome}")
           e até ações personalizadas.
         </div>
 
-        <h2>Parte 4: Sistema de Autenticação e Login</h2>
+        <h3>Passo 8: Criar as views de autenticação</h3>
         <p>
           O Django possui um sistema de autenticação completo pronto para uso.
           Vamos criar páginas de login, logout e proteger rotas.
         </p>
 
-        <h3>Passo 1: Criar as views de autenticação</h3>
-        <p>Arquivo: <code>usuarios/views.py</code> (adicione ao final)</p>
+        <p>Arquivo: <code>usuarios/views.py</code>
+        </p>
         <div class="code-container">
           <pre><code class="language-python">
 from django.contrib.auth import authenticate, login, logout
@@ -424,7 +547,15 @@ def listar_template(request):
           definida em <code>login_url</code>.
         </div>
 
-        <h3>Passo 2: Criar templates de autenticação</h3>
+        <h3>Passo 9: Criar templates de autenticação</h3>
+        <p>
+          Dentro da pasta <code>usuarios/templates</code> crie os seguintes arquivos html:
+        </p>
+        <ul>
+          <li>base.html</li>
+          <li>login.html</li>
+          <li>register.html</li>
+        </ul>
         <p>
           Primeiro, crie o template base que será usado pelos outros templates:
         </p>

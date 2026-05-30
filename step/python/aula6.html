@@ -33,116 +33,12 @@
   </head>
   <body>
     <header>
-      <h1>aula 6</h1>
+      <h1>Aula 6</h1>
       <h4 class="text-center">Django ORM, Admin e Autenticação</h4>
       <h4 class="text-center">Manipulando banco de dados, painel administrativo e sistema de login</h4>
     </header>
 
     <main class="container">
-      <section>
-        <h2>O que é ORM?</h2>
-        <p>
-          <strong>ORM (Object-Relational Mapping)</strong> é uma técnica que permite
-          manipular bancos de dados relacionais usando classes e objetos da
-          linguagem de programação, em vez de escrever SQL diretamente.
-        </p>
-
-        <p>
-          Em outras palavras, o ORM traduz automaticamente:
-        </p>
-
-        <ul>
-          <li>
-            <strong>Classe Python</strong> → <strong>Tabela no banco de dados</strong>
-          </li>
-          <li>
-            <strong>Atributo da classe</strong> → <strong>Coluna da tabela</strong>
-          </li>
-          <li>
-            <strong>Objeto (instância)</strong> → <strong>Linha (registro) da tabela</strong>
-          </li>
-          <li>
-            <strong>Métodos como <code>.save()</code>, <code>.filter()</code></strong> →
-            <strong>Comandos SQL como INSERT, SELECT</strong>
-          </li>
-        </ul>
-
-        <h3>Vantagens do ORM</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Vantagem</th>
-              <th>Descrição</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Produtividade</td>
-              <td>Escreve menos código, mais rápido</td>
-            </tr>
-            <tr>
-              <td>Segurança</td>
-              <td>Proteção automática contra SQL Injection</td>
-            </tr>
-            <tr>
-              <td>Portabilidade</td>
-              <td>Troca de banco (SQLite → PostgreSQL) sem reescrever queries</td>
-            </tr>
-            <tr>
-              <td>Manutenibilidade</td>
-              <td>Código Python puro, mais fácil de entender e manter</td>
-            </tr>
-            <tr>
-              <td>Abstração</td>
-              <td>Você pensa em objetos, não em tabelas e joins</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>Comparação: SQL puro vs ORM (Django)</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Operação</th>
-              <th>SQL Puro</th>
-              <th>Django ORM</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Criar tabela</td>
-              <td><code>CREATE TABLE produto (...)</code></td>
-              <td>Define a classe <code>class Produto(models.Model)</code></td>
-            </tr>
-            <tr>
-              <td>Inserir registro</td>
-              <td><code>INSERT INTO produto VALUES (...)</code></td>
-              <td><code>Produto.objects.create(...)</code></td>
-            </tr>
-            <tr>
-              <td>Buscar todos</td>
-              <td><code>SELECT * FROM produto</code></td>
-              <td><code>Produto.objects.all()</code></td>
-            </tr>
-            <tr>
-              <td>Filtrar</td>
-              <td><code>SELECT * FROM produto WHERE preco > 100</code></td>
-              <td><code>Produto.objects.filter(preco__gt=100)</code></td>
-            </tr>
-            <tr>
-              <td>Atualizar</td>
-              <td><code>UPDATE produto SET preco=50 WHERE id=1</code></td>
-              <td><code>produto.preco = 50; produto.save()</code></td>
-            </tr>
-            <tr>
-              <td>Deletar</td>
-              <td><code>DELETE FROM produto WHERE id=1</code></td>
-              <td><code>produto.delete()</code></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
       <section>
         <h2>Django ORM na prática</h2>
 
@@ -191,19 +87,6 @@ class Produto(models.Model):
             <tr><td><code>ManyToManyField(Model)</code></td><td>Relacionamento N:N</td><td>Tabela intermediária</td></tr>
           </tbody>
         </table>
-
-        <h3>3. Migrações</h3>
-        <p>
-          Migrações são arquivos gerados pelo Django que contêm as instruções
-          para criar ou alterar tabelas no banco. Elas são a "ponte" entre o
-          Model Python e o banco de dados real.
-        </p>
-        <p><strong>Fluxo de migração:</strong></p>
-        <ol>
-          <li>Você cria ou modifica um <code>Model</code> em <code>models.py</code></li>
-          <li>Executa <code>python manage.py makemigrations</code> → gera o arquivo de migração</li>
-          <li>Executa <code>python manage.py migrate</code> → aplica as mudanças no banco</li>
-        </ol>
 
         <h3>4. CRUD completo com Django ORM</h3>
         <p><strong>CREATE (Criar)</strong></p>
