@@ -412,41 +412,9 @@ python manage.py createsuperuser
         <h3>Passo 6: Registrar o model no admin</h3>
         <p>Arquivo: <code>usuarios/admin.py</code></p>
         <div class="code-container">
-          <pre><code class="language-python">
-from usuarios.models import Usuario
-
-# CREATE - Criar um novo usuário
-usuario = Usuario.objects.create(nome="Ana Silva")
-print(f"Criado: ID={usuario.id}, Nome={usuario.nome}")
-
-# READ - Listar todos os usuários
-print("\n--- Lista de usuários ---")
-todos = Usuario.objects.all()
-for u in todos:
-    print(f"ID: {u.id}, Nome: {u.nome}")
-
-# READ - Filtrar usuários
-print("\n--- Filtrando ---")
-ana = Usuario.objects.filter(nome__icontains="Ana")
-print(f"Encontrados: {ana.count()} usuário(s) com 'Ana' no nome")
-
-# READ - Buscar um específico
-print("\n--- Buscando ID específico ---")
-usuario = Usuario.objects.get(id=usuario.id)
-print(f"Usuário encontrado: {usuario.nome}")
-
-# UPDATE - Atualizar
-print("\n--- Atualizando ---")
-usuario.nome = "Ana Carolina"
-usuario.save()
-print(f"Novo nome: {usuario.nome}")
-
-# DELETE - Remover (comentado para preservar o exemplo)
-# Se executar o delete, os comandos acima não poderão rodar novamente
-# print("\n--- Deletando ---")
-# usuario.delete()
-# print(f"Usuário {usuario.nome} removido!")
-          </code></pre>
+          <pre><code class="language-python">from django.contrib import admin
+from .models import Usuario
+admin.site.register(Usuario)</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
