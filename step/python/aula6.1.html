@@ -473,7 +473,8 @@ print(f"Novo nome: {usuario.nome}")
         <p>Atualize o Arquivo: <code>usuarios/views.py</code>
         </p>
          <div class="code-container">
-          <pre><code class="language-python">from django.shortcuts import render, redirect
+          <pre><code class="language-python">
+            from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
