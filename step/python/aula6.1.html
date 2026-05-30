@@ -364,7 +364,16 @@ python manage.py migrate
         <section>
               <h3>Passo 4: Importando modelos no ORM</h3>
 
-                <p>No shell, importe o model e faça testes:</p>
+              <p>No terminal digite o código abaixo:</p>
+              <div class="code-container">
+                <pre>
+                  <code class="language-bash">python manage.py shell</code>
+                </pre>
+              </div>
+
+              <p>
+                Agora estamos executando o shell do python, nele execute o código de testes abaixo 
+              </p>
                 <div class="code-container">
                   <pre><code class="language-python">from usuarios.models import Usuario
 usuario = Usuario.objects.create(nome="Ana Silva")
