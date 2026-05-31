@@ -64,9 +64,10 @@
         font-size: 3rem;
       }
 
-      .module-card .tech-icon i.devicon-angular-plain.colored {
-        color: #dd1b16 !important;
-      }
+    .module-card .tech-icon i.devicon-angular-plain.colored,
+    #lesson-view .mod-title i.devicon-angular-plain.colored {
+      color: #dd1b16 !important;
+    }
 
       .module-card .tech-name {
         font-size: 1.15rem;
@@ -104,14 +105,22 @@
         background-color: #005bb5;
       }
 
-      #lesson-view .mod-title {
-        color: #273c75;
-        border-bottom: 2px solid #0073e6;
-        padding-bottom: 12px;
-        margin-bottom: 25px;
-        font-size: 1.8rem;
-        text-align: center;
-      }
+    #lesson-view .mod-title {
+      color: #273c75;
+      border-bottom: 2px solid #0073e6;
+      padding-bottom: 12px;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #lesson-view .mod-title i {
+      font-size: 2.2rem;
+    }
 
       #lesson-view .section-title {
         color: #005bb5;
@@ -435,16 +444,17 @@
           ],
         },
         {
-          id: "js-intermediario",
-          name: "JavaScript Intermediário",
+          id: "javascript",
+          name: "JavaScript",
           icon: "devicon-javascript-plain colored",
-          plan: {
-            label: "Plano de Aulas do Curso",
-            href: "./js-intermediario/plano-js-intermediario.html",
-          },
+          plan: null,
           sections: [
             {
-              title: "Aulas",
+              title: "JavaScript Intermediário",
+              plan: {
+                label: "Plano de Aulas do Curso",
+                href: "./js-intermediario/plano-js-intermediario.html",
+              },
               items: [
                 {
                   label: "Aula 1: Objetos Date e String",
@@ -491,31 +501,24 @@
                 },
               ],
             },
-          ],
-        },
-        {
-          id: "js-avancado",
-          name: "JavaScript Avançado",
-          icon: "devicon-javascript-plain colored",
-          plan: {
-            label: "Plano de Aulas do Curso",
-            href: "./js-avancado/plano-js-avancado.html",
-          },
-          sections: [
             {
-              title: "Aulas",
+              title: "JavaScript Avançado",
+              plan: {
+                label: "Plano de Aulas do Curso",
+                href: "./js-avancado/plano-js-avancado.html",
+              },
               items: [
                 {
-                  label: "Aula 1: Trabalhando com JSON",
+                  label: "Aula 11: Trabalhando com JSON",
                   href: "./js-avancado/aula1.html",
                 },
-                { label: "Aula 2: Promises", href: "./js-avancado/aula2.html" },
+                { label: "Aula 12: Promises", href: "./js-avancado/aula2.html" },
                 {
-                  label: "Aula 3: Callback e Programação síncrona e assíncrona",
+                  label: "Aula 13: Callback e Programação síncrona e assíncrona",
                   href: "./js-avancado/aula3.html",
                 },
                 {
-                  label: "Aula 4: Interação com Servidor",
+                  label: "Aula 14: Interação com Servidor",
                   href: "./js-avancado/aula4.html",
                 },
               ],
@@ -534,13 +537,13 @@
             {
               title: "Aulas",
               items: [
-                { label: "Aula 1", href: "./docker-kubernetes/aula1.html" },
-                { label: "Aula 2", href: "./docker-kubernetes/aula2.html" },
-                { label: "Aula 3", href: "./docker-kubernetes/aula3.html" },
-                { label: "Aula 4", href: "./docker-kubernetes/aula4.html" },
-                { label: "Aula 5", href: "./docker-kubernetes/aula5.html" },
-                { label: "Aula 6", href: "./docker-kubernetes/aula6.html" },
-                { label: "Aula 7", href: "./docker-kubernetes/aula7.html" },
+                { label: "Aula 1: Fundamentos do Docker", href: "./docker-kubernetes/aula1.html" },
+                { label: "Aula 2: Trabalhando com Containers Docker", href: "./docker-kubernetes/aula2.html" },
+                { label: "Aula 3: Redes no Docker", href: "./docker-kubernetes/aula3.html" },
+                { label: "Aula 4: Volumes no Docker", href: "./docker-kubernetes/aula4.html" },
+                { label: "Aula 5: Dockerfile", href: "./docker-kubernetes/aula5.html" },
+                { label: "Aula 6: Docker Compose", href: "./docker-kubernetes/aula6.html" },
+                { label: "Aula 7: Kubernetes - Fundamentos e Implantação", href: "./docker-kubernetes/aula7.html" },
               ],
             },
           ],
@@ -603,7 +606,8 @@
         document.getElementById("module-select").style.display = "none";
         document.getElementById("lesson-view").style.display = "block";
 
-        document.getElementById("mod-title").textContent = course.name;
+        document.getElementById("mod-title").innerHTML =
+          '<i class="' + course.icon + '"></i> ' + course.name;
 
         var html = "";
 
@@ -620,6 +624,14 @@
         for (var s = 0; s < course.sections.length; s++) {
           var section = course.sections[s];
           html += '<h3 class="section-title">' + section.title + "</h3>";
+          if (section.plan) {
+            html +=
+              '<ul><li><a href="' +
+              section.plan.href +
+              '">' +
+              section.plan.label +
+              "</a></li></ul>";
+          }
           html += "<ul>";
           for (var i = 0; i < section.items.length; i++) {
             var item = section.items[i];
