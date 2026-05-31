@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -166,13 +166,11 @@
     </style>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="../ceap/indice-ceap.html">CEAP</a></li>
-        <li><a href="./indice-step.html">STEP</a></li>
-        <li><a href="../filosofia/indice-filosofia.html">Filosofia</a></li>
-      </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a class="logo" href="../index.html">professorfabio.site</a></li>
+    </ul>
+  </nav>
 
     <h2 style="margin: 25px 20px 10px 20px; text-align: center">Step</h2>
 
@@ -636,7 +634,7 @@
         if (course.plan) {
           html += '<h3 class="section-title">Plano do Curso</h3>';
           html +=
-            '<ul><li><a href="' +
+            '<ul><li><a class="logo" href="' +
             course.plan.href +
             '">' +
             course.plan.label +
@@ -648,7 +646,7 @@
           html += '<h3 class="section-title">' + section.title + "</h3>";
           if (section.plan) {
             html +=
-              '<ul><li><a href="' +
+              '<ul><li><a class="logo" href="' +
               section.plan.href +
               '">' +
               section.plan.label +
@@ -658,7 +656,7 @@
           for (var i = 0; i < section.items.length; i++) {
             var item = section.items[i];
             html +=
-              '<li><a href="' + item.href + '">' + item.label + "</a></li>";
+              '<li><a class="logo" href="' + item.href + '">' + item.label + "</a></li>";
           }
           html += "</ul>";
         }
