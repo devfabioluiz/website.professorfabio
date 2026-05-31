@@ -7,7 +7,7 @@
   <link href="../estilos/styles.css" rel="stylesheet" />
   <script src="../scripts/script-impressao.js"></script>
   <style>
-    #year-select {
+    #discipline-select {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,54 +16,52 @@
       padding: 20px;
     }
 
-    #year-select h3 {
+    #discipline-select h3 {
       font-size: 1.6rem;
       color: #273c75;
       margin-bottom: 40px;
       text-align: center;
     }
 
-    .year-grid {
+    .discipline-grid {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 25px;
-      max-width: 800px;
+      max-width: 900px;
     }
 
-    .year-card {
+    .discipline-card {
       background: #fff;
       border: 2px solid #2e7d32;
       border-radius: 12px;
-      padding: 35px 40px;
+      padding: 30px 25px;
       width: 200px;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
 
-    .year-card:hover {
+    .discipline-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 25px rgba(46, 125, 50, 0.2);
       background-color: #e8f5e9;
     }
 
-    .year-card .year-icon {
-      font-size: 3.2rem;
-      margin-bottom: 12px;
-      color: #2e7d32;
-      font-weight: bold;
+    .discipline-card .disc-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
 
-    .year-card .year-name {
-      font-size: 1.2rem;
+    .discipline-card .disc-name {
+      font-size: 1.05rem;
       font-weight: bold;
       color: #1b5e20;
       margin-bottom: 6px;
     }
 
-    .year-card .year-subjects {
-      font-size: 0.85rem;
+    .discipline-card .disc-years {
+      font-size: 0.82rem;
       color: #666;
     }
 
@@ -100,9 +98,9 @@
       text-align: center;
     }
 
-    #lesson-view .subject-title {
+    #lesson-view .year-title {
       color: #2e7d32;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       margin: 30px 0 15px 0;
       border-bottom: 2px solid #2e7d32;
       padding-bottom: 8px;
@@ -112,13 +110,6 @@
       color: #005bb5;
       font-size: 1.15rem;
       margin: 18px 0 8px 0;
-    }
-
-    #lesson-view .subsection-title {
-      color: #555;
-      font-size: 1rem;
-      margin: 14px 0 6px 0;
-      font-style: italic;
     }
 
     #lesson-view ul {
@@ -145,9 +136,9 @@
     }
 
     @media only screen and (max-width: 700px) {
-      .year-card {
+      .discipline-card {
         width: 150px;
-        padding: 25px 20px;
+        padding: 20px 15px;
       }
 
       #lesson-view {
@@ -167,26 +158,27 @@
 
   <h2 style="margin: 25px 20px 10px 20px; text-align: center">CEAP</h2>
 
-  <div id="year-select">
-    <h3>Escolha o ano:</h3>
-    <div class="year-grid" id="year-list"></div>
+  <div id="discipline-select">
+    <h3>Escolha a disciplina:</h3>
+    <div class="discipline-grid" id="discipline-list"></div>
   </div>
 
   <div id="lesson-view">
-    <button class="back-btn" onclick="showYears()">&#8592; Voltar</button>
+    <button class="back-btn" onclick="showDisciplines()">&#8592; Voltar</button>
     <h2 class="mod-title" id="mod-title"></h2>
     <div id="mod-content"></div>
   </div>
 
   <script>
-    var years = [
+    var disciplinas = [
       {
-        id: "1ano",
-        name: "1º Ano",
-        basePath: "./primeiro-ano/",
-        subjects: [
+        id: "filosofia",
+        name: "Filosofia",
+        icon: "&#934;",
+        years: [
           {
-            name: "Filosofia",
+            name: "1º Ano",
+            basePath: "./primeiro-ano/",
             sections: [
               {
                 title: "Plano do Curso",
@@ -228,7 +220,58 @@
             ]
           },
           {
-            name: "Laboratório de Ciências Humanas e Sociais",
+            name: "3º Ano",
+            basePath: "./terceiro-ano/",
+            sections: [
+              {
+                title: "Plano do Curso",
+                items: [
+                  { label: "Plano de aulas de Filosofia", href: "./filosofia/plano-e-orientacoes/plano-filosofia-3-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./filosofia/plano-e-orientacoes/orientacoes-filo-1-tri-3-ano.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 8: Concepção de Estado na visão de Hobbes, Aristóteles e Iluministas", href: "./filosofia/aulas/aula1.html" },
+                  { label: "Aula 9: O Estado e o Capitalismo para Smith e Marx", href: "./filosofia/aulas/aula2.html" },
+                  { label: "Aula 10: Foucault, Mbembe e a concepção de Poder e Biopolítica", href: "./filosofia/aulas/aula3.html" }
+                ]
+              },
+              {
+                title: "Aulas - 2º Trimestre",
+                items: [
+                  { label: "Aula 11: Preparatório ENEM - Parte 1: Dos Pré-Socráticos a Platão", href: "./filosofia/aulas/aula4.html" },
+                  { label: "Aula 12: Preparatório ENEM - Parte 2: Aristóteles e Helenismo", href: "./filosofia/aulas/aula5.html" },
+                  { label: "Aula 13: Preparatório ENEM - Parte 3: Filosofia Medieval", href: "./filosofia/aulas/aula6.html" },
+                  { label: "Aula 14: Preparatório ENEM - Parte 4: Filosofia Moderna", href: "./filosofia/aulas/aula7.html" },
+                  { label: "Aula 15: Preparatório ENEM - Parte 5: Filosofia Contemporânea", href: "./filosofia/aulas/aula8.html" }
+                ]
+              },
+              {
+                title: "Aulas - 3º Trimestre",
+                items: [
+                  { label: "Aula 16: Os dilemas contemporâneos no mundo do trabalho", href: "./filosofia/aulas/aula8.html" },
+                  { label: "Aula 17: O trabalho para Karl Marx e Hannah Arendt", href: "./filosofia/aulas/aula9.html" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "laboratorio",
+        name: "Laboratório de Ciências Humanas",
+        icon: "&#127963;",
+        years: [
+          {
+            name: "1º Ano",
+            basePath: "./primeiro-ano/",
             sections: [
               {
                 title: "Plano do Curso",
@@ -261,12 +304,13 @@
         ]
       },
       {
-        id: "2ano",
-        name: "2º Ano",
-        basePath: "./segundo-ano/",
-        subjects: [
+        id: "sociologia",
+        name: "Sociologia",
+        icon: "&#128101;",
+        years: [
           {
-            name: "Sociologia",
+            name: "2º Ano",
+            basePath: "./segundo-ano/",
             sections: [
               {
                 title: "Plano do Curso",
@@ -303,9 +347,17 @@
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        id: "conectando",
+        name: "Conectando + Pesquisa",
+        icon: "&#128279;",
+        years: [
           {
-            name: "Conectando Indivíduo, Sociedade e Tecnologia + Pesquisa, Inovação e Tecnologia",
+            name: "2º Ano",
+            basePath: "./segundo-ano/",
             sections: [
               {
                 title: "Planos de Aula",
@@ -332,126 +384,90 @@
             ]
           }
         ]
-      },
-      {
-        id: "3ano",
-        name: "3º Ano",
-        basePath: "./terceiro-ano/",
-        subjects: [
-          {
-            name: "Filosofia",
-            sections: [
-              {
-                title: "Plano do Curso",
-                items: [
-                  { label: "Plano de aulas de Filosofia", href: "./filosofia/plano-e-orientacoes/plano-filosofia-3-ano.html" }
-                ]
-              },
-              {
-                title: "Orientações das Avaliações",
-                items: [
-                  { label: "1º Trimestre", href: "./filosofia/plano-e-orientacoes/orientacoes-filo-1-tri-3-ano.html" }
-                ]
-              },
-              {
-                title: "Aulas - 1º Trimestre",
-                items: [
-                  { label: "Aula 1: Concepção de Estado na visão de Hobbes, Aristóteles e Iluministas", href: "./filosofia/aulas/aula1.html" },
-                  { label: "Aula 2: O Estado e o Capitalismo para Smith e Marx", href: "./filosofia/aulas/aula2.html" },
-                  { label: "Aula 3: Foucault, Mbembe e a concepção de Poder e Biopolítica", href: "./filosofia/aulas/aula3.html" }
-                ]
-              },
-              {
-                title: "Aulas - 2º Trimestre",
-                items: [
-                  { label: "Aula 4: Preparatório ENEM - Parte 1: Dos Pré-Socráticos a Platão", href: "./filosofia/aulas/aula4.html" },
-                  { label: "Aula 5: Preparatório ENEM - Parte 2: Aristóteles e Helenismo", href: "./filosofia/aulas/aula5.html" },
-                  { label: "Aula 6: Preparatório ENEM - Parte 3: Filosofia Medieval", href: "./filosofia/aulas/aula6.html" },
-                  { label: "Aula 7: Preparatório ENEM - Parte 4: Filosofia Moderna", href: "./filosofia/aulas/aula7.html" },
-                  { label: "Aula 8: Preparatório ENEM - Parte 5: Filosofia Contemporânea", href: "./filosofia/aulas/aula8.html" }
-                ]
-              },
-              {
-                title: "Aulas - 3º Trimestre",
-                items: [
-                  { label: "Aula 8: Os dilemas contemporâneos no mundo do trabalho", href: "./filosofia/aulas/aula8.html" },
-                  { label: "Aula 9: O trabalho para Karl Marx e Hannah Arendt", href: "./filosofia/aulas/aula9.html" }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ];
 
-    function countLessons(year) {
-      var total = 0;
-      for (var s = 0; s < year.subjects.length; s++) {
-        var subject = year.subjects[s];
-        for (var sec = 0; sec < subject.sections.length; sec++) {
-          total += subject.sections[sec].items.length;
-        }
-      }
-      return total;
-    }
-
-    function showYears() {
-      document.getElementById("year-select").style.display = "flex";
+    function showDisciplines() {
+      document.getElementById("discipline-select").style.display = "flex";
       document.getElementById("lesson-view").style.display = "none";
+      history.replaceState(null, "", window.location.pathname);
     }
 
-    function showYear(index) {
-      var year = years[index];
-      document.getElementById("year-select").style.display = "none";
+    function showDisciplina(index) {
+      var disc = disciplinas[index];
+      document.getElementById("discipline-select").style.display = "none";
       document.getElementById("lesson-view").style.display = "block";
+      window.location.hash = disc.id;
 
-      document.getElementById("mod-title").textContent = year.name;
+      document.getElementById("mod-title").innerHTML =
+        '<span class="disc-icon" style="font-size:1.8rem;margin-right:8px;">' +
+        disc.icon +
+        "</span>" +
+        disc.name;
 
       var html = "";
 
-      for (var s = 0; s < year.subjects.length; s++) {
-        var subject = year.subjects[s];
-        html += '<h3 class="subject-title">' + subject.name + '</h3>';
+      for (var y = 0; y < disc.years.length; y++) {
+        var yr = disc.years[y];
+        html += '<h3 class="year-title">' + yr.name + "</h3>";
 
-        for (var sec = 0; sec < subject.sections.length; sec++) {
-          var section = subject.sections[sec];
-          html += '<h4 class="section-title">' + section.title + '</h4>';
-          html += '<ul>';
+        for (var sec = 0; sec < yr.sections.length; sec++) {
+          var section = yr.sections[sec];
+          html += '<h4 class="section-title">' + section.title + "</h4>";
+          html += "<ul>";
           for (var i = 0; i < section.items.length; i++) {
             var item = section.items[i];
             var href = item.href;
             if (href.indexOf("http") !== 0) {
-              href = year.basePath + href.replace("./", "");
+              href = yr.basePath + href.replace("./", "");
             }
-            html += '<li><a href="' + href + '">' + item.label + '</a></li>';
+            html +=
+              '<li><a href="' + href + '">' + item.label + "</a></li>";
           }
-          html += '</ul>';
+          html += "</ul>";
         }
       }
 
       document.getElementById("mod-content").innerHTML = html;
     }
 
-    function renderYearCards() {
+    function renderDisciplineCards() {
       var html = "";
-      for (var i = 0; i < years.length; i++) {
-        var year = years[i];
-        var count = countLessons(year);
-        var subjectNames = [];
-        for (var s = 0; s < year.subjects.length; s++) {
-          subjectNames.push(year.subjects[s].name);
+      for (var i = 0; i < disciplinas.length; i++) {
+        var disc = disciplinas[i];
+        var yearNames = [];
+        for (var y = 0; y < disc.years.length; y++) {
+          yearNames.push(disc.years[y].name);
         }
         html +=
-          '<div class="year-card" onclick="showYear(' + i + ')">' +
-          '<div class="year-icon">' + year.name.charAt(0) + 'º</div>' +
-          '<div class="year-name">' + year.name + '</div>' +
-          '<div class="year-subjects">' + subjectNames.join(" + ") + '</div>' +
-          '</div>';
+          '<div class="discipline-card" onclick="showDisciplina(' +
+          i +
+          ')">' +
+          '<div class="disc-icon">' +
+          disc.icon +
+          "</div>" +
+          '<div class="disc-name">' +
+          disc.name +
+          "</div>" +
+          '<div class="disc-years">' +
+          yearNames.join(" / ") +
+          "</div>" +
+          "</div>";
       }
-      document.getElementById("year-list").innerHTML = html;
+      document.getElementById("discipline-list").innerHTML = html;
     }
 
-    renderYearCards();
+    renderDisciplineCards();
+
+    var hash = window.location.hash.replace("#", "");
+    if (hash) {
+      for (var i = 0; i < disciplinas.length; i++) {
+        if (disciplinas[i].id === hash) {
+          showDisciplina(i);
+          break;
+        }
+      }
+    }
   </script>
 </body>
 </html>

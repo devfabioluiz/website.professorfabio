@@ -495,10 +495,6 @@
                   label: "Aula 9: Manipulação de objetos",
                   href: "./js-intermediario/aula9.html",
                 },
-                {
-                  label: "Conteúdo Extra: SOLID",
-                  href: "./js-intermediario/aula-solid.html",
-                },
               ],
             },
             {
@@ -509,21 +505,20 @@
               },
               items: [
                 {
-                  label: "Aula 11: Trabalhando com JSON",
-                  href: "./js-avancado/aula1.html",
+                  label: "Aula 10: Trabalhando com JSON",
+                  href: "./js-avancado/aula10.html",
                 },
                 {
-                  label: "Aula 12: Promises",
-                  href: "./js-avancado/aula2.html",
+                  label: "Aula 11: Promises",
+                  href: "./js-avancado/aula11.html",
                 },
                 {
-                  label:
-                    "Aula 13: Callback e Programação síncrona e assíncrona",
-                  href: "./js-avancado/aula3.html",
+                  label: "Aula 12: Callback e Programação síncrona e assíncrona",
+                  href: "./js-avancado/aula12.html",
                 },
                 {
-                  label: "Aula 14: Interação com Servidor",
-                  href: "./js-avancado/aula4.html",
+                  label: "Aula 13: Interação com Servidor",
+                  href: "./js-avancado/aula13.html",
                 },
               ],
             },
@@ -624,12 +619,14 @@
       function showModules() {
         document.getElementById("module-select").style.display = "flex";
         document.getElementById("lesson-view").style.display = "none";
+        history.replaceState(null, "", window.location.pathname);
       }
 
       function showModule(index) {
         var course = courses[index];
         document.getElementById("module-select").style.display = "none";
         document.getElementById("lesson-view").style.display = "block";
+        window.location.hash = course.id;
 
         document.getElementById("mod-title").innerHTML =
           '<i class="' + course.icon + '"></i> ' + course.name;
@@ -695,6 +692,16 @@
       }
 
       renderModuleCards();
+
+      var hash = window.location.hash.replace("#", "");
+      if (hash) {
+        for (var i = 0; i < courses.length; i++) {
+          if (courses[i].id === hash) {
+            showModule(i);
+            break;
+          }
+        }
+      }
     </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -6,6 +6,17 @@
     <title>Aula 4/2º Tri - 1º ano - Laboratório de CHS</title>
     <link rel="stylesheet" href="../../../../estilos/estilos-aulas.css" />
     <script src="../../../scripts/script-impressao.js"></script>
+      <style>
+      @media print {
+        h1, h2, h3, h4, h5, h6, header, nav, footer, .button-container, .btn-copy, .btn-gabarito, .btn-print, .btn-indice, .code-container button, .topicos-aula, .alert, .gabarito { display: none !important; }
+        body { font-family: Arial, sans-serif !important; font-size: 12pt !important; line-height: 1.5 !important; color: #000 !important; background: #fff !important; margin: 20px !important; padding: 0 !important; }
+        main, .container, section { max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; background: #fff !important; }
+        pre, code { font-family: "Courier New", monospace !important; font-size: 10pt !important; background: none !important; border: 1px solid #ccc !important; padding: 5px !important; white-space: pre-wrap !important; }
+        table { border-collapse: collapse !important; }
+        th, td { border: 1px solid #000 !important; padding: 4px !important; }
+        a { color: #000 !important; text-decoration: underline !important; }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -229,7 +240,7 @@
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
       <div class="button-container">
-        <a class="btn-indice" href="../../indice-primeiro.html">
+        <a class="btn-indice" href="../../../indice-ceap.html#laboratorio">
           Ir para índice
         </a>
       </div>

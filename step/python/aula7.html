@@ -3,33 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 7: CMS - Sistema de Gerenciamento de Produtos</title>
+    <title>
+      Aula 7 - CMS: Sistema de Gerenciamento de Produtos - IT Step
+    </title>
+
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
     <style>
       table {
         border-collapse: collapse;
         width: 100%;
         margin-top: 20px;
       }
+
       th,
       td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
       }
+
       th {
         background-color: #f2f2f2;
       }
     </style>
   </head>
+
   <body>
     <header>
       <h1>Aula 7</h1>
@@ -41,8 +53,10 @@
     </header>
 
     <main class="container">
+      <!-- O que é um CMS -->
       <section>
         <h2>O que é um CMS?</h2>
+
         <p>
           <strong>CMS (Content Management System)</strong> é um sistema que
           permite criar, editar, publicar e gerenciar conteúdo digital sem
@@ -57,36 +71,45 @@
               <th>Linguagem</th>
             </tr>
           </thead>
+
           <tbody>
             <tr>
               <td>WordPress</td>
               <td>Blogs e sites institucionais</td>
               <td>PHP</td>
             </tr>
+
             <tr>
               <td>Shopify</td>
               <td>E-commerce</td>
               <td>Ruby</td>
             </tr>
+
             <tr>
               <td>Django Admin</td>
               <td>Painel administrativo automático</td>
               <td>Python</td>
             </tr>
+
             <tr>
               <td><strong>Nosso mini CMS</strong></td>
-              <td><strong>Gerenciamento de produtos (e-commerce)</strong></td>
+              <td>
+                <strong>Gerenciamento de produtos (e-commerce)</strong>
+              </td>
               <td><strong>Python + Django</strong></td>
             </tr>
           </tbody>
         </table>
 
         <h3>Por que construir o próprio CMS?</h3>
+
         <ul>
           <li>
             <strong>Controle total</strong> sobre o design e as funcionalidades
           </li>
-          <li><strong>Sem dependência</strong> de plugins de terceiros</li>
+          <li>
+            <strong>Sem dependência</strong> de plugins de terceiros
+          </li>
           <li>
             <strong>Personalização</strong> exata para as regras do seu negócio
           </li>
@@ -96,66 +119,84 @@
         </ul>
 
         <h3>O que vamos construir?</h3>
+
         <p>
           Um <strong>mini CMS para e-commerce</strong> onde o administrador
           pode:
         </p>
+
         <ul>
           <li><strong>Listar</strong> todos os produtos cadastrados</li>
           <li>
             <strong>Criar</strong> novos produtos com nome, preço, descrição,
             estoque e imagem
           </li>
-          <li><strong>Editar</strong> informações de produtos existentes</li>
+          <li>
+            <strong>Editar</strong> informações de produtos existentes
+          </li>
           <li><strong>Excluir</strong> produtos</li>
         </ul>
+
         <p>
           Tudo isso protegido por <strong>login</strong> — somente usuários
           autenticados podem acessar o painel de gerenciamento.
         </p>
       </section>
 
+      <hr />
+
+      <!-- Passo a Passo -->
       <section>
-        <h2>1. Configurando upload de imagens</h2>
+        <h2>Passo a Passo</h2>
+
+        <h3>
+          Passo 0 — Criar branch baseada na aula6 e instalar dependências
+        </h3>
+
         <p>
-          Antes de criar o model, precisamos configurar o Django para lidar com
-          arquivos enviados pelo usuário (imagens).
+          No terminal, crie uma nova branch a partir da aula anterior e instale
+          o Pillow:
         </p>
 
-        <h3>Instalar o Pillow</h3>
-        <p>
-          O Django usa a biblioteca <strong>Pillow</strong> para processar
-          imagens. Instale no terminal:
-        </p>
         <div class="code-container">
           <pre><code class="language-bash">
+git fetch
+git checkout aula6
+git pull
+git checkout -b aula7-cms-produtos
 pip install Pillow
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Configurar MEDIA_URL e MEDIA_ROOT</h3>
-        <p>No <code>settings.py</code>, adicione estas duas configurações:</p>
+        <h3>Passo 1 — Configurar upload de imagens</h3>
+
+        <p>
+          No <code>settings.py</code>, adicione as configurações de mídia:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-python">
 # settings.py
-
 import os
 
-# Onde os arquivos enviados serão salvos fisicamente no servidor
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# URL pública para acessar os arquivos enviados
 MEDIA_URL = '/media/'
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Servir arquivos de mídia em desenvolvimento</h3>
         <p>
-          No <code>urls.py</code> <strong>principal</strong> do projeto,
-          adicione a rota para servir arquivos de mídia:
+          No <code>urls.py</code> principal do projeto, sirva os arquivos de
+          mídia em desenvolvimento:
         </p>
+
         <div class="code-container">
           <pre><code class="language-python">
 # urls.py (principal do projeto)
@@ -169,31 +210,36 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-# Serve arquivos de mídia apenas em desenvolvimento
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <p>Crie o arquivo <code>urls.py</code> dentro do app <code>core</code>:</p>
+
         <div class="code-container">
           <pre><code class="language-python">
-# Dentro do seu app principal, crie urls.py (ex: core/urls.py)
+# core/urls.py
 from django.urls import path
 from . import views
 
 urlpatterns = [
 ]
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </section>
 
-      <section>
-        <h2>2. Criando o Model Produto</h2>
+        <h3>Passo 2 — Criar o Model Produto</h3>
+
         <p>
-          Nosso model terá os campos essenciais de um produto de e-commerce,
-          incluindo <code>ImageField</code> para a foto.
+          Em <code>core/models.py</code>, defina o model com os campos
+          essenciais incluindo <code>ImageField</code>:
         </p>
 
         <div class="code-container">
@@ -206,7 +252,11 @@ class Produto(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.TextField(blank=True, null=True)
     estoque = models.PositiveIntegerField(default=0)
-    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
+    imagem = models.ImageField(
+        upload_to='produtos/',
+        blank=True,
+        null=True
+    )
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -215,10 +265,9 @@ class Produto(models.Model):
         return self.nome
 
     class Meta:
-        ordering = ['-criado_em']  # mais novos primeiro
-        verbose_name = 'Produto'
-        verbose_name_plural = 'Produtos'
+        ordering = ['-criado_em']
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -230,51 +279,59 @@ class Produto(models.Model):
               <th>Descrição</th>
             </tr>
           </thead>
+
           <tbody>
             <tr>
               <td><code>nome</code></td>
               <td>CharField</td>
-              <td>Nome do produto (até 200 caracteres)</td>
+              <td>Nome do produto</td>
             </tr>
+
             <tr>
               <td><code>preco</code></td>
               <td>DecimalField</td>
-              <td>Preço com até 2 casas decimais</td>
+              <td>Preço com 2 casas decimais</td>
             </tr>
+
             <tr>
               <td><code>descricao</code></td>
               <td>TextField</td>
               <td>Descrição longa (opcional)</td>
             </tr>
+
             <tr>
               <td><code>estoque</code></td>
               <td>PositiveIntegerField</td>
               <td>Quantidade em estoque</td>
             </tr>
+
             <tr>
               <td><code>imagem</code></td>
               <td>ImageField</td>
-              <td>Foto do produto salva em <code>media/produtos/</code></td>
+              <td>Foto salva em <code>media/produtos/</code></td>
             </tr>
+
             <tr>
               <td><code>ativo</code></td>
               <td>BooleanField</td>
-              <td>Produto visível ou não na loja</td>
+              <td>Produto visível na loja</td>
             </tr>
           </tbody>
         </table>
 
-        <p>Depois de criar o model, execute as migrações:</p>
+        <p>Execute as migrações:</p>
+
         <div class="code-container">
           <pre><code class="language-bash">
 python manage.py makemigrations
 python manage.py migrate
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Registrar no Admin (opcional)</h3>
-        <p>Para também gerenciar pelo Django Admin:</p>
+        <p>Registre o model no admin (opcional):</p>
+
         <div class="code-container">
           <pre><code class="language-python">
 # core/admin.py
@@ -283,20 +340,19 @@ from .models import Produto
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'preco', 'estoque', 'ativo', 'criado_em')
+    list_display = (
+        'id', 'nome', 'preco', 'estoque', 'ativo', 'criado_em'
+    )
     list_filter = ('ativo',)
     search_fields = ('nome',)
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </section>
 
-      <section>
-        <h2>3. Criando o Formulário</h2>
-        <p>
-          Usaremos <code>ModelForm</code> para gerar automaticamente o
-          formulário a partir do model, incluindo o campo de upload de imagem.
-        </p>
+        <h3>Passo 3 — Criar o Formulário (ModelForm)</h3>
+
+        <p>Em <code>core/forms.py</code>:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -307,43 +363,41 @@ from .models import Produto
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'preco', 'descricao', 'estoque', 'imagem', 'ativo']
+        fields = [
+            'nome', 'preco', 'descricao',
+            'estoque', 'imagem', 'ativo'
+        ]
         widgets = {
-            'descricao': forms.Textarea(attrs={'rows': 4}),
-            'preco': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),
-        }
-        labels = {
-            'nome': 'Nome do Produto',
-            'preco': 'Preço (R$)',
-            'descricao': 'Descrição',
-            'estoque': 'Quantidade em Estoque',
-            'imagem': 'Foto do Produto',
-            'ativo': 'Produto Ativo',
+            'descricao': forms.Textarea(
+                attrs={'rows': 4}
+            ),
+            'preco': forms.NumberInput(
+                attrs={'step': '0.01', 'min': '0'}
+            ),
         }
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
-          <strong>Importante:</strong> para formulários com upload de arquivo, o
-          HTML do form precisa ter o atributo
-          <code>enctype="multipart/form-data"</code>. Veremos isso nos
-          templates.
+          <strong>Importante:</strong> formulários com upload de arquivo
+          precisam de <code>enctype="multipart/form-data"</code> no HTML.
         </p>
-      </section>
 
-      <section>
-        <h2>4. Criando as Views do CRUD</h2>
+        <h3>Passo 4 — Criar as Views do CRUD</h3>
+
         <p>
-          Vamos criar as quatro operações fundamentais:
-          <strong>Listar, Criar, Editar e Excluir</strong>.
+          Em <code>core/views.py</code>, implemente as quatro operações. Todas
+          protegidas com <code>@login_required</code>:
         </p>
 
-        <h3>4.1 Listar produtos</h3>
         <div class="code-container">
           <pre><code class="language-python">
 # core/views.py
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import (
+    render, redirect, get_object_or_404
+)
 from django.contrib.auth.decorators import login_required
 from .models import Produto
 from .forms import ProdutoForm
@@ -351,16 +405,12 @@ from .forms import ProdutoForm
 @login_required
 def listar_produtos(request):
     produtos = Produto.objects.all()
-    return render(request, 'core/lista_produtos.html', {
-        'produtos': produtos
-    })
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+    return render(
+        request,
+        'core/lista_produtos.html',
+        {'produtos': produtos}
+    )
 
-        <h3>4.2 Criar produto</h3>
-        <div class="code-container">
-          <pre><code class="language-python">
 @login_required
 def criar_produto(request):
     if request.method == 'POST':
@@ -370,89 +420,67 @@ def criar_produto(request):
             return redirect('listar_produtos')
     else:
         form = ProdutoForm()
-    return render(request, 'core/form_produto.html', {
-        'form': form,
-        'titulo': 'Novo Produto'
-    })
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+    return render(
+        request,
+        'core/form_produto.html',
+        {'form': form, 'titulo': 'Novo Produto'}
+    )
 
-        <p>
-          <strong>request.FILES</strong> é o que permite receber o arquivo da
-          imagem. Sem ele, o <code>ImageField</code> ficaria vazio.
-        </p>
-
-        <h3>4.3 Editar produto</h3>
-        <div class="code-container">
-          <pre><code class="language-python">
 @login_required
 def editar_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, request.FILES, instance=produto)
+        form = ProdutoForm(
+            request.POST, request.FILES, instance=produto
+        )
         if form.is_valid():
             form.save()
             return redirect('listar_produtos')
     else:
         form = ProdutoForm(instance=produto)
-    return render(request, 'core/form_produto.html', {
-        'form': form,
-        'titulo': f'Editar: {produto.nome}',
-        'produto': produto
-    })
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+    return render(
+        request,
+        'core/form_produto.html',
+        {
+            'form': form,
+            'titulo': f'Editar: {produto.nome}',
+            'produto': produto
+        }
+    )
 
-        <p>
-          Passar <code>instance=produto</code> faz o Django preencher o
-          formulário com os dados atuais do produto. Ao salvar, ele atualiza o
-          registro existente em vez de criar um novo.
-        </p>
-
-        <h3>4.4 Excluir produto</h3>
-        <div class="code-container">
-          <pre><code class="language-python">
 @login_required
 def excluir_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
         produto.delete()
         return redirect('listar_produtos')
-    return render(request, 'core/confirmar_exclusao.html', {
-        'produto': produto
-    })
+    return render(
+        request,
+        'core/confirmar_exclusao.html',
+        {'produto': produto}
+    )
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>
-          A exclusão usa <strong>POST</strong> (nunca GET) para evitar exclusões
-          acidentais por links ou bots. O template de confirmação deve ter um
-          formulário com método POST e um botão de confirmação.
-        </p>
-      </section>
-
-      <section>
-        <h2>5. Criando os Templates</h2>
+        <h3>Passo 5 — Criar os Templates</h3>
 
         <p>
-          Organize seus templates dentro da pasta do app:
-          <code>core/templates/core/</code>
+          Crie a pasta <code>core/templates/core/</code> e adicione os
+          arquivos abaixo.
         </p>
 
-        <h3>5.1 Template base (base.html)</h3>
-        <p>
-          Um layout reutilizável com navegação e Bootstrap (opcional, via CDN):
-        </p>
+        <p><strong>base.html</strong> — layout com Bootstrap e navbar:</p>
+
         <div class="code-container">
           <pre><code class="language-html">
 &lt;!DOCTYPE html&gt;
 &lt;html lang="pt-BR"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8" /&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;meta name="viewport"
+        content="width=device-width, initial-scale=1.0" /&gt;
   &lt;title&gt;CMS - E-commerce&lt;/title&gt;
   &lt;link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -462,36 +490,45 @@ def excluir_produto(request, pk):
 &lt;body&gt;
   &lt;nav class="navbar navbar-dark bg-dark mb-4"&gt;
     &lt;div class="container"&gt;
-      &lt;a class="navbar-brand" href="{% url 'listar_produtos' %}"&gt;
+      &lt;a class="navbar-brand"
+         href="{% url 'listar_produtos' %}"&gt;
         &#128722; Mini CMS
       &lt;/a&gt;
       &lt;div&gt;
         {% if user.is_authenticated %}
-          &lt;span class="text-light me-3"&gt;Olá, {{ user.username }}&lt;/span&gt;
-          &lt;a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm"&gt;Sair&lt;/a&gt;
+          &lt;span class="text-light me-3"&gt;
+            Olá, {{ user.username }}
+          &lt;/span&gt;
+          &lt;a href="{% url 'logout' %}"
+             class="btn btn-outline-light btn-sm"&gt;
+            Sair
+          &lt;/a&gt;
         {% endif %}
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/nav&gt;
-
   &lt;div class="container"&gt;
     {% block content %}{% endblock %}
   &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>5.2 Lista de produtos (lista_produtos.html)</h3>
+        <p><strong>lista_produtos.html</strong> — tabela com ações:</p>
+
         <div class="code-container">
           <pre><code class="language-html">
 {% extends 'core/base.html' %}
 
 {% block content %}
-&lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;
+&lt;div class="d-flex justify-content-between
+            align-items-center mb-4"&gt;
   &lt;h1&gt;Produtos&lt;/h1&gt;
-  &lt;a href="{% url 'criar_produto' %}" class="btn btn-primary"&gt;
+  &lt;a href="{% url 'criar_produto' %}"
+     class="btn btn-primary"&gt;
     + Novo Produto
   &lt;/a&gt;
 &lt;/div&gt;
@@ -517,7 +554,9 @@ def excluir_produto(request, pk):
                  alt="{{ produto.nome }}"
                  style="max-height: 50px;" /&gt;
           {% else %}
-            &lt;span class="text-muted"&gt;Sem imagem&lt;/span&gt;
+            &lt;span class="text-muted"&gt;
+              Sem imagem
+            &lt;/span&gt;
           {% endif %}
         &lt;/td&gt;
         &lt;td&gt;{{ produto.nome }}&lt;/td&gt;
@@ -543,15 +582,19 @@ def excluir_produto(request, pk):
 {% else %}
   &lt;div class="alert alert-info"&gt;
     Nenhum produto cadastrado ainda.
-    &lt;a href="{% url 'criar_produto' %}"&gt;Clique aqui&lt;/a&gt; para adicionar.
   &lt;/div&gt;
 {% endif %}
 {% endblock %}
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>5.3 Formulário de criar/editar (form_produto.html)</h3>
+        <p>
+          <strong>form_produto.html</strong> — formulário de criar/editar com
+          preview de imagem:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-html">
 {% extends 'core/base.html' %}
@@ -559,12 +602,15 @@ def excluir_produto(request, pk):
 {% block content %}
 &lt;h1&gt;{{ titulo }}&lt;/h1&gt;
 
-&lt;form method="post" enctype="multipart/form-data" class="mt-4"&gt;
+&lt;form method="post"
+      enctype="multipart/form-data"
+      class="mt-4"&gt;
   {% csrf_token %}
 
   {% for field in form %}
   &lt;div class="mb-3"&gt;
-    &lt;label for="{{ field.id_for_label }}" class="form-label"&gt;
+    &lt;label for="{{ field.id_for_label }}"
+           class="form-label"&gt;
       {{ field.label }}
     &lt;/label&gt;
     {{ field }}
@@ -573,31 +619,38 @@ def excluir_produto(request, pk):
         {{ field.errors|striptags }}
       &lt;/div&gt;
     {% endif %}
-    {% if field.help_text %}
-      &lt;div class="form-text"&gt;{{ field.help_text }}&lt;/div&gt;
-    {% endif %}
   &lt;/div&gt;
   {% endfor %}
 
   {% if produto and produto.imagem %}
   &lt;div class="mb-3"&gt;
-    &lt;label class="form-label"&gt;Imagem atual:&lt;/label&gt;&lt;br /&gt;
-    &lt;img src="{{ produto.imagem.url }}" alt="Preview"
-         style="max-height: 150px;" class="img-thumbnail" /&gt;
+    &lt;label class="form-label"&gt;
+      Imagem atual:
+    &lt;/label&gt;&lt;br /&gt;
+    &lt;img src="{{ produto.imagem.url }}"
+         alt="Preview"
+         style="max-height: 150px;"
+         class="img-thumbnail" /&gt;
   &lt;/div&gt;
   {% endif %}
 
   &lt;div class="d-flex gap-2"&gt;
-    &lt;button type="submit" class="btn btn-success"&gt;Salvar&lt;/button&gt;
-    &lt;a href="{% url 'listar_produtos' %}" class="btn btn-secondary"&gt;Cancelar&lt;/a&gt;
+    &lt;button type="submit"
+            class="btn btn-success"&gt;Salvar&lt;/button&gt;
+    &lt;a href="{% url 'listar_produtos' %}"
+       class="btn btn-secondary"&gt;Cancelar&lt;/a&gt;
   &lt;/div&gt;
 &lt;/form&gt;
 {% endblock %}
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>5.4 Confirmação de exclusão (confirmar_exclusao.html)</h3>
+        <p>
+          <strong>confirmar_exclusao.html</strong> — tela de confirmação:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-html">
 {% extends 'core/base.html' %}
@@ -615,66 +668,21 @@ def excluir_produto(request, pk):
 
 &lt;form method="post"&gt;
   {% csrf_token %}
-  &lt;button type="submit" class="btn btn-danger"&gt;
-    Sim, excluir permanentemente
+  &lt;button type="submit"
+          class="btn btn-danger"&gt;
+    Sim, excluir
   &lt;/button&gt;
-  &lt;a href="{% url 'listar_produtos' %}" class="btn btn-secondary"&gt;
-    Cancelar
-  &lt;/a&gt;
+  &lt;a href="{% url 'listar_produtos' %}"
+     class="btn btn-secondary"&gt;Cancelar&lt;/a&gt;
 &lt;/form&gt;
 {% endblock %}
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-      </section>
 
-      <section>
-        <h2>6. Configurando as URLs</h2>
-
-        <p>Adicione as rotas no <code>core/urls.py</code>:</p>
-        <div class="code-container">
-          <pre><code class="language-python">
-# core/urls.py
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('', views.listar_produtos, name='listar_produtos'),
-    path('novo/', views.criar_produto, name='criar_produto'),
-    path('editar/&lt;int:pk&gt;/', views.editar_produto, name='editar_produto'),
-    path('excluir/&lt;int:pk&gt;/', views.excluir_produto, name='excluir_produto'),
-]
-          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>URLs de autenticação (login/logout)</h3>
-        <p>
-          No <code>urls.py</code> principal do projeto, adicione as rotas de
-          autenticação:
-        </p>
-        <div class="code-container">
-          <pre><code class="language-python">
-# urls.py (principal)
-from django.contrib import admin
-from django.urls import path, include
-from django.contrib.auth import views as auth_views
+        <p><strong>login.html</strong> — tela de login:</p>
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('login/', auth_views.LoginView.as_view(
-        template_name='core/login.html'
-    ), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(
-        next_page='/login/'
-    ), name='logout'),
-]
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Template de login (login.html)</h3>
         <div class="code-container">
           <pre><code class="language-html">
 {% extends 'core/base.html' %}
@@ -686,12 +694,14 @@ urlpatterns = [
     &lt;form method="post"&gt;
       {% csrf_token %}
       &lt;div class="mb-3"&gt;
-        &lt;label for="id_username" class="form-label"&gt;Usuário&lt;/label&gt;
+        &lt;label for="id_username"
+               class="form-label"&gt;Usuário&lt;/label&gt;
         &lt;input type="text" name="username"
                class="form-control" required /&gt;
       &lt;/div&gt;
       &lt;div class="mb-3"&gt;
-        &lt;label for="id_password" class="form-label"&gt;Senha&lt;/label&gt;
+        &lt;label for="id_password"
+               class="form-label"&gt;Senha&lt;/label&gt;
         &lt;input type="password" name="password"
                class="form-control" required /&gt;
       &lt;/div&gt;
@@ -700,104 +710,112 @@ urlpatterns = [
           Usuário ou senha inválidos.
         &lt;/div&gt;
       {% endif %}
-      &lt;button type="submit" class="btn btn-primary w-100"&gt;
-        Entrar
-      &lt;/button&gt;
+      &lt;button type="submit"
+              class="btn btn-primary w-100"&gt;Entrar&lt;/button&gt;
     &lt;/form&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 {% endblock %}
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Redirecionamento após login</h3>
-        <p>
-          No <code>settings.py</code>, defina para onde o usuário vai após fazer
-          login:
-        </p>
+        <h3>Passo 6 — Configurar as URLs e autenticação</h3>
+
+        <p>No <code>core/urls.py</code>, defina as rotas do CRUD:</p>
+
         <div class="code-container">
           <pre><code class="language-python">
-# settings.py
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'          # vai para listar_produtos
-LOGOUT_REDIRECT_URL = '/login/'
+# core/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path(
+        '', views.listar_produtos,
+        name='listar_produtos'
+    ),
+    path(
+        'novo/', views.criar_produto,
+        name='criar_produto'
+    ),
+    path(
+        'editar/&lt;int:pk&gt;/',
+        views.editar_produto,
+        name='editar_produto'
+    ),
+    path(
+        'excluir/&lt;int:pk&gt;/',
+        views.excluir_produto,
+        name='excluir_produto'
+    ),
+]
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
-      </section>
 
-      <section>
-        <h2>7. Fluxo completo do CMS</h2>
+        <p>
+          No <code>urls.py</code> principal, adicione as rotas de login/logout:
+        </p>
 
-        <h3>Diagrama de navegação</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>URL</th>
-              <th>View</th>
-              <th>Template</th>
-              <th>Protegido?</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>/</code></td>
-              <td>listar_produtos</td>
-              <td>lista_produtos.html</td>
-              <td>Sim</td>
-            </tr>
-            <tr>
-              <td><code>/novo/</code></td>
-              <td>criar_produto</td>
-              <td>form_produto.html</td>
-              <td>Sim</td>
-            </tr>
-            <tr>
-              <td><code>/editar/1/</code></td>
-              <td>editar_produto</td>
-              <td>form_produto.html</td>
-              <td>Sim</td>
-            </tr>
-            <tr>
-              <td><code>/excluir/1/</code></td>
-              <td>excluir_produto</td>
-              <td>confirmar_exclusao.html</td>
-              <td>Sim</td>
-            </tr>
-            <tr>
-              <td><code>/login/</code></td>
-              <td>LoginView</td>
-              <td>login.html</td>
-              <td>Não</td>
-            </tr>
-            <tr>
-              <td><code>/logout/</code></td>
-              <td>LogoutView</td>
-              <td>-</td>
-              <td>Sim</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="code-container">
+          <pre><code class="language-python">
+# urls.py (principal)
+from django.contrib.auth import views as auth_views
 
-        <h3>Fluxo de uso do CMS</h3>
+urlpatterns += [
+    path(
+        'login/',
+        auth_views.LoginView.as_view(
+            template_name='core/login.html'
+        ),
+        name='login'
+    ),
+    path(
+        'logout/',
+        auth_views.LogoutView.as_view(
+            next_page='/login/'
+        ),
+        name='logout'
+    ),
+]
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>lembrete:</strong> o <code>LOGIN_URL</code> e
+          <code>LOGIN_REDIRECT_URL</code> já estão configurados no
+          <code>settings.py</code> desde o Passo 1.
+        </p>
+
+        <h3>Passo 7 — Testar o CMS</h3>
+
+        <p>Rode o servidor e teste o fluxo completo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+python manage.py runserver
+          </code></pre>
+
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
         <ol>
           <li>
-            Usuário acessa <code>/</code> → redirecionado para
+            Acesse <code>http://127.0.0.1:8000/</code> → redirecionado para
             <code>/login/</code>
           </li>
-          <li>Faz login → vai para a lista de produtos</li>
-          <li>
-            Clica em "+ Novo Produto" → preenche o formulário com imagem →
-            Salvar
-          </li>
-          <li>Volta para a lista e vê o novo produto com a foto</li>
-          <li>Clica em "Editar" → altera preço ou imagem → Salvar</li>
-          <li>Clica em "Excluir" → confirma → produto removido</li>
-          <li>Clica em "Sair" → volta para a tela de login</li>
+          <li>Faça login com o superusuário criado na aula6</li>
+          <li>Clique em "+ Novo Produto", preencha com imagem e salve</li>
+          <li>Veja o produto na tabela, edite e exclua para testar</li>
         </ol>
 
         <h3>Estrutura final do projeto</h3>
+
         <div class="code-container">
           <pre><code class="language-bash">
 meu_projeto/
@@ -807,11 +825,11 @@ meu_projeto/
 │   ├── urls.py
 │   └── ...
 ├── core/
-│   ├── models.py          # Model Produto
-│   ├── forms.py           # ProdutoForm (ModelForm)
-│   ├── views.py           # CRUD views + login_required
-│   ├── urls.py            # Rotas do app
-│   ├── admin.py           # Registro no Django Admin
+│   ├── models.py
+│   ├── forms.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
 │   └── templates/
 │       └── core/
 │           ├── base.html
@@ -820,77 +838,88 @@ meu_projeto/
 │           ├── form_produto.html
 │           └── confirmar_exclusao.html
 └── media/
-    └── produtos/          # Imagens enviadas
+    └── produtos/
           </code></pre>
+
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
+      <!-- Dever de Casa -->
       <section>
         <h2>Dever de Casa</h2>
 
         <div id="question-container-casa">
           <div class="question">
-            <h3>Adicione um sistema de busca de produtos</h3>
+            <h3>Adicione busca de produtos por nome</h3>
+
             <p>
-              Modifique a view <code>listar_produtos</code> para aceitar um
-              parâmetro de busca via GET (<code>?q=termo</code>) e filtre os
-              produtos pelo nome. Adicione também um campo de busca no template
-              <code>lista_produtos.html</code>.
+              Modifique a view <code>listar_produtos</code> para filtrar
+              produtos pelo nome usando um parâmetro GET (<code>?q=termo</code>).
+              Adicione o campo de busca no template.
             </p>
 
             <p><strong>Requisitos:</strong></p>
+
             <ul>
-              <li>O campo de busca deve usar método <code>GET</code></li>
               <li>
-                A busca deve filtrar por parte do nome (usando
-                <code>icontains</code>)
+                Busca via método <code>GET</code>
               </li>
-              <li>Se o campo estiver vazio, deve mostrar todos os produtos</li>
-              <li>O termo buscado deve permanecer no campo após a pesquisa</li>
+              <li>
+                Filtrar por parte do nome com <code>icontains</code>
+              </li>
+              <li>
+                Campo vazio mostra todos os produtos
+              </li>
+              <li>
+                Termo buscado permanece no campo após a pesquisa
+              </li>
             </ul>
 
             <button class="btn-gabarito">Ver gabarito</button>
+
             <div class="gabarito">
-              <b>Gabarito — view atualizada:</b>
+              <b>Gabarito — view:</b>
+
               <div class="code-container">
                 <pre><code class="language-python">
-# core/views.py - listar_produtos atualizada
 @login_required
 def listar_produtos(request):
     query = request.GET.get('q', '')
     if query:
-        produtos = Produto.objects.filter(nome__icontains=query)
+        produtos = Produto.objects.filter(
+            nome__icontains=query
+        )
     else:
         produtos = Produto.objects.all()
-    return render(request, 'core/lista_produtos.html', {
-        'produtos': produtos,
-        'query': query
-    })
+    return render(
+        request,
+        'core/lista_produtos.html',
+        {'produtos': produtos, 'query': query}
+    )
                 </code></pre>
+
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
-              <b>Gabarito — form de busca no template:</b>
+              <b>Gabarito — campo de busca no template:</b>
+
               <div class="code-container">
                 <pre><code class="language-html">
-&lt;!-- adicione antes da tabela em lista_produtos.html --&gt;
 &lt;form method="get" class="mb-4"&gt;
   &lt;div class="input-group"&gt;
-    &lt;input type="text" name="q" class="form-control"
+    &lt;input type="text" name="q"
+           class="form-control"
            placeholder="Buscar produto..."
            value="{{ query }}" /&gt;
-    &lt;button type="submit" class="btn btn-outline-primary"&gt;
+    &lt;button type="submit"
+            class="btn btn-outline-primary"&gt;
       Buscar
     &lt;/button&gt;
-    {% if query %}
-      &lt;a href="{% url 'listar_produtos' %}" class="btn btn-outline-secondary"&gt;
-        Limpar
-      &lt;/a&gt;
-    {% endif %}
   &lt;/div&gt;
 &lt;/form&gt;
                 </code></pre>
+
                 <button class="btn-copy">Copiar Código</button>
               </div>
             </div>
@@ -899,16 +928,8 @@ def listar_produtos(request):
       </section>
     </main>
 
-    <footer>
-      <div class="button-container">
-        <button class="btn-print" onclick="window.print()">Imprimir</button>
-      </div>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
-      </div>
-    </footer>
-
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="../../scripts/check-gabarito.js"></script>
+  <footer><div class="button-container"><a class="btn-indice" href="../indice-step.html#python">Ir para o índice</a></div></footer>
   </body>
 </html>
