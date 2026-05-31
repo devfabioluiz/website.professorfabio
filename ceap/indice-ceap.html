@@ -1,40 +1,457 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Índice CEAP</title>
-    <script src="../scripts/script-impressao.js"></script>
-    <link rel="stylesheet" href="../estilos/styles.css" />
-  </head>
-  <body>
-    <!-- Navegação -->
-    <nav>
-      <ul>
-        <li>
-          <a href="./indice-ceap.html">CEAP</a>
-        </li>
-        <li>
-          <a href="../step/indice-step.html">STEP</a>
-        </li>
-        <li>
-          <a href="../filosofia/indice-filosofia.html">Filosofia</a>
-        </li>
-      </ul>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Índice CEAP</title>
+  <link href="../estilos/styles.css" rel="stylesheet" />
+  <script src="../scripts/script-impressao.js"></script>
+  <style>
+    #year-select {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      padding: 20px;
+    }
 
-    <!-- Conteúdo Principal -->
-    <div class="body-category">
-      <div class="disciplina" style="min-width: 250px">
-        <h3 class="long-title">Escolha o Ano</h3>
-        <ul>
-          <li>
-            <a href="./primeiro-ano/indice-primeiro.html">1º ano</a>
-            <a href="./segundo-ano/indice-segundo.html">2º ano</a>
-            <a href="./terceiro-ano/indice-terceiro.html">3º ano</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </body>
+    #year-select h3 {
+      font-size: 1.6rem;
+      color: #273c75;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .year-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      max-width: 800px;
+    }
+
+    .year-card {
+      background: #fff;
+      border: 2px solid #2e7d32;
+      border-radius: 12px;
+      padding: 35px 40px;
+      width: 200px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .year-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(46, 125, 50, 0.2);
+      background-color: #e8f5e9;
+    }
+
+    .year-card .year-icon {
+      font-size: 3.2rem;
+      margin-bottom: 12px;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .year-card .year-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #1b5e20;
+      margin-bottom: 6px;
+    }
+
+    .year-card .year-subjects {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    #lesson-view {
+      display: none;
+      max-width: 750px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    #lesson-view .back-btn {
+      display: inline-block;
+      background: #273c75;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 25px;
+      transition: background-color 0.2s ease;
+    }
+
+    #lesson-view .back-btn:hover {
+      background-color: #1b5e20;
+    }
+
+    #lesson-view .mod-title {
+      color: #273c75;
+      border-bottom: 2px solid #2e7d32;
+      padding-bottom: 12px;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    #lesson-view .subject-title {
+      color: #2e7d32;
+      font-size: 1.4rem;
+      margin: 30px 0 15px 0;
+      border-bottom: 2px solid #2e7d32;
+      padding-bottom: 8px;
+    }
+
+    #lesson-view .section-title {
+      color: #005bb5;
+      font-size: 1.15rem;
+      margin: 18px 0 8px 0;
+    }
+
+    #lesson-view .subsection-title {
+      color: #555;
+      font-size: 1rem;
+      margin: 14px 0 6px 0;
+      font-style: italic;
+    }
+
+    #lesson-view ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #lesson-view ul li {
+      margin: 4px 0;
+    }
+
+    #lesson-view ul li a {
+      text-decoration: none;
+      color: #0073e6;
+      font-size: 1rem;
+      padding: 6px 12px;
+      display: block;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+
+    #lesson-view ul li a:hover {
+      background-color: #e0f0ff;
+    }
+
+    @media only screen and (max-width: 700px) {
+      .year-card {
+        width: 150px;
+        padding: 25px 20px;
+      }
+
+      #lesson-view {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="./indice-ceap.html">CEAP</a></li>
+      <li><a href="../step/indice-step.html">STEP</a></li>
+      <li><a href="../filosofia/indice-filosofia.html">Filosofia</a></li>
+    </ul>
+  </nav>
+
+  <h2 style="margin: 25px 20px 10px 20px; text-align: center">CEAP</h2>
+
+  <div id="year-select">
+    <h3>Escolha o ano:</h3>
+    <div class="year-grid" id="year-list"></div>
+  </div>
+
+  <div id="lesson-view">
+    <button class="back-btn" onclick="showYears()">&#8592; Voltar</button>
+    <h2 class="mod-title" id="mod-title"></h2>
+    <div id="mod-content"></div>
+  </div>
+
+  <script>
+    var years = [
+      {
+        id: "1ano",
+        name: "1º Ano",
+        basePath: "./primeiro-ano/",
+        subjects: [
+          {
+            name: "Filosofia",
+            sections: [
+              {
+                title: "Plano do Curso",
+                items: [
+                  { label: "Plano de aulas", href: "./filosofia/plano-e-orientacoes/plano-filosofia-1-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./filosofia/plano-e-orientacoes/orientacoes-filo-1-tri-1-ano.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 1: Formas do Conhecimento", href: "./filosofia/aulas/aula1.html" },
+                  { label: "Aula 2: Os Filósofos Pré-Socráticos", href: "./filosofia/aulas/aula2.html" },
+                  { label: "Aula 3: Sofistas, Sócrates, Platão e Alegoria da Caverna", href: "./filosofia/aulas/aula3.html" }
+                ]
+              },
+              {
+                title: "Aulas - 2º Trimestre",
+                items: [
+                  { label: "Aula 4: Lógica Aristotélica e Formal", href: "./filosofia/aulas/aula4.html" },
+                  { label: "Aula 5: Ceticismo, empirismo e pós-verdade", href: "./filosofia/aulas/aula5.html" },
+                  { label: "Aula 6: Hedonismo, Epicurismo, Estoicismo e o Pensamento Capitalista", href: "./filosofia/aulas/aula6.html" },
+                  { label: "Aula 7: Atividade de Leitura do Livro a Sardinha Ansiosa", href: "https://trioleca.com.br/wp-content/uploads/2022/02/GUIA_LEITURA_Sardinha_.pdf" }
+                ]
+              },
+              {
+                title: "Aulas Adaptadas",
+                items: [
+                  { label: "ADAPTADA: Aula 1 - Formas do Conhecimento", href: "./filosofia/aulas/adaptadas/aula1-adaptada.html" },
+                  { label: "ADAPTADA: Aula 2 - Sofistas, Sócrates, Platão e Alegoria da Caverna", href: "./filosofia/aulas/adaptadas/aula2-adaptada.html" },
+                  { label: "ADAPTADA: Aula 3 - Os Filósofos Pré-Socráticos", href: "./filosofia/aulas/adaptadas/aula3-adaptada.html" }
+                ]
+              }
+            ]
+          },
+          {
+            name: "Laboratório de Ciências Humanas e Sociais",
+            sections: [
+              {
+                title: "Plano do Curso",
+                items: [
+                  { label: "Plano de aulas", href: "./laboratorio/plano/plano-laboratorio-1-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./laboratorio/plano/orientacoes-laboratorio-1-tri-1-ano.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 1: Indivíduo, Identidade e Sociedade", href: "./laboratorio/aulas/aula1.html" },
+                  { label: "Aula 2: Processo de Socialização", href: "./laboratorio/aulas/aula2.html" }
+                ]
+              },
+              {
+                title: "Aulas - 2º Trimestre",
+                items: [
+                  { label: "Aula 3: Midias e Influencers", href: "./laboratorio/aulas/aula3.html" },
+                  { label: "Aula 4: Etnocentrismo e Racismo", href: "./laboratorio/aulas/aula4.html" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "2ano",
+        name: "2º Ano",
+        basePath: "./segundo-ano/",
+        subjects: [
+          {
+            name: "Sociologia",
+            sections: [
+              {
+                title: "Plano do Curso",
+                items: [
+                  { label: "Plano de aulas de Sociologia", href: "./sociologia/plano-e-orientacoes/plano-sociologia-2-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./sociologia/plano-e-orientacoes/orientacoes-socio-1-tri-2-ano.html" }
+                ]
+              },
+              {
+                title: "Trabalhos do Trimestre",
+                items: [
+                  { label: "2º Trimestre", href: "./sociologia/trabalho-2-trimestre-sociologia.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 1: Etnocentrismo", href: "./sociologia/aulas/aula1.html" },
+                  { label: "Aula 2: Fatores históricos e o surgimento da Sociologia", href: "./sociologia/aulas/aula2.html" },
+                  { label: "Aula 3: Senso Comum, Ciência e a Sociologia", href: "./sociologia/aulas/aula3.html" }
+                ]
+              },
+              {
+                title: "Aulas - 2º Trimestre",
+                items: [
+                  { label: "Aula 4: Capitalismo, Fordismo, Taylorismo e o cenário atual no mundo do Trabalho", href: "./sociologia/aulas/aula4.html" },
+                  { label: "Aula 5: O trabalho para Marx, Durkheim e Weber", href: "./sociologia/aulas/aula5.html" },
+                  { label: "Aula 6: Precariado de Standing, a sociedade do Cansaço e o ócio criativo", href: "./sociologia/aulas/aula6.html" }
+                ]
+              }
+            ]
+          },
+          {
+            name: "Conectando Indivíduo, Sociedade e Tecnologia + Pesquisa, Inovação e Tecnologia",
+            sections: [
+              {
+                title: "Planos de Aula",
+                items: [
+                  { label: "Plano de aulas Integrado", href: "./conectando-e-pesquisa/plano-e-orientacoes/plano-integrado-2-ano.html" },
+                  { label: "Plano de aulas de Conectando", href: "./conectando-e-pesquisa/plano-e-orientacoes/plano-conectando-2-ano.html" },
+                  { label: "Plano de aulas de Pesquisa", href: "./conectando-e-pesquisa/plano-e-orientacoes/plano-pesquisa-2-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./conectando-e-pesquisa/plano-e-orientacoes/orientacoes-integrado-1-tri-2-ano.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 1: Transformações Sociais e Culturais na Era Digital", href: "./conectando-e-pesquisa/aulas/aula1.html" },
+                  { label: "Aula 2: Culturas e Relações de Trabalho na Sociedade Digital", href: "./conectando-e-pesquisa/aulas/aula2.html" },
+                  { label: "Aula 3: Criatividade, Convivência, Cidadania e Ética na Era Digital", href: "./conectando-e-pesquisa/aulas/aula3.html" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "3ano",
+        name: "3º Ano",
+        basePath: "./terceiro-ano/",
+        subjects: [
+          {
+            name: "Filosofia",
+            sections: [
+              {
+                title: "Plano do Curso",
+                items: [
+                  { label: "Plano de aulas de Filosofia", href: "./filosofia/plano-e-orientacoes/plano-filosofia-3-ano.html" }
+                ]
+              },
+              {
+                title: "Orientações das Avaliações",
+                items: [
+                  { label: "1º Trimestre", href: "./filosofia/plano-e-orientacoes/orientacoes-filo-1-tri-3-ano.html" }
+                ]
+              },
+              {
+                title: "Aulas - 1º Trimestre",
+                items: [
+                  { label: "Aula 1: Concepção de Estado na visão de Hobbes, Aristóteles e Iluministas", href: "./filosofia/aulas/aula1.html" },
+                  { label: "Aula 2: O Estado e o Capitalismo para Smith e Marx", href: "./filosofia/aulas/aula2.html" },
+                  { label: "Aula 3: Foucault, Mbembe e a concepção de Poder e Biopolítica", href: "./filosofia/aulas/aula3.html" }
+                ]
+              },
+              {
+                title: "Aulas - 2º Trimestre",
+                items: [
+                  { label: "Aula 4: Preparatório ENEM - Parte 1: Dos Pré-Socráticos a Platão", href: "./filosofia/aulas/aula4.html" },
+                  { label: "Aula 5: Preparatório ENEM - Parte 2: Aristóteles e Helenismo", href: "./filosofia/aulas/aula5.html" },
+                  { label: "Aula 6: Preparatório ENEM - Parte 3: Filosofia Medieval", href: "./filosofia/aulas/aula6.html" },
+                  { label: "Aula 7: Preparatório ENEM - Parte 4: Filosofia Moderna", href: "./filosofia/aulas/aula7.html" },
+                  { label: "Aula 8: Preparatório ENEM - Parte 5: Filosofia Contemporânea", href: "./filosofia/aulas/aula8.html" }
+                ]
+              },
+              {
+                title: "Aulas - 3º Trimestre",
+                items: [
+                  { label: "Aula 8: Os dilemas contemporâneos no mundo do trabalho", href: "./filosofia/aulas/aula8.html" },
+                  { label: "Aula 9: O trabalho para Karl Marx e Hannah Arendt", href: "./filosofia/aulas/aula9.html" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    function countLessons(year) {
+      var total = 0;
+      for (var s = 0; s < year.subjects.length; s++) {
+        var subject = year.subjects[s];
+        for (var sec = 0; sec < subject.sections.length; sec++) {
+          total += subject.sections[sec].items.length;
+        }
+      }
+      return total;
+    }
+
+    function showYears() {
+      document.getElementById("year-select").style.display = "flex";
+      document.getElementById("lesson-view").style.display = "none";
+    }
+
+    function showYear(index) {
+      var year = years[index];
+      document.getElementById("year-select").style.display = "none";
+      document.getElementById("lesson-view").style.display = "block";
+
+      document.getElementById("mod-title").textContent = year.name;
+
+      var html = "";
+
+      for (var s = 0; s < year.subjects.length; s++) {
+        var subject = year.subjects[s];
+        html += '<h3 class="subject-title">' + subject.name + '</h3>';
+
+        for (var sec = 0; sec < subject.sections.length; sec++) {
+          var section = subject.sections[sec];
+          html += '<h4 class="section-title">' + section.title + '</h4>';
+          html += '<ul>';
+          for (var i = 0; i < section.items.length; i++) {
+            var item = section.items[i];
+            var href = item.href;
+            if (href.indexOf("http") !== 0) {
+              href = year.basePath + href.replace("./", "");
+            }
+            html += '<li><a href="' + href + '">' + item.label + '</a></li>';
+          }
+          html += '</ul>';
+        }
+      }
+
+      document.getElementById("mod-content").innerHTML = html;
+    }
+
+    function renderYearCards() {
+      var html = "";
+      for (var i = 0; i < years.length; i++) {
+        var year = years[i];
+        var count = countLessons(year);
+        var subjectNames = [];
+        for (var s = 0; s < year.subjects.length; s++) {
+          subjectNames.push(year.subjects[s].name);
+        }
+        html +=
+          '<div class="year-card" onclick="showYear(' + i + ')">' +
+          '<div class="year-icon">' + year.name.charAt(0) + 'º</div>' +
+          '<div class="year-name">' + year.name + '</div>' +
+          '<div class="year-subjects">' + subjectNames.join(" + ") + '</div>' +
+          '</div>';
+      }
+      document.getElementById("year-list").innerHTML = html;
+    }
+
+    renderYearCards();
+  </script>
+</body>
 </html>

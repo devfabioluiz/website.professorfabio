@@ -1,141 +1,452 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!doctype html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 de Angular - STEP</title>
+    <title>Aula 2 : Angular - Diretivas (Versão Atual)</title>
+
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
   </head>
+
   <body>
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">Angular</h4>
-      <h4 class="text-center">Como funciona o Angular</h4>
+      <h4 class="text-center">Diretivas</h4>
+    <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Uso de diretivas.</div>
     </header>
+
     <main class="container">
-      <h2>Anatomia de uma Aplicação Angular</h2>
       <section>
-        <p>Uma aplicação Angular é composta por:</p>
+        <h2>Diretivas no Angular</h2>
+
+        <h3>1. O que são diretivas?</h3>
+
+        <p>
+          Diretivas são instruções especiais do Angular usadas dentro do HTML
+          para modificar a estrutura, a aparência ou o comportamento dos
+          elementos da página.
+        </p>
+
+        <p>
+          Em outras palavras, as diretivas permitem que o Angular “faça algo”
+          com um elemento HTML. Elas são muito importantes porque ajudam a
+          deixar a interface dinâmica, isto é, capaz de reagir aos dados e às
+          ações do usuário.
+        </p>
+
+        <p>
+          Em Angular moderno, parte das antigas diretivas estruturais evoluiu
+          para uma nova forma chamada <strong>control flow</strong>, utilizando:
+        </p>
+
         <ul>
+          <li><strong>@if</strong></li>
+          <li><strong>@for</strong></li>
+          <li><strong>@switch</strong></li>
+        </ul>
+
+        <p>
+          Essas estruturas tornam o código mais legível e mais próximo da lógica
+          de programação tradicional.
+        </p>
+
+        <h3>2. Para que servem?</h3>
+
+        <ul>
+          <li>Controlar exibição de elementos</li>
+          <li>Renderizar listas</li>
+          <li>Alterar estilos dinamicamente</li>
+          <li>Controlar estados da interface</li>
+        </ul>
+
+        <h3>3. Exemplos de diretivas</h3>
+
+        <h3>Exemplo com @if</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+@if (estaLogado) {
+  &lt;p&gt;Usuário autenticado&lt;/p&gt;
+} @else {
+  &lt;p&gt;Usuário não autenticado&lt;/p&gt;
+}
+          </code></pre>
+        </div>
+
+        <h3>Exemplo com @for</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+// componente
+produtos = [
+  { id: 1, nome: 'Notebook' },
+  { id: 2, nome: 'Teclado' },
+  { id: 3, nome: 'Mouse' }
+];
+
+&lt;ul&gt;
+  @for (produto of produtos; track produto.id) {
+    &lt;li&gt;{{ produto.nome }}&lt;/li&gt;
+  } @empty {
+    &lt;li&gt;Nenhum produto disponível&lt;/li&gt;
+  }
+&lt;/ul&gt;
+          </code></pre>
+        </div>
+
+        <h3>Exemplo com @switch</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+@switch (perfil) {
+  @case ('admin') {
+    &lt;p&gt;Administrador&lt;/p&gt;
+  }
+  @case ('cliente') {
+    &lt;p&gt;Cliente&lt;/p&gt;
+  }
+  @default {
+    &lt;p&gt;Perfil desconhecido&lt;/p&gt;
+  }
+}
+          </code></pre>
+        </div>
+
+        <h3>5. Diretivas de atributo</h3>
+
+        <p>
+          As diretivas de atributo alteram a aparência ou o comportamento de um
+          elemento já existente, mas sem remover ou recriar esse elemento. As
+          mais comuns são:
+        </p>
+
+        <ul>
+          <li><strong>[ngClass]</strong> → adiciona ou remove classes CSS</li>
           <li>
-            <strong>Módulos:</strong> Unidades lógicas da aplicação que
-            organizam funcionalidades.
-          </li>
-          <li>
-            <strong>Componentes:</strong> As partes visuais da aplicação,
-            responsáveis pela interface do usuário.
-          </li>
-          <li>
-            <strong>Templates:</strong> HTML que define a aparência dos
-            componentes.
-          </li>
-          <li>
-            <strong>Serviços:</strong> Classes para lógica de negócios, como
-            chamadas de API.
-          </li>
-          <li>
-            <strong>Diretivas:</strong> Comandos que adicionam comportamento ao
-            DOM.
+            <strong>[ngStyle]</strong> → aplica estilos inline dinamicamente
           </li>
         </ul>
 
-        <h3>Exemplo de Estrutura Básica</h3>
+        <h3>Exemplo com ngClass</h3>
+
         <div class="code-container">
-          <pre><code class="language-javascript">
-    @NgModule({
-      declarations: [
-        AppComponent, // Componente principal
-      ],
-      imports: [
-        BrowserModule, // Módulos necessários
-      ],
-      providers: [],
-      bootstrap: [AppComponent], // Inicialização da aplicação
-    })
-    export class AppModule {}
-    </code></pre>
+          <pre><code class="language-markup">
+&lt;p [ngClass]="{
+  'online': estaLogado,
+  'offline': !estaLogado
+}"&gt;
+  Status do usuário
+&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h3>Exemplo com ngStyle</h3>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;p [ngStyle]="{
+  'color': estaLogado ? 'green' : 'red'
+}"&gt;
+  Situação de acesso
+&lt;/p&gt;
+          </code></pre>
+        </div>
+
+        <h2>Hora de Praticar</h2>
+
+        <h3>Passo 0 — Criar branch</h3>
+
+        <p>
+          Acesse novamente o repositório no GitHub e crie agora uma nova branch
+          baseada na branch aula1-angular com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula2-diretivas
+          </code></pre>
+        </div>
+
+        <p>No VsCode abra o terminal e coloque o código abaixo:</p>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-bash">
+git fetch
+git checkout aula2-diretivas
+            </code>
+          </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h2>Conceito de Módulo</h2>
+        <h3>Passo 1 — Criar componente</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c aula2
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Código do componente</h3>
+
         <p>
-          Um módulo organiza a aplicação Angular em partes funcionais. O módulo
-          principal é o <code class="language-javascript">AppModule</code>.
+          Entre em <code>aula2.ts</code> e substitua o conteúdo existente por
+          este código abaixo:
         </p>
 
-        <h3>Exemplo de Módulo</h3>
         <div class="code-container">
-          <pre><code class="language-javascript">
-    import { NgModule } from '@angular/core';
-    import { BrowserModule } from '@angular/platform-browser';
-    import { AppComponent } from './app.component';
+          <pre><code class="language-typescript">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-    @NgModule({
-      declarations: [AppComponent],
-      imports: [BrowserModule],
-      providers: [],
-      bootstrap: [AppComponent],
-    })
-    export class AppModule {}
-    </code></pre>
+@Component({
+  selector: 'app-aula2',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './aula2.html',
+  styleUrl: './aula2.css',
+})
+export class Aula2 {
+  estaLogado = true;
+  perfil = 'admin';
+
+  produtos = [
+    { id: 1, nome: 'Notebook' },
+    { id: 2, nome: 'Teclado' },
+    { id: 3, nome: 'Mouse' },
+  ];
+
+  alternarLogin() {
+    this.estaLogado = !this.estaLogado;
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Template</h3>
+
+        <p>
+          Agora entre em <code>aula2.html</code> e substitua o conteúdo
+          existente por este código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+@if (estaLogado) {
+  &lt;p&gt;Logado&lt;/p&gt;
+} @else {
+  &lt;p&gt;Não logado&lt;/p&gt;
+}
+
+&lt;button (click)="alternarLogin()"&gt;
+  Alternar
+&lt;/button&gt;
+
+&lt;ul&gt;
+  @for (produto of produtos; track produto.id) {
+    &lt;li&gt;{{ produto.nome }}&lt;/li&gt;
+  }
+&lt;/ul&gt;
+
+@switch (perfil) {
+  @case ('admin') {
+    &lt;p&gt;Admin&lt;/p&gt;
+  }
+  @default {
+    &lt;p&gt;Outro&lt;/p&gt;
+  }
+}
+
+&lt;p [ngClass]="{ 'logado': estaLogado }"&gt;
+  Classe dinâmica
+&lt;/p&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 - Adicionando estilo ao componente</h3>
+
+        <p>
+          Entre em <code>aula2.css</code> e substitua o conteúdo existente por
+          este código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.logado {
+  color: green;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Usar no app</h3>
+
+        <p>
+          Entre em <code>app.ts</code> e insira o componente
+          <code>Aula2</code> na parte de imports tal como no código abaixo.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">
+import { Component, signal } from '@angular/core';
+import { Aula2 } from './aula2/aula2';
+@Component({
+  selector: 'app-root',
+  imports: [Aula2],
+  templateUrl: './app.html',
+  styleUrl: './app.css',
+})
+export class App {
+  protected readonly title = signal('minha-aplicacao-angular');
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora precisamos importá-lo no arquivo principal da aplicação caso
+          queiramos usá-lo dentro do template do <code>app.html</code>. Logo,
+          devemos acesar o arquivo <code>app.html</code>, apagar o conteúdo
+          atual dentro dele e insirir este:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;app-aula2&gt;&lt;/app-aula2&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Rodar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng s
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último passo — Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 2 diretivas"
+git push
+          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
-      <h2>O que é um Componente?</h2>
+      <!-- DEVER -->
       <section>
-        <p>
-          Um componente é uma classe que controla uma parte da interface do
-          usuário. Ele é composto por:
-        </p>
-        <ul>
-          <li>HTML para a aparência.</li>
-          <li>CSS para o estilo.</li>
-          <li>TypeScript para a lógica.</li>
-        </ul>
+        <h2>Dever de Casa</h2>
 
-        <h3>Exemplo de Criação de Componente</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-    import { Component } from '@angular/core';
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um for dentro do componente painel-adm</h3>
+            <p>
+              Crie <code>for</code> dentro do componente
+              <code>painel-adm</code> para renderizar uma lista de usuários
+              fictícios
+            </p>
+            <p>
+              Não se esqueça de usar o <code>interface</code> do TypeScript para
+              tipar o array de usuários
+            </p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever
+            </p>
 
-    @Component({
-      selector: 'app-exemplo',
-      template: '&lt;h1&gt;Bem-vindo ao Angular!&lt;/h1&gt;',
-      styles: ['h1 { color: blue; }']
-    })
-    export class ExemploComponent {}
-    </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
 
-        <h3>Uso Prático</h3>
-        <p>
-          Para usar o componente
-          <code class="language-javascript">ExemploComponent</code>, basta
-          adicioná-lo ao módulo e incluí-lo no HTML:
-        </p>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-    &lt;app-exemplo&gt;&lt;/app-exemplo&gt;
-    </code></pre>
-          <button class="btn-copy">Copiar Código</button>
+              <p>
+                <b>1. Componente: <code>painel-adm.ts</code></b>
+              </p>
+              <div class="code-container">
+                <pre><code class="language-typescript">
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+interface Usuario {
+  id: number;
+  nome: string;
+  email: string;
+}
+
+@Component({
+  selector: 'app-painel-adm',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './painel-adm.html',
+  styleUrl: './painel-adm.css'
+})
+export class PainelAdm implements {
+  usuarios: Usuario[] = [
+    { id: 1, nome: 'Alice', email: 'alice@example.com' },
+    { id: 2, nome: 'Bob', email: 'bob@example.com' },
+    { id: 3, nome: 'Charlie', email: 'charlie@example.com' }
+  ];
+}
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>
+                <b>2. Template: <code>painel-adm.html</code></b>
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-markup">
+&lt;h2&gt;Lista de Usuários&lt;/h2&gt;
+&lt;ul&gt;
+  @for (usuario of usuarios; track usuario.id) {
+    &lt;li&gt;
+      &lt;strong&gt;{{ usuario.nome }}&lt;/strong&gt; - {{ usuario.email }}
+    &lt;/li&gt;
+  } @empty {
+    &lt;li&gt;Nenhum usuário encontrado&lt;/li&gt;
+  }
+&lt;/ul&gt;
+          </code></pre>
+
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
+
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
+
       <div class="button-container">
         <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
       </div>
     </footer>
+
     <script src="../../scripts/copy-clipboard.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

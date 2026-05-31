@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plano de Aulas - Docker e Kubernetes</title>
+    <link rel="stylesheet" href="../../estilos/estilos-planos.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Containerização e Orquestração de Aplicações: Docker e Kubernetes</h1>
+      <h2>Versão 1.0.0</h2>
+      <h3>Duração do Curso – 32 horas</h3>
+
+      <h2>Objetivo do curso</h2>
+      <p>
+        Capacitar o aluno nos fundamentos de containerização e orquestração de
+        aplicações.
+      </p>
+
+      <p>Ao final do curso, o aluno será capaz de:</p>
+      <ul>
+        <li>Compreender o papel dos containers no desenvolvimento moderno de software</li>
+        <li>Entender a arquitetura e o funcionamento de containers</li>
+        <li>Instalar e configurar o Docker</li>
+        <li>Gerenciar containers via linha de comando</li>
+        <li>Acessar e interagir com containers</li>
+        <li>Configurar redes em containers</li>
+        <li>Configurar redirecionamento de portas</li>
+        <li>Trabalhar com volumes (Volumes)</li>
+        <li>Entender a estrutura de um Dockerfile</li>
+        <li>Compreender o Docker Compose e sua aplicação</li>
+        <li>Utilizar Docker Compose em projetos</li>
+        <li>Compreender os fundamentos do Kubernetes</li>
+      </ul>
+
+      <h2>Critérios de avaliação</h2>
+      <p>
+        A avaliação será baseada na entrega de todas as atividades práticas e
+        tarefas.
+      </p>
+
+      <p>
+        Antes do início do curso, o aluno deverá ter acesso ao curso:
+        <br />
+        <a
+          href="https://www.netacad.com/courses/devnet-associate?courseLang=en-US"
+          target="_blank"
+        >
+          Cisco NetAcad - DevNet Associate
+        </a>
+      </p>
+
+      <h2>Módulo 1 (4 horas)</h2>
+      <h3>Fundamentos do Docker</h3>
+      <ol>
+        <li>História do surgimento dos containers</li>
+        <li>Sistemas de virtualização baseados em hipervisores</li>
+        <li>Sistemas de virtualização a nível de kernel</li>
+        <li>Diferença entre virtualização e containerização</li>
+        <li>Conceito de arquitetura de microsserviços</li>
+        <li>
+          Componentes do Docker:
+          <ul>
+            <li>Docker Daemon</li>
+            <li>Docker CLI</li>
+            <li>Dockerfile</li>
+            <li>Image (Imagem)</li>
+            <li>Container</li>
+            <li>Docker Registry</li>
+          </ul>
+        </li>
+        <li>
+          Instalação do Docker:
+          <ul>
+            <li>Instalação do Docker no Windows</li>
+            <li>Instalação do Docker no Linux (opcional)</li>
+            <li>Instalação do Docker no Mac (opcional)</li>
+          </ul>
+        </li>
+        <li>
+          Verificação do funcionamento da instalação do Docker, comando:
+          <code>docker run hello-world</code>
+        </li>
+      </ol>
+
+      <h2>Módulo 2 (4 horas)</h2>
+      <h3>Trabalhando com Containers Docker</h3>
+      <ol>
+        <li>
+          Comandos básicos para trabalhar com containers:
+          <ul>
+            <li><code>docker ps</code></li>
+            <li><code>docker run</code></li>
+            <li><code>docker rm</code></li>
+            <li><code>docker logs</code></li>
+            <li><code>docker start</code> / <code>stop</code> / <code>restart</code></li>
+            <li>Outros comandos</li>
+          </ul>
+        </li>
+        <li>
+          Comandos básicos para trabalhar com imagens:
+          <ul>
+            <li><code>docker images</code></li>
+            <li><code>docker search</code></li>
+            <li><code>docker pull</code></li>
+            <li><code>docker build</code></li>
+            <li><code>docker rmi</code></li>
+            <li>Outros comandos</li>
+          </ul>
+        </li>
+        <li>Exemplos práticos de utilização</li>
+      </ol>
+
+      <h2>Módulo 3 (4 horas)</h2>
+      <h3>Redes no Docker</h3>
+      <ol>
+        <li>
+          Modelo de rede no Docker, princípios de organização de rede.
+          Configuração do modelo de rede padrão.
+        </li>
+        <li>Conceito de interface de rede virtual no Docker</li>
+        <li>
+          Drivers de rede disponíveis no Docker por padrão:
+          <ul>
+            <li>bridge</li>
+            <li>macvlan</li>
+            <li>host</li>
+            <li>none</li>
+          </ul>
+        </li>
+        <li>
+          Comandos para configuração de rede no Docker:
+          <ul>
+            <li><code>docker network ls</code></li>
+            <li><code>docker network inspect</code></li>
+            <li><code>docker network create</code></li>
+            <li><code>docker network connect</code></li>
+            <li><code>docker network disconnect</code></li>
+            <li><code>docker network rm</code></li>
+            <li><code>docker network prune</code></li>
+          </ul>
+        </li>
+        <li>Mapeamento de portas no Docker</li>
+        <li>Exemplos práticos</li>
+      </ol>
+
+      <h2>Módulo 4 (4 horas)</h2>
+      <h3>Volumes no Docker</h3>
+      <ol>
+        <li>
+          Formas de armazenamento de dados no Docker:
+          <ul>
+            <li>Volumes de dados (docker volumes)</li>
+            <li>Montagem de diretório do host (bind mount)</li>
+            <li>Named pipes (apenas no Windows)</li>
+            <li>Montagem tmpfs (apenas no Linux)</li>
+          </ul>
+        </li>
+        <li>Propriedades dos volumes no Docker</li>
+        <li>
+          Para que são utilizados os volumes no Docker:
+          <ul>
+            <li>Compartilhamento de dados entre containers</li>
+            <li>Armazenamento remoto de dados</li>
+            <li>Backup ou migração de dados para outro host com Docker</li>
+          </ul>
+        </li>
+        <li>
+          Comandos para trabalhar com volumes no Docker:
+          <ul>
+            <li><code>docker volume create</code></li>
+            <li><code>docker volume ls</code></li>
+            <li><code>docker volume inspect</code></li>
+            <li><code>docker volume rm</code></li>
+            <li><code>docker system prune</code></li>
+            <li>Flags <code>--mount</code> e <code>--volume</code></li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2>Módulo 5 (4 horas)</h2>
+      <h3>Dockerfile</h3>
+      <ol>
+        <li>
+          Fundamentos da estrutura dos containers:
+          <ul>
+            <li>Conceito de organização em camadas dos containers</li>
+            <li>Conceito de imagem base (imagem pai)</li>
+          </ul>
+        </li>
+        <li>Objetivos e finalidades do Dockerfile</li>
+        <li>Estrutura do Dockerfile</li>
+        <li>
+          Instruções do Dockerfile:
+          <ul>
+            <li>FROM</li>
+            <li>RUN</li>
+            <li>COPY</li>
+            <li>ADD</li>
+            <li>LABEL</li>
+            <li>ENV</li>
+            <li>CMD</li>
+            <li>WORKDIR</li>
+            <li>ARG</li>
+            <li>ENTRYPOINT</li>
+            <li>EXPOSE</li>
+            <li>VOLUME</li>
+            <li>USER</li>
+            <li>HEALTHCHECK</li>
+            <li>SHELL</li>
+          </ul>
+        </li>
+        <li>
+          Tamanho da imagem, como reduzi-lo e otimização do processo de build:
+          <ul>
+            <li>Cache durante o processo de build da imagem</li>
+            <li>Seleção adequada da imagem base para reduzir o tamanho da imagem</li>
+            <li>Build multi-stage (multiestágios)</li>
+            <li>Arquivo <code>.dockerignore</code>: estrutura e uso</li>
+          </ul>
+        </li>
+        <li>Exemplos práticos de utilização</li>
+      </ol>
+
+      <h2>Módulo 6 (6 horas)</h2>
+      <h3>Docker Compose</h3>
+      <ol>
+        <li>
+          Fundamentos do Docker Compose:
+          <ul>
+            <li>História do Docker Compose</li>
+            <li>Para que é utilizado o Docker Compose, cenários de uso</li>
+          </ul>
+        </li>
+        <li>
+          Instalação do Docker Compose:
+          <ul>
+            <li>Instalação no Windows</li>
+            <li>Instalação no Linux e MacOS (opcional)</li>
+          </ul>
+        </li>
+        <li>
+          Estrutura e exemplos do arquivo <code>docker-compose.yml</code>:
+          <ul>
+            <li>
+              Versão 1 – formato obsoleto, sem suporte a volumes e rede
+            </li>
+            <li>
+              Versão 2 – versão moderna do formato do arquivo docker-compose.yml
+            </li>
+          </ul>
+        </li>
+        <li>Exemplo de criação de uma aplicação multi-container</li>
+      </ol>
+
+      <h2>Módulo 7 (6 horas)</h2>
+      <h3>Kubernetes</h3>
+      <ol>
+        <li>História do surgimento do Kubernetes</li>
+        <li>Quando utilizar o Kubernetes e quando não utilizar</li>
+        <li>
+          Principais termos e conceitos do Kubernetes:
+          <ul>
+            <li>Nodes</li>
+            <li>Pods</li>
+            <li>Replication Controllers</li>
+            <li>Services</li>
+            <li>Volumes</li>
+            <li>Labels</li>
+            <li>Kubectl CLI para gerenciamento do Kubernetes</li>
+          </ul>
+        </li>
+        <li>
+          Arquitetura do Kubernetes:
+          <ul>
+            <li>Node do Kubernetes</li>
+            <li>Kubelet</li>
+            <li>Kube-Proxy</li>
+            <li>
+              Componentes de controle do Kubernetes:
+              <ul>
+                <li>Etcd</li>
+                <li>Kubernetes API Server</li>
+                <li>Scheduler</li>
+                <li>Kubernetes Controller Manager Server</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          Planejamento e implantação do Kubernetes localmente e em plataformas de
+          nuvem:
+          <ul>
+            <li>Implantação em hardware físico</li>
+            <li>Implantação em máquinas virtuais</li>
+            <li>Implantação em serviços de nuvem</li>
+          </ul>
+        </li>
+        <li>
+          Exemplos práticos de implantação de aplicações em Kubernetes em um
+          serviço de nuvem
+        </li>
+      </ol>
+    </main>
+  </body>
+</html>

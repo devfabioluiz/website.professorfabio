@@ -1,28 +1,133 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index</title>
-    <link href="./estilos/styles.css" rel="stylesheet" />
-  </head>
-  <body>
-    <!-- Navegação -->
-    <nav>
-      <ul>
-        <li>
-          <a href="./ceap/indice-ceap.html">CEAP</a>
-        </li>
-        <li>
-          <a href="./step/indice-step.html">STEP</a>
-        </li>
-        <li>
-          <a href="./filosofia/indice-filosofia.html">Filosofia</a>
-        </li>
-        <!-- <li>
-          <a href="./gerador-aulas/gerador.html">Gerador Aula</a>
-        </li> -->
-      </ul>
-    </nav>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index</title>
+  <link href="./estilos/styles.css" rel="stylesheet" />
+  <style>
+    #main-menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      padding: 20px;
+    }
+
+    #main-menu h2 {
+      font-size: 1.8rem;
+      color: #273c75;
+      margin-bottom: 50px;
+      text-align: center;
+      border-bottom: none;
+    }
+
+    .menu-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .menu-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 50px 55px;
+      width: 260px;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: block;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .menu-card.step {
+      border: 3px solid #0073e6;
+      box-shadow: 0 4px 15px rgba(0, 115, 230, 0.1);
+    }
+
+    .menu-card.step:hover {
+      box-shadow: 0 12px 35px rgba(0, 115, 230, 0.25);
+    }
+
+    .menu-card.ceap {
+      border: 3px solid #2e7d32;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.1);
+    }
+
+    .menu-card.ceap:hover {
+      box-shadow: 0 12px 35px rgba(46, 125, 50, 0.25);
+    }
+
+    .menu-card .card-icon {
+      font-size: 3.5rem;
+      margin-bottom: 18px;
+    }
+
+    .menu-card .card-title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .menu-card.step .card-title {
+      color: #0073e6;
+    }
+
+    .menu-card.ceap .card-title {
+      color: #2e7d32;
+    }
+
+    .menu-card .card-desc {
+      font-size: 0.95rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    @media only screen and (max-width: 700px) {
+      .menu-card {
+        width: 200px;
+        padding: 35px 30px;
+      }
+
+      #main-menu h2 {
+        font-size: 1.4rem;
+      }
+
+      .menu-grid {
+        gap: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="./ceap/indice-ceap.html">CEAP</a></li>
+      <li><a href="./step/indice-step.html">STEP</a></li>
+      <li><a href="./filosofia/indice-filosofia.html">Filosofia</a></li>
+    </ul>
+  </nav>
+
+  <div id="main-menu">
+    <h2>Escolha a seção que deseja acessar:</h2>
+    <div class="menu-grid">
+      <a href="./step/indice-step.html" class="menu-card step">
+        <div class="card-icon">&#128187;</div>
+        <div class="card-title">STEP</div>
+        <div class="card-desc">Cursos de programação: React, NodeJS, Python, Angular, TypeScript e mais</div>
+      </a>
+      <a href="./ceap/indice-ceap.html" class="menu-card ceap">
+        <div class="card-icon">&#128218;</div>
+        <div class="card-title">CEAP</div>
+        <div class="card-desc">Aulas do ensino médio: Filosofia, Sociologia, Laboratório de Ciências Humanas</div>
+      </a>
+    </div>
+  </div>
+</body>
 </html>

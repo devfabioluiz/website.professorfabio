@@ -1,207 +1,430 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!doctype html>
+
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 9 de Angular</title>
-    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
-    />
+    <title>Aula 9: Angular - RxJS e Operadores na Prática</title>
+
+
+<link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+
   </head>
+
   <body>
     <header>
       <h1>Aula 9</h1>
       <h4 class="text-center">Angular</h4>
-      <h4 class="text-center">Roteamento</h4>
+      <h4 class="text-center">RxJS e Operadores na Prática</h4>
+    <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Serviços, Uso de requisições HTTP (RxJS com HTTP).</div>
     </header>
-    <main class="container">
-      <h2>Roteamento</h2>
-      <section>
-        <p>
-          O roteamento no Angular permite navegar entre componentes com base na
-          URL. Ele transforma a SPA (Single Page Application) em uma aplicação
-          com múltiplas "páginas virtuais".
-        </p>
 
-        <h2>1. Configuração Inicial</h2>
 
-        <p>
-          Crie um módulo de roteamento ou use o
-          <code class="language-javascript">AppRoutingModule</code>:
-        </p>
+<main class="container">
+  <section>
+    <h2>O que é RxJS?</h2>
 
-        <div class="code-container">
-          <pre><code class="language-javascript">// app-routing.module.ts
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { SobreComponent } from './sobre/sobre.component';
+    <p>
+      RxJS é uma biblioteca para trabalhar com <strong>dados assíncronos</strong>
+      usando Observables.
+    </p>
 
-const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'sobre', component: SobreComponent },
-];
+    <p>
+      Diferente de valores simples, um Observable pode emitir vários valores
+      ao longo do tempo.
+    </p>
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    <h3>Exemplo simples</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of } from 'rxjs';
+
+of(1, 2, 3).subscribe(console.log); </code></pre> </div>
+
+
+    <h2>Transformando dados com operadores</h2>
+
+    <p>
+      No mundo real, raramente usamos Observable puro. Usamos operadores.
+    </p>
+
+    <h3>map</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, map } from 'rxjs';
+
+of(1, 2, 3)
+.pipe(map(v => v * 10))
+.subscribe(console.log); </code></pre> </div>
+
+
+    <h3>filter</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, filter } from 'rxjs';
+
+of(1,2,3,4)
+.pipe(filter(v => v % 2 === 0))
+.subscribe(console.log); </code></pre> </div>
+
+
+    <h3>tap (debug)</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { of, tap } from 'rxjs';
+
+of(1,2,3)
+.pipe(tap(v => console.log('antes:', v)))
+.subscribe(); </code></pre> </div>
+
+
+    <h2>Controlando eventos (debounceTime)</h2>
+
+    <p>
+      Evita execuções excessivas (muito usado em busca).
+    </p>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+debounceTime(500) </code></pre> </div>
+
+
+    <h2>Chamadas HTTP com switchMap</h2>
+
+    <p>
+      O <strong>switchMap</strong> cancela chamadas anteriores e mantém apenas a última.
+    </p>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+switchMap(termo => this.http.get(`/api?q=${termo}`)) </code></pre> </div> </section>
+
+
+  <section>
+    <h2>Passo a Passo: Busca com RxJS (caso real)</h2>
+
+    <h3>Passo 0 — Criar branch</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+aula9-rxjs-operadores </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+git fetch
+git checkout -b aula9-rxjs-operadores </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 1 — Criar componente</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+ng g c pages/busca-produtos </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 2 — Criar input reativo</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { debounceTime, switchMap, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+selector: 'app-busca-produtos',
+templateUrl: './busca-produtos.html'
 })
-export class AppRoutingModule { }
-</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+export class BuscaProdutos {
+campoBusca = new FormControl('');
+resultados: any[] = [];
 
-        <h2>2. Definindo Áreas de Navegação</h2>
+constructor(private http: HttpClient) {
+this.campoBusca.valueChanges
+.pipe(
+debounceTime(500),
+tap(valor => console.log('Buscando:', valor)),
+switchMap(valor =>
+this.http.get<any[]>(`https://fakestoreapi.com/products`)
+)
+)
+.subscribe(res => {
+this.resultados = res;
+});
+}
+} </code></pre> <button class="btn-copy">Copiar Código</button> </div>
 
-        <p>
-          Use a diretiva
-          <code class="language-javascript">&lt;router-outlet&gt;</code> para
-          indicar onde os componentes serão carregados.
-        </p>
 
+    <h3>Passo 3 — Template</h3>
+
+    <div class="code-container">
+      <pre><code class="language-markup">
+
+
+<h1>Busca de Produtos</h1>
+
+<input [formControl]="campoBusca" placeholder="Digite para buscar..." />
+
+<ul>
+<li *ngFor="let item of resultados">
+{{ item.title }}
+</li>
+</ul> </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 4 — Importar módulos</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'; </code></pre> </div>
+
+
+    <h3>Passo 5 — Rota</h3>
+
+    <div class="code-container">
+      <pre><code class="language-typescript">
+
+
+{
+path: 'rxjs-busca',
+loadComponent: () =>
+import('./pages/busca-produtos/busca-produtos')
+.then(m => m.BuscaProdutos)
+} </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>Passo 6 — Rodar</h3>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+ng serve </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <p>Acesse:</p>
+
+    <div class="code-container">
+      <pre><code class="language-bash">
+
+
+http://localhost:4200/rxjs-busca </code></pre> <button class="btn-copy">Copiar Código</button> </div>
+
+
+    <h3>O que foi usado aqui?</h3>
+
+    <ul>
+      <li><strong>valueChanges</strong> → escuta input</li>
+      <li><strong>debounceTime</strong> → evita excesso</li>
+      <li><strong>tap</strong> → debug</li>
+      <li><strong>switchMap</strong> → chamada HTTP segura</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Resumo</h2>
+
+    <ul>
+      <li>RxJS é essencial para Angular</li>
+      <li>Observables representam fluxos de dados</li>
+      <li>Operadores transformam e controlam esses fluxos</li>
+      <li>debounceTime + switchMap = padrão de mercado</li>
+    </ul>
+  </section>
+
+  <section>
+  <h2>Signals vs RxJS — Quando usar cada um?</h2>
+
+  <p>
+    Com as versões mais recentes do Angular, surgiu uma dúvida muito comum:
+  </p>
+
+  <p>
+    <strong>Signals substituem RxJS?</strong>
+  </p>
+
+  <p><strong>Resposta curta: NÃO.</strong></p>
+
+  <p>
+    Eles resolvem problemas diferentes e, na prática, são usados juntos.
+  </p>
+
+  <h3>Diferença principal</h3>
+
+  <table>
+    <tr>
+      <th>Signals</th>
+      <th>RxJS</th>
+    </tr>
+    <tr>
+      <td>Estado local e reatividade simples</td>
+      <td>Fluxos assíncronos complexos</td>
+    </tr>
+    <tr>
+      <td>Mais simples e direto</td>
+      <td>Mais poderoso e flexível</td>
+    </tr>
+    <tr>
+      <td>Atualização automática</td>
+      <td>Baseado em streams</td>
+    </tr>
+  </table>
+
+  <h3>Quando usar Signals</h3>
+
+  <ul>
+    <li>Estado de UI (contador, toggle, loading)</li>
+    <li>Dados locais de um componente</li>
+    <li>Substituir variáveis simples</li>
+    <li>Reatividade direta sem complexidade</li>
+  </ul>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+contador = signal(0);
+
+incrementar() {
+  this.contador.update(v => v + 1);
+}
+    </code></pre>
+  </div>
+
+  <h3>Quando usar RxJS</h3>
+
+  <ul>
+    <li>Chamadas HTTP</li>
+    <li>Eventos (input, scroll, clique)</li>
+    <li>Fluxos assíncronos complexos</li>
+    <li>Combinar múltiplas fontes de dados</li>
+  </ul>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+this.campoBusca.valueChanges.pipe(
+  debounceTime(300),
+  switchMap(valor => this.http.get(`/api?q=${valor}`))
+);
+    </code></pre>
+  </div>
+
+  <h3>Comparação prática</h3>
+
+  <p>
+    Imagine um campo de busca:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Signal:</strong> guarda o valor atual
+    </li>
+    <li>
+      <strong>RxJS:</strong> controla o fluxo de busca (tempo, requisições, etc)
+    </li>
+  </ul>
+
+  <h3>Usando os dois juntos</h3>
+
+  <p>
+    Em aplicações reais, é comum usar RxJS para buscar dados e Signals para armazenar o estado.
+  </p>
+
+  <div class="code-container">
+    <pre><code class="language-typescript">
+resultados = signal([]);
+
+this.campoBusca.valueChanges.pipe(
+  debounceTime(300),
+  switchMap(valor => this.http.get<any[]>(`/api?q=${valor}`))
+).subscribe(res => {
+  this.resultados.set(res);
+});
+    </code></pre>
+  </div>
+
+  <h3>Resumo prático</h3>
+
+  <ul>
+    <li>Signals = estado simples</li>
+    <li>RxJS = fluxo assíncrono</li>
+    <li>Signals não substituem RxJS</li>
+    <li>RxJS não substitui Signals</li>
+    <li>Os dois juntos = arquitetura moderna Angular</li>
+  </ul>
+</section>
+
+  <section>
+    <h2>Dever de Casa</h2>
+
+    <div class="question">
+      <h3>Criar busca com filtro local</h3>
+
+      <p>
+        Use <code>debounceTime</code>, <code>map</code> e
+        <code>filter</code> para filtrar uma lista local de produtos.
+      </p>
+
+      <button class="btn-gabarito">Ver gabarito</button>
+
+      <div class="gabarito">
         <div class="code-container">
-          <pre><code class="language-html">&lt;!-- app.component.html --&gt;
-&lt;nav&gt;
-  &lt;a routerLink="/"&gt;Home&lt;/a&gt;
-  &lt;a routerLink="/sobre"&gt;Sobre&lt;/a&gt;
-&lt;/nav&gt;
+          <pre><code class="language-typescript">
 
-&lt;router-outlet&gt;&lt;/router-outlet&gt;
-</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
 
-        <h2>3. Redirecionamento</h2>
+this.campoBusca.valueChanges.pipe(
+debounceTime(300),
+map(valor => valor.toLowerCase()),
+map(valor =>
+this.lista.filter(item =>
+item.nome.toLowerCase().includes(valor)
+)
+)
+).subscribe(res => this.resultados = res); </code></pre> </div> </div> </div> </section>
 
-        <p>Você pode redirecionar rotas vazias ou erradas:</p>
 
-        <div class="code-container">
-          <pre><code class="language-javascript">const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', component: PaginaNaoEncontradaComponent }
-];</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+</main>
 
-        <h2>4. Roteamento com Parâmetros</h2>
+<footer>
+  <button onclick="window.print()">Imprimir</button>
+</footer>
 
-        <h3>4.1 Rota com parâmetro</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const routes: Routes = [
-  { path: 'produto/:id', component: ProdutoDetalheComponent }
-];</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3>4.2 Navegar com parâmetro</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">this.router.navigate(['/produto', 10]);</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3>4.3 Ler parâmetro no componente</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { ActivatedRoute } from '@angular/router';
-
-constructor(private route: ActivatedRoute) {}
-
-ngOnInit() {
-  this.route.paramMap.subscribe(params =&gt; {
-    const id = params.get('id');
-    console.log('ID:', id);
-  });
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h2>5. Query Params</h2>
-
-        <h3>5.1 Enviar:</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">this.router.navigate(['/produtos'], { queryParams: { categoria: 'teclados', precoMax: 500 } });</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3>5.2 Ler:</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">this.route.queryParamMap.subscribe(params =&gt; {
-  const categoria = params.get('categoria');
-  const precoMax = params.get('precoMax');
-});</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h2>
-          6. Passagem de dados com
-          <code class="language-javascript">state</code>
-        </h2>
-
-        <h3>6.1 Enviar:</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">this.router.navigate(['/perfil'], { state: { usuario: 'Carlos', nivel: 'admin' } });</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3>6.2 Receber:</h3>
-        <div class="code-container">
-          <pre><code class="language-javascript">ngOnInit() {
-  const usuario = history.state.usuario;
-  const nivel = history.state.nivel;
-  console.log(usuario, nivel);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h2>7. Rotas Filhas</h2>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const routes: Routes = [
-  {
-    path: 'admin',
-    component: AdminComponent,
-    children: [
-      { path: 'usuarios', component: UsuariosComponent },
-      { path: 'configuracoes', component: ConfiguracoesComponent }
-    ]
-  }
-];</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <p>Em <code class="language-javascript">admin.component.html</code>:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h2>8. Lazy Loading (Carregamento Preguiçoso)</h2>
-
-        <p>Usado para carregar módulos apenas quando necessário.</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">const routes: Routes = [
-  {
-    path: 'relatorios',
-    loadChildren: () =&gt; import('./relatorios/relatorios.module').then(m =&gt; m.RelatoriosModule)
-  }
-];</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-      </section>
-    </main>
-    <footer>
-      <div class="button-container">
-        <button class="btn-print" onclick="window.print()">Imprimir</button>
-      </div>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
-      </div>
-    </footer>
-    <script src="../../scripts/copy-clipboard.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>

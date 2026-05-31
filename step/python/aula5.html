@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 5 - Fundamentos Avançados de Python - IT Step</title>
+    <title>Aula 5 - Fundamentos Avançados de Python - Step</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -34,57 +34,28 @@
         background-color: #f2f2f2;
       }
     </style>
-
-    <style>
-      body.dark-mode {
-        background-color: #121212;
-        color: #f1f1f1;
-      }
-
-      body.dark-mode main,
-      body.dark-mode section,
-      body.dark-mode header,
-      body.dark-mode footer {
-        background-color: #1e1e1e;
-        color: #f1f1f1;
-      }
-
-      body.dark-mode table,
-      body.dark-mode th,
-      body.dark-mode td {
-        border-color: #555;
-      }
-
-      body.dark-mode th {
-        background-color: #333;
-      }
-
-      body.dark-mode pre,
-      body.dark-mode code {
-        background-color: #2b2b2b;
-      }
-
-      .theme-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        z-index: 999;
-      }
-    </style>
   </head>
 
-  <body class="dark-mode">
-    <button class="theme-toggle" onclick="toggleTheme()">Alternar Tema</button>
-
+  <body>
     <header>
       <h1>Aula 5</h1>
       <h4 class="text-center">Python Backend</h4>
       <h4 class="text-center">Fundamentos Avançados de Python</h4>
+      <div
+        class="topicos-aula"
+        style="
+          background: #e8f4ff;
+          border-left: 4px solid #0073e6;
+          padding: 10px 15px;
+          margin: 10px auto 0 auto;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          max-width: 800px;
+        "
+      >
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Tuplas, Dicionários, Funções Lambda, Geradores, Closures, Decoradores.
+      </div>
     </header>
 
     <main class="container">
@@ -885,11 +856,5 @@ cadastrar_usuario("Fabio")
 
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="../../scripts/check-gabarito.js"></script>
-
-    <script>
-      function toggleTheme() {
-        document.body.classList.toggle("dark-mode");
-      }
-    </script>
   </body>
 </html>

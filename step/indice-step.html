@@ -3,528 +3,661 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de Cursos e Aulas da IT Step</title>
+    <title>Lista de Cursos e Aulas da Step</title>
     <link href="../estilos/styles.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
     <script src="../scripts/script-impressao.js"></script>
+    <style>
+      #module-select {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        padding: 20px;
+      }
+
+      #module-select h3 {
+        font-size: 1.6rem;
+        color: #273c75;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+
+      .module-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        max-width: 1000px;
+      }
+
+      .module-card {
+        background: #fff;
+        border: 2px solid #0073e6;
+        border-radius: 12px;
+        padding: 30px 25px;
+        width: 200px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          background-color 0.2s ease;
+      }
+
+      .module-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 115, 230, 0.2);
+        background-color: #e8f4ff;
+      }
+
+      .module-card .tech-icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+      }
+
+      .module-card .tech-icon i {
+        font-size: 3rem;
+      }
+
+      .module-card .tech-icon i.devicon-angular-plain.colored {
+        color: #dd1b16 !important;
+      }
+
+      .module-card .tech-name {
+        font-size: 1.15rem;
+        font-weight: bold;
+        color: #005bb5;
+        margin-bottom: 6px;
+      }
+
+      .module-card .tech-count {
+        font-size: 0.85rem;
+        color: #777;
+      }
+
+      #lesson-view {
+        display: none;
+        max-width: 700px;
+        margin: 30px auto;
+        padding: 20px;
+      }
+
+      #lesson-view .back-btn {
+        display: inline-block;
+        background: #273c75;
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 25px;
+        transition: background-color 0.2s ease;
+      }
+
+      #lesson-view .back-btn:hover {
+        background-color: #005bb5;
+      }
+
+      #lesson-view .mod-title {
+        color: #273c75;
+        border-bottom: 2px solid #0073e6;
+        padding-bottom: 12px;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        text-align: center;
+      }
+
+      #lesson-view .section-title {
+        color: #005bb5;
+        font-size: 1.3rem;
+        margin: 20px 0 10px 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+      }
+
+      #lesson-view ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      #lesson-view ul li {
+        margin: 6px 0;
+      }
+
+      #lesson-view ul li a {
+        text-decoration: none;
+        color: #0073e6;
+        font-size: 1.05rem;
+        padding: 8px 12px;
+        display: block;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+      }
+
+      #lesson-view ul li a:hover {
+        background-color: #e0f0ff;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .module-card {
+          width: 150px;
+          padding: 20px 15px;
+        }
+
+        #module-select h3 {
+          font-size: 1.3rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- Navegação -->
     <nav>
       <ul>
-        <li>
-          <a href="../ceap/indice-ceap.html">CEAP</a>
-        </li>
-        <li>
-          <a href="./step/indice-step.html">STEP</a>
-        </li>
-        <li>
-          <a href="../filosofia/indice-filosofia.html">Filosofia</a>
-        </li>
+        <li><a href="../ceap/indice-ceap.html">CEAP</a></li>
+        <li><a href="./indice-step.html">STEP</a></li>
+        <li><a href="../filosofia/indice-filosofia.html">Filosofia</a></li>
       </ul>
     </nav>
-    <!-- Conteúdo Principal -->
-    <h2 style="margin: 20px; text-align: center">IT Step</h2>
-    <div class="body-category">
-      <div class="disciplina">
-        <h3 class="long-title">Angular</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./angular/plano-angular.html">Plano de Aulas do Curso </a>
-          </li>
-        </ul>
-        <h3>Projeto Final</h3>
-        <ul>
-          <li>
-            <a href="./angular/projeto-final.html"
-              >Iniciando nosso projeto Final</a
-            >
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./new-angular/aula1.html"
-              >Aula 1: Introdução ao Angular (Fundamentos e Estrutura)
-              (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula2.html"
-              >Aula 2: Diretivas (atualizado - v4)</a
-            >
-          </li>
-          <li>
-            <a href="./new-angular/aula3.html"
-              >Aula 3: Data Binding e Pipes (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula4.html"
-              >Aula 4: Navegação (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula5.html"
-              >Aula 5: Serviços, Signals, Injeção de Dependências e HTTP
-              (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula6.html"
-              >Aula 6: Guardiões de Rota (Route Guards) (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula6.1.html"
-              >Aula 6.1: Conteúdo Extra - Guardião de Rotas com Token JWT e
-              Permissões da API
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula7.html"
-              >Aula 7: Ciclo de Vida de Componentes e Passagem de Dados
-              (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula8.html"
-              >Aula 8: Formulários (atualizado - v4)
-            </a>
-          </li>
-          <li>
-            <a href="./new-angular/aula9.html">Aula 9: RxJS </a>
-          </li>
-        </ul>
-      </div>
-      <div class="disciplina">
-        <h3 class="long-title">Docker & Kubernetes</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./docker-kubernetes/plano-docker-kubernetes.html"
-              >Plano de Aulas do Curso
-            </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./docker-kubernetes/aula1.html">Aula 1 </a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula2.html">Aula 2</a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula3.html">Aula 3</a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula4.html">Aula 4</a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula5.html">Aula 5 </a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula6.html">Aula 6</a>
-          </li>
-          <li>
-            <a href="./docker-kubernetes/aula7.html">Aula 7 </a>
-          </li>
-        </ul>
-      </div>
-      <!-- <div class="disciplina">
-        <h3 class="long-title">Gerência de Projetos de Software</h3>
-        <h3>Plano de Curso</h3>
-        <ul>
-          <li>
-            <a href="./gerencia-projetos/plano-gerencia-projetos.html"
-              >Plano de Aulas do Curso
-            </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./gerencia-projetos/aula-gerenciamento-projetos.html"
-              >Gerenciamento de Projetos
-            </a>
-          </li>
-          <li>
-            <a href="./gerencia-projetos/scrum.html">Scrum </a>
-          </li>
-        </ul>
-      </div> -->
+
+    <h2 style="margin: 25px 20px 10px 20px; text-align: center">Step</h2>
+
+    <div id="module-select">
+      <h3>Escolha o módulo que deseja:</h3>
+      <div class="module-grid" id="module-list"></div>
     </div>
-    <div class="body-category">
-      <div class="disciplina">
-        <h3 class="long-title">JavaScript Intermediário</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./js-intermediario/plano-js-intermediario.html"
-              >Plano de Aulas do Curso
-            </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./js-intermediario/aula1.html"
-              >Aula 1: Objetos Date e String
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula2.html"
-              >Aula 2: POO (parte 1 - Classe, Objetos, propriedades e Métodos)
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula3.html"
-              >Aula 3: POO (parte 2 - Herança e Polimorfismo)
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula4.html"
-              >Aula 4: POO (parte 3 - Encapsulamento)
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula5.html"
-              >Aula 5: EcmaScript (parte 1 - Definição, Versões e Arrow
-              Function)
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula6.html"
-              >Aula 6: EcmaScript (parte 2 - Variáveis, Template Literal e
-              Módulos)
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula7.html"
-              >Aula 7: Objeto Math e Array
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula8.html"
-              >Aula 8: Testes de Unidade
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula9.html"
-              >Aula 9 - Manipulação de objetos
-            </a>
-          </li>
-          <li>
-            <a href="./js-intermediario/aula-solid.html"
-              >Conteúdo Extra: SOLID
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="disciplina">
-        <h3 class="long-title">JavaScript Avançado</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./js-avancado/plano-js-avancado.html"
-              >Plano de Aulas do Curso
-            </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./js-avancado/aula1.html">Aula 1: Trabalhando com JSON</a>
-          </li>
-          <li>
-            <a href="./js-avancado/aula2.html">Aula 2: Promises</a>
-          </li>
-          <li>
-            <a href="./js-avancado/aula3.html"
-              >Aula 3: Callback e Programação síncrona e assíncrona</a
-            >
-          </li>
-          <li>
-            <a href="./js-avancado/aula4.html"
-              >Aula 4: Interação com Servidor</a
-            >
-          </li>
-        </ul>
-      </div>
+
+    <div id="lesson-view">
+      <button class="back-btn" onclick="showModules()">&#8592; Voltar</button>
+      <h2 class="mod-title" id="mod-title"></h2>
+      <div id="mod-content"></div>
     </div>
-    <div class="body-category">
-      <div class="disciplina">
-        <h3 class="long-title">NodeJS</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./nodejs/plano-nodejs.html">Plano de Aulas de NodeJS </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./new-nodejs/aula1.html"
-              >Aula 1: Introdução, Arquitetura Orientada a Eventos e
-              Configuração de Ambiente</a
-            >
-          </li>
-          <li>
-            <a href="./new-nodejs/aula2.html">Aula 2: </a>
-          </li>
-          <li>
-            <a href="./new-nodejs/aula3.html">Aula 3:</a>
-          </li>
-          <li>
-            <a href="./nodejs/aula4.html">Aula 4: Módulo Web</a>
-          </li>
-          <li>
-            <a href="./nodejs/aula5.html">Aula 5: Express</a>
-          </li>
-          <li>
-            <a href="./nodejs/aula6.html"
-              >Aula 6: Arquitetura REST no Express</a
-            >
-          </li>
-          <li>
-            <a href="./nodejs/aula7.html">Aula 7: Escalabilidade </a>
-          </li>
-        </ul>
-      </div>
-      <div class="disciplina">
-        <h3 class="long-title">React</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./react/plano-react.html">Plano de Aulas do Curso </a>
-          </li>
-        </ul>
-        <h3>Projeto Final</h3>
-        <ul>
-          <li>
-            <a href="./react/iniciando-projeto-final.html"
-              >Iniciando nosso projeto Final</a
-            >
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./react/aula1.html"
-              >Aula 1: O que é o React e montando o ambiente (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula2.html"
-              >Aula 2: Fragments, Tipos de Componentes e Hooks (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula3.html"
-              >Aula 3: Props e Passagem de dados (Pai/Filho) (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula4.html"
-              >Aula 4: Iteração sobre arrays (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula5.html"
-              >Aula 5: Renderização Condicional e Re-renderização (atualizado -
-              v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula6.html"
-              >Aula 6: Estilização de Componentes (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula7.html"
-              >Aula 7: Requisições HTTP (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula8.html">Aula 8: Formulários em React </a>
-          </li>
-          <li>
-            <a href="./react/aula9.html">Aula 9: Roteamento com React </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="body-category">
-      <div class="disciplina">
-        <h3 class="long-title">Python</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./python/plano-python.html">Plano de Aulas de Python </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./python/aula1.html"
-              >Aula 1: REST Api e Configurando uma aplicação com SQLite e
-              FastAPI</a
-            >
-          </li>
-          <li>
-            <a href="./python/aula2.html"
-              >Aula 2: Arquitetura de Software (parte 1) - Rest API com MVC
-              (parte 1)</a
-            >
-          </li>
-          <li>
-            <a href="./python/aula3.html"
-              >Aula 3: Arquitetura de Software (parte 2) - Rest API -
-              Autenticação, Login e Tokens</a
-            >
-          </li>
-          <li>
-            <a href="./python/aula4.html"
-              >Aula 4: Arquitetura de Software (parte 3) - MVT
-            </a>
-          </li>
-          <li>
-            <a href="./python/aula5.html"
-              >Aula 5: Fundamentos Avançados de Python</a
-            >
-          </li>
-          <li>
-            <a href="./python/aula6.html">Aula 6: Django ORM, Admin e Autenticação</a>
-          </li>
-          <li>
-            <a href="./python/aula7.html"
-              >Aula 7: Introdução à Programação Orientada a Objetos (POO)</a
-            >
-          </li>
-        </ul>
-      </div>
-      <div class="disciplina">
-        <h3 class="long-title">React</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./react/plano-react.html">Plano de Aulas do Curso </a>
-          </li>
-        </ul>
-        <h3>Projeto Final</h3>
-        <ul>
-          <li>
-            <a href="./react/iniciando-projeto-final.html"
-              >Iniciando nosso projeto Final</a
-            >
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./react/aula1.html"
-              >Aula 1: O que é o React e montando o ambiente (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula2.html"
-              >Aula 2: Fragments, Tipos de Componentes e Hooks (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula3.html"
-              >Aula 3: Props e Passagem de dados (Pai/Filho) (atualizado - v2)
-            </a>
-          </li>
-          <li>
-            <a href="./react/aula4.html"
-              >Aula 4: Iteração sobre arrays (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula5.html"
-              >Aula 5: Renderização Condicional e Re-renderização (atualizado -
-              v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula6.html"
-              >Aula 6: Estilização de Componentes (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula7.html"
-              >Aula 7: Requisições HTTP (atualizado - v2)</a
-            >
-          </li>
-          <li>
-            <a href="./react/aula8.html">Aula 8: Formulários em React </a>
-          </li>
-          <li>
-            <a href="./react/aula9.html">Aula 9: Roteamento com React </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="body-category">
-      <div class="disciplina">
-        <h3 class="long-title">TypeScript</h3>
-        <h3>Plano do Curso</h3>
-        <ul>
-          <li>
-            <a href="./typescript/plano-typescript.html"
-              >Plano de Aulas do Curso
-            </a>
-          </li>
-        </ul>
-        <h3>Aulas</h3>
-        <ul>
-          <li>
-            <a href="./typescript/aula1.html"
-              >Aula 1: Introdução ao TypeScript</a
-            >
-          </li>
-          <li>
-            <a href="./typescript/aula2.html"
-              >Aula 2: Operadores Condicionais e ENUM
-            </a>
-          </li>
-          <li>
-            <a href="./typescript/aula3.html">Aula 3: Laços de Repetição</a>
-          </li>
-          <li>
-            <a href="./typescript/aula4.html"
-              >Aula 4: Arrays e Arrays Genéricos</a
-            >
-          </li>
-          <li>
-            <a href="./typescript/aula5.html"
-              >Aula 5: Funções e Funções Genéricas</a
-            >
-          </li>
-          <li>
-            <a href="./typescript/aula6.html"
-              >Aula 6: POO (parte 1 - Classe, Objetos, Propriedades, Métodos e
-              Interfaces)
-            </a>
-          </li>
-          <li>
-            <a href="./typescript/aula7.html"
-              >Aula 7: POO (parte 2 - Herança e Polimorfismo)</a
-            >
-          </li>
-          <li>
-            <a href="./typescript/aula8.html">Aula 8:</a>
-          </li>
-          <li>
-            <a href="./typescript/aula9.html">Aula 9:</a>
-          </li>
-          <li>
-            <a href="#">Aula 10: Exame</a>
-          </li>
-        </ul>
-      </div>
-    </div>
+
+    <script>
+      var courses = [
+        {
+          id: "react",
+          name: "React",
+          icon: "devicon-react-original colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./react/plano-react.html",
+          },
+          sections: [
+            {
+              title: "Projeto Final",
+              items: [
+                {
+                  label: "Iniciando nosso projeto Final",
+                  href: "./react/iniciando-projeto-final.html",
+                },
+              ],
+            },
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label:
+                    "Aula 1: O que é o React e montando o ambiente (atualizado - v2)",
+                  href: "./react/aula1.html",
+                },
+                {
+                  label:
+                    "Aula 2: Fragments, Tipos de Componentes e Hooks (atualizado - v2)",
+                  href: "./react/aula2.html",
+                },
+                {
+                  label:
+                    "Aula 3: Props e Passagem de dados (Pai/Filho) (atualizado - v2)",
+                  href: "./react/aula3.html",
+                },
+                {
+                  label: "Aula 4: Iteração sobre arrays (atualizado - v2)",
+                  href: "./react/aula4.html",
+                },
+                {
+                  label:
+                    "Aula 5: Renderização Condicional e Re-renderização (atualizado - v2)",
+                  href: "./react/aula5.html",
+                },
+                {
+                  label: "Aula 6: Estilização de Componentes (atualizado - v2)",
+                  href: "./react/aula6.html",
+                },
+                {
+                  label: "Aula 7: Requisições HTTP (atualizado - v2)",
+                  href: "./react/aula7.html",
+                },
+                {
+                  label: "Aula 8: Formulários em React",
+                  href: "./react/aula8.html",
+                },
+                {
+                  label: "Aula 9: Roteamento com React",
+                  href: "./react/aula9.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "angular",
+          name: "Angular",
+          icon: "devicon-angular-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./angular/plano-angular.html",
+          },
+          sections: [
+            {
+              title: "Projeto Final",
+              items: [
+                {
+                  label: "Iniciando nosso projeto Final",
+                  href: "./angular/projeto-final.html",
+                },
+              ],
+            },
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label:
+                    "Aula 1: Introdução ao Angular (Fundamentos e Estrutura) (atualizado - v4)",
+                  href: "./angular/aula1.html",
+                },
+                {
+                  label: "Aula 2: Diretivas (atualizado - v4)",
+                  href: "./angular/aula2.html",
+                },
+                {
+                  label: "Aula 3: Data Binding e Pipes (atualizado - v4)",
+                  href: "./angular/aula3.html",
+                },
+                {
+                  label: "Aula 4: Navegação (atualizado - v4)",
+                  href: "./angular/aula4.html",
+                },
+                {
+                  label:
+                    "Aula 5: Serviços, Signals, Injeção de Dependências e HTTP (atualizado - v4)",
+                  href: "./angular/aula5.html",
+                },
+                {
+                  label:
+                    "Aula 6: Guardiões de Rota (Route Guards) (atualizado - v4)",
+                  href: "./angular/aula6.html",
+                },
+                {
+                  label:
+                    "Aula 6.1: Conteúdo Extra - Guardião de Rotas com Token JWT e Permissões da API",
+                  href: "./angular/aula6.1.html",
+                },
+                {
+                  label:
+                    "Aula 7: Ciclo de Vida de Componentes e Passagem de Dados (atualizado - v4)",
+                  href: "./angular/aula7.html",
+                },
+                {
+                  label: "Aula 8: Formulários (atualizado - v4)",
+                  href: "./angular/aula8.html",
+                },
+                { label: "Aula 9: RxJS", href: "./angular/aula9.html" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "nodejs",
+          name: "NodeJS",
+          icon: "devicon-nodejs-plain colored",
+          plan: {
+            label: "Plano de Aulas de NodeJS",
+            href: "./nodejs/plano-nodejs.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label:
+                    "Aula 1: Introdução, Arquitetura Orientada a Eventos e Configuração de Ambiente",
+                  href: "./nodejs/aula1.html",
+                },
+                {
+                  label: "Aula 2: HTTP, REST API e Express",
+                  href: "./nodejs/aula2.html",
+                },
+                {
+                  label: "Aula 3: MVC e MongoDB",
+                  href: "./nodejs/aula3.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "python",
+          name: "Python",
+          icon: "devicon-python-plain colored",
+          plan: {
+            label: "Plano de Aulas de Python",
+            href: "./python/plano-python.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label:
+                    "Aula 1: REST Api e Configurando uma aplicação com SQLite e FastAPI",
+                  href: "./python/aula1.html",
+                },
+                {
+                  label:
+                    "Aula 2: Arquitetura de Software (parte 1) - Rest API com MVC (parte 1)",
+                  href: "./python/aula2.html",
+                },
+                {
+                  label:
+                    "Aula 3: Arquitetura de Software (parte 2) - Rest API - Autenticação, Login e Tokens",
+                  href: "./python/aula3.html",
+                },
+                {
+                  label: "Aula 4: Arquitetura de Software (parte 3) - MVT",
+                  href: "./python/aula4.html",
+                },
+                {
+                  label: "Aula 5: Fundamentos Avançados de Python",
+                  href: "./python/aula5.html",
+                },
+                {
+                  label: "Aula 6: Django ORM, Admin e Autenticação",
+                  href: "./python/aula6.html",
+                },
+                {
+                  label:
+                    "Aula 7: CMS - Sistema de Gerenciamento de Produtos com Django",
+                  href: "./python/aula7.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "typescript",
+          name: "TypeScript",
+          icon: "devicon-typescript-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./typescript/plano-typescript.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label: "Aula 1: Introdução ao TypeScript",
+                  href: "./typescript/aula1.html",
+                },
+                {
+                  label: "Aula 2: Operadores Condicionais e ENUM",
+                  href: "./typescript/aula2.html",
+                },
+                {
+                  label: "Aula 3: Laços de Repetição",
+                  href: "./typescript/aula3.html",
+                },
+                {
+                  label: "Aula 4: Arrays e Arrays Genéricos",
+                  href: "./typescript/aula4.html",
+                },
+                {
+                  label: "Aula 5: Funções e Funções Genéricas",
+                  href: "./typescript/aula5.html",
+                },
+                {
+                  label:
+                    "Aula 6: POO (parte 1 - Classe, Objetos, Propriedades, Métodos e Interfaces)",
+                  href: "./typescript/aula6.html",
+                },
+                {
+                  label: "Aula 7: POO (parte 2 - Herança e Polimorfismo)",
+                  href: "./typescript/aula7.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "js-intermediario",
+          name: "JavaScript Intermediário",
+          icon: "devicon-javascript-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./js-intermediario/plano-js-intermediario.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label: "Aula 1: Objetos Date e String",
+                  href: "./js-intermediario/aula1.html",
+                },
+                {
+                  label:
+                    "Aula 2: POO (parte 1 - Classe, Objetos, propriedades e Métodos)",
+                  href: "./js-intermediario/aula2.html",
+                },
+                {
+                  label: "Aula 3: POO (parte 2 - Herança e Polimorfismo)",
+                  href: "./js-intermediario/aula3.html",
+                },
+                {
+                  label: "Aula 4: POO (parte 3 - Encapsulamento)",
+                  href: "./js-intermediario/aula4.html",
+                },
+                {
+                  label:
+                    "Aula 5: EcmaScript (parte 1 - Definição, Versões e Arrow Function)",
+                  href: "./js-intermediario/aula5.html",
+                },
+                {
+                  label:
+                    "Aula 6: EcmaScript (parte 2 - Variáveis, Template Literal e Módulos)",
+                  href: "./js-intermediario/aula6.html",
+                },
+                {
+                  label: "Aula 7: Objeto Math e Array",
+                  href: "./js-intermediario/aula7.html",
+                },
+                {
+                  label: "Aula 8: Testes de Unidade",
+                  href: "./js-intermediario/aula8.html",
+                },
+                {
+                  label: "Aula 9: Manipulação de objetos",
+                  href: "./js-intermediario/aula9.html",
+                },
+                {
+                  label: "Conteúdo Extra: SOLID",
+                  href: "./js-intermediario/aula-solid.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "js-avancado",
+          name: "JavaScript Avançado",
+          icon: "devicon-javascript-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./js-avancado/plano-js-avancado.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label: "Aula 1: Trabalhando com JSON",
+                  href: "./js-avancado/aula1.html",
+                },
+                { label: "Aula 2: Promises", href: "./js-avancado/aula2.html" },
+                {
+                  label: "Aula 3: Callback e Programação síncrona e assíncrona",
+                  href: "./js-avancado/aula3.html",
+                },
+                {
+                  label: "Aula 4: Interação com Servidor",
+                  href: "./js-avancado/aula4.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "docker",
+          name: "Docker & Kubernetes",
+          icon: "devicon-docker-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./docker-kubernetes/plano-docker-kubernetes.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                { label: "Aula 1", href: "./docker-kubernetes/aula1.html" },
+                { label: "Aula 2", href: "./docker-kubernetes/aula2.html" },
+                { label: "Aula 3", href: "./docker-kubernetes/aula3.html" },
+                { label: "Aula 4", href: "./docker-kubernetes/aula4.html" },
+                { label: "Aula 5", href: "./docker-kubernetes/aula5.html" },
+                { label: "Aula 6", href: "./docker-kubernetes/aula6.html" },
+                { label: "Aula 7", href: "./docker-kubernetes/aula7.html" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "banco-dados",
+          name: "Banco de Dados",
+          icon: "devicon-postgresql-plain colored",
+          plan: null,
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label: "Aula 1: Banco de Dados",
+                  href: "./banco-de-dados/aula1.html",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "gerencia-projetos",
+          name: "Gerência de Projetos",
+          icon: "devicon-trello-plain colored",
+          plan: {
+            label: "Plano de Aulas do Curso",
+            href: "./gerencia-projetos/plano-gerencia-projetos.html",
+          },
+          sections: [
+            {
+              title: "Aulas",
+              items: [
+                {
+                  label: "Gerenciamento de Projetos",
+                  href: "./gerencia-projetos/aula-gerenciamento-projetos.html",
+                },
+                { label: "Scrum", href: "./gerencia-projetos/scrum.html" },
+              ],
+            },
+          ],
+        },
+      ];
+
+      function countLessons(course) {
+        var total = 0;
+        for (var i = 0; i < course.sections.length; i++) {
+          total += course.sections[i].items.length;
+        }
+        return total;
+      }
+
+      function showModules() {
+        document.getElementById("module-select").style.display = "flex";
+        document.getElementById("lesson-view").style.display = "none";
+      }
+
+      function showModule(index) {
+        var course = courses[index];
+        document.getElementById("module-select").style.display = "none";
+        document.getElementById("lesson-view").style.display = "block";
+
+        document.getElementById("mod-title").textContent = course.name;
+
+        var html = "";
+
+        if (course.plan) {
+          html += '<h3 class="section-title">Plano do Curso</h3>';
+          html +=
+            '<ul><li><a href="' +
+            course.plan.href +
+            '">' +
+            course.plan.label +
+            "</a></li></ul>";
+        }
+
+        for (var s = 0; s < course.sections.length; s++) {
+          var section = course.sections[s];
+          html += '<h3 class="section-title">' + section.title + "</h3>";
+          html += "<ul>";
+          for (var i = 0; i < section.items.length; i++) {
+            var item = section.items[i];
+            html +=
+              '<li><a href="' + item.href + '">' + item.label + "</a></li>";
+          }
+          html += "</ul>";
+        }
+
+        document.getElementById("mod-content").innerHTML = html;
+      }
+
+      function renderModuleCards() {
+        var html = "";
+        for (var i = 0; i < courses.length; i++) {
+          var course = courses[i];
+          var count = countLessons(course);
+          html +=
+            '<div class="module-card" onclick="showModule(' +
+            i +
+            ')">' +
+            '<div class="tech-icon"><i class="' +
+            course.icon +
+            '"></i></div>' +
+            '<div class="tech-name">' +
+            course.name +
+            "</div>" +
+            '<div class="tech-count">' +
+            count +
+            " aula" +
+            (count !== 1 ? "s" : "") +
+            "</div>" +
+            "</div>";
+        }
+        document.getElementById("module-list").innerHTML = html;
+      }
+
+      renderModuleCards();
+    </script>
   </body>
 </html>

@@ -1,307 +1,824 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 2 - Node.js</title>
+    <title>Aula 2 : HTTP, REST API e Express</title>
+
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
   </head>
 
   <body>
     <header>
       <h1>Aula 2</h1>
-      <h4 class="text-center">Node.js</h4>
-      <h4 class="text-center">
-        Gerenciador de Pacotes, Eventos e Arquitetura Orientada a Eventos
-      </h4>
+      <h4 class="text-center">HTTP, REST API e Express</h4>
+      <h4 class="text-center">Conceitos Fundamentais de Backend</h4>
+    <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Fundamentos do HTTP e HTTPS, Arquitetura REST, Introdução ao Express, Roteamento.</div>
     </header>
 
-    <div class="container">
-      <h2>Componentes Principais de uma Aplicação Node.js</h2>
+    <main class="container">
       <section>
+        <h2>O que é HTTP?</h2>
+
         <p>
-          Uma aplicação Node.js é composta por vários componentes fundamentais
-          que trabalham juntos para fornecer escalabilidade, performance e
-          modularidade.
+          HTTP significa <strong>HyperText Transfer Protocol</strong>. É o
+          protocolo utilizado para comunicação entre navegadores, aplicações,
+          APIs e servidores na internet.
         </p>
+
+        <p>
+          Sempre que acessamos um site, fazemos login em uma aplicação, enviamos
+          um formulário ou buscamos dados de uma API, estamos utilizando HTTP.
+        </p>
+
+        <p>O HTTP funciona através de:</p>
 
         <ul>
-          <li><strong>Runtime:</strong> Motor V8 + Event Loop</li>
-          <li><strong>Core Modules:</strong> fs, http, path, os, events</li>
-          <li><strong>Gerenciador de Pacotes:</strong> npm</li>
-          <li><strong>Módulos Externos:</strong> Express, Axios, Sequelize</li>
-          <li><strong>Sistema de Eventos:</strong> EventEmitter</li>
+          <li><strong>Request (requisição)</strong></li>
+          <li><strong>Response (resposta)</strong></li>
         </ul>
-      </section>
 
-      <h2>Estrutura Básica de Projetos</h2>
-      <section>
-        <p>
-          A organização correta da estrutura de pastas facilita a manutenção,
-          escalabilidade e clareza do projeto.
-        </p>
-
-        <div>
-          <pre>
-<code class="language-bash">
-meu-projeto-node/
-├── src/
-│   ├── controllers/
-│   ├── services/
-│   ├── routes/
-│   ├── models/
-│   └── app.js
-├── package.json
-└── server.js
-</code>
-          </pre>
-        </div>
+        <h3>Como funciona uma requisição HTTP</h3>
 
         <p>
-          - <strong>controllers:</strong> lógica das rotas<br />
-          - <strong>services:</strong> regras de negócio<br />
-          - <strong>routes:</strong> mapeamento das URLs<br />
-          - <strong>models:</strong> estruturas de dados<br />
-          - <strong>app.js:</strong> configuração da aplicação
+          Quando o navegador acessa um endereço, ele envia uma requisição para o
+          servidor. O servidor processa essa requisição e retorna uma resposta.
         </p>
-      </section>
-
-      <h2>Primeira Aplicação Node.js</h2>
-      <section>
-        <p>
-          Vamos criar uma aplicação simples que exibe uma mensagem no terminal.
-        </p>
-
-        <div>
-          <pre>
-<code class="language-bash">
-mkdir primeira-app
-cd primeira-app
-npm init -y
-</code>
-          </pre>
-        </div>
-
-        <p>Crie o arquivo <code>index.js</code>:</p>
-
-        <div>
-          <pre>
-<code class="language-javascript">
-console.log("Minha primeira aplicação Node.js");
-</code>
-          </pre>
-        </div>
-
-        <p>Execute:</p>
-
-        <div>
-          <pre>
-<code class="language-bash">
-node index.js
-</code>
-          </pre>
-        </div>
-      </section>
-
-      <h2>Uso da Linha de Comando e REPL</h2>
-      <section>
-        <p>
-          O Node.js oferece um ambiente interativo chamado REPL (Read-Eval-Print
-          Loop).
-        </p>
-
-        <div>
-          <pre>
-<code class="language-bash">
-node
-</code>
-          </pre>
-        </div>
 
         <p>Exemplo:</p>
 
-        <div>
-          <pre>
-<code class="language-javascript">
-> 2 + 3
-5
-> console.log("Hello Node")
-Hello Node
-</code>
-          </pre>
-        </div>
-      </section>
+        <ol>
+          <li>O navegador acessa: <code>http://localhost:3000</code></li>
+          <li>O navegador envia uma requisição HTTP</li>
+          <li>O servidor Node.js recebe essa requisição</li>
+          <li>O servidor processa</li>
+          <li>O servidor retorna uma resposta</li>
+          <li>O navegador renderiza o conteúdo</li>
+        </ol>
 
-      <h2>npm: Conceitos, Instalação, Atualização e Publicação</h2>
-      <section>
-        <p>
-          O npm (Node Package Manager) é o maior repositório de pacotes do mundo
-          e permite instalar, atualizar e publicar bibliotecas.
-        </p>
+        <h3>Estrutura de uma requisição HTTP</h3>
 
-        <h4>Instalar dependência:</h4>
-        <div>
-          <pre>
-<code class="language-bash">
-npm install express
-</code>
-          </pre>
-        </div>
+        <ul>
+          <li><strong>Método HTTP</strong></li>
+          <li><strong>URL</strong></li>
+          <li><strong>Headers</strong></li>
+          <li><strong>Body</strong> (opcional)</li>
+        </ul>
 
-        <h4>Atualizar pacotes:</h4>
-        <div>
-          <pre>
-<code class="language-bash">
-npm update
-</code>
-          </pre>
-        </div>
+        <h3>Métodos HTTP</h3>
 
-        <h4>Publicar pacote:</h4>
-        <div>
-          <pre>
-<code class="language-bash">
-npm login
-npm publish
-</code>
-          </pre>
-        </div>
-      </section>
+        <p>Os métodos HTTP definem qual ação desejamos executar no servidor.</p>
 
-      <h2>Chamadas Bloqueantes e Não Bloqueantes</h2>
-      <section>
-        <p>
-          No Node.js, chamadas bloqueantes travam a execução do programa,
-          enquanto chamadas não bloqueantes permitem continuar processando
-          outras tarefas.
-        </p>
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Função</th>
+            </tr>
+          </thead>
 
-        <h4>Exemplo Bloqueante:</h4>
-        <div>
-          <pre>
-<code class="language-javascript">
-const fs = require("fs");
-const data = fs.readFileSync("arquivo.txt");
-console.log(data.toString());
-</code>
-          </pre>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td>Buscar dados</td>
+            </tr>
+
+            <tr>
+              <td>POST</td>
+              <td>Criar dados</td>
+            </tr>
+
+            <tr>
+              <td>PUT</td>
+              <td>Atualizar dados</td>
+            </tr>
+
+            <tr>
+              <td>DELETE</td>
+              <td>Remover dados</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo de requisição</h3>
+
+        <div class="code-container">
+          <pre><code class="language-http">
+GET /produtos HTTP/1.1
+Host: localhost:3000
+          </code></pre>
         </div>
 
-        <h4>Exemplo Não Bloqueante:</h4>
-        <div>
-          <pre>
-<code class="language-javascript">
-const fs = require("fs");
-fs.readFile("arquivo.txt", (err, data) => {
-  console.log(data.toString());
-});
-console.log("Executando...");
-</code>
-          </pre>
-        </div>
-      </section>
+        <h3>Exemplo de resposta</h3>
 
-      <h2>Callbacks e Tratamento de Erros</h2>
-      <section>
-        <p>
-          Callbacks são funções passadas como argumento para tratar resultados
-          assíncronos.
-        </p>
-
-        <div>
-          <pre>
-<code class="language-javascript">
-function dividir(a, b, callback) {
-  if (b === 0) {
-    return callback(new Error("Divisão por zero"));
+        <div class="code-container">
+          <pre><code class="language-json">
+[
+  {
+    "id": 1,
+    "nome": "Notebook"
+  },
+  {
+    "id": 2,
+    "nome": "Mouse"
   }
-  callback(null, a / b);
+]
+          </code></pre>
+        </div>
+
+        <h2>O que é um Servidor?</h2>
+
+        <p>
+          Um servidor é um software responsável por receber requisições e
+          devolver respostas.
+        </p>
+
+        <p>No backend, o servidor normalmente:</p>
+
+        <ul>
+          <li>Recebe requisições HTTP</li>
+          <li>Processa regras de negócio</li>
+          <li>Acessa banco de dados</li>
+          <li>Retorna respostas</li>
+          <li>Controla autenticação</li>
+          <li>Executa lógica da aplicação</li>
+        </ul>
+
+        <h3>Servidor Node.js</h3>
+
+        <p>O Node.js permite criar servidores utilizando JavaScript.</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+
+  res.writeHead(200, {
+    'Content-Type': 'text/plain'
+  });
+
+  res.end('Servidor funcionando');
+});
+
+server.listen(3000, () => {
+  console.log('Servidor rodando');
+});
+          </code></pre>
+        </div>
+
+        <p>Nesse exemplo:</p>
+
+        <ul>
+          <li><code>createServer</code> cria o servidor</li>
+          <li><code>req</code> representa a requisição</li>
+          <li><code>res</code> representa a resposta</li>
+          <li><code>listen</code> faz o servidor escutar uma porta</li>
+        </ul>
+
+        <h2>O que é REST API?</h2>
+
+        <p>REST API é um padrão utilizado para construção de APIs.</p>
+
+        <p>REST significa:</p>
+
+        <p>
+          <strong>Representational State Transfer</strong>
+        </p>
+
+        <p>
+          Uma REST API organiza os endpoints utilizando recursos e métodos HTTP.
+        </p>
+
+        <h3>Exemplo de endpoints</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Endpoint</th>
+              <th>Método</th>
+              <th>Função</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>/produtos</td>
+              <td>GET</td>
+              <td>Listar produtos</td>
+            </tr>
+
+            <tr>
+              <td>/produtos</td>
+              <td>POST</td>
+              <td>Criar produto</td>
+            </tr>
+
+            <tr>
+              <td>/produtos/1</td>
+              <td>PUT</td>
+              <td>Atualizar produto</td>
+            </tr>
+
+            <tr>
+              <td>/produtos/1</td>
+              <td>DELETE</td>
+              <td>Remover produto</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Resposta em JSON</h3>
+
+        <p>APIs normalmente retornam dados em JSON.</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+  "id": 1,
+  "nome": "Teclado"
 }
+          </code></pre>
+        </div>
 
-dividir(10, 2, (err, result) => {
-  if (err) {
-    console.error(err.message);
-  } else {
-    console.log(result);
+        <h2>O que é Express?</h2>
+
+        <p>
+          O Express é um framework para Node.js utilizado para facilitar a
+          criação de servidores e APIs.
+        </p>
+
+        <p>
+          Sem o Express, precisamos utilizar o módulo HTTP manualmente. Com o
+          Express, o código fica mais simples, organizado e produtivo.
+        </p>
+
+        <h3>Vantagens do Express</h3>
+
+        <ul>
+          <li>Criação simples de rotas</li>
+          <li>Facilidade para trabalhar com APIs</li>
+          <li>Suporte a middlewares</li>
+          <li>Organização de código</li>
+          <li>Grande comunidade</li>
+          <li>Integração com bancos de dados</li>
+        </ul>
+
+        <h3>Instalação do Express</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm install express
+          </code></pre>
+        </div>
+
+        <h3>Primeiro servidor com Express</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Servidor Express funcionando');
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando');
+});
+          </code></pre>
+        </div>
+
+        <h3>Entendendo o código</h3>
+
+        <ul>
+          <li><code>express()</code> cria a aplicação</li>
+          <li><code>app.get()</code> cria uma rota GET</li>
+          <li><code>res.send()</code> envia resposta</li>
+          <li><code>listen()</code> inicia o servidor</li>
+        </ul>
+
+        <h2>Rotas no Express</h2>
+
+        <p>Rotas definem os caminhos da aplicação.</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.get('/usuarios', (req, res) => {
+  res.send('Lista de usuários');
+});
+
+app.post('/usuarios', (req, res) => {
+  res.send('Usuário criado');
+});
+          </code></pre>
+        </div>
+
+        <h2>O que são Middlewares?</h2>
+
+        <p>
+          Middlewares são funções executadas entre a requisição e a resposta.
+        </p>
+
+        <p>Eles podem:</p>
+
+        <ul>
+          <li>Validar dados</li>
+          <li>Autenticar usuários</li>
+          <li>Modificar requisições</li>
+          <li>Registrar logs</li>
+          <li>Tratar erros</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+app.use((req, res, next) => {
+
+  console.log('Nova requisição recebida');
+
+  next();
+});
+          </code></pre>
+        </div>
+
+        <p>O <code>next()</code> permite que a execução continue.</p>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Criando uma REST API com Express</h2>
+
+          <h3>Passo 0 — Criar a branch da aula</h3>
+
+          <p>Crie uma nova branch:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git checkout main
+git checkout -b aula2-http-rest-express
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Inicializar projeto</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+npm init -y
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Instalar Express</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+npm install express
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Criar o arquivo index.js</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+type nul > index.js
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Criar a API</h3>
+
+          <p>Abra o arquivo <strong>index.js</strong> e adicione:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+const express = require('express');
+
+const app = express();
+
+app.use(express.json());
+
+const produtos = [
+  {
+    id: 1,
+    nome: 'Notebook'
+  },
+  {
+    id: 2,
+    nome: 'Mouse'
   }
-});
-</code>
-          </pre>
-        </div>
-      </section>
+];
 
-      <h2>Arquitetura Orientada a Eventos</h2>
-      <section>
-        <p>
-          O Node.js utiliza uma arquitetura baseada em eventos. Tudo acontece
-          por meio de disparo e tratamento de eventos.
-        </p>
-      </section>
-
-      <h2>Classe EventEmitter</h2>
-      <section>
-        <p>
-          A classe <code>EventEmitter</code> permite criar, emitir e ouvir
-          eventos.
-        </p>
-
-        <div>
-          <pre>
-<code class="language-javascript">
-const EventEmitter = require("events");
-
-class MeuEmissor extends EventEmitter {}
-
-const emissor = new MeuEmissor();
-
-emissor.on("mensagem", (msg) => {
-  console.log("Mensagem recebida:", msg);
+app.get('/', (req, res) => {
+  res.send('API funcionando');
 });
 
-emissor.emit("mensagem", "Olá Node!");
-</code>
-          </pre>
-        </div>
-      </section>
+app.get('/produtos', (req, res) => {
 
-      <h2>Manipulação de Eventos</h2>
-      <section>
-        <p>
-          O Node permite criar eventos customizados para comunicação interna
-          entre módulos.
-        </p>
-
-        <div>
-          <pre>
-<code class="language-javascript">
-const EventEmitter = require("events");
-const emitter = new EventEmitter();
-
-emitter.on("login", (user) => {
-  console.log(`Usuário ${user} logado`);
+  res.json(produtos);
 });
 
-emitter.emit("login", "Fabio");
-</code>
-          </pre>
-        </div>
+app.post('/produtos', (req, res) => {
+
+  const novoProduto = req.body;
+
+  produtos.push(novoProduto);
+
+  res.status(201).json({
+    mensagem: 'Produto criado',
+    produto: novoProduto
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <!-- EXPLICANDO O CÓDIGO -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 Explicando o código 📝
+              </h2>
+
+              <h3>🔹 express()</h3>
+
+              <p>O <code>express()</code> cria nossa aplicação backend.</p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const app = express();
+                </code></pre>
+              </div>
+
+              <h3>🔹 express.json()</h3>
+
+              <p>
+                Esse middleware permite que o Express consiga interpretar JSON
+                enviado no body das requisições.
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.use(express.json());
+                </code></pre>
+              </div>
+
+              <h3>🔹 Rotas GET</h3>
+
+              <p>Rotas GET são utilizadas para buscar informações.</p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.get('/produtos', (req, res) => {
+  res.json(produtos);
+});
+                </code></pre>
+              </div>
+
+              <p>
+                O método <code>res.json()</code> retorna dados em formato JSON.
+              </p>
+
+              <h3>🔹 Rotas POST</h3>
+
+              <p>Rotas POST são utilizadas para criar novos dados.</p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.post('/produtos', (req, res) => {
+
+  const novoProduto = req.body;
+
+  produtos.push(novoProduto);
+
+  res.json(novoProduto);
+});
+                </code></pre>
+              </div>
+
+              <h3>🔹 req.body</h3>
+
+              <p>
+                O <code>req.body</code> contém os dados enviados pelo cliente.
+              </p>
+
+              <h3>🔹 status HTTP</h3>
+
+              <p>
+                O método <code>status()</code> define o código da resposta HTTP.
+              </p>
+
+              <table border="1" cellpadding="10">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Significado</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>200</td>
+                    <td>Sucesso</td>
+                  </tr>
+
+                  <tr>
+                    <td>201</td>
+                    <td>Recurso criado</td>
+                  </tr>
+
+                  <tr>
+                    <td>404</td>
+                    <td>Não encontrado</td>
+                  </tr>
+
+                  <tr>
+                    <td>500</td>
+                    <td>Erro interno</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>🔹 listen()</h3>
+
+              <p>
+                O método <code>listen</code> inicia o servidor em uma porta.
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.listen(3000);
+                </code></pre>
+              </div>
+
+              <p>
+                A porta funciona como um canal de comunicação entre navegador e
+                servidor.
+              </p>
+            </div>
+          </section>
+
+          <h3>Passo 5 — Rodar a API</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+node index.js
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Testar no navegador</h3>
+
+          <p>Acesse:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+http://localhost:3000/produtos
+            </code></pre>
+          </div>
+
+          <p>Você verá o JSON da API.</p>
+
+          <h3>Passo 7 — Testar requisição POST</h3>
+
+          <p>Você pode usar o Insomnia ou Postman.</p>
+
+          <p>URL:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+POST http://localhost:3000/produtos
+            </code></pre>
+          </div>
+
+          <p>Body JSON:</p>
+
+          <div class="code-container">
+            <pre><code class="language-json">
+{
+  "id": 3,
+  "nome": "Monitor"
+}
+            </code></pre>
+          </div>
+
+          <h3>Passo 8 — Criar rota DELETE</h3>
+
+          <p>Adicione:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+app.delete('/produtos/:id', (req, res) => {
+
+  const id = Number(req.params.id);
+
+  const indiceProduto = produtos.findIndex(
+    (produto) => produto.id === id
+  );
+
+  if (indiceProduto === -1) {
+
+    return res.status(404).json({
+      mensagem: 'Produto não encontrado'
+    });
+  }
+
+  produtos.splice(indiceProduto, 1);
+
+  res.json({
+    mensagem: 'Produto removido'
+  });
+});
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 9 — Entendendo req.params</h3>
+
+          <p>O <code>req.params</code> captura parâmetros da URL.</p>
+
+          <p>Exemplo:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+/produtos/1
+            </code></pre>
+          </div>
+
+          <p>Nesse caso:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+req.params.id
+            </code></pre>
+          </div>
+
+          <p>retornará:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+1
+            </code></pre>
+          </div>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git add .
+git commit -m "cria api rest com express"
+git push
+            </code></pre>
+
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar API de usuários</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula2</strong>.
+              </p>
+
+              <p>Dentro dela, desenvolva uma API REST utilizando Express.</p>
+
+              <p>Sua API deve conter:</p>
+
+              <ul>
+                <li>Uma rota GET para listar usuários</li>
+                <li>Uma rota POST para adicionar usuários</li>
+                <li>Uma rota DELETE para remover usuários</li>
+              </ul>
+
+              <p>O array de usuários deve conter:</p>
+
+              <ul>
+                <li>id</li>
+                <li>nome</li>
+                <li>email</li>
+              </ul>
+
+              <p>Utilize JSON nas respostas.</p>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+const express = require('express');
+
+const app = express();
+
+app.use(express.json());
+
+const usuarios = [
+  {
+    id: 1,
+    nome: 'Maria',
+    email: 'maria@email.com'
+  }
+];
+
+app.get('/usuarios', (req, res) => {
+
+  res.json(usuarios);
+});
+
+app.post('/usuarios', (req, res) => {
+
+  const usuario = req.body;
+
+  usuarios.push(usuario);
+
+  res.status(201).json({
+    mensagem: 'Usuário criado',
+    usuario
+  });
+});
+
+app.delete('/usuarios/:id', (req, res) => {
+
+  const id = Number(req.params.id);
+
+  const indiceUsuario = usuarios.findIndex(
+    (usuario) => usuario.id === id
+  );
+
+  if (indiceUsuario === -1) {
+
+    return res.status(404).json({
+      mensagem: 'Usuário não encontrado'
+    });
+  }
+
+  usuarios.splice(indiceUsuario, 1);
+
+  res.json({
+    mensagem: 'Usuário removido'
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando');
+});
+                  </code></pre>
+
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </section>
-    </div>
+    </main>
 
     <footer>
       <div class="button-container">
         <button class="btn-print" onclick="window.print()">Imprimir</button>
       </div>
+
       <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html">Ir para o índice</a>
+        <a class="btn-indice" href="../indice-step.html"> Ir para o índice </a>
       </div>
     </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
