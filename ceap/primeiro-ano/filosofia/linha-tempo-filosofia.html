@@ -25,6 +25,10 @@
       }
 
       header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
         text-align: center;
         border-bottom: 2px solid var(--olive);
         margin-bottom: 20px;
@@ -35,6 +39,24 @@
         text-transform: uppercase;
         margin: 10px 0;
         font-size: 1.4em;
+      }
+
+      .timeline-back-btn {
+        position: absolute;
+        left: 0;
+        display: inline-block;
+        background: #273c75;
+        color: #fff;
+        border: none;
+        padding: 6px 16px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+      }
+      .timeline-back-btn:hover {
+        background-color: #005bb5;
       }
 
       .timeline-table {
@@ -150,7 +172,7 @@
     </style>
   </head>
   <body>
-    <header><h1>A Filosofia na História</h1></header>
+    <header><button class="timeline-back-btn" onclick="history.back()">← Voltar ao índice</button><h1>A Filosofia na História</h1></header>
 
     <div class="timeline-table">
       <div class="th">Contexto Histórico</div>
