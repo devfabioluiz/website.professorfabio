@@ -66,6 +66,7 @@ th,
 td {
   border: 1px solid #ddd;
   padding: 8px;
+  text-align: left;
 }
 
 th {
@@ -500,4 +501,163 @@ pre code {
 .img-400 {
   width: 400px;
   height: 400px;
+}
+
+/* Variaveis de cores por disciplina */
+:root {
+  --color-filo: #b8860b;
+  --color-socio: #2e7d32;
+  --color-step: #0073e6;
+}
+
+/* Botao voltar */
+.back-btn {
+  display: block;
+  background: #273c75;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 15px auto 15px auto;
+  transition: background-color 0.2s ease;
+}
+.back-btn:hover {
+  background-color: #005bb5;
+}
+
+/* Botao inicio */
+.inicio-btn {
+  display: inline-block;
+  background: #273c75;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 0 10px 0;
+  transition: background-color 0.2s ease;
+}
+.inicio-btn:hover {
+  background-color: #0073e6;
+}
+
+/* Modulo disciplina */
+.mod-title {
+  color: #273c75;
+  border-bottom: 2px solid #0073e6;
+  padding-bottom: 12px;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+.mod-title.filo { border-bottom-color: var(--color-filo); }
+.mod-title.socio { border-bottom-color: var(--color-socio); }
+.mod-title.step { border-bottom-color: var(--color-step); }
+
+/* Titulo de ano */
+.year-title {
+  font-size: 1.35rem;
+  margin: 30px 0 15px 0;
+  padding-bottom: 8px;
+  text-align: center;
+}
+.year-title.filo { color: var(--color-filo); border-bottom: 2px solid var(--color-filo); }
+.year-title.socio { color: var(--color-socio); border-bottom: 2px solid var(--color-socio); }
+
+/* Secao do indice */
+.section-title {
+  color: #005bb5;
+  font-size: 1.15rem;
+  margin: 18px 0 8px 0;
+}
+
+/* Caixas de info */
+.info-box {
+  background-color: #e8f4f8;
+  border-left: 5px solid #17a2b8;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+.warning-box {
+  background-color: #fff3cd;
+  border-left: 5px solid #ffc107;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+.success-box {
+  background-color: #d4edda;
+  border-left: 5px solid #28a745;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+
+/* Impressao */
+@media print {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  header,
+  nav,
+  footer,
+  .button-container,
+  .btn-copy,
+  .btn-gabarito,
+  .btn-print,
+  .btn-indice,
+  .code-container button,
+  .topicos-aula,
+  .alert,
+  .gabarito,
+  .back-btn,
+  .inicio-btn {
+    display: none !important;
+  }
+  body {
+    font-family: Arial, sans-serif !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+    color: #000 !important;
+    background: #fff !important;
+    margin: 20px !important;
+    padding: 0 !important;
+  }
+  main,
+  .container,
+  section {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  pre,
+  code {
+    font-family: "Courier New", monospace !important;
+    font-size: 10pt !important;
+    background: none !important;
+    border: 1px solid #ccc !important;
+    padding: 5px !important;
+    white-space: pre-wrap !important;
+  }
+  table {
+    border-collapse: collapse !important;
+  }
+  th,
+  td {
+    border: 1px solid #000 !important;
+    padding: 4px !important;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
 }

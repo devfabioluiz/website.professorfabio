@@ -162,3 +162,67 @@ footer a:hover {
     display: block;
   }
 }
+
+/* Variáveis de cores por disciplina */
+:root {
+  --color-filo: #b8860b;
+  --color-socio: #2e7d32;
+  --color-step: #0073e6;
+}
+
+/* Botão início (índices) */
+.inicio-btn {
+  display: inline-block;
+  background: #273c75;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 0 10px 0;
+  transition: background-color 0.2s ease;
+}
+.inicio-btn:hover {
+  background-color: #0073e6;
+}
+
+/* Título do módulo */
+.mod-title {
+  color: #273c75;
+  border-bottom: 2px solid #0073e6;
+  padding-bottom: 12px;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+.mod-title.filo { border-bottom-color: var(--color-filo); }
+.mod-title.socio { border-bottom-color: var(--color-socio); }
+.mod-title.step { border-bottom-color: var(--color-step); }
+
+/* Título de ano */
+.year-title {
+  font-size: 1.35rem;
+  margin: 30px 0 15px 0;
+  padding-bottom: 8px;
+  text-align: center;
+}
+.year-title.filo { color: var(--color-filo); border-bottom: 2px solid var(--color-filo); }
+.year-title.socio { color: var(--color-socio); border-bottom: 2px solid var(--color-socio); }
+
+/* Seção do índice */
+.section-title {
+  color: #005bb5;
+  font-size: 1.15rem;
+  margin: 18px 0 8px 0;
+}
+
+/* Subtítulo da navegação */
+.nav-subtitle {
+  display: block;
+  text-align: center;
+  color: #8899bb;
+  font-size: 0.75rem;
+  margin-top: -8px;
+  padding-bottom: 6px;
+}
