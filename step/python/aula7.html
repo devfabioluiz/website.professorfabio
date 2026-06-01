@@ -39,6 +39,8 @@
       th {
         background-color: #f2f2f2;
       }
+    
+      .back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}
     </style>
   </head>
 
@@ -53,6 +55,7 @@
     </header>
 
     <main class="container">
+    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
       <!-- O que é um CMS -->
       <section>
         <h2>O que é um CMS?</h2>
@@ -930,6 +933,5 @@ def listar_produtos(request):
 
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="../../scripts/check-gabarito.js"></script>
-  <footer><div class="button-container"><a class="btn-indice" href="../indice-step.html#python">Ir para o índice</a></div></footer>
   </body>
 </html>

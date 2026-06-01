@@ -50,6 +50,8 @@
       th {
         background-color: #f2f2f2;
       }
+    
+      .back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}
     </style>
   </head>
   <body>
@@ -60,6 +62,7 @@
     </header>
 
     <main class="container">
+    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
       <section>
         <div class="info-box">
           <strong>📌 Pré-requisito:</strong> Esta aula é um complemento direto da
@@ -736,12 +739,6 @@ git push --set-upstream origin aula6-orm-admin-login
 
       </section>
     </main>
-
-    <footer>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html#python">Ir para o índice</a>
-      </div>
-    </footer>
 
     <script src="../../scripts/copy-clipboard.js"></script>
   </body>

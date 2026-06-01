@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -6,10 +6,34 @@
     <title>Aula 3/1º Tri - 3º ano - Multiculturalidade e Ancestralidade</title>
     <script src="../../../scripts/script-impressao.js"></script>
     <link rel="stylesheet" href="../../../../estilos/estilos-aulas.css" />
+    <style>
+      .back-btn {
+        display: inline-block;
+        background: #273c75;
+        color: #fff;
+        border: none;
+        padding: 10px 24px;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 15px 0 0 20px;
+        transition: background-color 0.2s ease;
+      }
+      .back-btn:hover {
+        background-color: #005bb5;
+      }
+    </style>
   </head>
   <body>
+    <button
+      class="back-btn"
+      onclick="history.back()"
+      style="margin: 0 0 15px 0"
+    >
+      &#8592; Voltar
+    </button>
     <div class="container">
-      <h1>Aula 3 do 1º Trimestre</h1>
+      <h1>Aula 3</h1>
       <h4 class="text-center">
         Arte, Cultura, Globalização e Mudanças Sociais e Culturais
       </h4>
@@ -238,11 +262,6 @@
     </div>
     <div class="print-button">
       <button class="btn-pdf" onclick="window.print()">Gerar PDF</button>
-    </div>
-    <div class="button-container">
-      <a class="btn-indice" href="../../../indice-ceap.html#3ano">
-        Ir para índice
-      </a>
     </div>
   </body>
 </html>

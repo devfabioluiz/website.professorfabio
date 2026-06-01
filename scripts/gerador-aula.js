@@ -40,7 +40,7 @@ mainForm.addEventListener("submit", function (event) {
       <script src="scripts/script-impressao.js"></script>
     </head>
     <body>
-      <h1>1º Trimestre</h1>
+      <h1></h1>
       <h2>Aula XX de XXXX</h2>
   `;
 

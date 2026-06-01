@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
+      <style>.back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
   </head>
   <body>
     <header>
@@ -18,6 +19,7 @@
     <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Promise: criação, then, catch, cadeia de promises, Promise.all, Promise.race, Tratamento de erros.</div>
     </header>
     <main class="container">
+    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
 
     <!-- Promise -->
       <h2>Definição de Promise</h2>
@@ -310,11 +312,6 @@ Promise.any([
       </section>
 
     </main>
-    <footer>
-      <div class="button-container">
-        <a class="btn-indice" href="../indice-step.html#javascript">Ir para o índice</a>
-      </div>
-    </footer>
     <script src="../../scripts/copy-clipboard.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
