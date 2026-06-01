@@ -427,3 +427,77 @@ pre code {
     font-size: 18px;
   }
 }
+
+/* Tópicos da aula */
+.topicos-aula {
+  background: #e8f4ff;
+  border-left: 4px solid #0073e6;
+  padding: 10px 15px;
+  margin: 10px auto 0 auto;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  max-width: 800px;
+}
+
+/* Lista sem bullets */
+.list-plain {
+  list-style: none;
+}
+
+/* Texto em vermelho (datas, avisos) */
+.text-red {
+  color: red;
+}
+
+/* Título de página centralizado */
+.page-title {
+  margin: 20px;
+  text-align: center;
+}
+
+/* Link sem decoracao */
+.link-plain {
+  text-decoration: none;
+}
+
+/* Texto pequeno (anotacoes, labels) */
+.text-sm {
+  font-size: 12px;
+}
+
+/* Texto grande (titulos de livros) */
+.text-lg {
+  font-size: 18px;
+}
+
+/* Subtitulo da navegacao */
+.nav-subtitle {
+  display: block;
+  text-align: center;
+  color: #8899bb;
+  font-size: 0.75rem;
+  margin-top: -8px;
+  padding-bottom: 6px;
+}
+
+/* Wrapper de conteudo centralizado */
+.content-wrapper {
+  max-width: 750px;
+  margin: 30px auto 0 auto;
+  padding: 0 20px;
+}
+
+/* Imagens responsivas */
+.img-800 {
+  width: 800px;
+}
+
+.img-200 {
+  width: 200px;
+  height: 200px;
+}
+
+.img-400 {
+  width: 400px;
+  height: 400px;
+}

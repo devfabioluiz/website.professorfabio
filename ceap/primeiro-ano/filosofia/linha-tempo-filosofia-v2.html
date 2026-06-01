@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linha do Tempo Completa - A Filosofia na História</title>
+    <style>
+      :root {
+        --bg-color: #f5f3e7;
+        --olive-green: #8da62d;
+        --teal-blue: #008e9b;
+        --text-dark: #333;
+        --border-light: #d1cfc0;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-dark);
+        margin: 0;
+        padding: 20px;
+        font-size: 0.9em;
+      }
+
+      header {
+        text-align: center;
+        border-bottom: 3px solid var(--olive-green);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+      }
+
+      h1 {
+        color: var(--teal-blue);
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .timeline-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1.5fr 1.2fr;
+        gap: 2px;
+        max-width: 1300px;
+        margin: 0 auto;
+        border: 1px solid var(--border-light);
+      }
+
+      .column-header {
+        background-color: var(--olive-green);
+        color: white;
+        padding: 12px;
+        text-align: center;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .column-header.blue {
+        background-color: var(--teal-blue);
+      }
+
+      .period-group {
+        display: contents;
+      }
+
+      .cell {
+        padding: 10px;
+        background: white;
+        border: 1px solid #eee;
+        transition: background 0.3s;
+      }
+
+      .cell.period-header {
+        background-color: #e9e6d1;
+        font-weight: bold;
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 5px;
+        color: var(--teal-blue);
+        border-top: 2px solid var(--olive-green);
+      }
+
+      /* Interatividade */
+      .period-group:hover .cell {
+        background-color: #fff9c4;
+        border-color: var(--olive-green);
+      }
+
+      .img-box {
+        background: #eee;
+        border: 1px dashed #999;
+        font-size: 0.75em;
+        padding: 5px;
+        margin-top: 5px;
+        text-align: center;
+      }
+
+      strong {
+        color: var(--teal-blue);
+      }
+      .dates {
+        font-size: 0.85em;
+        color: #666;
+        font-style: italic;
+      }
+
+      @media (max-width: 800px) {
+        .timeline-container {
+          display: flex;
+          flex-direction: column;
+        }
+        .column-header {
+          display: none;
+        }
+        .cell::before {
+          content: attr(data-label) ": ";
+          font-weight: bold;
+          color: var(--teal-blue);
+          display: block;
+          margin-bottom: 3px;
+          text-transform: uppercase;
+          font-size: 0.7em;
+        }
+        .period-header::before {
+          content: "";
+        }
+        .cell {
+          border-bottom: 2px solid var(--border-light);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>A Filosofia na História</h1>
+    </header>
+
+    <div class="timeline-container">
+      <div class="column-header">Contexto Histórico</div>
+      <div class="column-header">Correntes</div>
+      <div class="column-header blue">Temas e Problemas</div>
+      <div class="column-header blue">Filósofos</div>
+
+      <!-- ANTIGUIDADE: PRÉ-SOCRÁTICOS -->
+      <div class="cell period-header">
+        Antiguidade: Origens e Natureza (XII a.C. ao V a.C.)
+      </div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Conquista do mar Egeu; Poemas de Homero e Hesíodo; Fundação de Roma
+          (509 a.C.).
+          <div class="img-box">[Imagem: Loba Capitolina]</div>
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Escola Jônica</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          A água, o ápeiron, o ar e a contradição como princípios do cosmo
+          (Cosmologia).
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Tales de Mileto <span class="dates">(c. 625-546 a.C.)</span>,
+          Anaximandro <span class="dates">(c. 610-545 a.C.)</span>, Anaxímenes
+          <span class="dates">(c. 588-528 a.C.)</span>, Heráclito
+          <span class="dates">(c. 535-475 a.C.)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Florescimento das Pólis; Democracia em Atenas.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Escola Itálica</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          O número como princípio; a harmonia matemática do universo.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Pitágoras <span class="dates">(c. 570-495 a.C.)</span>, Filolau de
+          Crotona <span class="dates">(c. 470-385 a.C.)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          V a.C. Guerras Médicas; Apogeu de Atenas (Péricles).
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Escola Eleática</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          A identidade do ser; Crítica ao movimento e à pluralidade (ilusão).
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Parmênides <span class="dates">(c. 530-460 a.C.)</span>, Zenão de
+          Eleia <span class="dates">(c. 490-430 a.C.)</span>.
+        </div>
+      </div>
+
+      <!-- ANTIGUIDADE CLÁSSICA -->
+      <div class="cell period-header">
+        O Período Antropocêntrico (V a.C. ao IV a.C.)
+      </div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Guerra do Peloponeso; Crise das Cidades-Estado.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Sofistas / Socráticos</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Retórica; Ética; Teoria das Ideias; Metafísica; Lógica; A essência das
+          coisas.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Sócrates <span class="dates">(c. 469-399 a.C.)</span>, Platão
+          <span class="dates">(c. 427-347 a.C.)</span>, Aristóteles
+          <span class="dates">(384-322 a.C.)</span>, Górgias
+          <span class="dates">(c. 485-380 a.C.)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Filosofia da Natureza tardia.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Escola Atomista</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          O átomo como princípio; Materialismo e Ética.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Leucipo <span class="dates">(séc. V a.C.)</span>, Demócrito
+          <span class="dates">(c. 460-370 a.C.)</span>.
+        </div>
+      </div>
+
+      <!-- HELENISMO -->
+      <div class="cell period-header">
+        Filosofia Helenística e Romana (IV a.C. ao II d.C.)
+      </div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Império de Alexandre; Conquista Romana da Grécia.
+        </div>
+        <div class="cell" data-label="Correntes"><strong>Cinismo</strong></div>
+        <div class="cell" data-label="Temas">
+          Vida conforme a virtude; Desprezo pelas convenções sociais (Arte de
+          Viver).
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Antístenes <span class="dates">(c. 445-365 a.C.)</span>, Diógenes
+          <span class="dates">(c. 413-323 a.C.)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Roma: do fim da República ao Império.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Estoicismo / Epicurismo</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Ataraxia (tranquilidade); Controle das paixões; O prazer como ausência
+          de dor.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Zenão de Cítio <span class="dates">(c. 334-262 a.C.)</span>, Epicuro
+          <span class="dates">(c. 341-270 a.C.)</span>, Sêneca
+          <span class="dates">(4 a.C.-65 d.C.)</span>, Marco Aurélio
+          <span class="dates">(121-180 d.C.)</span>.
+        </div>
+      </div>
+
+      <!-- IDADE MÉDIA -->
+      <div class="cell period-header">Idade Média (IV ao XIII)</div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Queda de Roma; Ascensão do Cristianismo; Império Bizantino.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Patrística / Escolástica</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Conciliação entre Fé e Razão; Provas da existência de Deus; Retomada
+          de Aristóteles.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Hipátia <span class="dates">(355-415)</span>, Sto. Agostinho
+          <span class="dates">(344-430)</span>, Sto. Anselmo
+          <span class="dates">(1033-1109)</span>, S. Tomás de Aquino
+          <span class="dates">(1225-1274)</span>.
+        </div>
+      </div>
+
+      <!-- MODERNIDADE -->
+      <div class="cell period-header">Modernidade (XIV ao XVIII)</div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Renascimento; Grandes Navegações; Reforma Protestante.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Humanismo / Renascimento</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Dignidade humana; Realismo político; Revolução Científica (Método).
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Maquiavel <span class="dates">(1469-1527)</span>, Pico della Mirandola
+          <span class="dates">(1463-1494)</span>, Montaigne
+          <span class="dates">(1533-1592)</span>, Galileu
+          <span class="dates">(1564-1642)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Absolutismo; Surgimento da Ciência Moderna.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Racionalismo / Empirismo</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Dúvida metódica; Experiência como fonte; Contrato Social;
+          Epistemologia.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Descartes <span class="dates">(1596-1650)</span>, Bacon
+          <span class="dates">(1561-1626)</span>, Hobbes
+          <span class="dates">(1588-1679)</span>, Espinosa
+          <span class="dates">(1632-1677)</span>, Locke
+          <span class="dates">(1632-1704)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Século XVIII: O Século das Luzes.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Iluminismo / Idealismo Alemão</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Autonomia da razão; Esclarecimento; Crítica da razão pura e prática;
+          Dialética.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Montesquieu <span class="dates">(1689-1755)</span>, Voltaire
+          <span class="dates">(1694-1778)</span>, Rousseau
+          <span class="dates">(1712-1778)</span>, Kant
+          <span class="dates">(1724-1804)</span>, Hegel
+          <span class="dates">(1770-1831)</span>.
+        </div>
+      </div>
+
+      <!-- CONTEMPORÂNEA -->
+      <div class="cell period-header">Contemporaneidade (XIX ao XXI)</div>
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Revolução Industrial; Movimento Operário.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Positivismo / Materialismo</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Ordem e progresso; Crítica ao capitalismo; Alienação; Práxis.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Comte <span class="dates">(1798-1857)</span>, Marx
+          <span class="dates">(1818-1883)</span>, Engels
+          <span class="dates">(1820-1895)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">Crise da Razão no XIX.</div>
+        <div class="cell" data-label="Correntes">
+          <strong>Anarquismo / Existencialismo Inicial</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Crítica ao Estado e à propriedade; Liberdade individual; Angústia;
+          Morte de Deus.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Bakunin <span class="dates">(1814-1876)</span>, Kierkegaard
+          <span class="dates">(1813-1855)</span>, Nietzsche
+          <span class="dates">(1844-1900)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Século XX: Guerras Mundiais; Tecnologia.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Fenomenologia / Teoria Crítica</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Volta às coisas mesmas; Indústria Cultural; Crítica à Razão
+          Instrumental.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Husserl <span class="dates">(1859-1938)</span>, Benjamin
+          <span class="dates">(1892-1940)</span>, Adorno
+          <span class="dates">(1903-1969)</span>, Heidegger
+          <span class="dates">(1889-1976)</span>.
+        </div>
+      </div>
+
+      <div class="period-group">
+        <div class="cell" data-label="Contexto">
+          Pós-Guerra; Revolução Digital; Lutas Sociais.
+        </div>
+        <div class="cell" data-label="Correntes">
+          <strong>Pós-Estruturalismo / Contemporâneos</strong>
+        </div>
+        <div class="cell" data-label="Temas">
+          Poder; Biopolítica; Teoria Queer; Decolonialismo; Bioética.
+        </div>
+        <div class="cell" data-label="Filósofos">
+          Sartre <span class="dates">(1905-1980)</span>, Beauvoir
+          <span class="dates">(1908-1986)</span>, Foucault
+          <span class="dates">(1926-1984)</span>, Butler
+          <span class="dates">(1944-)</span>, Mbembe
+          <span class="dates">(1957-)</span>, Byung-Chul Han
+          <span class="dates">(1959-)</span>.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

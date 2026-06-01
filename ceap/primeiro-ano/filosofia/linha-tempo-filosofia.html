@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linha do Tempo - Filosofia na História</title>
+    <style>
+      :root {
+        --bg-color: #f7f5eb;
+        --olive: #8da62d;
+        --teal: #008e9b;
+        --border: #d1cfc0;
+        --text: #2c2c2c;
+        --header-bg: #e9e6d1;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text);
+        margin: 0;
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      header {
+        text-align: center;
+        border-bottom: 2px solid var(--olive);
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        color: var(--teal);
+        text-transform: uppercase;
+        margin: 10px 0;
+      }
+
+      /* Estrutura de Tabela Fiel ao Livro */
+      .timeline-table {
+        display: grid;
+        grid-template-columns: 180px 150px 220px 1fr;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        border: 1px solid var(--border);
+        background: white;
+      }
+
+      .th {
+        background-color: var(--olive);
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .th.blue {
+        background-color: var(--teal);
+      }
+
+      .period-header {
+        grid-column: 1 / -1;
+        background-color: var(--header-bg);
+        padding: 8px;
+        font-weight: bold;
+        color: var(--teal);
+        text-align: center;
+        border-top: 2px solid var(--olive);
+        text-transform: uppercase;
+      }
+
+      /* Linhas de Filósofos */
+      .philosopher-entry {
+        display: contents; /* Mantém o grid da tabela pai */
+      }
+
+      .cell {
+        padding: 10px;
+        border: 0.5px solid var(--border);
+        display: flex;
+        align-items: center;
+        transition: background 0.2s;
+      }
+
+      /* Estilização específica */
+      .name {
+        font-weight: bold;
+        color: var(--teal);
+      }
+      .dates {
+        font-size: 11px;
+        color: #666;
+        font-style: italic;
+        display: block;
+      }
+      .img-placeholder {
+        background: #f0f0f0;
+        border: 1px dashed #bbb;
+        padding: 5px;
+        font-size: 10px;
+        margin-top: 5px;
+        text-align: center;
+      }
+
+      /* Interatividade: Destaque ao passar o mouse na linha do filósofo */
+      .philosopher-entry:hover .cell {
+        background-color: #fffde7;
+      }
+
+      /* Mobile */
+      @media (max-width: 900px) {
+        .timeline-table {
+          display: block;
+        }
+        .th {
+          display: none;
+        }
+        .cell {
+          border: none;
+          border-bottom: 1px solid #eee;
+          display: block;
+        }
+        .cell::before {
+          content: attr(data-label) ": ";
+          font-weight: bold;
+          color: var(--olive);
+          font-size: 10px;
+          text-transform: uppercase;
+        }
+        .period-header {
+          font-size: 14px;
+          padding: 15px;
+        }
+        .philosopher-entry {
+          display: block;
+          border: 1px solid var(--border);
+          margin-bottom: 10px;
+          background: white;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1>A Filosofia na História</h1></header>
+
+    <div class="timeline-table">
+      <!-- Cabeçalhos -->
+      <div class="th">Contexto Histórico</div>
+      <div class="th">Correntes</div>
+      <div class="th blue">Filósofos</div>
+      <div class="th blue">Temas e Problemas</div>
+
+      <!-- ANTIGUIDADE: PRÉ-SOCRÁTICOS -->
+      <div class="period-header">
+        Antiguidade: Origens e Natureza (XII a.C. ao V a.C.)
+      </div>
+
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Conquista do mar Egeu; Poemas de Homero e Hesíodo; Fundação de Roma.
+          <div class="img-placeholder">[Imagem: Loba Capitolina]</div>
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Escola Jônica</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Tales de Mileto</span
+          ><span class="dates">(c. 625-546 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          A água como elemento primordial.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Anaximandro de Mileto</span
+          ><span class="dates">(c. 610-545 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          O ápeiron (o indeterminado) como princípio.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Anaxímenes de Mileto</span
+          ><span class="dates">(c. 588-528 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          O ar constitui todas as coisas.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Heráclito de Éfeso</span
+          ><span class="dates">(c. 535-475 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          A contradição produz a unidade do cosmo.
+        </div>
+      </div>
+
+      <!-- ESCOLA ITÁLICA/ELEÁTICA -->
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Florescimento das Pólis; Democracia em Atenas.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Escola Itálica</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Pitágoras</span
+          ><span class="dates">(c. 570-495 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          O número como princípio; a harmonia matemática do universo.
+        </div>
+      </div>
+
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Guerras Médicas; Apogeu de Atenas (Péricles).
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Escola Eleática</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Parmênides de Eleia</span
+          ><span class="dates">(c. 530-460 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Metafísica, Lógica e a identidade do ser.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Zenão de Eleia</span
+          ><span class="dates">(c. 490-430 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          A pluralidade e o movimento como ilusão.
+        </div>
+      </div>
+
+      <!-- PERÍODO ANTROPOCÊNTRICO -->
+      <div class="period-header">
+        O Período Antropocêntrico (V a.C. ao IV a.C.)
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Guerra do Peloponeso; Crise das Pólis.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Sofistas / Socráticos</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Górgias de Leontinos</span
+          ><span class="dates">(c. 485-380 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Retórica e relativismo intelectual e moral.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Sócrates</span
+          ><span class="dates">(c. 469-399 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">Moral e essência das coisas.</div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Platão</span
+          ><span class="dates">(c. 427-347 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Dialética, teoria das ideias e relação entre mundo inteligível e
+          sensível.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Aristóteles</span
+          ><span class="dates">(384-322 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Metafísica e Lógica; relação entre mundo sensível e conceitos.
+        </div>
+      </div>
+
+      <!-- HELENISMO -->
+      <div class="period-header">
+        Filosofia Helenística e Romana (IV a.C. ao II d.C.)
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Império de Alexandre; Conquista Romana.
+        </div>
+        <div class="cell" data-label="Corrente"><strong>Cinismo</strong></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Antístenes</span
+          ><span class="dates">(c. 445-365 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">Ética e Física.</div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Diógenes de Sínope</span
+          ><span class="dates">(c. 413-323 a.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">Moral e costumes.</div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Roma: do fim da República ao Império.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Estoicismo</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Sêneca</span
+          ><span class="dates">(4 a.C.-65 d.C.)</span>
+        </div>
+        <div class="cell" data-label="Temas">Ética, Física, Lógica e Arte.</div>
+      </div>
+
+      <!-- IDADE MÉDIA -->
+      <div class="period-header">Idade Média (IV ao XIII)</div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Queda de Roma; Ascensão do Cristianismo.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Patrística / Escolástica</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Santo Agostinho</span
+          ><span class="dates">(344-430)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Filosofia cristã; relação entre razão e fé; platonismo.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">São Tomás de Aquino</span
+          ><span class="dates">(1225-1274)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Relação entre razão e fé; aristotelismo sob princípios da fé cristã.
+        </div>
+      </div>
+
+      <!-- MODERNIDADE -->
+      <div class="period-header">Modernidade e Iluminismo (XIV ao XVIII)</div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Renascimento; Reforma Protestante.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Racionalismo</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">René Descartes</span
+          ><span class="dates">(1596-1650)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Racionalismo (dúvida metódica); o sujeito do conhecimento.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Revolução Científica; Empirismo.
+        </div>
+        <div class="cell" data-label="Corrente"><strong>Empirismo</strong></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">John Locke</span
+          ><span class="dates">(1632-1704)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Epistemologia e política; "contrato social" e defesa da propriedade
+          privada.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          O Século das Luzes (XVIII).
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Idealismo Alemão</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Immanuel Kant</span
+          ><span class="dates">(1724-1804)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Ética, moral e estética (experiência na arte); condições de
+          possibilidade do conhecimento.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Hegel</span><span class="dates">(1770-1831)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Dialética, Política, Direito e História; as relações entre o real e o
+          racional.
+        </div>
+      </div>
+
+      <!-- CONTEMPORÂNEA -->
+      <div class="period-header">Contemporaneidade (XIX ao XXI)</div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Revolução Industrial; Crise da Razão.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Marxismo / Crítica</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Karl Marx</span
+          ><span class="dates">(1818-1883)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Filosofia como práxis, alienação, reificação e crítica ao capitalismo.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Segunda Guerra; Sociedade de Controle.
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Teoria Crítica</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Adorno e Horkheimer</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Indústria cultural; crítica do mito e da razão como instrumentos de
+          dominação.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">Século XXI; Era Digital.</div>
+        <div class="cell" data-label="Corrente">
+          <strong>Pós-Estruturalismo</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Gilles Deleuze</span
+          ><span class="dates">(1925-1995)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Filosofia como criação de conceitos; multiplicidade e diferença.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Jacques Rancière</span
+          ><span class="dates">(1940-)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          A política como dissenso; a emancipação intelectual.
+        </div>
+      </div>
+      <div class="philosopher-entry">
+        <div class="cell" data-label="Contexto">
+          Novas Tecnologias; Burnout.
+          <div class="img-placeholder">[Imagem: Revolução Digital]</div>
+        </div>
+        <div class="cell" data-label="Corrente">
+          <strong>Filosofia do Presente</strong>
+        </div>
+        <div class="cell" data-label="Filósofo">
+          <span class="name">Byung-Chul Han</span
+          ><span class="dates">(1959-)</span>
+        </div>
+        <div class="cell" data-label="Temas">
+          Psicopolítica; exploração no mundo contemporâneo; impacto das novas
+          tecnologias.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

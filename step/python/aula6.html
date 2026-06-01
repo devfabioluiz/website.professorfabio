@@ -39,7 +39,7 @@
       <h1>Aula 6</h1>
       <h4 class="text-center">Django ORM, Admin e Autenticação</h4>
       <h4 class="text-center">Manipulando banco de dados, painel administrativo e sistema de login</h4>
-    <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Models e Banco de Dados, ORM, Migrações, CRUD, Admin Django, Autenticação.</div>
+    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Models e Banco de Dados, ORM, Migrações, CRUD, Admin Django, Autenticação.</div>
     </header>
 
     <main class="container"><section>
@@ -412,7 +412,7 @@ def fazer_logout(request):
 
     {% if messages %}
       {% for message in messages %}
-        &lt;p style="color: red;"&gt;{{ message }}&lt;/p&gt;
+        &lt;p class="text-red"&gt;{{ message }}&lt;/p&gt;
       {% endfor %}
     {% endif %}
 
@@ -656,7 +656,7 @@ def fazer_logout(request):
 
     {% if messages %}
       {% for message in messages %}
-        &lt;p style="color: red;"&gt;{{ message }}&lt;/p&gt;
+        &lt;p class="text-red"&gt;{{ message }}&lt;/p&gt;
       {% endfor %}
     {% endif %}
 
