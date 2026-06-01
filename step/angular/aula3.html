@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
     <style>
       .back-btn {
-        display: inline-block;
+        display: block;
         background: #273c75;
         color: #fff;
         border: none;
@@ -29,7 +29,7 @@
         font-size: 1rem;
         border-radius: 8px;
         cursor: pointer;
-        margin: 15px 0 0 20px;
+        margin: 15px auto 15px auto;
         transition: background-color 0.2s ease;
       }
       .back-btn:hover {
@@ -39,6 +39,7 @@
   </head>
 
   <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
       <h1>Aula 3</h1>
       <h4 class="text-center">Angular</h4>
@@ -61,15 +62,7 @@
       </div>
     </header>
 
-    <main class="container">
-      <button
-        class="back-btn"
-        onclick="history.back()"
-        style="margin: 0 0 15px 0"
-      >
-        &#8592; Voltar
-      </button>
-      <section>
+    <main class="container"><section>
         <h2>Ligação de dados no Angular (Data Binding)</h2>
 
         <h3>6. O que é Data Binding?</h3>

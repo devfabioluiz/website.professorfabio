@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -23,10 +23,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-      <style>.back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
+      <style>.back-btn{display:block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin: 15px auto 15px auto;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
   </head>
 
   <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
       <h1>Aula 1</h1>
       <h4 class="text-center">Node.js</h4>
@@ -34,9 +35,7 @@
     <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> O que é Node.js, Objetivos e características, Arquitetura orientada a eventos, Configuração de ambiente, Estrutura básica de projetos.</div>
     </header>
 
-    <main class="container">
-    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
-      <section>
+    <main class="container"><section>
         <h2>O que é o Node.js</h2>
 
         <p>

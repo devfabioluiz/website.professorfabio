@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -17,8 +17,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-      <style>.back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
+      <style>.back-btn{display:block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin: 15px auto 15px auto;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
   </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
   <header>
     <h1>Aula 2</h1>
     <h4 class="text-center">Docker</h4>
@@ -26,9 +28,7 @@
   <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Comandos para containers (docker ps, run, rm, logs, start/stop/restart), Comandos para imagens (docker images, search, pull, build, rmi).</div>
     </header>
 
-  <main class="container">
-    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
-    <section>
+  <main class="container"><section>
       <h2>Trabalhando com Containers Docker</h2>
 
       <h3>1. Comandos básicos para trabalhar com containers</h3>
@@ -806,4 +806,5 @@ git push -u origin dever-aula2-nginx
 
   <script src="../../scripts/copy-clipboard.js"></script>
   <script src="../../scripts/check-gabarito.js"></script>
+</body>
 </html>

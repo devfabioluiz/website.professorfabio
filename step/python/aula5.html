@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -34,11 +34,12 @@
         background-color: #f2f2f2;
       }
     
-      .back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}
+      .back-btn{display:block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin: 15px auto 15px auto;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}
     </style>
   </head>
 
   <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
       <h1>Aula 5</h1>
       <h4 class="text-center">Python Backend</h4>
@@ -60,9 +61,7 @@
       </div>
     </header>
 
-    <main class="container">
-    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
-      <section>
+    <main class="container"><section>
         <h2>Objetivo da aula</h2>
         <p>
           Nesta aula, vamos estudar recursos importantes da linguagem Python que

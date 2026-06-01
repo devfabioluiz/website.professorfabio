@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,18 +10,17 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-      <style>.back-btn{display:inline-block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin:15px 0 0 20px;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
+      <style>.back-btn{display:block;background:#273c75;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:8px;cursor:pointer;margin: 15px auto 15px auto;transition:background-color 0.2s ease}.back-btn:hover{background-color:#005bb5}</style>
   </head>
   <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
       <h1>Aula 10</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Context API, useReducer e Redux</h4>
     <div class="topicos-aula" style="background:#e8f4ff;border-left:4px solid #0073e6;padding:10px 15px;margin:10px auto 0 auto;border-radius:4px;font-size:0.9rem;max-width:800px;"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Context API (hook useContext), Hook useReducer, Efeitos colaterais, Redux (arquitetura e exemplos práticos).</div>
     </header>
-    <main class="container">
-    <button class="back-btn" onclick="history.back()" style="margin:0 0 15px 0;">&#8592; Voltar</button>
-      <h2>Context API (hook useContext)</h2>
+    <main class="container"><h2>Context API (hook useContext)</h2>
       <section>
         <p>
           A Context API no React é uma ferramenta que permite compartilhar
