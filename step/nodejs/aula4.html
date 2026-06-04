@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4: File System, Upload e Excel</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">
+        File System (FS), Upload de Arquivos e Planilhas Excel com ExcelJS
+      </h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        File System (FS), Upload de arquivos, Leitura de arquivos enviados pelo
+        usuário, Geração de planilhas Excel, Download de arquivos e biblioteca
+        ExcelJS.
+      </div>
+    </header>
+
+    <main class="container">
+      <h2>O que é File System (FS)?</h2>
+
+      <p>
+        O File System é um módulo nativo do Node.js responsável por manipular
+        arquivos e diretórios.
+      </p>
+
+      <p>Ele permite:</p>
+
+      <ul>
+        <li>Criar arquivos</li>
+        <li>Ler arquivos</li>
+        <li>Atualizar arquivos</li>
+        <li>Excluir arquivos</li>
+        <li>Criar pastas</li>
+        <li>Listar arquivos</li>
+      </ul>
+
+      <p>
+        O módulo já vem instalado no Node.js, portanto não precisamos instalar
+        nenhuma dependência.
+      </p>
+
+      <h2>Importando o FS</h2>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const fs = require('fs');
+</code></pre>
+      </div>
+
+      <h2>Exemplo: Criando um Arquivo</h2>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const fs = require('fs');
+
+fs.writeFileSync(
+  'arquivo.txt',
+  'Olá mundo'
+);
+</code></pre>
+      </div>
+
+      <p>Executando:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">node arquivo.js
+</code></pre>
+      </div>
+
+      <p>Será criado:</p>
+
+      <div class="code-container">
+        <pre><code>arquivo.txt
+</code></pre>
+      </div>
+
+      <h2>Exemplo: Lendo um Arquivo</h2>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const fs = require('fs');
+
+const conteudo = fs.readFileSync(
+  'arquivo.txt',
+  'utf-8'
+);
+
+console.log(conteudo);
+</code></pre>
+      </div>
+
+      <p>Resultado:</p>
+
+      <div class="code-container">
+        <pre><code>Olá mundo
+</code></pre>
+      </div>
+
+      <h2>Exemplo: Excluindo um Arquivo</h2>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">fs.unlinkSync('arquivo.txt');
+</code></pre>
+      </div>
+
+      <h2>O que é Upload de Arquivos?</h2>
+
+      <p>
+        Upload é o processo de envio de arquivos do computador do usuário para o
+        servidor.
+      </p>
+
+      <p>Exemplos:</p>
+
+      <ul>
+        <li>Foto de perfil</li>
+        <li>Currículo PDF</li>
+        <li>Documento Word</li>
+        <li>Planilha Excel</li>
+      </ul>
+
+      <h2>Como fazer Upload no Node.js?</h2>
+
+      <p>Normalmente utilizamos a biblioteca Multer.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">npm install multer
+</code></pre>
+      </div>
+
+      <p>Ela facilita:</p>
+
+      <ul>
+        <li>Receber arquivos</li>
+        <li>Salvar arquivos</li>
+        <li>Definir nomes</li>
+        <li>Definir diretórios</li>
+      </ul>
+
+      <h2>O que é ExcelJS?</h2>
+
+      <p>
+        ExcelJS é uma biblioteca JavaScript utilizada para leitura e geração de
+        planilhas Excel.
+      </p>
+
+      <p>Ela permite:</p>
+
+      <ul>
+        <li>Criar planilhas</li>
+        <li>Ler planilhas</li>
+        <li>Converter Excel para JSON</li>
+        <li>Converter JSON para Excel</li>
+        <li>Exportar dados</li>
+        <li>Formatar células</li>
+        <li>Adicionar estilos e cores</li>
+      </ul>
+
+      <h2>Casos de Uso</h2>
+
+      <p>Imagine um sistema de estoque.</p>
+
+      <p>Podemos:</p>
+
+      <ul>
+        <li>Importar produtos via Excel</li>
+        <li>Exportar produtos para Excel</li>
+        <li>Criar backups automáticos</li>
+        <li>Compartilhar dados facilmente</li>
+      </ul>
+
+      <h2>Estrutura do Projeto</h2>
+
+      <p>Partiremos do projeto criado no dever de casa da Aula 3.</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">projeto/
+│
+├── src/
+│   │
+│   ├── controllers/
+│   │   └── produtoController.js
+│   │
+│   ├── models/
+│   │   └── Produto.js
+│   │
+│   ├── routes/
+│   │   └── produtoRoutes.js
+│   │
+│   ├── database/
+│   │   └── database.js
+│   │
+│   └── app.js
+│
+├── server.js
+├── package.json
+└── .env
+</code></pre>
+      </div>
+
+      <h2>Passo a Passo: Upload e Excel</h2>
+
+      <h3>Passo 0 — Criar branch da aula</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">git checkout dever-de-casa-aula3
+git pull
+git checkout -b aula4-filesystem-excel
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 1 — Instalar dependências</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">npm install multer exceljs
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 2 — Criar pasta uploads</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">mkdir uploads
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 3 — Criar Controller e Rotas de Arquivos</h3>
+
+      <div class="code-container">
+        <pre><code class="language-bash">type nul &gt; src\controllers\arquivoController.js
+type nul &gt; src\routes\arquivoRoutes.js
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 4 — Configurar Multer</h3>
+
+      <p>Criar pasta config:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">mkdir src\config
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Criar arquivo:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">type nul &gt; src\config\multer.js
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Dentro de <strong>src/config/multer.js</strong>:</p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const multer = require('multer');
+
+const storage = multer.diskStorage({
+
+  destination: (req, file, cb) =&gt; {
+    cb(null, 'uploads/');
+  },
+
+  filename: (req, file, cb) =&gt; {
+
+    const nomeArquivo =
+      Date.now() +
+      '-' +
+      file.originalname;
+
+    cb(null, nomeArquivo);
+  }
+});
+
+module.exports = multer({
+  storage
+});
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <div class="alert-explicando-codigo">
+        <h2 class="alert-explicando-codigo-title">🤓 Explicando o Código 📝</h2>
+
+        <h3>🔹 destination</h3>
+
+        <p>Define a pasta onde o arquivo será salvo.</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">destination: (req, file, cb) =&gt; {
+  cb(null, 'uploads/');
+}
+</code></pre>
+        </div>
+
+        <h3>🔹 filename</h3>
+
+        <p>Define o nome final do arquivo.</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">filename: (req, file, cb) =&gt; {
+  const nomeArquivo =
+    Date.now() +
+    '-' +
+    file.originalname;
+
+  cb(null, nomeArquivo);
+}
+</code></pre>
+        </div>
+      </div>
+
+      <h3>Passo 5 — Criar Controller de Upload</h3>
+
+      <p>Dentro de <strong>src/controllers/arquivoController.js</strong>:</p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const fs = require("fs");
+
+const ExcelJS = require("exceljs");
+
+const Produto = require("../models/Produto");
+
+const listarArquivos = (req, res) => {
+  const arquivos = fs.readdirSync("uploads");
+
+  res.json(arquivos);
+};
+
+const uploadArquivo = (req, res) => {
+  res.json({
+    mensagem: "Upload realizado",
+    arquivo: req.file.filename,
+  });
+};
+
+const exportarModelo = async (req, res) => {
+  const workbook = new ExcelJS.Workbook();
+
+  const worksheet = workbook.addWorksheet("Modelo");
+
+  worksheet.columns = [
+    { header: "nome", key: "nome" },
+    { header: "preco", key: "preco" },
+    { header: "estoque", key: "estoque" },
+  ];
+
+  worksheet.addRow({
+    nome: "Mouse",
+    preco: 120,
+    estoque: 50,
+  });
+
+  const caminho = "uploads/modelo-produtos.xlsx";
+
+  await workbook.xlsx.writeFile(caminho);
+
+  res.download(caminho);
+};
+
+const exportarProdutos = async (req, res) => {
+  const produtos = await Produto.find();
+
+  const workbook = new ExcelJS.Workbook();
+
+  const worksheet = workbook.addWorksheet("Produtos");
+
+  worksheet.columns = [
+    { header: "nome", key: "nome" },
+    { header: "preco", key: "preco" },
+    { header: "estoque", key: "estoque" },
+  ];
+
+  const dados = produtos.map((produto) => ({
+    nome: produto.nome,
+    preco: produto.preco,
+    estoque: produto.estoque,
+  }));
+
+  worksheet.addRows(dados);
+
+  const caminho = "uploads/produtos.xlsx";
+
+  await workbook.xlsx.writeFile(caminho);
+
+  res.download(caminho);
+};
+
+const importarProdutos = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      erro: "Nenhum arquivo enviado. Use o campo 'arquivo' com uma planilha .xlsx.",
+    });
+  }
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+
+    await workbook.xlsx.readFile(req.file.path);
+
+    const worksheet = workbook.worksheets[0];
+
+    const produtos = [];
+
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        produtos.push({
+          nome: row.getCell(1).value,
+          preco: Number(row.getCell(2).value),
+          estoque: Number(row.getCell(3).value),
+        });
+      }
+    });
+
+    await Produto.insertMany(produtos);
+
+    res.json({
+      mensagem: "Produtos importados",
+      total: produtos.length,
+    });
+  } catch (erro) {
+    res.status(400).json({
+      erro: "Erro ao importar planilha. Verifique o formato: nome (texto), preco (número), estoque (número).",
+    });
+  }
+};
+
+module.exports = {
+  listarArquivos,
+  uploadArquivo,
+  exportarModelo,
+  exportarProdutos,
+  importarProdutos,
+};
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <div class="alert-explicando-codigo">
+        <h2 class="alert-explicando-codigo-title">🤓 Explicando o Código 📝</h2>
+
+        <h3>🔹 fs.readdirSync()</h3>
+
+        <p>Lista todos os arquivos de uma pasta.</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">fs.readdirSync(
+  'uploads'
+);
+</code></pre>
+        </div>
+
+        <h3>🔹 req.file</h3>
+
+        <p>
+          Após o Multer processar o upload, o arquivo enviado fica disponível
+          em:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">req.file
+</code></pre>
+        </div>
+
+        <p>Conteúdo do req.file:</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  filename,
+  path,
+  size,
+  mimetype
+}
+</code></pre>
+        </div>
+      </div>
+
+      <h3>Passo 6 — Criar Rotas</h3>
+
+      <p>Dentro de <strong>src/routes/arquivoRoutes.js</strong>:</p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+const upload = require("../config/multer");
+const {
+  uploadArquivo,
+  listarArquivos,
+  exportarModelo,
+  exportarProdutos,
+  importarProdutos,
+} = require("../controllers/arquivoController");
+router.post("/upload", upload.single("arquivo"), uploadArquivo);
+router.get("/arquivos", listarArquivos);
+router.get("/modelo-produtos", exportarModelo);
+router.get("/exportar-produtos", exportarProdutos);
+router.post("/importar-produtos", upload.single("arquivo"), importarProdutos);
+module.exports = router;
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <div class="alert-explicando-codigo">
+        <h2 class="alert-explicando-codigo-title">🤓 Explicando o Código 📝</h2>
+
+        <h3>🔹 upload.single()</h3>
+
+        <p>Recebe apenas um arquivo e o nome do campo deve ser:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">upload.single('arquivo')
+</code></pre>
+        </div>
+
+        <p>O campo no formulário deve se chamar:</p>
+
+        <div class="code-container">
+          <pre><code>arquivo
+</code></pre>
+        </div>
+      </div>
+
+      <h3>Passo 7 — Registrar Rotas</h3>
+
+      <p>Dentro de <strong>src/app.js</strong>:</p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const express = require("express");
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
+const arquivoRoutes = require("./routes/arquivoRoutes");
+const app = express();
+app.use(express.json());
+app.use(produtoRoutes);
+app.use(usuarioRoutes);
+app.use(arquivoRoutes);
+module.exports = app;
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 8 — Rodar a aplicação</h3>
+
+      <p>Teste a aplicação no terminal usando o código abaixo:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">node server.js
+</code></pre>
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 9 — Baixar a planilha para testar a API</h3>
+
+      <p>Você pode usar o Postman, Insomnia ou Bruno.</p>
+
+      <p>Baixe o modelo da planilha:</p>
+
+      <p>No navegador acesse a seguinte url:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">http://localhost:3000/modelo-produtos
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>curl:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">curl -X GET http://localhost:3000/modelo-produtos \
+  -o modelo-produtos.xlsx
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 10 — Preencher a planilha com novos produtos e importar</h3>
+
+      <p>No Postman / Insomnia / Bruno:</p>
+
+      <ul>
+        <li>Selecione o método <strong>POST</strong></li>
+        <li>Vá em <strong>Body</strong> → <strong>form-data</strong></li>
+        <li>
+          Adicione um campo do tipo <strong>File</strong> com a chave
+          <strong>arquivo</strong>
+        </li>
+        <li>
+          Selecione seu arquivo <strong>.xlsx</strong> no botão
+          <strong>Select Files</strong>
+        </li>
+        <li>Clique em Send</li>
+      </ul>
+
+      <p>ou</p>
+
+      <p>curl (terminal):</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">curl -X POST http://localhost:3000/importar-produtos \
+  -F "arquivo=@C:\caminho\para\planilha.xlsx"
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Resposta esperada:</p>
+
+      <div class="code-container">
+        <pre><code class="language-json">{
+  "mensagem": "Produtos importados",
+  "total": 3
+}
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h3>Passo 11 — Ver os produtos cadastrados</h3>
+
+      <p>FALTA FAZER essa parte do tutorial</p>
+
+      <h2>Fluxo Completo</h2>
+
+      <p>
+        Usuário envia uma planilha Excel → Multer salva o arquivo → ExcelJS lê a
+        planilha → Converte para JSON → MongoDB salva os produtos → API retorna
+        sucesso.
+      </p>
+
+      <h2>Formato Esperado da Planilha</h2>
+
+      <table border="1">
+        <tr>
+          <th>nome</th>
+          <th>preco</th>
+          <th>estoque</th>
+        </tr>
+        <tr>
+          <td>Mouse</td>
+          <td>120</td>
+          <td>50</td>
+        </tr>
+        <tr>
+          <td>Teclado</td>
+          <td>250</td>
+          <td>20</td>
+        </tr>
+        <tr>
+          <td>Monitor</td>
+          <td>1200</td>
+          <td>10</td>
+        </tr>
+      </table>
+
+      <h2>Último Passo — Subindo para Git</h2>
+
+      <div class="code-container">
+        <pre><code class="language-bash">git add .
+git commit -m "implementa upload e exportacao excel"
+git push --set-upstream origin aula4-filesystem-excel
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <h2>Dever de Casa</h2>
+
+      <p>Criar uma branch chamada:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">dever-de-casa-aula4
+</code></pre>
+      </div>
+
+      <p>Desenvolver uma API de clientes utilizando:</p>
+
+      <ul>
+        <li>Express</li>
+        <li>MVC</li>
+        <li>MongoDB</li>
+        <li>Multer</li>
+        <li>ExcelJS</li>
+      </ul>
+
+      <p>O cliente deve possuir:</p>
+
+      <ul>
+        <li>nome</li>
+        <li>email</li>
+        <li>telefone</li>
+      </ul>
+
+      <p>A API deve conter:</p>
+
+      <ul>
+        <li>POST /clientes</li>
+        <li>GET /clientes</li>
+        <li>POST /importar-clientes</li>
+        <li>GET /exportar-clientes</li>
+        <li>POST /upload</li>
+      </ul>
+
+      <h3>Desafio Extra ⭐</h3>
+
+      <p>Criar um endpoint:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">GET /backup-clientes
+</code></pre>
+      </div>
+
+      <p>Que:</p>
+
+      <ol>
+        <li>Busca todos os clientes do MongoDB</li>
+        <li>Gera uma planilha Excel automaticamente</li>
+        <li>Salva a planilha em uploads/backups</li>
+        <li>Retorna o nome do arquivo criado</li>
+      </ol>
+
+      <p>Exemplo:</p>
+
+      <div class="code-container">
+        <pre><code class="language-json">{
+  "mensagem": "Backup criado",
+  "arquivo": "clientes-20260604.xlsx"
+}
+</code></pre>
+      </div>
+
+      <p>
+        <strong
+          >Na próxima aula veremos autenticação com JWT, middleware de
+          autorização e proteção de rotas.</strong
+        >
+        🚀
+      </p>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
