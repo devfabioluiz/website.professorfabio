@@ -647,7 +647,54 @@ module.exports = app;
 
       <h3>Passo 11 — Ver os produtos cadastrados</h3>
 
-      <p>FALTA FAZER essa parte do tutorial</p>
+      <p>Após importar, verifique se os produtos foram salvos no banco:</p>
+
+      <p>No navegador acesse a seguinte URL:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">http://localhost:3000/produtos
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>curl:</p>
+
+      <div class="code-container">
+        <pre><code class="language-bash">curl http://localhost:3000/produtos
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>Resposta esperada:</p>
+
+      <div class="code-container">
+        <pre><code class="language-json">[
+  {
+    "_id": "6840f3a2b...",
+    "nome": "Mouse",
+    "preco": 120,
+    "estoque": 50,
+    "__v": 0
+  },
+  {
+    "_id": "6840f3a2c...",
+    "nome": "Teclado",
+    "preco": 250,
+    "estoque": 20,
+    "__v": 0
+  },
+  {
+    "_id": "6840f3a2d...",
+    "nome": "Monitor",
+    "preco": 1200,
+    "estoque": 10,
+    "__v": 0
+  }
+]
+</code></pre>
+      </div>
 
       <h2>Fluxo Completo</h2>
 
@@ -691,71 +738,6 @@ git push --set-upstream origin aula4-filesystem-excel
 </code></pre>
 
         <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h2>Dever de Casa</h2>
-
-      <p>Criar uma branch chamada:</p>
-
-      <div class="code-container">
-        <pre><code class="language-bash">dever-de-casa-aula4
-</code></pre>
-      </div>
-
-      <p>Desenvolver uma API de clientes utilizando:</p>
-
-      <ul>
-        <li>Express</li>
-        <li>MVC</li>
-        <li>MongoDB</li>
-        <li>Multer</li>
-        <li>ExcelJS</li>
-      </ul>
-
-      <p>O cliente deve possuir:</p>
-
-      <ul>
-        <li>nome</li>
-        <li>email</li>
-        <li>telefone</li>
-      </ul>
-
-      <p>A API deve conter:</p>
-
-      <ul>
-        <li>POST /clientes</li>
-        <li>GET /clientes</li>
-        <li>POST /importar-clientes</li>
-        <li>GET /exportar-clientes</li>
-        <li>POST /upload</li>
-      </ul>
-
-      <h3>Desafio Extra ⭐</h3>
-
-      <p>Criar um endpoint:</p>
-
-      <div class="code-container">
-        <pre><code class="language-bash">GET /backup-clientes
-</code></pre>
-      </div>
-
-      <p>Que:</p>
-
-      <ol>
-        <li>Busca todos os clientes do MongoDB</li>
-        <li>Gera uma planilha Excel automaticamente</li>
-        <li>Salva a planilha em uploads/backups</li>
-        <li>Retorna o nome do arquivo criado</li>
-      </ol>
-
-      <p>Exemplo:</p>
-
-      <div class="code-container">
-        <pre><code class="language-json">{
-  "mensagem": "Backup criado",
-  "arquivo": "clientes-20260604.xlsx"
-}
-</code></pre>
       </div>
 
       <p>
