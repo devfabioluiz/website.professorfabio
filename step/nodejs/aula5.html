@@ -27,8 +27,7 @@
       </h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Autenticação com JWT (JSON Web Token), hash de senha com bcrypt,
-        middleware de autorização, proteção de rotas e controle de acesso.
+        Roteamento, Requisições e respostas HTTP, Códigos de status, Criação de APIs REST.
       </div>
     </header>
 
@@ -48,8 +47,8 @@
           memória
         </li>
         <li>
-          <strong>Token (Stateless):</strong> o servidor gera um token e o cliente
-          o envia em cada requisição
+          <strong>Token (Stateless):</strong> o servidor gera um token e o
+          cliente o envia em cada requisição
         </li>
       </ul>
 
@@ -68,9 +67,7 @@
         <li>
           <strong>Header:</strong> algoritmo de assinatura (HMAC SHA256, RSA)
         </li>
-        <li>
-          <strong>Payload:</strong> dados do usuário (id, email, role)
-        </li>
+        <li><strong>Payload:</strong> dados do usuário (id, email, role)</li>
         <li>
           <strong>Signature:</strong> assinatura que garante a integridade
         </li>
@@ -103,7 +100,9 @@
       <ul>
         <li>Nunca salvar senhas em texto puro no banco</li>
         <li>Se o banco for comprometido, as senhas ficam protegidas</li>
-        <li>bcrypt adiciona um salt automático (proteção contra rainbow table)</li>
+        <li>
+          bcrypt adiciona um salt automático (proteção contra rainbow table)
+        </li>
       </ul>
 
       <div class="code-container">
@@ -214,7 +213,10 @@ git checkout -b aula5-jwt-auth
 
       <h3>Passo 2 — Atualizar Model de Usuário</h3>
 
-      <p>Adicione o campo <strong>senha</strong> em <strong>src/models/Usuario.js</strong>:</p>
+      <p>
+        Adicione o campo <strong>senha</strong> em
+        <strong>src/models/Usuario.js</strong>:
+      </p>
 
       <div class="code-container">
         <pre><code class="language-javascript">const mongoose = require("mongoose");
@@ -372,8 +374,8 @@ module.exports = {
         <h3>🔹 jwt.sign()</h3>
 
         <p>
-          Gera um token JWT com os dados do payload (id, email) e um segredo.
-          O token expira em 1 dia.
+          Gera um token JWT com os dados do payload (id, email) e um segredo. O
+          token expira em 1 dia.
         </p>
 
         <div class="code-container">
@@ -600,9 +602,9 @@ module.exports = router;
         <h3>🔹 Middleware na rota</h3>
 
         <p>
-          O middleware <strong>autenticar</strong> é colocado ANTES do controller.
-          Se o token for inválido, a requisição é bloqueada e o controller nunca
-          é executado.
+          O middleware <strong>autenticar</strong> é colocado ANTES do
+          controller. Se o token for inválido, a requisição é bloqueada e o
+          controller nunca é executado.
         </p>
 
         <div class="code-container">
@@ -726,9 +728,7 @@ module.exports = router;
         <button class="btn-copy">Copiar Código</button>
       </div>
 
-      <p>
-        3. Acessar rota protegida (copie o token recebido no login):
-      </p>
+      <p>3. Acessar rota protegida (copie o token recebido no login):</p>
 
       <p>URL:</p>
 

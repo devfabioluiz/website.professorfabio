@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Aula 7 - CMS: Sistema de Gerenciamento de Produtos - IT Step
-    </title>
+    <title>Aula 7 - CMS: Sistema de Gerenciamento de Produtos - IT Step</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -21,22 +19,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-
-    
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 7</h1>
       <h4 class="text-center">Python Backend</h4>
       <h4 class="text-center">
         CMS - Sistema de Gerenciamento de Produtos com Django
       </h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Models e Banco de Dados, CRUD, Templates, Formulários (com upload de imagem), Views e Roteamento, Autenticação.</div>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Models e Banco de Dados, CRUD, Templates, Formulários (com upload de
+        imagem), Views e Roteamento, Autenticação.
+      </div>
     </header>
 
-    <main class="container"><!-- O que é um CMS -->
+    <main class="container">
+      <!-- O que é um CMS -->
       <section>
         <h2>O que é um CMS?</h2>
 
@@ -90,9 +93,7 @@
           <li>
             <strong>Controle total</strong> sobre o design e as funcionalidades
           </li>
-          <li>
-            <strong>Sem dependência</strong> de plugins de terceiros
-          </li>
+          <li><strong>Sem dependência</strong> de plugins de terceiros</li>
           <li>
             <strong>Personalização</strong> exata para as regras do seu negócio
           </li>
@@ -114,9 +115,7 @@
             <strong>Criar</strong> novos produtos com nome, preço, descrição,
             estoque e imagem
           </li>
-          <li>
-            <strong>Editar</strong> informações de produtos existentes
-          </li>
+          <li><strong>Editar</strong> informações de produtos existentes</li>
           <li><strong>Excluir</strong> produtos</li>
         </ul>
 
@@ -132,9 +131,7 @@
       <section>
         <h2>Passo a Passo</h2>
 
-        <h3>
-          Passo 0 — Criar branch baseada na aula6 e instalar dependências
-        </h3>
+        <h3>Passo 0 — Criar branch baseada na aula6 e instalar dependências</h3>
 
         <p>
           No terminal, crie uma nova branch a partir da aula anterior e instale
@@ -144,10 +141,16 @@
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula6
+git checkout aula6-orm-admin-login
 git pull
 git checkout -b aula7-cms-produtos
+cd projeto_django_mvt
 pip install Pillow
+python manage.py startapp loja
+mkdir media
+type nul > loja\urls.py
+type nul > loja\forms.py
+mkdir loja\templates\loja
           </code></pre>
 
           <button class="btn-copy">Copiar Código</button>
@@ -156,15 +159,21 @@ pip install Pillow
         <h3>Passo 1 — Configurar upload de imagens</h3>
 
         <p>
-          No <code>settings.py</code>, adicione as configurações de mídia:
+          No <code>settings.py</code>, adicione o app <code>loja</code> ao
+          <code>INSTALLED_APPS</code> e as configurações de mídia (o
+          <code>BASE_DIR</code> já existe no settings padrão do Django):
         </p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# settings.py
-import os
+# Adicione 'loja' ao INSTALLED_APPS
+INSTALLED_APPS = [
+# ... outras apps ...
+'loja',
+]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Adicione após o INSTALLED_APPS' o código abaixo para configurar a mídia
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 LOGIN_URL = '/login/'
@@ -176,8 +185,8 @@ LOGOUT_REDIRECT_URL = '/login/'
         </div>
 
         <p>
-          No <code>urls.py</code> principal do projeto, sirva os arquivos de
-          mídia em desenvolvimento:
+          No <code>projeto_django_mvt/urls.py</code>, insira dentro dele os
+          arquivos de mídia em desenvolvimento:
         </p>
 
         <div class="code-container">
@@ -190,7 +199,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
+    path('', include('loja.urls')),
+    path('', include('usuarios.urls')),
 ]
 
 if settings.DEBUG:
@@ -203,11 +213,13 @@ if settings.DEBUG:
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Crie o arquivo <code>urls.py</code> dentro do app <code>core</code>:</p>
+        <p>
+          Crie o arquivo <code>urls.py</code> dentro do app <code>loja</code>:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/urls.py
+# loja/urls.py
 from django.urls import path
 from . import views
 
@@ -221,13 +233,13 @@ urlpatterns = [
         <h3>Passo 2 — Criar o Model Produto</h3>
 
         <p>
-          Em <code>core/models.py</code>, defina o model com os campos
+          Em <code>loja/models.py</code>, defina o model com os campos
           essenciais incluindo <code>ImageField</code>:
         </p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/models.py
+# loja/models.py
 from django.db import models
 
 class Produto(models.Model):
@@ -313,11 +325,13 @@ python manage.py migrate
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Registre o model no admin (opcional):</p>
+        <p>
+          Acesse o arquivo <code>loja/admin.py</code>e coloque o código abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/admin.py
+# loja/admin.py
 from django.contrib import admin
 from .models import Produto
 
@@ -335,11 +349,11 @@ class ProdutoAdmin(admin.ModelAdmin):
 
         <h3>Passo 3 — Criar o Formulário (ModelForm)</h3>
 
-        <p>Em <code>core/forms.py</code>:</p>
+        <p>Em <code>loja/forms.py</code>:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/forms.py
+# loja/forms.py
 from django import forms
 from .models import Produto
 
@@ -371,13 +385,13 @@ class ProdutoForm(forms.ModelForm):
         <h3>Passo 4 — Criar as Views do CRUD</h3>
 
         <p>
-          Em <code>core/views.py</code>, implemente as quatro operações. Todas
+          Em <code>loja/views.py</code>, implemente as quatro operações. Todas
           protegidas com <code>@login_required</code>:
         </p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/views.py
+# loja/views.py
 from django.shortcuts import (
     render, redirect, get_object_or_404
 )
@@ -390,7 +404,7 @@ def listar_produtos(request):
     produtos = Produto.objects.all()
     return render(
         request,
-        'core/lista_produtos.html',
+        'loja/lista_produtos.html',
         {'produtos': produtos}
     )
 
@@ -405,7 +419,7 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(
         request,
-        'core/form_produto.html',
+        'loja/form_produto.html',
         {'form': form, 'titulo': 'Novo Produto'}
     )
 
@@ -423,7 +437,7 @@ def editar_produto(request, pk):
         form = ProdutoForm(instance=produto)
     return render(
         request,
-        'core/form_produto.html',
+        'loja/form_produto.html',
         {
             'form': form,
             'titulo': f'Editar: {produto.nome}',
@@ -439,7 +453,7 @@ def excluir_produto(request, pk):
         return redirect('listar_produtos')
     return render(
         request,
-        'core/confirmar_exclusao.html',
+        'loja/confirmar_exclusao.html',
         {'produto': produto}
     )
           </code></pre>
@@ -450,8 +464,8 @@ def excluir_produto(request, pk):
         <h3>Passo 5 — Criar os Templates</h3>
 
         <p>
-          Crie a pasta <code>core/templates/core/</code> e adicione os
-          arquivos abaixo.
+          Dentro de <code>loja/templates/loja/</code> (já criada no Passo 0),
+          adicione os arquivos abaixo.
         </p>
 
         <p><strong>base.html</strong> — layout com Bootstrap e navbar:</p>
@@ -504,7 +518,7 @@ def excluir_produto(request, pk):
 
         <div class="code-container">
           <pre><code class="language-html">
-{% extends 'core/base.html' %}
+{% extends 'loja/base.html' %}
 
 {% block content %}
 &lt;div class="d-flex justify-content-between
@@ -580,7 +594,7 @@ def excluir_produto(request, pk):
 
         <div class="code-container">
           <pre><code class="language-html">
-{% extends 'core/base.html' %}
+{% extends 'loja/base.html' %}
 
 {% block content %}
 &lt;h1&gt;{{ titulo }}&lt;/h1&gt;
@@ -630,13 +644,11 @@ def excluir_produto(request, pk):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>
-          <strong>confirmar_exclusao.html</strong> — tela de confirmação:
-        </p>
+        <p><strong>confirmar_exclusao.html</strong> — tela de confirmação:</p>
 
         <div class="code-container">
           <pre><code class="language-html">
-{% extends 'core/base.html' %}
+{% extends 'loja/base.html' %}
 
 {% block content %}
 &lt;h1&gt;Confirmar Exclusão&lt;/h1&gt;
@@ -664,53 +676,13 @@ def excluir_produto(request, pk):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p><strong>login.html</strong> — tela de login:</p>
-
-        <div class="code-container">
-          <pre><code class="language-html">
-{% extends 'core/base.html' %}
-
-{% block content %}
-&lt;div class="row justify-content-center"&gt;
-  &lt;div class="col-md-4"&gt;
-    &lt;h2 class="text-center mb-4"&gt;Login&lt;/h2&gt;
-    &lt;form method="post"&gt;
-      {% csrf_token %}
-      &lt;div class="mb-3"&gt;
-        &lt;label for="id_username"
-               class="form-label"&gt;Usuário&lt;/label&gt;
-        &lt;input type="text" name="username"
-               class="form-control" required /&gt;
-      &lt;/div&gt;
-      &lt;div class="mb-3"&gt;
-        &lt;label for="id_password"
-               class="form-label"&gt;Senha&lt;/label&gt;
-        &lt;input type="password" name="password"
-               class="form-control" required /&gt;
-      &lt;/div&gt;
-      {% if form.errors %}
-        &lt;div class="alert alert-danger"&gt;
-          Usuário ou senha inválidos.
-        &lt;/div&gt;
-      {% endif %}
-      &lt;button type="submit"
-              class="btn btn-primary w-100"&gt;Entrar&lt;/button&gt;
-    &lt;/form&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-{% endblock %}
-          </code></pre>
-
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
         <h3>Passo 6 — Configurar as URLs e autenticação</h3>
 
-        <p>No <code>core/urls.py</code>, defina as rotas do CRUD:</p>
+        <p>No <code>loja/urls.py</code>, defina as rotas do CRUD:</p>
 
         <div class="code-container">
           <pre><code class="language-python">
-# core/urls.py
+# loja/urls.py
 from django.urls import path
 from . import views
 
@@ -740,39 +712,10 @@ urlpatterns = [
         </div>
 
         <p>
-          No <code>urls.py</code> principal, adicione as rotas de login/logout:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-python">
-# urls.py (principal)
-from django.contrib.auth import views as auth_views
-
-urlpatterns += [
-    path(
-        'login/',
-        auth_views.LoginView.as_view(
-            template_name='core/login.html'
-        ),
-        name='login'
-    ),
-    path(
-        'logout/',
-        auth_views.LogoutView.as_view(
-            next_page='/login/'
-        ),
-        name='logout'
-    ),
-]
-          </code></pre>
-
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>
-          <strong>lembrete:</strong> o <code>LOGIN_URL</code> e
-          <code>LOGIN_REDIRECT_URL</code> já estão configurados no
-          <code>settings.py</code> desde o Passo 1.
+          As rotas de login e logout já foram configuradas no app
+          <code>usuarios</code> durante a Aula 6 e continuam funcionando
+          normalmente através do <code>include('usuarios.urls')</code>
+          adicionado no Passo 1.
         </p>
 
         <h3>Passo 7 — Testar o CMS</h3>
@@ -807,16 +750,15 @@ meu_projeto/
 │   ├── settings.py
 │   ├── urls.py
 │   └── ...
-├── core/
+├── loja/
 │   ├── models.py
 │   ├── forms.py
 │   ├── views.py
 │   ├── urls.py
 │   ├── admin.py
 │   └── templates/
-│       └── core/
+│       └── loja/
 │           ├── base.html
-│           ├── login.html
 │           ├── lista_produtos.html
 │           ├── form_produto.html
 │           └── confirmar_exclusao.html
@@ -838,25 +780,17 @@ meu_projeto/
 
             <p>
               Modifique a view <code>listar_produtos</code> para filtrar
-              produtos pelo nome usando um parâmetro GET (<code>?q=termo</code>).
-              Adicione o campo de busca no template.
+              produtos pelo nome usando um parâmetro GET
+              (<code>?q=termo</code>). Adicione o campo de busca no template.
             </p>
 
             <p><strong>Requisitos:</strong></p>
 
             <ul>
-              <li>
-                Busca via método <code>GET</code>
-              </li>
-              <li>
-                Filtrar por parte do nome com <code>icontains</code>
-              </li>
-              <li>
-                Campo vazio mostra todos os produtos
-              </li>
-              <li>
-                Termo buscado permanece no campo após a pesquisa
-              </li>
+              <li>Busca via método <code>GET</code></li>
+              <li>Filtrar por parte do nome com <code>icontains</code></li>
+              <li>Campo vazio mostra todos os produtos</li>
+              <li>Termo buscado permanece no campo após a pesquisa</li>
             </ul>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -877,7 +811,7 @@ def listar_produtos(request):
         produtos = Produto.objects.all()
     return render(
         request,
-        'core/lista_produtos.html',
+        'loja/lista_produtos.html',
         {'produtos': produtos, 'query': query}
     )
                 </code></pre>
