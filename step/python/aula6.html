@@ -381,13 +381,11 @@ usuario.nome = "Ana Carolina"
 usuario.save()
 usuario = Usuario.objects.get(id=1)
 usuario.delete()
+exit()
                   </code></pre>
                   <button class="btn-copy">Copiar Código</button>
                 </div>
 
-                <div class="info-box">
-                  <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
-                </div>
         </section>
         <h3>Passo 5: Django Admin</h3>
         <p>
@@ -402,11 +400,18 @@ python manage.py createsuperuser
           <button class="btn-copy">Copiar Código</button>
         </div>
         <p>
-          # Informe: usuário, email e senha
+          Agora no cmd ele vai pedir para você criar um usuário
         </p>
-          <p>
-          # Exemplo: admin / admin@example.com / admin12345678
-        </p>
+        <p>Faremos para padronizar o seguinte exemplo</p>
+        <ul>
+          <li>Username: admin</li>
+          <li>Username: admin@example.com</li>
+          <li>Username: admin12345678</li>
+        </ul>
+
+               <div class="info-box">
+                  <strong>🙀 ATENÇÃO:</strong> Quando vpcê cria a senha ele nao aparece os caracteres por questões de segurança, então digite com cuidado e depois pressione a tecla <code>Enter</code>
+                </div>
 
         <h3>Passo 6: Registrar o model no admin.py de usuarios</h3>
         <p>Arquivo: <code>usuarios/admin.py</code></p>
