@@ -170,9 +170,18 @@ mkdir loja\templates\loja
           <pre><code class="language-python">
 # Adicione 'loja' ao INSTALLED_APPS
 INSTALLED_APPS = [
-# ... outras apps ...
-'loja',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'usuarios',
+    # Adicione o 'loja'
+    'loja',
 ]
+
 
 # Adicione após o INSTALLED_APPS' o código abaixo para configurar a mídia
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -216,7 +225,7 @@ if settings.DEBUG:
         </div>
 
         <p>
-          Crie o arquivo <code>urls.py</code> dentro do app <code>loja</code>:
+          Crie o arquivo <code>urls.py</code> dentro da pasta <code>loja</code>:
         </p>
 
         <div class="code-container">
