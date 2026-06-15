@@ -220,6 +220,7 @@ git checkout -b aula5-jwt-auth
 
       <div class="code-container">
         <pre><code class="language-javascript">const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const usuarioSchema = new mongoose.Schema({
   nome: {
@@ -243,10 +244,7 @@ const usuarioSchema = new mongoose.Schema({
   },
 });
 
-const Usuario = mongoose.model(
-  "Usuario",
-  usuarioSchema
-);
+const Usuario = mongoose.model("Usuario", usuarioSchema);
 
 module.exports = Usuario;
 </code></pre>
