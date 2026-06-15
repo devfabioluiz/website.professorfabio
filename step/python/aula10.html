@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10 - Programação Orientada a Objetos com Python - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Programação Orientada a Objetos em Python</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Introdução a POO, Classes e Objetos, Métodos mágicos, Herança múltipla e MRO, Polimorfismo e operadores.
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section>
+        <h2>Objetivo da aula</h2>
+        <p>
+          Nesta aula, vamos mergulhar em um dos pilares mais importantes da programação moderna:
+          <strong>Orientação a Objetos</strong>. Você vai aprender a modelar problemas do mundo
+          real usando classes, encapsular dados, reutilizar código com herança, aplicar
+          polimorfismo e usar métodos especiais do Python.
+        </p>
+        <p>
+          <strong>Projeto:</strong> Vamos construir um <strong>Sistema de Biblioteca</strong>
+          executável pelo terminal — sem framework, Python puro.
+        </p>
+
+        <h3>Conteúdos da aula</h3>
+        <ul>
+          <li>Classes e Objetos — <code>class</code>, <code>__init__</code>, <code>self</code></li>
+          <li>Encapsulamento — <code>_protegido</code>, <code>__privado</code>, <code>@property</code></li>
+          <li>Duck Typing — "se anda como pato, é um pato"</li>
+          <li>Métodos mágicos — <code>__str__</code>, <code>__repr__</code>, <code>__eq__</code>, <code>__len__</code></li>
+          <li>Herança — simples, múltipla e MRO</li>
+          <li>Polimorfismo — mesmo método, comportamentos diferentes</li>
+          <li>Sobrecarga de operadores — <code>__add__</code>, <code>__gt__</code>, <code>__contains__</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>1. Classes e Objetos</h2>
+
+        <p>
+          Uma <strong>classe</strong> é um molde. Um <strong>objeto</strong> é uma instância
+          concreta desse molde. Pense numa fôrma de bolo (classe) e nos bolos que saem dela (objetos).
+        </p>
+
+        <h3>Estrutura básica</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Livro:
+    # Atributo de classe (compartilhado por todos os objetos)
+    total_livros = 0
+
+    def __init__(self, titulo, autor, paginas):
+        # Atributos de instância (cada objeto tem os seus)
+        self.titulo = titulo
+        self.autor = autor
+        self.paginas = paginas
+        self.emprestado = False
+
+        # Incrementa o contador global
+        Livro.total_livros += 1
+
+    def emprestar(self):
+        if not self.emprestado:
+            self.emprestado = True
+            return f"'{self.titulo}' foi emprestado."
+        return f"'{self.titulo}' já está emprestado."
+
+    def devolver(self):
+        if self.emprestado:
+            self.emprestado = False
+            return f"'{self.titulo}' foi devolvido."
+        return f"'{self.titulo}' não estava emprestado."
+
+
+# Criando objetos (instâncias)
+livro1 = Livro("Dom Casmurro", "Machado de Assis", 256)
+livro2 = Livro("1984", "George Orwell", 328)
+
+print(livro1.titulo)          # Dom Casmurro
+print(livro1.emprestar())     # 'Dom Casmurro' foi emprestado.
+print(livro1.emprestar())     # 'Dom Casmurro' já está emprestado.
+print(livro1.devolver())      # 'Dom Casmurro' foi devolvido.
+print(Livro.total_livros)     # 2
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>self — o que é?</h3>
+        <p>
+          <code>self</code> representa a <strong>própria instância</strong>. Quando você chama
+          <code>livro1.emprestar()</code>, o Python traduz para <code>Livro.emprestar(livro1)</code>.
+          É assim que cada objeto sabe quais são seus próprios dados.
+        </p>
+
+        <h3>Atributo de classe vs Atributo de instância</h3>
+
+        <table>
+          <thead>
+            <tr><th>Tipo</th><th>Definido com</th><th>Compartilhado?</th><th>Exemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>De classe</td><td>Fora do <code>__init__</code></td><td>Sim (todos os objetos)</td><td><code>total_livros</code></td></tr>
+            <tr><td>De instância</td><td>Dentro do <code>__init__</code> com <code>self.</code></td><td>Não (cada um tem o seu)</td><td><code>titulo</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>2. Encapsulamento</h2>
+
+        <p>
+          Encapsulamento é esconder detalhes internos do objeto e expor apenas
+          o que é necessário. Em Python, usamos convenções de nomenclatura.
+        </p>
+
+        <table>
+          <thead>
+            <tr><th>Convenção</th><th>Significado</th><th>Exemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>atributo</code></td><td>Público — qualquer um pode acessar</td><td><code>self.titulo</code></td></tr>
+            <tr><td><code>_atributo</code></td><td>Protegido — "não mexa, mas se quiser..."</td><td><code>self._estoque</code></td></tr>
+            <tr><td><code>__atributo</code></td><td>Privado — Python renomeia (name mangling)</td><td><code>self.__senha</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>@property — getters e setters elegantes</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Usuario:
+    def __init__(self, nome, email):
+        self.nome = nome
+        self._email = None       # atributo interno
+        self.email = email        # chama o setter!
+
+    @property
+    def email(self):
+        """Getter — acessado como usuario.email"""
+        return self._email
+
+    @email.setter
+    def email(self, novo_email):
+        """Setter — usuario.email = 'novo@email.com'"""
+        if '@' not in novo_email:
+            raise ValueError("Email inválido! Deve conter @")
+        self._email = novo_email.lower()
+
+    @property
+    def dominio(self):
+        """Propriedade calculada — só getter, sem setter"""
+        return self._email.split('@')[1] if self._email else None
+
+
+# Testando
+usuario = Usuario("Ana", "ana@email.com")
+print(usuario.email)      # ana@email.com
+print(usuario.dominio)    # email.com
+usuario.email = "ANA@NOVA.COM"
+print(usuario.email)      # ana@nova.com
+
+# usuario.email = "email_invalido"  # ValueError!
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Duck Typing</h2>
+
+        <p>
+          Em Python, não importa o tipo do objeto — importa o que ele <strong>faz</strong>.
+          Se um objeto tem o método <code>quack()</code>, ele pode ser tratado como pato.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# Duck Typing: a função não exige um tipo específico
+def imprimir_dados(objeto):
+    """Qualquer objeto que tenha .titulo e .autor funciona"""
+    print(f"'{objeto.titulo}' por {objeto.autor}")
+
+class Livro:
+    def __init__(self, titulo, autor):
+        self.titulo = titulo
+        self.autor = autor
+
+class Filme:
+    def __init__(self, titulo, autor):
+        self.titulo = titulo
+        self.autor = autor  # diretor
+
+class Musica:
+    def __init__(self, titulo, autor):
+        self.titulo = titulo
+        self.autor = autor  # artista
+
+# Todos funcionam, mesmo sendo de classes diferentes!
+imprimir_dados(Livro("Dom Casmurro", "Machado de Assis"))
+imprimir_dados(Filme("O Poderoso Chefão", "Francis Ford Coppola"))
+imprimir_dados(Musica("Bohemian Rhapsody", "Queen"))
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Métodos Mágicos (Dunder Methods)</h2>
+
+        <p>
+          Métodos com <code>__nome__</code> são chamados automaticamente pelo Python
+          em situações específicas. Eles tornam seus objetos "nativos".
+        </p>
+
+        <h3>Os mais importantes</h3>
+
+        <table>
+          <thead>
+            <tr><th>Método</th><th>Quando é chamado</th><th>Gatilho</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>__init__</code></td><td>Ao criar o objeto</td><td><code>obj = Classe()</code></td></tr>
+            <tr><td><code>__str__</code></td><td>Representação para o usuário</td><td><code>print(obj)</code>, <code>str(obj)</code></td></tr>
+            <tr><td><code>__repr__</code></td><td>Representação para o desenvolvedor</td><td><code>repr(obj)</code>, console interativo</td></tr>
+            <tr><td><code>__eq__</code></td><td>Comparação de igualdade</td><td><code>obj1 == obj2</code></td></tr>
+            <tr><td><code>__len__</code></td><td>Tamanho do objeto</td><td><code>len(obj)</code></td></tr>
+            <tr><td><code>__iter__</code></td><td>Iteração em loop</td><td><code>for item in obj:</code></td></tr>
+            <tr><td><code>__getitem__</code></td><td>Acesso por índice</td><td><code>obj[0]</code></td></tr>
+            <tr><td><code>__contains__</code></td><td>Verificação de pertencimento</td><td><code>item in obj</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo: classe Acervo com métodos mágicos</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Acervo:
+    def __init__(self, nome):
+        self.nome = nome
+        self._itens = []
+
+    def adicionar(self, item):
+        self._itens.append(item)
+
+    # Métodos mágicos
+    def __str__(self):
+        return f"📚 Acervo '{self.nome}' — {len(self._itens)} itens"
+
+    def __repr__(self):
+        return f"Acervo(nome='{self.nome}', itens={len(self._itens)})"
+
+    def __len__(self):
+        return len(self._itens)
+
+    def __getitem__(self, index):
+        return self._itens[index]
+
+    def __iter__(self):
+        return iter(self._itens)
+
+    def __contains__(self, item):
+        return item in self._itens
+
+    def __eq__(self, outro):
+        if not isinstance(outro, Acervo):
+            return False
+        return self.nome == outro.nome and len(self) == len(outro)
+
+
+# Usando os métodos mágicos
+acervo = Acervo("Ficção Científica")
+acervo.adicionar("Duna")
+acervo.adicionar("Neuromancer")
+acervo.adicionar("Fundação")
+
+print(acervo)                 # 📚 Acervo 'Ficção Científica' — 3 itens
+print(len(acervo))            # 3
+print(acervo[0])              # Duna
+
+for item in acervo:           # Iteração graças ao __iter__
+    print(f"  → {item}")
+
+print("Duna" in acervo)       # True (graças ao __contains__)
+print("Harry Potter" in acervo)  # False
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Herança</h2>
+
+        <p>
+          Herança permite que uma classe <strong>filha</strong> herde atributos e métodos
+          de uma classe <strong>pai</strong>, reutilizando e estendendo código.
+        </p>
+
+        <h3>5.1 — Herança Simples</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class ItemBiblioteca:
+    """Classe base (pai)"""
+    def __init__(self, titulo, autor, ano):
+        self.titulo = titulo
+        self.autor = autor
+        self.ano = ano
+        self.emprestado = False
+
+    def emprestar(self):
+        self.emprestado = True
+
+    def devolver(self):
+        self.emprestado = False
+
+    def info(self):
+        return f"'{self.titulo}' por {self.autor} ({self.ano})"
+
+
+class LivroFisico(ItemBiblioteca):
+    """Herda de ItemBiblioteca"""
+    def __init__(self, titulo, autor, ano, paginas, isbn):
+        # Chama o __init__ do pai
+        super().__init__(titulo, autor, ano)
+        self.paginas = paginas
+        self.isbn = isbn
+
+    def info(self):
+        # Estende o método do pai
+        base = super().info()
+        return f"{base} — {self.paginas} págs., ISBN: {self.isbn}"
+
+
+class Ebook(ItemBiblioteca):
+    def __init__(self, titulo, autor, ano, formato, tamanho_mb):
+        super().__init__(titulo, autor, ano)
+        self.formato = formato        # PDF, EPUB, MOBI
+        self.tamanho_mb = tamanho_mb
+
+    def info(self):
+        base = super().info()
+        return f"{base} — {self.formato}, {self.tamanho_mb}MB"
+
+
+# Usando
+fisico = LivroFisico("Clean Code", "Robert C. Martin", 2008, 464, "978-0132350884")
+ebook = Ebook("Python Fluente", "Luciano Ramalho", 2015, "PDF", 6.2)
+
+print(fisico.info())
+# 'Clean Code' por Robert C. Martin (2008) — 464 págs., ISBN: 978-0132350884
+print(ebook.info())
+# 'Python Fluente' por Luciano Ramalho (2015) — PDF, 6.2MB
+
+fisico.emprestar()   # Herdou de ItemBiblioteca
+print(fisico.emprestado)  # True
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5.2 — Herança Múltipla e MRO</h3>
+
+        <p>
+          Python permite herdar de <strong>várias</strong> classes ao mesmo tempo.
+          O <strong>MRO (Method Resolution Order)</strong> define a ordem em que o Python
+          busca métodos quando há conflito de nomes.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Emprestavel:
+    """Mixin: adiciona funcionalidade de empréstimo"""
+    def emprestar(self, usuario):
+        self.emprestado_por = usuario
+        print(f"Emprestado para {usuario}")
+
+    def devolver(self):
+        self.emprestado_por = None
+        print("Devolvido")
+
+
+class Avaliavel:
+    """Mixin: adiciona sistema de avaliação"""
+    def __init__(self):
+        self._notas = []
+
+    def avaliar(self, nota):
+        if 1 <= nota <= 5:
+            self._notas.append(nota)
+
+    @property
+    def media(self):
+        if not self._notas:
+            return 0
+        return sum(self._notas) / len(self._notas)
+
+
+class LivroCompleto(ItemBiblioteca, Emprestavel, Avaliavel):
+    """Herança múltipla: combina 3 classes"""
+    def __init__(self, titulo, autor, ano, paginas):
+        ItemBiblioteca.__init__(self, titulo, autor, ano)
+        Avaliavel.__init__(self)   # Inicializa o mixin de avaliação
+        self.paginas = paginas
+
+
+# Vendo a ordem de resolução
+print(LivroCompleto.__mro__)
+# LivroCompleto → ItemBiblioteca → Emprestavel → Avaliavel → object
+
+livro = LivroCompleto("Design Patterns", "GoF", 1994, 416)
+livro.emprestar("Maria")          # de Emprestavel
+livro.avaliar(5)                  # de Avaliavel
+livro.avaliar(4)
+print(f"Média: {livro.media}")   # 4.5
+print(livro.info())              # de ItemBiblioteca
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Regra do MRO:</strong> Python segue a ordem da esquerda para direita
+          na declaração da classe, usando o algoritmo C3 Linearization.
+          Classes mais à esquerda têm prioridade.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Polimorfismo</h2>
+
+        <p>
+          Polimorfismo significa "muitas formas". O <strong>mesmo nome de método</strong>
+          pode ter <strong>comportamentos diferentes</strong> em classes diferentes.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Livro:
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 2.00   # R$ 2,00 por dia
+
+class Revista:
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 1.00   # R$ 1,00 por dia (mais barato)
+
+class DVD:
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 5.00   # R$ 5,00 por dia (mais caro)
+
+
+# Polimorfismo: a função não sabe (nem precisa saber) o tipo
+def cobrar_multa(item, dias):
+    valor = item.calcular_multa(dias)
+    print(f"Multa por {dias} dias de atraso: R$ {valor:.2f}")
+    return valor
+
+
+itens = [Livro(), Revista(), DVD()]
+for item in itens:
+    cobrar_multa(item, 3)
+
+# Multa por 3 dias de atraso: R$ 6.00   (Livro)
+# Multa por 3 dias de atraso: R$ 3.00   (Revista)
+# Multa por 3 dias de atraso: R$ 15.00  (DVD)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>7. Sobrecarga de Operadores</h2>
+
+        <p>
+          Você pode definir como os operadores (<code>+</code>, <code>-</code>, <code>></code>,
+          etc.) se comportam com seus objetos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+class Livro:
+    def __init__(self, titulo, paginas, preco):
+        self.titulo = titulo
+        self.paginas = paginas
+        self.preco = preco
+
+    def __str__(self):
+        return f"'{self.titulo}' ({self.paginas} págs, R$ {self.preco:.2f})"
+
+    def __add__(self, outro):
+        """livro1 + livro2 → soma de páginas"""
+        if isinstance(outro, Livro):
+            return self.paginas + outro.paginas
+        return NotImplemented
+
+    def __gt__(self, outro):
+        """livro1 > livro2 → compara por páginas"""
+        if isinstance(outro, Livro):
+            return self.paginas > outro.paginas
+        return NotImplemented
+
+    def __eq__(self, outro):
+        """livro1 == livro2 → mesmo título e autor?"""
+        if isinstance(outro, Livro):
+            return self.titulo == outro.titulo
+        return False
+
+
+livro1 = Livro("Dom Casmurro", 256, 39.90)
+livro2 = Livro("1984", 328, 45.00)
+
+print(livro1 + livro2)    # 584 (soma de páginas)
+print(livro1 > livro2)    # False (256 não é > 328)
+print(livro1 == livro2)   # False (títulos diferentes)
+
+livro3 = Livro("Dom Casmurro", 200, 29.90)
+print(livro1 == livro3)   # True (mesmo título)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Principais operadores que você pode sobrecarregar</h3>
+
+        <table>
+          <thead>
+            <tr><th>Operador</th><th>Método</th><th>Exemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>+</code></td><td><code>__add__</code></td><td><code>a + b</code></td></tr>
+            <tr><td><code>-</code></td><td><code>__sub__</code></td><td><code>a - b</code></td></tr>
+            <tr><td><code>*</code></td><td><code>__mul__</code></td><td><code>a * b</code></td></tr>
+            <tr><td><code>==</code></td><td><code>__eq__</code></td><td><code>a == b</code></td></tr>
+            <tr><td><code>!=</code></td><td><code>__ne__</code></td><td><code>a != b</code></td></tr>
+            <tr><td><code>&lt;</code></td><td><code>__lt__</code></td><td><code>a &lt; b</code></td></tr>
+            <tr><td><code>&gt;</code></td><td><code>__gt__</code></td><td><code>a &gt; b</code></td></tr>
+            <tr><td><code>len()</code></td><td><code>__len__</code></td><td><code>len(a)</code></td></tr>
+            <tr><td><code>in</code></td><td><code>__contains__</code></td><td><code>x in a</code></td></tr>
+            <tr><td><code>[]</code></td><td><code>__getitem__</code></td><td><code>a[0]</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Passo a passo: Sistema de Biblioteca</h2>
+
+        <p>
+          Vamos construir um sistema completo de biblioteca executável pelo terminal.
+          Ele terá: cadastro de livros, empréstimos, devoluções, multas e busca.
+        </p>
+
+        <h3>Passo 0 — Git</h3>
+
+        <ul>
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>Crie a branch: <strong>aula10-poo-biblioteca</strong></li>
+          <li>No VS Code, execute:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula10-poo-biblioteca
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar a pasta da aula</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir aula10_biblioteca
+cd aula10_biblioteca
+type nul > biblioteca.py
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar as classes do sistema</h3>
+
+        <p>Arquivo: <code>biblioteca.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from datetime import datetime, timedelta
+
+# ============================================================
+# CLASSE BASE E SUBCLASSES
+# ============================================================
+class ItemBiblioteca:
+    """Classe base para todos os itens do acervo"""
+    def __init__(self, titulo, autor, ano):
+        self.titulo = titulo
+        self.autor = autor
+        self.ano = ano
+        self._emprestado = False
+
+    @property
+    def emprestado(self):
+        return self._emprestado
+
+    def emprestar(self):
+        if self._emprestado:
+            return False
+        self._emprestado = True
+        return True
+
+    def devolver(self):
+        self._emprestado = False
+
+    def calcular_multa(self, dias_atraso):
+        raise NotImplementedError("Subclasses devem implementar")
+
+    def __str__(self):
+        status = "📕 Emprestado" if self._emprestado else "📗 Disponível"
+        return f"{status} | '{self.titulo}' por {self.autor} ({self.ano})"
+
+    def __eq__(self, outro):
+        if isinstance(outro, ItemBiblioteca):
+            return self.titulo == outro.titulo and self.autor == outro.autor
+        return False
+
+
+class Livro(ItemBiblioteca):
+    def __init__(self, titulo, autor, ano, paginas, isbn):
+        super().__init__(titulo, autor, ano)
+        self.paginas = paginas
+        self.isbn = isbn
+
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 2.00
+
+    def __str__(self):
+        base = super().__str__()
+        return f"{base} | {self.paginas} págs | ISBN: {self.isbn}"
+
+
+class Revista(ItemBiblioteca):
+    def __init__(self, titulo, autor, ano, edicao):
+        super().__init__(titulo, autor, ano)
+        self.edicao = edicao
+
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 1.00
+
+    def __str__(self):
+        base = super().__str__()
+        return f"{base} | Edição {self.edicao}"
+
+
+class DVD(ItemBiblioteca):
+    def __init__(self, titulo, autor, ano, duracao_min):
+        super().__init__(titulo, autor, ano)
+        self.duracao_min = duracao_min
+
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 5.00
+
+    def __str__(self):
+        base = super().__str__()
+        return f"{base} | {self.duracao_min} min"
+
+
+# ============================================================
+# USUÁRIO
+# ============================================================
+class Usuario:
+    def __init__(self, nome, email, matricula):
+        self.nome = nome
+        self._email = None
+        self.email = email
+        self.matricula = matricula
+        self.emprestimos = []   # lista de (ItemBiblioteca, data_emprestimo)
+
+    @property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, valor):
+        if '@' not in valor:
+            raise ValueError("Email inválido")
+        self._email = valor.lower()
+
+    @property
+    def itens_emprestados(self):
+        return len(self.emprestimos)
+
+    def __str__(self):
+        return f"👤 {self.nome} ({self.matricula}) — {self.itens_emprestados} itens"
+
+    def __eq__(self, outro):
+        if isinstance(outro, Usuario):
+            return self.matricula == outro.matricula
+        return False
+
+
+# ============================================================
+# BIBLIOTECA (GERENCIADOR PRINCIPAL)
+# ============================================================
+class Biblioteca:
+    def __init__(self, nome):
+        self.nome = nome
+        self._acervo = []       # lista de ItemBiblioteca
+        self._usuarios = []     # lista de Usuario
+        self._emprestimos = []  # lista de (usuario, item, data)
+
+    # --- Métodos de acervo ---
+    def adicionar_item(self, item):
+        self._acervo.append(item)
+        print(f"✅ Adicionado: {item.titulo}")
+
+    def buscar_por_titulo(self, termo):
+        resultados = [item for item in self._acervo
+                      if termo.lower() in item.titulo.lower()]
+        return resultados
+
+    def listar_disponiveis(self):
+        return [item for item in self._acervo if not item.emprestado]
+
+    def listar_todos(self):
+        return self._acervo
+
+    # --- Métodos de usuário ---
+    def cadastrar_usuario(self, usuario):
+        if usuario in self._usuarios:
+            print(f"❌ Usuário {usuario.matricula} já cadastrado.")
+            return False
+        self._usuarios.append(usuario)
+        print(f"✅ Usuário cadastrado: {usuario.nome}")
+        return True
+
+    def buscar_usuario(self, matricula):
+        for usuario in self._usuarios:
+            if usuario.matricula == matricula:
+                return usuario
+        return None
+
+    # --- Métodos de empréstimo ---
+    def emprestar(self, matricula, titulo):
+        usuario = self.buscar_usuario(matricula)
+        if not usuario:
+            print(f"❌ Usuário {matricula} não encontrado.")
+            return False
+
+        # Busca o item pelo título
+        for item in self._acervo:
+            if item.titulo.lower() == titulo.lower():
+                if item.emprestado:
+                    print(f"❌ '{item.titulo}' já está emprestado.")
+                    return False
+
+                if item.emprestar():
+                    usuario.emprestimos.append((item, datetime.now()))
+                    self._emprestimos.append((usuario, item, datetime.now()))
+                    print(f"✅ '{item.titulo}' emprestado para {usuario.nome}.")
+                    return True
+
+        print(f"❌ Item '{titulo}' não encontrado no acervo.")
+        return False
+
+    def devolver(self, matricula, titulo):
+        usuario = self.buscar_usuario(matricula)
+        if not usuario:
+            print(f"❌ Usuário {matricula} não encontrado.")
+            return False
+
+        for emp in usuario.emprestimos:
+            item, data_emprestimo = emp
+            if item.titulo.lower() == titulo.lower():
+                dias = (datetime.now() - data_emprestimo).days
+                if dias > 14:   # prazo de 14 dias
+                    multa = item.calcular_multa(dias - 14)
+                    print(f"⚠️  Atraso de {dias - 14} dias. Multa: R$ {multa:.2f}")
+                else:
+                    print(f"✅ Devolvido no prazo ({dias} dias).")
+
+                item.devolver()
+                usuario.emprestimos.remove(emp)
+                return True
+
+        print(f"❌ Usuário não possui '{titulo}' emprestado.")
+        return False
+
+    # --- Relatórios ---
+    def relatorio_acervo(self):
+        print(f"\n📋 Acervo da {self.nome}:")
+        print(f"   Total: {len(self._acervo)} itens")
+        disponiveis = len(self.listar_disponiveis())
+        print(f"   Disponíveis: {disponiveis}")
+        print(f"   Emprestados: {len(self._acervo) - disponiveis}")
+        print()
+        for item in self._acervo:
+            print(f"   {item}")
+
+    # --- Métodos mágicos ---
+    def __len__(self):
+        return len(self._acervo)
+
+    def __contains__(self, titulo):
+        return any(item.titulo.lower() == titulo.lower() for item in self._acervo)
+
+    def __str__(self):
+        return f"📚 {self.nome} — {len(self)} itens no acervo"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o menu interativo</h3>
+
+        <p>Adicione ao final do arquivo <code>biblioteca.py</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# ============================================================
+# DADOS DE EXEMPLO (pré-carregados)
+# ============================================================
+def popular_biblioteca(bib):
+    bib.adicionar_item(Livro("Dom Casmurro", "Machado de Assis", 1899, 256, "978-85-359-0277-8"))
+    bib.adicionar_item(Livro("1984", "George Orwell", 1949, 328, "978-85-359-0277-9"))
+    bib.adicionar_item(Livro("Python Fluente", "Luciano Ramalho", 2015, 800, "978-85-7522-600-2"))
+    bib.adicionar_item(Revista("Superinteressante", "Editora Abril", 2026, 450))
+    bib.adicionar_item(Revista("Veja", "Editora Abril", 2026, 2890))
+    bib.adicionar_item(DVD("Matrix", "Wachowski", 1999, 136))
+    bib.adicionar_item(DVD("Inception", "Christopher Nolan", 2010, 148))
+
+    bib.cadastrar_usuario(Usuario("Ana Silva", "ana@email.com", "2024001"))
+    bib.cadastrar_usuario(Usuario("Carlos Souza", "carlos@email.com", "2024002"))
+
+
+# ============================================================
+# MENU PRINCIPAL
+# ============================================================
+def menu():
+    bib = Biblioteca("Biblioteca Central")
+    popular_biblioteca(bib)
+
+    while True:
+        print("\n" + "=" * 55)
+        print(f"  {bib}")
+        print("=" * 55)
+        print("  1. Listar acervo completo")
+        print("  2. Listar itens disponíveis")
+        print("  3. Buscar por título")
+        print("  4. Emprestar item")
+        print("  5. Devolver item")
+        print("  6. Cadastrar usuário")
+        print("  7. Relatório do acervo")
+        print("  0. Sair")
+        print("=" * 55)
+
+        opcao = input("Escolha uma opção: ").strip()
+
+        if opcao == "1":
+            print("\n📋 Todos os itens:")
+            for item in bib.listar_todos():
+                print(f"   {item}")
+
+        elif opcao == "2":
+            print("\n📗 Itens disponíveis:")
+            disponiveis = bib.listar_disponiveis()
+            if disponiveis:
+                for item in disponiveis:
+                    print(f"   {item}")
+            else:
+                print("   Nenhum item disponível no momento.")
+
+        elif opcao == "3":
+            termo = input("Digite o título ou parte dele: ").strip()
+            resultados = bib.buscar_por_titulo(termo)
+            if resultados:
+                print(f"\n🔍 {len(resultados)} resultado(s):")
+                for item in resultados:
+                    print(f"   {item}")
+            else:
+                print(f"❌ Nenhum item encontrado para '{termo}'.")
+
+        elif opcao == "4":
+            matricula = input("Matrícula do usuário: ").strip()
+            titulo = input("Título do item: ").strip()
+            bib.emprestar(matricula, titulo)
+
+        elif opcao == "5":
+            matricula = input("Matrícula do usuário: ").strip()
+            titulo = input("Título do item: ").strip()
+            bib.devolver(matricula, titulo)
+
+        elif opcao == "6":
+            nome = input("Nome: ").strip()
+            email = input("Email: ").strip()
+            matricula = input("Matrícula: ").strip()
+            try:
+                bib.cadastrar_usuario(Usuario(nome, email, matricula))
+            except ValueError as e:
+                print(f"❌ Erro: {e}")
+
+        elif opcao == "7":
+            bib.relatorio_acervo()
+
+        elif opcao == "0":
+            print("👋 Até logo!")
+            break
+
+        else:
+            print("❌ Opção inválida!")
+
+
+if __name__ == "__main__":
+    menu()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Executar o sistema</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+python biblioteca.py
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Interaja com o menu testando: listar acervo, emprestar um livro, devolver com atraso, buscar por título.</p>
+
+        <h3>Passo 5 — Salvar no Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git status
+git add .
+git commit -m "aula10: POO em Python - Sistema de Biblioteca"
+git push origin aula10-poo-biblioteca
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo da aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>Sintaxe</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Definir classe</td>
+              <td><code>class Nome:</code></td>
+              <td><code>class Livro:</code></td>
+            </tr>
+            <tr>
+              <td>Construtor</td>
+              <td><code>def __init__(self, ...):</code></td>
+              <td><code>self.titulo = titulo</code></td>
+            </tr>
+            <tr>
+              <td>Encapsulamento</td>
+              <td><code>_protegido</code>, <code>__privado</code>, <code>@property</code></td>
+              <td>Getter/setter com validação</td>
+            </tr>
+            <tr>
+              <td>Duck Typing</td>
+              <td>Não verifica tipo, verifica comportamento</td>
+              <td><code>obj.metodo()</code> → se existe, funciona</td>
+            </tr>
+            <tr>
+              <td>Métodos mágicos</td>
+              <td><code>__str__</code>, <code>__len__</code>, <code>__eq__</code>, <code>__iter__</code></td>
+              <td><code>print(obj)</code>, <code>len(obj)</code>, <code>obj == outro</code></td>
+            </tr>
+            <tr>
+              <td>Herança simples</td>
+              <td><code>class Filho(Pai):</code></td>
+              <td><code>class Livro(ItemBiblioteca):</code></td>
+            </tr>
+            <tr>
+              <td>super()</td>
+              <td>Chama método da classe pai</td>
+              <td><code>super().__init__(...)</code></td>
+            </tr>
+            <tr>
+              <td>Herança múltipla</td>
+              <td><code>class C(A, B):</code></td>
+              <td>MRO define ordem de busca</td>
+            </tr>
+            <tr>
+              <td>Polimorfismo</td>
+              <td>Mesmo método, comportamentos diferentes</td>
+              <td><code>calcular_multa()</code> em cada subclasse</td>
+            </tr>
+            <tr>
+              <td>Sobrecarga de operadores</td>
+              <td><code>__add__</code>, <code>__gt__</code>, <code>__contains__</code></td>
+              <td><code>a + b</code>, <code>a > b</code>, <code>x in a</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Adicione a classe AudioBook</h3>
+            <p>
+              Crie uma nova classe <code>AudioBook</code> que herda de <code>ItemBiblioteca</code>,
+              com atributos <code>narrador</code> (str) e <code>duracao_horas</code> (float).
+              Implemente <code>calcular_multa</code> com valor de R$ 3,00 por dia de atraso.
+              Adicione ao acervo da biblioteca.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+class AudioBook(ItemBiblioteca):
+    def __init__(self, titulo, autor, ano, narrador, duracao_horas):
+        super().__init__(titulo, autor, ano)
+        self.narrador = narrador
+        self.duracao_horas = duracao_horas
+
+    def calcular_multa(self, dias_atraso):
+        return dias_atraso * 3.00
+
+    def __str__(self):
+        base = super().__str__()
+        return f"{base} | 🎧 Narrado por {self.narrador} | {self.duracao_horas}h"
+
+# Teste:
+bib.adicionar_item(AudioBook("O Hobbit", "J.R.R. Tolkien", 1937, "Mauro Ramos", 11.5))
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Adicione histórico de empréstimos no Usuario</h3>
+            <p>
+              Modifique a classe <code>Usuario</code> para manter um <strong>histórico completo</strong>
+              de empréstimos (incluindo os já devolvidos). Adicione o método <code>exibir_historico()</code>
+              que mostra todos os empréstimos do usuário, com data e status.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+class Usuario:
+    def __init__(self, nome, email, matricula):
+        self.nome = nome
+        self._email = None
+        self.email = email
+        self.matricula = matricula
+        self.emprestimos = []
+        self._historico = []   # (item, data_emprestimo, data_devolucao)
+
+    def registrar_historico(self, item, data_emp, data_dev=None):
+        self._historico.append({
+            'item': item,
+            'emprestimo': data_emp,
+            'devolucao': data_dev
+        })
+
+    def exibir_historico(self):
+        print(f"\n📜 Histórico de {self.nome}:")
+        if not self._historico:
+            print("   Nenhum empréstimo registrado.")
+            return
+
+        for registro in self._historico:
+            item = registro['item']
+            data_emp = registro['emprestimo'].strftime("%d/%m/%Y")
+            if registro['devolucao']:
+                data_dev = registro['devolucao'].strftime("%d/%m/%Y")
+                print(f"   📗 {item.titulo} — {data_emp} → {data_dev} (devolvido)")
+            else:
+                print(f"   📕 {item.titulo} — {data_emp} → em andamento")
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Implemente o método __add__ na Biblioteca</h3>
+            <p>
+              Sobrecarregue o operador <code>+</code> na classe <code>Biblioteca</code> para
+              que <code>biblioteca1 + biblioteca2</code> retorne uma nova biblioteca com o
+              acervo combinado das duas.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+class Biblioteca:
+    # ... código existente ...
+
+    def __add__(self, outra):
+        if not isinstance(outra, Biblioteca):
+            return NotImplemented
+
+        nova = Biblioteca(f"{self.nome} + {outra.nome}")
+        nova._acervo = self._acervo + outra._acervo
+        nova._usuarios = list(set(self._usuarios + outra._usuarios))
+        return nova
+
+# Teste:
+bib1 = Biblioteca("Sala A")
+bib1.adicionar_item(Livro("A", "X", 2000, 100, "111"))
+bib2 = Biblioteca("Sala B")
+bib2.adicionar_item(Livro("B", "Y", 2000, 200, "222"))
+bib3 = bib1 + bib2
+print(bib3)  # 📚 Sala A + Sala B — 2 itens no acervo
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

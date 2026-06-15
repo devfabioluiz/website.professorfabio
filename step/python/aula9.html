@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9: Django REST Framework Avançado - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Django REST Framework Avançado: ViewSets, Routers, Paginação e Documentação</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Criação de APIs (ViewSets e Routers), Serializers, Endpoints, Conceitos de REST API.
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section>
+        <h2>Objetivo da aula</h2>
+        <p>
+          Na Aula 4, criamos uma API com Django REST Framework usando <code>@api_view</code>
+          manual. Nesta aula, vamos subir de nível: usar <strong>ViewSets</strong> e <strong>Routers</strong>
+          para criar APIs completas com muito menos código, adicionar paginação, filtros de busca,
+          permissões de acesso e documentação automática com Swagger.
+        </p>
+        <p>
+          <strong>Projeto novo:</strong> Vamos construir uma <strong>API de Gerenciamento de Tarefas (Todo API)</strong>
+          do zero — sem HTML, 100% REST.
+        </p>
+
+        <h3>Conteúdos da aula</h3>
+        <ul>
+          <li>ViewSets — <code>ModelViewSet</code> substituindo funções manuais</li>
+          <li>Routers — <code>DefaultRouter</code> gerando URLs automaticamente</li>
+          <li>Paginação — <code>PageNumberPagination</code>, <code>LimitOffsetPagination</code></li>
+          <li>Permissões — <code>IsAuthenticated</code>, <code>IsAdminUser</code>, permissões customizadas</li>
+          <li>Filtros e busca — <code>SearchFilter</code>, <code>OrderingFilter</code>, <code>DjangoFilterBackend</code></li>
+          <li>Documentação automática — Swagger UI com <code>drf-spectacular</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>1. Por que ViewSets e Routers?</h2>
+
+        <p>
+          Na Aula 4, para criar um CRUD de usuários precisamos escrever cada endpoint manualmente:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# Aula 4 — forma manual (verbosa)
+@api_view(['GET'])
+def listar_usuarios(request):
+    usuarios = Usuario.objects.all()
+    serializer = UsuarioSerializer(usuarios, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def criar_usuario(request):
+    ...
+
+@api_view(['PUT'])
+def atualizar_usuario(request, id):
+    ...
+
+@api_view(['DELETE'])
+def deletar_usuario(request, id):
+    ...
+
+# E no urls.py:
+urlpatterns = [
+    path('api/usuarios/', listar_usuarios),
+    path('api/usuarios/criar/', criar_usuario),
+    path('api/usuarios/<int:id>/', atualizar_usuario),
+    path('api/usuarios/<int:id>/deletar/', deletar_usuario),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Com ViewSets + Routers, o mesmo CRUD se resume a:</strong>
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# ViewSet — define a lógica
+class UsuarioViewSet(viewsets.ModelViewSet):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+
+# Router — gera automaticamente:
+# GET    /usuarios/         → list
+# POST   /usuarios/         → create
+# GET    /usuarios/{id}/    → retrieve
+# PUT    /usuarios/{id}/    → update
+# PATCH  /usuarios/{id}/    → partial_update
+# DELETE /usuarios/{id}/    → destroy
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Economia:</strong> de ~40 linhas para ~6 linhas. E ainda ganha
+          endpoints padronizados seguindo convenções REST.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. ModelViewSet — O canivete suíço do DRF</h2>
+
+        <p>
+          <code>ModelViewSet</code> combina todos os mixins de CRUD em uma única classe.
+          Ele herda de:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Classe Base</th>
+              <th>Método HTTP</th>
+              <th>Ação</th>
+              <th>Endpoint</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ListModelMixin</code></td>
+              <td>GET</td>
+              <td><code>list()</code></td>
+              <td><code>/tarefas/</code></td>
+            </tr>
+            <tr>
+              <td><code>CreateModelMixin</code></td>
+              <td>POST</td>
+              <td><code>create()</code></td>
+              <td><code>/tarefas/</code></td>
+            </tr>
+            <tr>
+              <td><code>RetrieveModelMixin</code></td>
+              <td>GET</td>
+              <td><code>retrieve()</code></td>
+              <td><code>/tarefas/{id}/</code></td>
+            </tr>
+            <tr>
+              <td><code>UpdateModelMixin</code></td>
+              <td>PUT/PATCH</td>
+              <td><code>update()</code></td>
+              <td><code>/tarefas/{id}/</code></td>
+            </tr>
+            <tr>
+              <td><code>DestroyModelMixin</code></td>
+              <td>DELETE</td>
+              <td><code>destroy()</code></td>
+              <td><code>/tarefas/{id}/</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          Você pode sobrescrever qualquer método para adicionar lógica customizada.
+          Também pode criar <strong>ações extras</strong> com <code>@action</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    queryset = Tarefa.objects.all()
+    serializer_class = TarefaSerializer
+
+    # Ação extra: POST /tarefas/{id}/concluir/
+    @action(detail=True, methods=['post'])
+    def concluir(self, request, pk=None):
+        tarefa = self.get_object()
+        tarefa.concluida = True
+        tarefa.save()
+        return Response({'status': 'tarefa concluída'})
+
+    # Ação extra: GET /tarefas/concluidas/
+    @action(detail=False, methods=['get'])
+    def concluidas(self, request):
+        concluidas = self.queryset.filter(concluida=True)
+        serializer = self.get_serializer(concluidas, many=True)
+        return Response(serializer.data)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <code>detail=True</code> = ação sobre um item específico (recebe <code>pk</code>).
+          <code>detail=False</code> = ação sobre a coleção.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Paginação</h2>
+
+        <p>
+          Quando sua API tem centenas ou milhares de registros, você não quer retornar
+          tudo de uma vez. A paginação divide os resultados em páginas.
+        </p>
+
+        <h3>3.1 — PageNumberPagination (mais comum)</h3>
+        <p>Divide por páginas numeradas. O cliente pede <code>?page=2</code>.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # 10 itens por página
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Resposta da API (com paginação):</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">
+{
+    "count": 85,
+    "next": "http://localhost:8000/api/tarefas/?page=3",
+    "previous": "http://localhost:8000/api/tarefas/?page=1",
+    "results": [
+        { "id": 11, "titulo": "Tarefa 11", ... },
+        { "id": 12, "titulo": "Tarefa 12", ... }
+    ]
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3.2 — LimitOffsetPagination</h3>
+        <p>O cliente controla quantos itens quer e a partir de qual posição: <code>?limit=20&offset=40</code>.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# settings.py (alternativa)
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25,
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3.3 — Paginação customizada por ViewSet</h3>
+        <p>Se você quer tamanhos diferentes por endpoint:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.pagination import PageNumberPagination
+
+class TarefaPaginacao(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'tamanho'    # cliente pode mudar: ?tamanho=20
+    max_page_size = 100                   # limite máximo
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    queryset = Tarefa.objects.all()
+    serializer_class = TarefaSerializer
+    pagination_class = TarefaPaginacao
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Permissões no DRF</h2>
+
+        <p>
+          O DRF tem um sistema de permissões que controla quem pode acessar cada endpoint.
+          Diferente do <code>@login_required</code> do Django tradicional (que redireciona
+          para página de login), as permissões do DRF retornam <strong>401 Unauthorized</strong>
+          ou <strong>403 Forbidden</strong> — apropriado para APIs.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Permissão</th>
+              <th>Comportamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>AllowAny</code></td>
+              <td>Qualquer um pode acessar (inclusive não autenticados)</td>
+            </tr>
+            <tr>
+              <td><code>IsAuthenticated</code></td>
+              <td>Apenas usuários logados (retorna 401 se não autenticado)</td>
+            </tr>
+            <tr>
+              <td><code>IsAdminUser</code></td>
+              <td>Apenas superusuários (is_staff=True)</td>
+            </tr>
+            <tr>
+              <td><code>IsAuthenticatedOrReadOnly</code></td>
+              <td>Leitura pública, escrita só para autenticados</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Configurando permissões globais vs por ViewSet</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# settings.py — padrão global (opcional)
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# Por ViewSet — sobrescreve o global
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    queryset = Tarefa.objects.all()
+    serializer_class = TarefaSerializer
+    permission_classes = [IsAuthenticated]  # só logados
+
+class TarefaPublicaViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tarefa.objects.filter(publica=True)
+    serializer_class = TarefaSerializer
+    permission_classes = [AllowAny]  # qualquer um pode ver
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Permissão customizada: dono do recurso</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.permissions import BasePermission
+
+class EhDono(BasePermission):
+    """Permite acesso apenas ao dono da tarefa"""
+    def has_object_permission(self, request, view, obj):
+        return obj.usuario == request.user
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, EhDono]
+
+    def perform_create(self, serializer):
+        # Associa a tarefa ao usuário logado automaticamente
+        serializer.save(usuario=self.request.user)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Filtros e Busca</h2>
+
+        <p>
+          O DRF integra com <code>django-filter</code> para filtros avançados e
+          oferece backends nativos de busca e ordenação.
+        </p>
+
+        <h3>5.1 — SearchFilter (busca textual)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.filters import SearchFilter
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    queryset = Tarefa.objects.all()
+    serializer_class = TarefaSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['titulo', 'descricao']
+
+# Uso: GET /tarefas/?search=comprar
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5.2 — OrderingFilter (ordenação)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['titulo']
+    ordering_fields = ['data_criacao', 'prioridade', 'titulo']
+    ordering = ['-data_criacao']  # ordenação padrão
+
+# Uso: GET /tarefas/?ordering=prioridade,-data_criacao
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5.3 — DjangoFilterBackend (filtros por campo exato)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install django-filter
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <br>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# settings.py
+INSTALLED_APPS = [
+    ...
+    'django_filters',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+}
+
+# views.py
+from django_filters.rest_framework import DjangoFilterBackend
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['concluida', 'prioridade', 'usuario']
+    search_fields = ['titulo', 'descricao']
+    ordering_fields = ['data_criacao', 'prioridade']
+
+# Uso: GET /tarefas/?concluida=false&prioridade=alta&search=comprar
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Documentação Automática com Swagger</h2>
+
+        <p>
+          Com <code>drf-spectacular</code>, sua API ganha documentação interativa
+          no estilo Swagger UI automaticamente — sem escrever uma linha de doc extra.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install drf-spectacular
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <br>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# settings.py
+INSTALLED_APPS = [
+    ...
+    'drf_spectacular',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API de Tarefas',
+    'DESCRIPTION': 'API REST para gerenciamento de tarefas com Django REST Framework',
+    'VERSION': '1.0.0',
+}
+
+# urls.py (do projeto)
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns = [
+    ...
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Pronto! Acesse <code>http://localhost:8000/api/docs/</code> e você verá
+          uma interface Swagger completa, onde pode testar todos os endpoints da API.
+        </p>
+      </section>
+
+      <section>
+        <h2>Passo a passo: Construindo a API de Tarefas</h2>
+
+        <h3>Passo 0 — Git</h3>
+
+        <p>
+          Este é um <strong>projeto novo</strong>. Vamos criar uma branch limpa a partir da main:
+        </p>
+
+        <ul>
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>No seletor de branch, selecione <strong>main</strong></li>
+          <li>Crie a branch: <strong>aula9-drf-avancado</strong></li>
+          <li>No VS Code, execute:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula9-drf-avancado
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto Django</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+py -3.11 -m venv venv
+venv\Scripts\activate
+pip install django djangorestframework django-filter drf-spectacular
+django-admin startproject todo_api
+cd todo_api
+python manage.py startapp tarefas
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Configurar settings.py</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+# todo_api/settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
+    'drf_spectacular',
+    'tarefas',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API de Tarefas',
+    'DESCRIPTION': 'API REST para gerenciamento de tarefas',
+    'VERSION': '1.0.0',
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o Model</h3>
+
+        <p>Arquivo: <code>tarefas/models.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.db import models
+from django.contrib.auth.models import User
+
+class Tarefa(models.Model):
+    PRIORIDADE_CHOICES = [
+        ('baixa', 'Baixa'),
+        ('media', 'Média'),
+        ('alta', 'Alta'),
+    ]
+
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField(blank=True, null=True)
+    concluida = models.BooleanField(default=False)
+    prioridade = models.CharField(max_length=10, choices=PRIORIDADE_CHOICES, default='media')
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_conclusao = models.DateTimeField(null=True, blank=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tarefas')
+
+    class Meta:
+        ordering = ['-data_criacao']
+
+    def __str__(self):
+        return self.titulo
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar Serializer</h3>
+
+        <p>Arquivo: <code>tarefas/serializers.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework import serializers
+from .models import Tarefa
+
+class TarefaSerializer(serializers.ModelSerializer):
+    usuario_nome = serializers.ReadOnlyField(source='usuario.username')
+
+    class Meta:
+        model = Tarefa
+        fields = [
+            'id', 'titulo', 'descricao', 'concluida', 'prioridade',
+            'data_criacao', 'data_conclusao', 'usuario', 'usuario_nome'
+        ]
+        read_only_fields = ['usuario', 'data_criacao', 'data_conclusao']
+
+    def validate_titulo(self, value):
+        if len(value) < 3:
+            raise serializers.ValidationError("O título deve ter pelo menos 3 caracteres.")
+        return value
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Criar Permissão Customizada</h3>
+
+        <p>Arquivo: <code>tarefas/permissions.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework.permissions import BasePermission
+
+class EhDono(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.usuario == request.user
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar o ViewSet</h3>
+
+        <p>Arquivo: <code>tarefas/views.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
+
+from .models import Tarefa
+from .serializers import TarefaSerializer
+from .permissions import EhDono
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    queryset = Tarefa.objects.all()
+    serializer_class = TarefaSerializer
+    permission_classes = [IsAuthenticated, EhDono]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['concluida', 'prioridade']
+    search_fields = ['titulo', 'descricao']
+    ordering_fields = ['data_criacao', 'prioridade', 'titulo']
+    ordering = ['-data_criacao']
+
+    def get_queryset(self):
+        # Cada usuário só vê as próprias tarefas
+        return Tarefa.objects.filter(usuario=self.request.user)
+
+    def perform_create(self, serializer):
+        # Associa a tarefa ao usuário logado automaticamente
+        serializer.save(usuario=self.request.user)
+
+    # Ação extra: POST /tarefas/{id}/concluir/
+    @action(detail=True, methods=['post'])
+    def concluir(self, request, pk=None):
+        tarefa = self.get_object()
+        if tarefa.concluida:
+            return Response(
+                {'erro': 'Esta tarefa já está concluída.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        tarefa.concluida = True
+        tarefa.data_conclusao = timezone.now()
+        tarefa.save()
+        return Response({'status': 'tarefa concluída com sucesso'})
+
+    # Ação extra: POST /tarefas/{id}/reabrir/
+    @action(detail=True, methods=['post'])
+    def reabrir(self, request, pk=None):
+        tarefa = self.get_object()
+        if not tarefa.concluida:
+            return Response(
+                {'erro': 'Esta tarefa não está concluída.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        tarefa.concluida = False
+        tarefa.data_conclusao = None
+        tarefa.save()
+        return Response({'status': 'tarefa reaberta com sucesso'})
+
+    # Ação extra: GET /tarefas/estatisticas/
+    @action(detail=False, methods=['get'])
+    def estatisticas(self, request):
+        tarefas = self.get_queryset()
+        total = tarefas.count()
+        concluidas = tarefas.filter(concluida=True).count()
+        pendentes = total - concluidas
+
+        return Response({
+            'total': total,
+            'concluidas': concluidas,
+            'pendentes': pendentes,
+            'porcentagem_concluida': round((concluidas / total * 100) if total > 0 else 0, 1),
+        })
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Configurar URLs com Router</h3>
+
+        <p>Arquivo: <code>tarefas/urls.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import TarefaViewSet
+
+router = DefaultRouter()
+router.register(r'tarefas', TarefaViewSet, basename='tarefa')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Arquivo: <code>todo_api/urls.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from django.contrib import admin
+from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('tarefas.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Migrar e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Testar os endpoints</h3>
+
+        <p><strong>Endpoints gerados automaticamente pelo Router:</strong></p>
+
+        <table>
+          <thead>
+            <tr><th>Método</th><th>URL</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>GET</td><td><code>/api/tarefas/</code></td><td>Listar tarefas do usuário</td></tr>
+            <tr><td>POST</td><td><code>/api/tarefas/</code></td><td>Criar nova tarefa</td></tr>
+            <tr><td>GET</td><td><code>/api/tarefas/{id}/</code></td><td>Detalhes da tarefa</td></tr>
+            <tr><td>PUT</td><td><code>/api/tarefas/{id}/</code></td><td>Atualizar tarefa</td></tr>
+            <tr><td>PATCH</td><td><code>/api/tarefas/{id}/</code></td><td>Atualizar parcialmente</td></tr>
+            <tr><td>DELETE</td><td><code>/api/tarefas/{id}/</code></td><td>Excluir tarefa</td></tr>
+            <tr><td>POST</td><td><code>/api/tarefas/{id}/concluir/</code></td><td>Concluir tarefa</td></tr>
+            <tr><td>POST</td><td><code>/api/tarefas/{id}/reabrir/</code></td><td>Reabrir tarefa</td></tr>
+            <tr><td>GET</td><td><code>/api/tarefas/estatisticas/</code></td><td>Estatísticas do usuário</td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>Teste com cURL (após criar superusuário):</strong></p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Listar tarefas (com autenticação básica)
+curl -u admin:senha123 http://localhost:8000/api/tarefas/
+
+# Criar tarefa
+curl -u admin:senha123 -X POST http://localhost:8000/api/tarefas/ ^
+  -H "Content-Type: application/json" ^
+  -d "{\"titulo\": \"Estudar Django\", \"prioridade\": \"alta\"}"
+
+# Concluir tarefa
+curl -u admin:senha123 -X POST http://localhost:8000/api/tarefas/1/concluir/
+
+# Filtrar tarefas não concluídas de alta prioridade
+curl -u admin:senha123 "http://localhost:8000/api/tarefas/?concluida=false&prioridade=alta"
+
+# Buscar por título
+curl -u admin:senha123 "http://localhost:8000/api/tarefas/?search=Django"
+
+# Ordenar por prioridade
+curl -u admin:senha123 "http://localhost:8000/api/tarefas/?ordering=prioridade"
+
+# Documentação Swagger
+start http://localhost:8000/api/docs/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Salvar no Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula9: DRF avancado - ViewSets, Routers, paginacao, filtros e Swagger"
+git push origin aula9-drf-avancado
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo da aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>Classe/Método</th>
+              <th>Para que serve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ViewSet</td>
+              <td><code>ModelViewSet</code></td>
+              <td>CRUD completo com 6 linhas de código</td>
+            </tr>
+            <tr>
+              <td>Router</td>
+              <td><code>DefaultRouter</code></td>
+              <td>Gera todas as URLs automaticamente</td>
+            </tr>
+            <tr>
+              <td>Ações extras</td>
+              <td><code>@action(detail=True/False)</code></td>
+              <td>Endpoints customizados além do CRUD</td>
+            </tr>
+            <tr>
+              <td>Paginação</td>
+              <td><code>PageNumberPagination</code></td>
+              <td>Divide resultados em páginas</td>
+            </tr>
+            <tr>
+              <td>Permissões</td>
+              <td><code>IsAuthenticated</code>, <code>BasePermission</code></td>
+              <td>Controle de acesso a endpoints</td>
+            </tr>
+            <tr>
+              <td>Busca</td>
+              <td><code>SearchFilter</code></td>
+              <td>Pesquisa textual: <code>?search=termo</code></td>
+            </tr>
+            <tr>
+              <td>Ordenação</td>
+              <td><code>OrderingFilter</code></td>
+              <td>Ordena resultados: <code>?ordering=-data</code></td>
+            </tr>
+            <tr>
+              <td>Filtros</td>
+              <td><code>DjangoFilterBackend</code></td>
+              <td>Filtros por campo: <code>?concluida=false</code></td>
+            </tr>
+            <tr>
+              <td>Documentação</td>
+              <td><code>drf-spectacular</code></td>
+              <td>Swagger UI automático em <code>/api/docs/</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Adicione um endpoint de filtro por data</h3>
+            <p>
+              Crie uma ação extra no ViewSet que retorna as tarefas criadas nos últimos N dias.
+              Exemplo: <code>GET /api/tarefas/recentes/?dias=7</code>.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+from django.utils import timezone
+from datetime import timedelta
+
+class TarefaViewSet(viewsets.ModelViewSet):
+    # ... código existente ...
+
+    @action(detail=False, methods=['get'])
+    def recentes(self, request):
+        dias = int(request.query_params.get('dias', 7))
+        data_limite = timezone.now() - timedelta(days=dias)
+        tarefas = self.get_queryset().filter(data_criacao__gte=data_limite)
+        page = self.paginate_queryset(tarefas)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(tarefas, many=True)
+        return Response(serializer.data)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie o modelo Categoria e relacione com Tarefa</h3>
+            <p>
+              Crie um model <code>Categoria</code> (com nome e cor) e adicione uma
+              ForeignKey no model <code>Tarefa</code>. Atualize o serializer, o ViewSet
+              e adicione filtro por categoria. Registre a Categoria no Router.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# models.py (adicione)
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100, unique=True)
+    cor = models.CharField(max_length=7, default='#007bff')  # ex: #ff5733
+
+    def __str__(self):
+        return self.nome
+
+# Em Tarefa, adicione:
+categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='tarefas')
+
+# serializers.py (adicione)
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = '__all__'
+
+# views.py (adicione)
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ['nome']
+
+# urls.py (adicione ao router)
+router.register(r'categorias', CategoriaViewSet, basename='categoria')
+
+# Para filtrar tarefas por categoria, adicione em TarefaViewSet:
+filterset_fields = ['concluida', 'prioridade', 'categoria']
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Implemente autenticação JWT na API</h3>
+            <p>
+              Substitua a autenticação básica por JWT usando <code>djangorestframework-simplejwt</code>.
+              Adicione os endpoints <code>/api/token/</code> (login) e <code>/api/token/refresh/</code>.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+pip install djangorestframework-simplejwt
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <br>
+              <div class="code-container">
+                <pre><code class="language-python">
+# settings.py
+REST_FRAMEWORK = {
+    # ... outras configs ...
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+# urls.py (do projeto)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+urlpatterns = [
+    # ... outras URLs ...
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
+
+# Teste:
+# POST /api/token/ com {"username": "admin", "password": "senha123"}
+# Use o access token no header: Authorization: Bearer <token>
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

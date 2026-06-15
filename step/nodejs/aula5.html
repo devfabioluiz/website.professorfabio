@@ -526,6 +526,47 @@ module.exports = app;
         <button class="btn-copy">Copiar Código</button>
       </div>
 
+      <h3>Passo 5.5 — Verificar o Product Controller</h3>
+
+      <p>
+        Antes de proteger as rotas, verifique se o
+        <strong>src/controllers/produtoController.js</strong> está com os nomes
+        corretos das funções. A rota espera <strong>criarProduto</strong> (singular)
+        e <strong>listarProdutos</strong> (plural):
+      </p>
+
+      <div class="code-container">
+        <pre><code class="language-javascript">const Produto = require("../models/Produto");
+
+// GET /produtos
+const listarProdutos = async (req, res) => {
+  const produtos = await Produto.find();
+
+  res.json(produtos);
+};
+
+// POST /produtos
+const criarProduto = async (req, res) => {
+  const produto = await Produto.create(req.body);
+
+  res.status(201).json(produto);
+};
+
+module.exports = {
+  listarProdutos,
+  criarProduto,
+};
+</code></pre>
+
+        <button class="btn-copy">Copiar Código</button>
+      </div>
+
+      <p>
+        <strong>⚠️ Atenção:</strong> a função é <code>criarProduto</code> (singular)
+        e não <code>criarProdutos</code>. Se estiver diferente, corrija ou o Express
+        lançará erro <code>argument handler must be a function</code>.
+      </p>
+
       <p>
         Agora proteja as rotas de produtos. Dentro de
         <strong>src/routes/produtoRoutes.js</strong>:

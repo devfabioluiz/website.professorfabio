@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 11: Agentes de IA com CrewAI - Analista de Vaga Automático - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+
+    
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 11</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Agentes de IA com CrewAI: Analista de Vaga Automático</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos abordados nessa aula:</strong>
+        Agentes de IA, CrewAI (Agents, Tasks, Crew), Groq API, Web Scraping, Prompt Engineering, Multi-Agent Systems.
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section>
+        <h2>Objetivo da aula</h2>
+        <p>
+          Nesta aula, vamos entrar no mundo dos <strong>agentes de IA</strong>: sistemas que
+          não apenas respondem perguntas, mas <strong>tomam decisões, usam ferramentas e
+          colaboram entre si</strong> para completar tarefas complexas.
+        </p>
+        <p>
+          <strong>Projeto:</strong> Vamos construir um <strong>Analista de Vaga Automático</strong>.
+          Você cola a URL de uma vaga real, fornece seu currículo, e uma equipe de 3 agentes
+          (Scraper → Analyst → Strategist) entrega: relatório de match, cover letter personalizada
+          e plano de estudos.
+        </p>
+
+        <h3>Conteúdos da aula</h3>
+        <ul>
+          <li>O que são agentes de IA e como diferem de chatbots</li>
+          <li>Multi-agente: quando dividir o trabalho entre especialistas</li>
+          <li>CrewAI: <code>Agent</code> (role, goal, backstory), <code>Task</code>, <code>Crew</code></li>
+          <li>Processo <code>sequential</code> — cada agente recebe o output do anterior</li>
+          <li>Groq como LLM gratuito — <code>llama3-70b</code>, sem GPU</li>
+          <li>Ferramentas: <code>ScrapeWebsiteTool</code>, <code>FileReadTool</code></li>
+          <li>Prompt Engineering por agente — backstory molda tom e precisão</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>1. Agentes de IA vs Chatbots</h2>
+
+        <p>
+          Um <strong>chatbot</strong> (como o ChatGPT) segue o padrão: pergunta → resposta.
+          Um <strong>agente</strong> vai além:
+        </p>
+
+        <table>
+          <thead>
+            <tr><th>Chatbot</th><th>Agente de IA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Recebe pergunta, devolve resposta</td><td>Recebe objetivo, decide próximos passos</td></tr>
+            <tr><td>Não usa ferramentas externas</td><td>Usa ferramentas (scraping, arquivos, APIs)</td></tr>
+            <tr><td>Atua sozinho</td><td>Pode atuar em equipe (multi-agente)</td></tr>
+            <tr><td>Sem memória entre interações</td><td>Mantém contexto e delega entre agentes</td></tr>
+            <tr><td>Exemplo: "O que é Python?"</td><td>Exemplo: "Analise esta vaga, compare com meu CV e gere uma carta"</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Por que multi-agente?</h3>
+        <p>
+          Tarefas complexas se beneficiam de especialização. Em vez de um agente tentar fazer tudo,
+          você tem:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-text">
+Tarefa: "Analisar vaga de Desenvolvedor Python no LinkedIn"
+
+     ┌─────────────────┐
+     │   Job Scraper    │  → Especialista em extrair informações de páginas web
+     │   Agent          │
+     └────────┬────────┘
+              │ output: requisitos, stack, senioridade
+              ▼
+     ┌─────────────────┐
+     │   CV Analyst     │  → Especialista em comparar skills e mapear gaps
+     │   Agent          │
+     └────────┬────────┘
+              │ output: matriz de match, gaps identificados
+              ▼
+     ┌─────────────────┐
+     │ Career Strategist│  → Especialista em carreira: carta + plano de estudo
+     │   Agent          │
+     └────────┬────────┘
+              │ output: cover_letter.md + study_plan.md
+              ▼
+         Arquivos prontos para usar!
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. CrewAI — O Framework</h2>
+
+        <p>
+          <strong>CrewAI</strong> é um framework Python para orquestrar agentes de IA colaborativos.
+          Os 3 pilares são:
+        </p>
+
+        <h3>Agent</h3>
+        <p>Define <strong>quem</strong> é o agente: seu papel, objetivo, personalidade e ferramentas.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai import Agent
+
+job_scraper = Agent(
+    role="Tech Recruiter",
+    goal="Extrair todos os requisitos e detalhes da vaga a partir da URL fornecida",
+    backstory=(
+        "Você é um recrutador tech sênior com 15 anos de experiência. "
+        "Sua especialidade é ler descrições de vagas e extrair informações "
+        "estruturadas: stack tecnológica, nível de senioridade, requisitos "
+        "obrigatórios e diferenciais, benefícios e faixa salarial. "
+        "Você é meticuloso e nunca perde um detalhe importante."
+    ),
+    tools=[ScrapeWebsiteTool()],
+    llm=llm,
+    verbose=True,
+)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Task</h3>
+        <p>Define <strong>o que</strong> fazer: descrição, saída esperada, qual agente executa.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai import Task
+
+scrape_task = Task(
+    description=(
+        "Acesse a URL da vaga {url_vaga} e extraia todas as informações relevantes. "
+        "Organize em: título da vaga, empresa, stack tecnológica, requisitos obrigatórios, "
+        "requisitos diferenciais, nível de senioridade, benefícios e faixa salarial (se disponível)."
+    ),
+    expected_output=(
+        "Um relatório estruturado em markdown com todas as informações da vaga, "
+        "organizado por seções claras."
+    ),
+    agent=job_scraper,
+)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Crew</h3>
+        <p>Orquestra os agentes e tarefas, definindo o fluxo de execução.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai import Crew
+
+crew = Crew(
+    agents=[job_scraper, cv_analyst, career_strategist],
+    tasks=[scrape_task, analyze_task, strategize_task],
+    process=Process.sequential,   # um após o outro
+    verbose=True,
+)
+
+resultado = crew.kickoff()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Groq — LLM Gratuito e Rápido</h2>
+
+        <p>
+          O <strong>Groq</strong> oferece acesso gratuito a modelos de linguagem de alta qualidade
+          via API, com latência muito baixa. Ideal para projetos que não exigem GPU local.
+        </p>
+
+        <table>
+          <thead>
+            <tr><th>Característica</th><th>Groq</th><th>Ollama (local)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>GPU necessária</td><td>Não (roda na nuvem)</td><td>Sim (roda na sua máquina)</td></tr>
+            <tr><td>Custo</td><td>Grátis (limite generoso)</td><td>Grátis</td></tr>
+            <tr><td>Modelos disponíveis</td><td>llama3-70b, mixtral, gemma</td><td>Depende do download</td></tr>
+            <tr><td>Velocidade</td><td>Muito rápida (hardware dedicado)</td><td>Depende da sua GPU</td></tr>
+            <tr><td>Internet</td><td>Necessária</td><td>Não necessária</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Configurando o Groq</h3>
+
+        <p>
+          1. Acesse <a href="https://console.groq.com" target="_blank">console.groq.com</a>
+        </p>
+        <p>2. Crie uma conta gratuita (pode usar login Google/GitHub)</p>
+        <p>3. Vá em <strong>API Keys</strong> e crie uma chave</p>
+        <p>4. Guarde a chave — ela só aparece uma vez</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install langchain-groq python-dotenv
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <br>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import os
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+
+load_dotenv()
+
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="llama3-70b-8192",   # ou "mixtral-8x7b-32768"
+    temperature=0.3,            # 0.3 = mais preciso, menos criativo
+)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Ferramentas (Tools)</h2>
+
+        <p>
+          Ferramentas são funções que os agentes podem chamar para interagir com o mundo real.
+          O CrewAI já vem com várias prontas.
+        </p>
+
+        <h3>ScrapeWebsiteTool</h3>
+        <p>Raspa o conteúdo de qualquer página web. O agente vai usar isso para ler a vaga.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai_tools import ScrapeWebsiteTool
+
+scrape_tool = ScrapeWebsiteTool()
+# O agente pode chamar: scrape_tool.run(url="https://...")
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FileReadTool</h3>
+        <p>Lê arquivos do sistema. O agente vai usar para ler o currículo do aluno.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai_tools import FileReadTool
+
+leitor_cv = FileReadTool(file_path="meu_cv.txt")
+# O agente pode chamar: leitor_cv.run()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Passo a passo: Construindo o Analista de Vaga</h2>
+
+        <h3>Passo 0 — Git</h3>
+
+        <ul>
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>Crie a branch: <strong>aula11-crewai-analista-vagas</strong></li>
+          <li>No VS Code, execute:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula11-crewai-analista-vagas
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar a pasta e ambiente virtual</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+mkdir aula11_analista_vagas
+cd aula11_analista_vagas
+py -3.11 -m venv venv
+venv\Scripts\activate
+pip install crewai crewai-tools langchain-groq python-dotenv
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo .env</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+type nul > .env
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Abra o arquivo <code>.env</code> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-text">
+GROQ_API_KEY=sua_chave_aqui
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o currículo de exemplo</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+type nul > meu_cv.txt
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Preencha com seu currículo real:</p>
+
+        <div class="code-container">
+          <pre><code class="language-text">
+NOME: Fabio Luiz
+EMAIL: fabio@email.com
+LINKEDIN: linkedin.com/in/fabioluiz
+GITHUB: github.com/devfabioluiz
+
+RESUMO PROFISSIONAL:
+Desenvolvedor Backend com 3 anos de experiência em Python, Django e FastAPI.
+Experiência com bancos de dados SQL e NoSQL, APIs REST e microsserviços.
+
+HABILIDADES TÉCNICAS:
+- Python (Django, FastAPI, Flask)
+- Bancos de Dados: PostgreSQL, MongoDB, SQLite
+- REST APIs, GraphQL
+- Docker, Git, CI/CD
+- HTML, CSS, JavaScript básico
+- Testes automatizados (pytest)
+
+FORMAÇÃO:
+- Análise e Desenvolvimento de Sistemas — UNIP (2023)
+
+CERTIFICAÇÕES:
+- PCAP — Certified Associate in Python Programming (2024)
+- Cisco NetAcad — Python Essentials 2
+
+IDIOMAS:
+- Português (nativo)
+- Inglês (intermediário — leitura técnica fluente)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar os agentes (agents.py)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+type nul > agents.py
+type nul > tasks.py
+type nul > main.py
+mkdir output
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Arquivo: <code>agents.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import os
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+from crewai import Agent
+from crewai_tools import ScrapeWebsiteTool, FileReadTool
+
+load_dotenv()
+
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="llama3-70b-8192",
+    temperature=0.3,
+)
+
+# ============================================================
+# FERRAMENTAS
+# ============================================================
+scrape_tool = ScrapeWebsiteTool()
+leitor_cv = FileReadTool(file_path="meu_cv.txt")
+
+# ============================================================
+# AGENTES
+# ============================================================
+job_scraper = Agent(
+    role="Tech Recruiter Sênior",
+    goal="Extrair e estruturar todas as informações relevantes da vaga a partir da URL fornecida",
+    backstory=(
+        "Você é um recrutador tech com 15 anos de experiência em grandes empresas "
+        "de tecnologia. Sua especialidade é analisar descrições de vagas e extrair "
+        "informações de forma estruturada. Você identifica padrões em requisitos, "
+        "diferencia must-have de nice-to-have, e entende profundamente stacks "
+        "tecnológicas modernas. Você é detalhista e nunca deixa passar um requisito "
+        "importante, por mais sutil que esteja na descrição."
+    ),
+    tools=[scrape_tool],
+    llm=llm,
+    verbose=True,
+)
+
+cv_analyst = Agent(
+    role="Analista de Currículos e Match de Skills",
+    goal="Comparar o currículo do candidato com os requisitos da vaga e gerar uma matriz de compatibilidade",
+    backstory=(
+        "Você é um analista de RH especializado em matching de currículos com vagas. "
+        "Com 10 anos de experiência, você é capaz de identificar rapidamente gaps de "
+        "habilidades, pontos fortes e fracos de um candidato em relação a uma vaga. "
+        "Você é justo e transparente: aponta tanto alinhamentos quanto lacunas. "
+        "Seu relatório é sempre estruturado em: skills que o candidato TEM, skills "
+        "que o candidato TEM PARCIALMENTE, e skills que o candidato NÃO TEM."
+    ),
+    tools=[leitor_cv],
+    llm=llm,
+    verbose=True,
+)
+
+career_strategist = Agent(
+    role="Coach de Carreira e Estrategista de Desenvolvimento Profissional",
+    goal="Criar uma cover letter personalizada e um plano de estudos de 30 dias baseado nos gaps identificados",
+    backstory=(
+        "Você é um coach de carreira renomado, com centenas de profissionais "
+        "recolocados em empresas como Google, Nubank, iFood e outras. Sua especialidade "
+        "é criar cartas de apresentação que destacam os pontos fortes do candidato "
+        "enquanto abordam gaps de forma estratégica. Você também é excelente em criar "
+        "roadmaps de aprendizado realistas, priorizando o que traz mais retorno rápido. "
+        "Seu tom é motivador mas realista, profissional mas pessoal."
+    ),
+    llm=llm,
+    verbose=True,
+)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Criar as tarefas (tasks.py)</h3>
+
+        <p>Arquivo: <code>tasks.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from crewai import Task
+from agents import job_scraper, cv_analyst, career_strategist
+
+# ============================================================
+# TAREFAS
+# ============================================================
+scrape_task = Task(
+    description=(
+        "1. Acesse a URL da vaga: {url_vaga}\n"
+        "2. Extraia TODO o conteúdo relevante da descrição da vaga.\n"
+        "3. Organize as informações no seguinte formato estruturado:\n"
+        "   - Título da vaga e nome da empresa\n"
+        "   - Stack tecnológica (linguagens, frameworks, ferramentas)\n"
+        "   - Requisitos obrigatórios (must-have)\n"
+        "   - Requisitos diferenciais (nice-to-have)\n"
+        "   - Nível de senioridade exigido\n"
+        "   - Tipo de contrato (CLT, PJ, remoto, híbrido, presencial)\n"
+        "   - Benefícios oferecidos\n"
+        "   - Faixa salarial (se disponível)\n"
+        "4. Se a página não for uma vaga válida ou não puder ser acessada, "
+        "informe claramente o problema."
+    ),
+    expected_output=(
+        "Um relatório detalhado em markdown com todas as informações da vaga, "
+        "organizado por seções conforme o formato solicitado."
+    ),
+    agent=job_scraper,
+)
+
+analyze_task = Task(
+    description=(
+        "1. Leia o arquivo 'meu_cv.txt' para conhecer o perfil do candidato.\n"
+        "2. Com base na análise da vaga (output da tarefa anterior), compare "
+        "sistematicamente cada requisito com o currículo do candidato.\n"
+        "3. Classifique cada skill em uma das três categorias:\n"
+        "   ✅ TEM — o candidato possui essa skill comprovadamente\n"
+        "   ⚠️ TEM PARCIALMENTE — possui conhecimento básico ou relacionado\n"
+        "   ❌ NÃO TEM — não há evidência dessa skill no currículo\n"
+        "4. Calcule uma porcentagem de match geral.\n"
+        "5. Destaque os 3 principais pontos fortes do candidato para esta vaga.\n"
+        "6. Destaque os 3 principais gaps que precisam ser endereçados."
+    ),
+    expected_output=(
+        "Um relatório de match em markdown contendo:\n"
+        "1. Tabela de compatibilidade skill por skill\n"
+        "2. Porcentagem de match geral\n"
+        "3. Top 3 pontos fortes\n"
+        "4. Top 3 gaps críticos"
+    ),
+    agent=cv_analyst,
+    context=[scrape_task],   # recebe o output da tarefa anterior
+)
+
+strategize_task = Task(
+    description=(
+        "Com base nos outputs anteriores, produza DOIS documentos separados:\n\n"
+        "DOCUMENTO 1 — COVER LETTER:\n"
+        "- Carta de apresentação personalizada para esta vaga específica\n"
+        "- Tom profissional mas autêntico\n"
+        "- Destaque 3 experiências/habilidades do candidato alinhadas com a vaga\n"
+        "- Mencione 1 gap de forma estratégica (como motivação para aprender)\n"
+        "- Inclua parágrafo de abertura, 2-3 parágrafos de corpo e fechamento\n\n"
+        "DOCUMENTO 2 — PLANO DE ESTUDOS DE 30 DIAS:\n"
+        "- Foco nos gaps críticos identificados\n"
+        "- Dividido em 4 semanas com metas realistas\n"
+        "- Cada semana com tópicos específicos, recursos sugeridos e mini-projeto\n"
+        "- Priorize o que tem maior impacto para esta vaga\n\n"
+        "Separe os dois documentos claramente com títulos em markdown."
+    ),
+    expected_output=(
+        "Dois documentos em markdown:\n"
+        "1. Cover letter completa e pronta para enviar\n"
+        "2. Plano de estudos de 30 dias estruturado por semanas"
+    ),
+    agent=career_strategist,
+    context=[scrape_task, analyze_task],
+)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar o orchestrator (main.py)</h3>
+
+        <p>Arquivo: <code>main.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import os
+from datetime import datetime
+from crewai import Crew, Process
+from agents import job_scraper, cv_analyst, career_strategist
+from tasks import scrape_task, analyze_task, strategize_task
+
+# ============================================================
+# CONFIGURAÇÃO
+# ============================================================
+# Cole aqui a URL da vaga que quer analisar
+URL_VAGA = input("Cole a URL da vaga: ").strip()
+
+if not URL_VAGA:
+    print("❌ Nenhuma URL fornecida. Usando URL de exemplo...")
+    URL_VAGA = "https://exemplo.com/vaga-python"  # substitua por uma real
+
+# ============================================================
+# MONTAR A CREW
+# ============================================================
+crew = Crew(
+    agents=[job_scraper, cv_analyst, career_strategist],
+    tasks=[scrape_task, analyze_task, strategize_task],
+    process=Process.sequential,
+    verbose=True,
+)
+
+# ============================================================
+# EXECUTAR
+# ============================================================
+print("\n" + "=" * 60)
+print("  🚀 INICIANDO ANÁLISE DA VAGA")
+print("=" * 60)
+print(f"  URL: {URL_VAGA}")
+print(f"  Modelo: llama3-70b (Groq)")
+print("=" * 60 + "\n")
+
+resultado = crew.kickoff(inputs={"url_vaga": URL_VAGA})
+
+# ============================================================
+# SALVAR RESULTADOS
+# ============================================================
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Salvar resultado completo
+os.makedirs("output", exist_ok=True)
+with open(f"output/resultado_completo_{timestamp}.md", "w", encoding="utf-8") as f:
+    f.write(f"# Análise de Vaga — {timestamp}\n\n")
+    f.write(f"**URL:** {URL_VAGA}\n\n")
+    f.write("---\n\n")
+    f.write(str(resultado))
+
+print("\n" + "=" * 60)
+print("  ✅ ANÁLISE CONCLUÍDA!")
+print(f"  Relatório salvo em: output/resultado_completo_{timestamp}.md")
+print("=" * 60)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Executar o projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+python main.py
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Quando solicitado, cole a URL de uma vaga real. Exemplos de sites que funcionam bem:</p>
+        <ul>
+          <li>LinkedIn (vagas públicas)</li>
+          <li>Programathor</li>
+          <li>Vagas.com</li>
+          <li>Gupy (páginas públicas de vaga)</li>
+          <li>Indeed</li>
+        </ul>
+
+        <p>
+          O processo leva de <strong>30 segundos a 2 minutos</strong> dependendo da complexidade
+          da vaga. Você verá o log de cada agente trabalhando em sequência.
+        </p>
+
+        <h3>Passo 8 — Salvar no Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git status
+git add .
+git commit -m "aula11: agentes de IA com CrewAI - Analista de Vaga Automatico"
+git push origin aula11-crewai-analista-vagas
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo da aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>Classe/Função</th>
+              <th>Para que serve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Agente</td>
+              <td><code>Agent(role, goal, backstory, tools, llm)</code></td>
+              <td>Define quem é o agente, seu papel e personalidade</td>
+            </tr>
+            <tr>
+              <td>Tarefa</td>
+              <td><code>Task(description, expected_output, agent, context)</code></td>
+              <td>Define o que fazer e qual a saída esperada</td>
+            </tr>
+            <tr>
+              <td>Crew</td>
+              <td><code>Crew(agents, tasks, process)</code></td>
+              <td>Orquestra agentes e tarefas</td>
+            </tr>
+            <tr>
+              <td>Processo sequencial</td>
+              <td><code>Process.sequential</code></td>
+              <td>Cada agente recebe o output do anterior</td>
+            </tr>
+            <tr>
+              <td>LLM Groq</td>
+              <td><code>ChatGroq(model="llama3-70b-8192")</code></td>
+              <td>Modelo de linguagem gratuito via API</td>
+            </tr>
+            <tr>
+              <td>Web Scraping</td>
+              <td><code>ScrapeWebsiteTool()</code></td>
+              <td>Agente lê páginas web automaticamente</td>
+            </tr>
+            <tr>
+              <td>Leitura de arquivos</td>
+              <td><code>FileReadTool(file_path="...")</code></td>
+              <td>Agente lê arquivos locais (CV, etc.)</td>
+            </tr>
+            <tr>
+              <td>Prompt Engineering</td>
+              <td>Backstory + description + expected_output</td>
+              <td>Quanto mais específico, melhor o resultado</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Execute com uma vaga real do seu interesse</h3>
+            <p>
+              Encontre uma vaga real no LinkedIn, Programathor ou similar que corresponda
+              à sua área de interesse. Execute o analista com essa vaga e seu currículo real.
+              Leia os 3 arquivos gerados e avalie se a cover letter está convincente.
+            </p>
+
+            <button class="btn-gabarito">Ver dicas</button>
+            <div class="gabarito">
+              <b>Dicas:</b>
+              <ul>
+                <li>Prefira vagas com descrições detalhadas (mais de 5 requisitos listados)</li>
+                <li>Quanto mais completo seu currículo no <code>meu_cv.txt</code>, melhor o match</li>
+                <li>Se o scraping falhar, teste com outra URL (alguns sites bloqueiam bots)</li>
+                <li>Ajuste o <code>temperature</code> no <code>ChatGroq</code> se quiser respostas mais criativas (0.7) ou mais precisas (0.1)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Adicione um quarto agente: Interview Coach</h3>
+            <p>
+              Crie um novo agente chamado <code>interview_coach</code> com a tarefa de gerar
+              5 perguntas prováveis de entrevista técnica baseadas na vaga, junto com sugestões
+              de resposta. Conecte ele no fluxo sequential após o <code>career_strategist</code>.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# agents.py — adicione
+interview_coach = Agent(
+    role="Entrevistador Técnico Sênior",
+    goal="Gerar perguntas de entrevista técnica personalizadas baseadas na vaga",
+    backstory=(
+        "Você é um engenheiro de software sênior que já conduziu mais de 500 "
+        "entrevistas técnicas em big techs. Você sabe exatamente quais perguntas "
+        "testam o conhecimento real do candidato para cada tecnologia listada na vaga. "
+        "Para cada pergunta, você também fornece uma sugestão de como estruturar "
+        "a resposta ideal."
+    ),
+    llm=llm,
+    verbose=True,
+)
+
+# tasks.py — adicione
+interview_task = Task(
+    description=(
+        "Com base na vaga e no perfil do candidato:\n"
+        "1. Gere 5 perguntas de entrevista técnica específicas para esta vaga\n"
+        "2. Para cada pergunta, explique o que o entrevistador quer avaliar\n"
+        "3. Dê uma sugestão de estrutura de resposta (sem dar a resposta pronta)\n"
+        "4. Foque nas tecnologias onde o candidato tem gap — são as mais prováveis de cair"
+    ),
+    expected_output="5 perguntas de entrevista com explicação e estrutura de resposta sugerida",
+    agent=interview_coach,
+    context=[scrape_task, analyze_task],
+)
+
+# main.py — atualize a crew
+crew = Crew(
+    agents=[job_scraper, cv_analyst, career_strategist, interview_coach],
+    tasks=[scrape_task, analyze_task, strategize_task, interview_task],
+    process=Process.sequential,
+    verbose=True,
+)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Experimente outro modelo Groq</h3>
+            <p>
+              Altere o modelo de <code>llama3-70b-8192</code> para <code>mixtral-8x7b-32768</code>
+              ou <code>gemma2-9b-it</code> e compare a qualidade dos resultados. Qual foi melhor
+              para esta tarefa específica?
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+# agents.py — altere o modelo
+llm = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model="mixtral-8x7b-32768",   # teste este
+    # model="gemma2-9b-it",       # ou este
+    temperature=0.3,
+)
+
+# Modelos disponíveis (podem mudar):
+# - llama3-70b-8192       (melhor para tarefas complexas)
+# - mixtral-8x7b-32768    (bom equilíbrio)
+# - gemma2-9b-it          (mais leve e rápido)
+# - llama3-8b-8192        (mais rápido, menos preciso)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

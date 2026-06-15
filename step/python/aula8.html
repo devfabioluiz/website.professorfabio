@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8: Templates Django Avançados - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+    
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Templates Django Avançados: Herança de Layout, Tags, Filtros e Arquivos Estáticos</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Templates (Tags e filtros, Arquivos estáticos, Template inheritance), Criação de templates, Passagem de dados.
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section>
+        <h2>Objetivo da aula</h2>
+        <p>
+          Nesta aula, vamos transformar os templates do nosso CMS de produtos (Aula 7)
+          em uma aplicação com visual profissional. Você aprenderá a reutilizar código HTML com
+          herança de templates, criar filtros personalizados, usar tags avançadas do Django e
+          organizar arquivos estáticos (CSS, JS, imagens).
+        </p>
+
+        <h3>Conteúdos da aula</h3>
+        <ul>
+          <li>Template inheritance — layouts reutilizáveis</li>
+          <li>Tags de template — <code>{% extends %}</code>, <code>{% block %}</code>, <code>{% include %}</code>, <code>{% url %}</code></li>
+          <li>Filtros nativos do Django — <code>|date</code>, <code>|default</code>, <code>|length</code>, <code>|truncatechars</code></li>
+          <li>Filtros personalizados — criando seus próprios</li>
+          <li>Arquivos estáticos — CSS, JavaScript e imagens com <code>{% static %}</code></li>
+          <li>Organizando partials com <code>{% include %}</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>1. Template Inheritance (Herança de Templates)</h2>
+
+        <p>
+          Um dos recursos mais poderosos do Django Templates é a herança. Em vez de
+          repetir HTML (navbar, footer, estrutura da página) em cada arquivo, você cria
+          um <strong>template base</strong> e os outros templates <strong>estendem</strong> ele,
+          substituindo apenas os blocos que precisam mudar.
+        </p>
+
+        <h3>Como funciona</h3>
+        <p>
+          Imagine que toda página do seu CMS tem: cabeçalho, menu lateral, área de conteúdo
+          e rodapé. Sem herança, você repetiria esse HTML em cada arquivo. Com herança:
+        </p>
+
+        <ul>
+          <li><strong>Base:</strong> define a estrutura comum (HTML, head, nav, footer)</li>
+          <li><strong>Blocos:</strong> marca as áreas que podem ser substituídas</li>
+          <li><strong>Filhos:</strong> estendem a base e preenchem apenas os blocos necessários</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- base.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;{% block titulo %}CMS Produtos{% endblock %}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="/"&gt;Home&lt;/a&gt;
+        &lt;a href="/produtos/"&gt;Produtos&lt;/a&gt;
+    &lt;/nav&gt;
+
+    &lt;main&gt;
+        {% block conteudo %}
+        &lt;!-- O conteúdo de cada página vai aqui --&gt;
+        {% endblock %}
+    &lt;/main&gt;
+
+    &lt;footer&gt;
+        &lt;p&gt;CMS Produtos &amp;copy; 2026&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora, um template filho que lista produtos:</p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- lista_produtos.html --&gt;
+{% extends 'base.html' %}
+
+{% block titulo %}Lista de Produtos{% endblock %}
+
+{% block conteudo %}
+    &lt;h1&gt;Produtos Cadastrados&lt;/h1&gt;
+    &lt;table&gt;
+        {% for produto in produtos %}
+            &lt;tr&gt;
+                &lt;td&gt;{{ produto.nome }}&lt;/td&gt;
+                &lt;td&gt;R$ {{ produto.preco }}&lt;/td&gt;
+            &lt;/tr&gt;
+        {% empty %}
+            &lt;tr&gt;&lt;td&gt;Nenhum produto cadastrado.&lt;/td&gt;&lt;/tr&gt;
+        {% endfor %}
+    &lt;/table&gt;
+{% endblock %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O Django renderiza o filho <strong>dentro</strong> da estrutura da base.
+          O resultado final é uma página completa com nav, conteúdo da lista e footer,
+          sem repetir código.
+        </p>
+
+        <h3>Regras importantes</h3>
+        <ul>
+          <li><code>{% extends 'base.html' %}</code> precisa ser a <strong>primeira linha</strong> do template filho</li>
+          <li>Você pode ter <strong>vários blocos</strong> na base (titulo, conteudo, scripts, etc.)</li>
+          <li>Blocos podem ter conteúdo padrão (o que aparece se o filho não sobrescrever)</li>
+          <li>Use <code>{{ block.super }}</code> para incluir o conteúdo do bloco pai e adicionar mais</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Tags de Template Essenciais</h2>
+
+        <h3>2.1 — {% extends %} e {% block %}</h3>
+        <p>Já vimos acima. A combinação que possibilita herança de templates.</p>
+
+        <h3>2.2 — {% include %} (Partials)</h3>
+        <p>
+          O <code>{% include %}</code> insere o conteúdo de outro template dentro do atual.
+          É ideal para componentes reutilizáveis como cards de produto, mensagens de alerta,
+          ou qualquer pedaço de HTML que aparece em várias páginas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- _card_produto.html (partial) --&gt;
+&lt;div class="card"&gt;
+    &lt;h3&gt;{{ produto.nome }}&lt;/h3&gt;
+    &lt;p&gt;R$ {{ produto.preco }}&lt;/p&gt;
+    &lt;span&gt;Estoque: {{ produto.estoque }}&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- pagina.html (usando o partial) --&gt;
+{% for produto in produtos %}
+    {% include '_card_produto.html' %}
+{% endfor %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Por convenção, partials costumam começar com <code>_</code> (underline) no nome do arquivo.
+        </p>
+
+        <h3>2.3 — {% url %} (URLs nomeadas)</h3>
+        <p>
+          Em vez de escrever URLs fixas no HTML, use <code>{% url 'nome_da_rota' %}</code>.
+          Se a URL mudar no <code>urls.py</code>, os templates se ajustam automaticamente.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- ERRADO (quebra se a URL mudar) --&gt;
+&lt;a href="/produtos/cadastrar/"&gt;Novo Produto&lt;/a&gt;
+
+&lt;!-- CERTO --&gt;
+&lt;a href="{% url 'produto_cadastrar' %}"&gt;Novo Produto&lt;/a&gt;
+
+&lt;!-- Com parâmetro --&gt;
+&lt;a href="{% url 'produto_editar' produto.id %}"&gt;Editar&lt;/a&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2.4 — {% csrf_token %}</h3>
+        <p>
+          Obrigatório em <strong>todo formulário que usa POST</strong>. O Django
+          rejeita requisições POST sem esse token como proteção contra ataques CSRF.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;form method="POST"&gt;
+    {% csrf_token %}
+    &lt;input type="text" name="nome"&gt;
+    &lt;button type="submit"&gt;Salvar&lt;/button&gt;
+&lt;/form&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2.5 — {% if %} / {% elif %} / {% else %}</h3>
+        <p>Controle de fluxo dentro do template.</p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+{% if user.is_authenticated %}
+    &lt;p&gt;Bem-vindo, {{ user.username }}!&lt;/p&gt;
+{% else %}
+    &lt;p&gt;Faça login para continuar.&lt;/p&gt;
+{% endif %}
+
+{% if produto.estoque == 0 %}
+    &lt;span class="sem-estoque"&gt;Indisponível&lt;/span&gt;
+{% elif produto.estoque &lt; 5 %}
+    &lt;span class="estoque-baixo"&gt;Últimas unidades&lt;/span&gt;
+{% else %}
+    &lt;span class="em-estoque"&gt;Disponível&lt;/span&gt;
+{% endif %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Filtros Nativos do Django</h2>
+
+        <p>
+          Filtros transformam o valor de uma variável na hora de exibir. Eles são aplicados
+          com o caractere pipe <code>|</code>.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Filtro</th>
+              <th>Descrição</th>
+              <th>Exemplo</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>|date:"d/m/Y"</code></td>
+              <td>Formata datas</td>
+              <td><code>{{ produto.data|date:"d/m/Y" }}</code></td>
+              <td>14/06/2026</td>
+            </tr>
+            <tr>
+              <td><code>|default:"-"</code></td>
+              <td>Valor padrão se variável for vazia</td>
+              <td><code>{{ produto.descricao|default:"Sem descrição" }}</code></td>
+              <td>Sem descrição</td>
+            </tr>
+            <tr>
+              <td><code>|length</code></td>
+              <td>Número de itens (lista/string)</td>
+              <td><code>{{ produtos|length }}</code></td>
+              <td>12</td>
+            </tr>
+            <tr>
+              <td><code>|truncatechars:30</code></td>
+              <td>Corta texto e adiciona "..."</td>
+              <td><code>{{ texto|truncatechars:30 }}</code></td>
+              <td>"Descrição longa do prod..."</td>
+            </tr>
+            <tr>
+              <td><code>|linebreaks</code></td>
+              <td>Converte quebras de linha em <br></td>
+              <td><code>{{ descricao|linebreaks }}</code></td>
+              <td>Texto com &lt;br&gt;</td>
+            </tr>
+            <tr>
+              <td><code>|lower</code></td>
+              <td>Converte para minúsculas</td>
+              <td><code>{{ "PRODUTO"|lower }}</code></td>
+              <td>produto</td>
+            </tr>
+            <tr>
+              <td><code>|upper</code></td>
+              <td>Converte para maiúsculas</td>
+              <td><code>{{ "produto"|upper }}</code></td>
+              <td>PRODUTO</td>
+            </tr>
+            <tr>
+              <td><code>|title</code></td>
+              <td>Primeira letra maiúscula</td>
+              <td><code>{{ "notebook gamer"|title }}</code></td>
+              <td>Notebook Gamer</td>
+            </tr>
+            <tr>
+              <td><code>|floatformat:2</code></td>
+              <td>Formata número decimal</td>
+              <td><code>{{ produto.preco|floatformat:2 }}</code></td>
+              <td>199.90</td>
+            </tr>
+            <tr>
+              <td><code>|pluralize</code></td>
+              <td>Adiciona "s" no plural</td>
+              <td><code>{{ qtd }} produto{{ qtd|pluralize }}</code></td>
+              <td>5 produtos</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo prático com combinação de filtros</h3>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;p&gt;
+    &lt;strong&gt;{{ produto.nome|title }}&lt;/strong&gt; —
+    R$ {{ produto.preco|floatformat:2 }}
+    &lt;br&gt;
+    Cadastrado em {{ produto.data_criacao|date:"d/m/Y" }}
+    &lt;br&gt;
+    {{ produto.descricao|default:"Produto sem descrição"|truncatechars:100 }}
+&lt;/p&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Filtros Personalizados</h2>
+
+        <p>
+          Além dos filtros nativos, você pode criar os seus próprios para lógicas específicas
+          do seu projeto. Vamos criar dois filtros úteis para o CMS:
+        </p>
+
+        <ul>
+          <li><strong>format_moeda:</strong> formata um número como moeda brasileira (R$ 1.999,90)</li>
+          <li><strong>label_status:</strong> retorna um badge colorido baseado no estoque</li>
+        </ul>
+
+        <h3>Passo 1 — Criar a estrutura de template tags</h3>
+
+        <p>
+          Dentro do app <code>produtos</code>, crie a seguinte estrutura:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd produtos
+mkdir templatetags
+type nul > templatetags/__init__.py
+type nul > templatetags/filtros_produto.py
+cd ..
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>O arquivo <code>__init__.py</code> (vazio) transforma a pasta em um pacote Python.</p>
+
+        <h3>Passo 2 — Escrever os filtros</h3>
+
+        <p>Arquivo: <code>produtos/templatetags/filtros_produto.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+from django import template
+
+register = template.Library()
+
+@register.filter(name='format_moeda')
+def format_moeda(valor):
+    """Formata um número como moeda brasileira: 1999.9 → R$ 1.999,90"""
+    try:
+        valor = float(valor)
+        inteiro = int(valor)
+        centavos = int(round((valor - inteiro) * 100))
+
+        # Formata parte inteira com separador de milhar
+        parte_inteira = f"{inteiro:,}".replace(",", ".")
+
+        if centavos == 0:
+            return f"R$ {parte_inteira},00"
+        elif centavos < 10:
+            return f"R$ {parte_inteira},0{centavos}"
+        else:
+            return f"R$ {parte_inteira},{centavos}"
+    except (ValueError, TypeError):
+        return "R$ 0,00"
+
+
+@register.filter(name='label_status')
+def label_status(estoque):
+    """Retorna um badge HTML baseado na quantidade em estoque"""
+    try:
+        estoque = int(estoque)
+    except (ValueError, TypeError):
+        estoque = 0
+
+    if estoque == 0:
+        return '&lt;span class="badge badge-danger"&gt;Indisponível&lt;/span&gt;'
+    elif estoque <= 5:
+        return f'&lt;span class="badge badge-warning"&gt;Apenas {estoque} un.&lt;/span&gt;'
+    else:
+        return f'&lt;span class="badge badge-success"&gt;{estoque} un.&lt;/span&gt;'
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Usar os filtros no template</h3>
+
+        <p>Primeiro, carregue os filtros no topo do template com <code>{% load %}</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+{% extends 'base.html' %}
+{% load filtros_produto %}
+
+{% block conteudo %}
+    &lt;h1&gt;Produtos&lt;/h1&gt;
+
+    {% for produto in produtos %}
+        &lt;div class="produto"&gt;
+            &lt;h3&gt;{{ produto.nome }}&lt;/h3&gt;
+            &lt;p&gt;{{ produto.preco|format_moeda }}&lt;/p&gt;
+            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
+        &lt;/div&gt;
+    {% endfor %}
+{% endblock %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Atenção:</strong> O filtro <code>label_status</code> retorna HTML.
+          Use <code>|safe</code> depois dele para que o Django renderize o HTML
+          em vez de escapar as tags.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Arquivos Estáticos (CSS, JS, Imagens)</h2>
+
+        <p>
+          Até agora usamos Bootstrap via CDN. Para um projeto real, você vai querer
+          seus próprios arquivos CSS e JavaScript. O Django gerencia isso com o sistema
+          de <strong>arquivos estáticos</strong>.
+        </p>
+
+        <h3>Passo 1 — Criar a pasta static</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd produtos
+mkdir static
+mkdir static\css
+mkdir static\js
+mkdir static\img
+type nul > static\css\estilo.css
+type nul > static\js\scripts.js
+cd ..\..
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Usar {% static %} nos templates</h3>
+
+        <p>No topo do template base, carregue a tag <code>static</code> e use-a para referenciar arquivos:</p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+{% load static %}
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;{% block titulo %}CMS Produtos{% endblock %}&lt;/title&gt;
+
+    &lt;!-- Bootstrap CDN --&gt;
+    &lt;link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+
+    &lt;!-- Seu CSS personalizado --&gt;
+    &lt;link rel="stylesheet" href="{% static 'css/estilo.css' %}"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+        &lt;div class="container"&gt;
+            &lt;a class="navbar-brand" href="{% url 'home' %}"&gt;📦 CMS Produtos&lt;/a&gt;
+            &lt;div class="navbar-nav"&gt;
+                &lt;a class="nav-link" href="{% url 'produto_lista' %}"&gt;Produtos&lt;/a&gt;
+                &lt;a class="nav-link" href="{% url 'produto_cadastrar' %}"&gt;Novo&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class="navbar-nav ms-auto"&gt;
+                {% if user.is_authenticated %}
+                    &lt;span class="nav-link"&gt;{{ user.username }}&lt;/span&gt;
+                    &lt;a class="nav-link" href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
+                {% else %}
+                    &lt;a class="nav-link" href="{% url 'login' %}"&gt;Entrar&lt;/a&gt;
+                {% endif %}
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+
+    &lt;main class="container mt-4"&gt;
+        {% block conteudo %}{% endblock %}
+    &lt;/main&gt;
+
+    &lt;footer class="bg-dark text-white text-center py-3 mt-5"&gt;
+        &lt;p&gt;CMS Produtos &amp;copy; 2026 — Todos os direitos reservados&lt;/p&gt;
+    &lt;/footer&gt;
+
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    &lt;script src="{% static 'js/scripts.js' %}"&gt;&lt;/script&gt;
+{% block scripts %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Configurar STATIC_URL (já vem por padrão)</h3>
+
+        <p>
+          No <code>settings.py</code>, verifique se estas linhas existem (por padrão já vêm):
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',       # pasta static global (opcional)
+]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Passo a passo: Refatorando os templates do CMS</h2>
+
+        <h3>Passo 0 — Versionamento com Git</h3>
+        <p>
+          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi feito.
+        </p>
+        <ul>
+          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>No seletor de branch, clique em <strong>main</strong></li>
+          <li>Digite o nome da nova branch: <strong>aula8-templates-avancados</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>No VS Code, abra o terminal e execute:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <ul>
+          <li>No canto inferior esquerdo do VS Code, clique na branch atual</li>
+          <li>Selecione <strong>aula8-templates-avancados</strong></li>
+        </ul>
+
+        <h3>Passo 1 — Criar o template base</h3>
+        <p>
+          Dentro de <code>produtos/templates/produtos/</code>, crie o arquivo
+          <strong><code>base.html</code></strong> com o conteúdo da seção 5 acima
+          (navbar Bootstrap + container + footer).
+        </p>
+
+        <h3>Passo 2 — Refatorar os templates existentes</h3>
+        <p>
+          Abra cada template do CMS (<code>lista.html</code>, <code>cadastro.html</code>,
+          <code>editar.html</code>, etc.) e faça:
+        </p>
+        <ol>
+          <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
+          <li>Adicione <code>{% extends 'produtos/base.html' %}</code> na primeira linha</li>
+          <li>Coloque o conteúdo específico da página dentro de <code>{% block conteudo %}</code></li>
+        </ol>
+
+        <h3>Passo 3 — Criar partials reutilizáveis</h3>
+        <p>
+          Crie os arquivos de partial (sugestão: prefixar com <code>_</code>):
+        </p>
+        <ul>
+          <li><code>_mensagens.html</code> — exibe mensagens de sucesso/erro do Django</li>
+          <li><code>_card_produto.html</code> — card de produto reutilizável</li>
+          <li><code>_paginacao.html</code> — navegação de páginas</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- _mensagens.html --&gt;
+{% if messages %}
+    {% for message in messages %}
+        &lt;div class="alert alert-{{ message.tags }} alert-dismissible fade show"&gt;
+            {{ message }}
+            &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+        &lt;/div&gt;
+    {% endfor %}
+{% endif %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <br>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- _card_produto.html --&gt;
+{% load filtros_produto %}
+&lt;div class="col-md-4 mb-4"&gt;
+    &lt;div class="card h-100"&gt;
+        {% if produto.imagem %}
+            &lt;img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}"&gt;
+        {% endif %}
+        &lt;div class="card-body"&gt;
+            &lt;h5 class="card-title"&gt;{{ produto.nome|title }}&lt;/h5&gt;
+            &lt;p class="card-text"&gt;{{ produto.descricao|default:"Sem descrição"|truncatechars:80 }}&lt;/p&gt;
+            &lt;p class="card-text"&gt;
+                &lt;strong&gt;{{ produto.preco|format_moeda }}&lt;/strong&gt;
+            &lt;/p&gt;
+            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+            &lt;a href="{% url 'produto_editar' produto.id %}" class="btn btn-sm btn-warning"&gt;Editar&lt;/a&gt;
+            &lt;a href="{% url 'produto_deletar' produto.id %}" class="btn btn-sm btn-danger"&gt;Excluir&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar os filtros customizados</h3>
+        <p>
+          Siga os passos da seção 4 (criar <code>templatetags/</code>, <code>__init__.py</code>,
+          <code>filtros_produto.py</code>).
+        </p>
+
+        <h3>Passo 5 — Criar arquivos estáticos</h3>
+        <p>
+          Crie o arquivo <code>estilo.css</code> com algumas customizações visuais
+          e <code>scripts.js</code> com interações (ex: confirmação ao deletar).
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* static/css/estilo.css */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.badge-success { background-color: #28a745; color: #fff; padding: 4px 10px; border-radius: 12px; }
+.badge-warning { background-color: #ffc107; color: #333; padding: 4px 10px; border-radius: 12px; }
+.badge-danger  { background-color: #dc3545; color: #fff; padding: 4px 10px; border-radius: 12px; }
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <br>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// static/js/scripts.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmação antes de excluir produto
+    const botoesExcluir = document.querySelectorAll('.btn-danger');
+    botoesExcluir.forEach(function(botao) {
+        botao.addEventListener('click', function(event) {
+            if (!confirm('Tem certeza que deseja excluir este produto?')) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Testar tudo</h3>
+        <ul>
+          <li>Ative o ambiente virtual: <code>venv\Scripts\activate</code></li>
+          <li>Entre na pasta do projeto: <code>cd projeto_django_mvt</code></li>
+          <li>Execute: <code>python manage.py runserver</code></li>
+          <li>Acesse <code>http://localhost:8000/produtos/</code></li>
+          <li>Verifique se o layout base aparece em todas as páginas</li>
+          <li>Teste os filtros customizados nos cards de produto</li>
+          <li>Teste o CSS hover nos cards</li>
+          <li>Teste a confirmação de exclusão</li>
+        </ul>
+
+        <h3>Passo 7 — Salvar no Git</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+git status
+git add .
+git commit -m "aula8: templates avancados, heranca, filtros customizados e estaticos"
+git push origin aula8-templates-avancados
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resumo da aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>Tag/Filtro</th>
+              <th>Para que serve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Herança de templates</td>
+              <td><code>{% extends %}</code>, <code>{% block %}</code></td>
+              <td>Reutilizar layout base sem repetir HTML</td>
+            </tr>
+            <tr>
+              <td>Partials reutilizáveis</td>
+              <td><code>{% include %}</code></td>
+              <td>Componentes como cards, mensagens, paginação</td>
+            </tr>
+            <tr>
+              <td>URLs dinâmicas</td>
+              <td><code>{% url %}</code></td>
+              <td>Links que se ajustam automaticamente</td>
+            </tr>
+            <tr>
+              <td>Proteção de formulários</td>
+              <td><code>{% csrf_token %}</code></td>
+              <td>Segurança contra ataques CSRF</td>
+            </tr>
+            <tr>
+              <td>Controle de fluxo</td>
+              <td><code>{% if %}</code>, <code>{% for %}</code>, <code>{% empty %}</code></td>
+              <td>Lógica condicional e loops no template</td>
+            </tr>
+            <tr>
+              <td>Filtros nativos</td>
+              <td><code>|date</code>, <code>|default</code>, <code>|length</code>, <code>|floatformat</code></td>
+              <td>Transformar dados na exibição</td>
+            </tr>
+            <tr>
+              <td>Filtros customizados</td>
+              <td><code>|format_moeda</code>, <code>|label_status</code></td>
+              <td>Lógicas específicas do seu projeto</td>
+            </tr>
+            <tr>
+              <td>Arquivos estáticos</td>
+              <td><code>{% static %}</code></td>
+              <td>Referenciar CSS, JS e imagens do projeto</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie um partial de paginação</h3>
+            <p>
+              Crie o arquivo <code>_paginacao.html</code> que exibe links de navegação
+              entre páginas. Use o objeto <code>page_obj</code> que o Django fornece
+              quando você usa <code>Paginator</code> na view. O partial deve mostrar:
+              "Página X de Y", links "Anterior" e "Próximo", e o número total de itens.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-html">
+&lt;!-- _paginacao.html --&gt;
+{% if page_obj.has_other_pages %}
+&lt;nav aria-label="Navegação de páginas"&gt;
+    &lt;ul class="pagination justify-content-center"&gt;
+
+        &lt;!-- Link Anterior --&gt;
+        {% if page_obj.has_previous %}
+            &lt;li class="page-item"&gt;
+                &lt;a class="page-link" href="?page={{ page_obj.previous_page_number }}"&gt;Anterior&lt;/a&gt;
+            &lt;/li&gt;
+        {% else %}
+            &lt;li class="page-item disabled"&gt;
+                &lt;span class="page-link"&gt;Anterior&lt;/span&gt;
+            &lt;/li&gt;
+        {% endif %}
+
+        &lt;!-- Números de página --&gt;
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                &lt;li class="page-item active"&gt;
+                    &lt;span class="page-link"&gt;{{ num }}&lt;/span&gt;
+                &lt;/li&gt;
+            {% else %}
+                &lt;li class="page-item"&gt;
+                    &lt;a class="page-link" href="?page={{ num }}"&gt;{{ num }}&lt;/a&gt;
+                &lt;/li&gt;
+            {% endif %}
+        {% endfor %}
+
+        &lt;!-- Link Próximo --&gt;
+        {% if page_obj.has_next %}
+            &lt;li class="page-item"&gt;
+                &lt;a class="page-link" href="?page={{ page_obj.next_page_number }}"&gt;Próximo&lt;/a&gt;
+            &lt;/li&gt;
+        {% else %}
+            &lt;li class="page-item disabled"&gt;
+                &lt;span class="page-link"&gt;Próximo&lt;/span&gt;
+            &lt;/li&gt;
+        {% endif %}
+
+    &lt;/ul&gt;
+
+    &lt;p class="text-center text-muted"&gt;
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        — Total: {{ page_obj.paginator.count }} itens
+    &lt;/p&gt;
+&lt;/nav&gt;
+{% endif %}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie um filtro customizado para status de pagamento</h3>
+            <p>
+              Crie um filtro chamado <code>status_pagamento</code> que recebe um valor
+              ("pago", "pendente", "cancelado") e retorna um badge HTML com a cor correspondente:
+              verde para pago, amarelo para pendente, vermelho para cancelado.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-python">
+from django import template
+from django.utils.safestring import mark_safe
+
+register = template.Library()
+
+@register.filter(name='status_pagamento')
+def status_pagamento(valor):
+    status_map = {
+        'pago':      ('success', '✅ Pago'),
+        'pendente':  ('warning', '⏳ Pendente'),
+        'cancelado': ('danger',  '❌ Cancelado'),
+    }
+
+    cor, label = status_map.get(valor.lower(), ('secondary', valor))
+
+    html = f'&lt;span class="badge badge-{cor}"&gt;{label}&lt;/span&gt;'
+    return mark_safe(html)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Crie um bloco extra no template base para meta tags</h3>
+            <p>
+              Adicione um bloco chamado <code>{% block meta %}</code> no <code>&lt;head&gt;</code>
+              do template base. Depois, em uma página de detalhes de produto, sobrescreva esse
+              bloco para incluir meta tags de Open Graph (para compartilhamento em redes sociais).
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-html">
+&lt;!-- No base.html, dentro do &lt;head&gt; --&gt;
+{% block meta %}
+    &lt;meta property="og:title" content="CMS Produtos"&gt;
+    &lt;meta property="og:description" content="Sistema de Gerenciamento de Produtos"&gt;
+{% endblock %}
+
+&lt;!-- No detalhe_produto.html --&gt;
+{% extends 'produtos/base.html' %}
+
+{% block meta %}
+    &lt;meta property="og:title" content="{{ produto.nome }}"&gt;
+    &lt;meta property="og:description" content="{{ produto.descricao|truncatechars:150 }}"&gt;
+    {% if produto.imagem %}
+        &lt;meta property="og:image" content="{{ request.build_absolute_uri }}{{ produto.imagem.url }}"&gt;
+    {% endif %}
+{% endblock %}
+
+{% block conteudo %}
+    &lt;h1&gt;{{ produto.nome }}&lt;/h1&gt;
+    &lt;p&gt;{{ produto.descricao }}&lt;/p&gt;
+    &lt;p&gt;{{ produto.preco|format_moeda }}&lt;/p&gt;
+{% endblock %}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
