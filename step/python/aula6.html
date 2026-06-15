@@ -21,6 +21,13 @@
         margin: 20px 0;
         border-radius: 5px;
       }
+      .info-warning {
+        background-color: #e8f4f8;
+        border-left: 5px solid #b83717;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+      }
       .warning-box {
         background-color: #fff3cd;
         border-left: 5px solid #ffc107;
@@ -262,8 +269,9 @@
         <div class="code-container">
           <pre><code class="language-bash">git checkout aula4-mvt-django
 git fetch
-git checkout aula6-orm-admin-login
-          </code></pre>
+git checkout -b aula6-orm-admin-login
+venv\Scripts\activate
+</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
         </section>
@@ -381,13 +389,11 @@ usuario.nome = "Ana Carolina"
 usuario.save()
 usuario = Usuario.objects.get(id=1)
 usuario.delete()
+exit()
                   </code></pre>
                   <button class="btn-copy">Copiar Código</button>
                 </div>
 
-                <div class="info-box">
-                  <strong>💡 Dica:</strong> Use <code>exit()</code> para sair do shell do Django.
-                </div>
         </section>
         <h3>Passo 5: Django Admin</h3>
         <p>
@@ -402,13 +408,20 @@ python manage.py createsuperuser
           <button class="btn-copy">Copiar Código</button>
         </div>
         <p>
-          # Informe: usuário, email e senha
+          Agora no cmd ele vai pedir para você criar um usuário
         </p>
-          <p>
-          # Exemplo: admin / admin@example.com / admin12345678
-        </p>
+        <p>Faremos para padronizar o seguinte exemplo</p>
+        <ul>
+          <li>Username: admin</li>
+          <li>Username: admin@example.com</li>
+          <li>Username: admin12345678</li>
+        </ul>
 
-        <h3>Passo 6: Registrar o model no admin</h3>
+               <div class="info-warning">
+                  <strong>🙀 ATENÇÃO:</strong> Quando você cria a senha ele nao aparece os caracteres por questões de segurança, então digite com cuidado e depois pressione a tecla <code>Enter</code>
+                </div>
+
+        <h3>Passo 6: Registrar o model no admin.py de usuarios</h3>
         <p>Arquivo: <code>usuarios/admin.py</code></p>
         <div class="code-container">
           <pre><code class="language-python">from django.contrib import admin
@@ -419,7 +432,7 @@ admin.site.register(Usuario)</code></pre>
 
         <h3>Passo 7: Acessar o admin</h3>
         <ul>
-          <li>Inicie o servidor: <code>python manage.py runserver</code></li>
+          <li>No terminal rode o servidor: <code>python manage.py runserver</code></li>
           <li>Acesse: <code>http://localhost:8000/admin/</code></li>
           <li>Faça login com o superusuário criado</li>
           <li>Explore a interface e crie/edite usuários</li>
@@ -521,16 +534,23 @@ def criar_usuario_api(request):
         </div>
 
         <h3>Passo 9: Criar templates de autenticação</h3>
-        <p>
-          Dentro da pasta <code>usuarios/templates</code> crie os seguintes arquivos html:
-        </p>
-        <ul>
-          <li>base.html</li>
-          <li>login.html</li>
-          <li>register.html</li>
-        </ul>
+
+      <p>Dentro da pasta <code>usuarios/templates</code>, abra o terminal e digite o código abaixo:</p>
+
+           <div class="code-container">
+          <pre><code class="language-bash">
+cd projeto_django_mvt/usuarios/templates
+mkdir usuarios
+type nul > base.html
+type nul > login.html
+type nul > register.html
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
         <h3>Passo 10: Criando arquivo <code>base.html</code></h3>
+
+
         <p><strong>Arquivo:</strong> <code>usuarios/templates/usuarios/base.html</code></p>
         <div class="code-container">
           <pre><code class="language-html">
@@ -636,8 +656,9 @@ def criar_usuario_api(request):
         </div>
 
         <h3>Passo 13: Atualizando o arquivo <code>lista.html</code></h3>
+        <p>Manualmente, coloque o <code>lista.html</code> dentro da pasta usuarios/template/usuarios</p>
         <p>
-          Agora vamos atualizar o arquivo <code>lista.html</code>
+          Após isso, vamos atualizar o arquivo <code>lista.html</code>
           para herdar do base:
         </p>
         <p><strong>Arquivo:</strong> <code>usuarios/templates/usuarios/lista.html</code></p>
@@ -690,7 +711,7 @@ urlpatterns = [
             o login
           </li>
           <li>Faça login ou crie uma nova conta</li>
-          <li>Acesse o admin em <code>/admin</code></li>
+          <li>Agora acesse o admin em <code>http://localhost:8000/admin</code></li>
         </ol>
 
         <div class="success-box">
@@ -699,6 +720,39 @@ urlpatterns = [
           Django gerencia toda a complexidade de banco de dados e segurança para
           você.
         </div>
+
+        <div class="alert-box-github">
+
+    <h2 class="alert-title-github">
+      📌 Confira o resultado da aplicação
+    </h2>
+
+    <p>
+      Agora é importante que você valide se tudo está funcionando corretamente na sua aplicação.
+      Execute o projeto, teste os endpoints (cadastro, login, geração de token) e observe se os
+      comportamentos estão de acordo com o esperado.
+    </p>
+
+    <p>
+      Compare sua implementação com uma versão funcional da nossa aula em 
+      <a href="https://github.com/devfabioluiz/projeto-python-step" target="_blank" class="alert-link-github">
+        github.com/devfabioluiz/projeto-python-step
+      </a>
+    </p>
+
+    <p>
+      Dentro do repositório, selecione a branch correspondente à aula que você está estudando.
+      O padrão utilizado é:
+    </p>
+
+    <ul>
+      <li><code>aula1</code></li>
+      <li><code>aula2</code></li>
+      <li><code>aula3</code></li>
+      <li>...</li>
+    </ul>
+
+  </div>
 
         <h3>Último Passo: Subindo para o GitHub</h3>
   <div class="code-container">
