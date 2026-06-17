@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10: Escalabilidade — Processos Filhos e Cluster</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Escalabilidade: Processos Filhos e Cluster</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Motivos para escalar aplicações, Processos filhos, Exec, spawn e fork.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Por que Escalar Aplicações?</h2>
+
+        <p>
+          Escalar uma aplicação significa fazê-la suportar mais usuários, mais
+          requisições e mais carga de processamento sem perder performance ou
+          estabilidade.
+        </p>
+
+        <p>Motivos comuns para escalar:</p>
+
+        <ul>
+          <li>Aumento de usuários simultâneos</li>
+          <li>Picos de acesso (Black Friday, campanhas)</li>
+          <li>Processamento pesado (imagens, relatórios, IA)</li>
+          <li>Alta disponibilidade (aplicação não pode cair)</li>
+          <li>Tolerância a falhas (se um processo cair, outro assume)</li>
+        </ul>
+
+        <h2>O Problema do Single Thread</h2>
+
+        <p>
+          O Node.js roda JavaScript em uma <strong>única thread</strong> (Event
+          Loop). Isso é eficiente para operações I/O (rede, arquivos, banco), mas
+          tarefas pesadas de CPU (cálculos, criptografia, compressão) podem
+          bloquear o Event Loop e travar toda a aplicação.
+        </p>
+
+        <h3>Demonstração do bloqueio</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const http = require('http');
+
+const server = http.createServer((req, res) => {
+  if (req.url === '/pesado') {
+
+    let resultado = 0;
+    for (let i = 0; i < 1e9; i++) {
+      resultado += i;
+    }
+
+    res.end(`Resultado: ${resultado}`);
+    return;
+  }
+
+  res.end('Rota normal - resposta rápida');
+});
+
+server.listen(3000, () => {
+  console.log('Servidor rodando');
+});
+</code></pre>
+        </div>
+
+        <p>
+          Quando alguém acessar <code>/pesado</code>, TODAS as outras requisições
+          ficarão congeladas até o cálculo terminar. Isso acontece porque a CPU está
+          100% ocupada na única thread disponível.
+        </p>
+
+        <h2>Escalabilidade Vertical vs Horizontal</h2>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Vertical (Scale Up)</th>
+              <th>Horizontal (Scale Out)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Aumenta recursos da máquina (RAM, CPU)</td>
+              <td>Adiciona mais máquinas/processos</td>
+            </tr>
+            <tr>
+              <td>Mais simples de implementar</td>
+              <td>Mais complexo (load balancer, estado)</td>
+            </tr>
+            <tr>
+              <td>Tem limite físico</td>
+              <td>Escala "infinitamente"</td>
+            </tr>
+            <tr>
+              <td>Ponto único de falha</td>
+              <td>Alta disponibilidade</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          O Node.js facilita a escalabilidade <strong>horizontal</strong> com o
+          módulo <strong>cluster</strong> e o módulo <strong>child_process</strong>.
+        </p>
+
+        <h2>Módulo child_process</h2>
+
+        <p>
+          O módulo <strong>child_process</strong> permite criar processos filhos
+          que executam comandos ou scripts em paralelo, sem bloquear o processo
+          principal. Existem 4 métodos principais:
+        </p>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Usa Shell?</th>
+              <th>Buffer?</th>
+              <th>Quando usar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>exec()</code></td>
+              <td>Sim</td>
+              <td>Sim (buffer)</td>
+              <td>Comandos simples, saída pequena</td>
+            </tr>
+            <tr>
+              <td><code>spawn()</code></td>
+              <td>Não (por padrão)</td>
+              <td>Não (stream)</td>
+              <td>Comandos com muita saída, processos longos</td>
+            </tr>
+            <tr>
+              <td><code>fork()</code></td>
+              <td>Não</td>
+              <td>Não</td>
+              <td>Executar outro arquivo Node.js (comunicação IPC)</td>
+            </tr>
+            <tr>
+              <td><code>execFile()</code></td>
+              <td>Não</td>
+              <td>Sim (buffer)</td>
+              <td>Executar arquivo binário sem shell</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>exec() — Executando Comandos do Sistema</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { exec } = require('child_process');
+
+exec('dir', { cwd: 'C:\\' }, (erro, stdout, stderr) => {
+  if (erro) {
+    console.log('Erro:', erro.message);
+    return;
+  }
+
+  if (stderr) {
+    console.log('Stderr:', stderr);
+    return;
+  }
+
+  console.log('Saída:');
+  console.log(stdout);
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 cwd</h3>
+          <p>
+            Define o diretório de trabalho do comando. Útil para executar comandos
+            em pastas específicas.
+          </p>
+
+          <h3>🔹 stdout vs stderr</h3>
+          <p>
+            <code>stdout</code> é a saída normal do comando.
+            <code>stderr</code> é a saída de erro. Sempre verifique ambos.
+          </p>
+
+          <h3>🔹 Cuidado com buffer overflow</h3>
+          <p>
+            O <code>exec()</code> armazena toda a saída em um buffer na memória.
+            Se o comando gerar gigabytes de saída, o processo pode travar. Para
+            saída grande, use <code>spawn()</code>.
+          </p>
+        </div>
+
+        <h2>spawn() — Processando Saída como Stream</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { spawn } = require('child_process');
+
+const comando = spawn('ping', ['-n', '5', 'google.com']);
+
+comando.stdout.on('data', (dados) => {
+  console.log(`[stdout]: ${dados}`);
+});
+
+comando.stderr.on('data', (dados) => {
+  console.log(`[stderr]: ${dados}`);
+});
+
+comando.on('close', (codigo) => {
+  console.log(`Processo encerrado com código ${codigo}`);
+});
+</code></pre>
+        </div>
+
+        <p>
+          Com <code>spawn()</code>, a saída chega como stream (evento
+          <code>data</code>), permitindo processar gigabytes de saída sem consumir
+          memória.
+        </p>
+
+        <h2>fork() — Comunicação entre Processos Node.js</h2>
+
+        <p>
+          <code>fork()</code> é um caso especial de <code>spawn()</code> projetado
+          para executar arquivos Node.js. Ele cria um canal de comunicação IPC
+          (Inter-Process Communication) entre o pai e o filho.
+        </p>
+
+        <h3>Arquivo pai (main.js)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { fork } = require('child_process');
+
+const filho = fork('./worker.js');
+
+filho.send({ tarefa: 'calcular', dados: [1, 2, 3, 4, 5] });
+
+filho.on('message', (mensagem) => {
+  console.log('Resultado recebido do filho:', mensagem);
+});
+
+filho.on('close', (codigo) => {
+  console.log('Filho encerrado com código:', codigo);
+});
+</code></pre>
+        </div>
+
+        <h3>Arquivo filho (worker.js)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">process.on('message', (mensagem) => {
+  console.log('Mensagem recebida do pai:', mensagem);
+
+  if (mensagem.tarefa === 'calcular') {
+    const soma = mensagem.dados.reduce((a, b) => a + b, 0);
+    const media = soma / mensagem.dados.length;
+
+    process.send({
+      tarefa: 'calcular',
+      resultado: { soma, media }
+    });
+  }
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 process.send() e process.on('message')</h3>
+          <p>
+            No processo filho, <code>process.send()</code> envia mensagens para o
+            pai. <code>process.on('message')</code> escuta mensagens vindas do pai.
+            No pai, usamos <code>filho.send()</code> e <code>filho.on('message')</code>.
+          </p>
+
+          <h3>🔹 IPC (Inter-Process Communication)</h3>
+          <p>
+            O canal IPC usa pipes do sistema operacional. As mensagens são
+            serializadas com <code>JSON.stringify()</code>, então você pode enviar
+            qualquer dado serializável (objetos, arrays, números, strings).
+          </p>
+
+          <h3>🔹 Casos de uso do fork()</h3>
+          <ul>
+            <li>Processamento de imagens e vídeos</li>
+            <li>Geração de relatórios pesados</li>
+            <li>Cálculos matemáticos intensivos</li>
+            <li>Processamento em lote (batch)</li>
+          </ul>
+        </div>
+
+        <h2>Módulo Cluster — Multiplicando o Servidor</h2>
+
+        <p>
+          O módulo <strong>cluster</strong> permite criar múltiplas instâncias
+          (workers) do seu servidor, cada uma rodando em um núcleo (core) da CPU.
+          Todas compartilham a mesma porta.
+        </p>
+
+        <p>
+          Se sua máquina tem 8 núcleos, você pode ter 8 workers processando
+          requisições simultaneamente — um aumento de até 8x na capacidade.
+        </p>
+
+        <h3>Como o Cluster funciona</h3>
+
+        <ol>
+          <li>Um processo <strong>Master</strong> é criado</li>
+          <li>O Master cria <strong>Workers</strong> (um por núcleo da CPU)</li>
+          <li>
+            O Master escuta a porta (ex: 3000) e distribui requisições entre os
+            Workers (round-robin)
+          </li>
+          <li>Se um Worker morrer, o Master cria um novo automaticamente</li>
+        </ol>
+
+        <h3>Servidor com Cluster</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} está rodando`);
+
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} morreu`);
+    console.log('Criando novo worker...');
+    cluster.fork();
+  });
+
+} else {
+
+  http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end(`Resposta do Worker ${process.pid}\n`);
+  }).listen(3000);
+
+  console.log(`Worker ${process.pid} iniciado`);
+}
+</code></pre>
+        </div>
+
+        <h3>Resultado</h3>
+
+        <div class="code-container">
+          <pre><code>Master 12345 está rodando
+Worker 12346 iniciado
+Worker 12347 iniciado
+Worker 12348 iniciado
+Worker 12349 iniciado
+...
+</code></pre>
+        </div>
+
+        <p>
+          Acesse <code>http://localhost:3000</code> várias vezes. Cada requisição
+          será respondida por um Worker diferente (round-robin).
+        </p>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Cluster e Processamento Pesado com Fork</h2>
+
+          <p>
+            Vamos implementar uma rota de cálculo pesado que usa fork para não
+            bloquear o servidor, e configurar o cluster para melhor aproveitamento
+            da CPU. Use o projeto da Aula 9 como base.
+          </p>
+
+          <h3>Passo 0 — Criar branch da aula</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git checkout aula9-estaticos-postgresql
+git pull
+git checkout -b aula10-escalabilidade-cluster
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Criar o Worker de Cálculo Pesado</h3>
+
+          <p>
+            Esse worker vai rodar em um processo separado, liberando o Event Loop
+            do servidor principal.
+          </p>
+
+          <p>Criar <strong>workers/calculo.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">mkdir workers
+type nul > workers\calculo.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">process.on("message", (dados) => {
+  const { tipo, valor } = dados;
+
+  switch (tipo) {
+    case "fatorial":
+      let fatorial = 1n;
+
+      for (let i = 2n; i <= BigInt(valor); i++) {
+        fatorial *= i;
+      }
+
+      process.send({
+        tipo: "fatorial",
+        entrada: valor,
+        resultado: fatorial.toString(),
+      });
+      break;
+
+    case "primos":
+      const primos = [];
+      const limite = valor;
+
+      for (let n = 2; n <= limite; n++) {
+        let ehPrimo = true;
+
+        for (let d = 2; d * d <= n; d++) {
+          if (n % d === 0) {
+            ehPrimo = false;
+            break;
+          }
+        }
+
+        if (ehPrimo) {
+          primos.push(n);
+        }
+      }
+
+      process.send({
+        tipo: "primos",
+        entrada: valor,
+        resultado: primos.length,
+      });
+      break;
+
+    default:
+      process.send({
+        erro: "Tipo de cálculo não suportado",
+      });
+  }
+
+  process.exit(0);
+});
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Criar Controller de Cálculo</h3>
+
+          <p>Criar <strong>src/controllers/calculoController.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\controllers\calculoController.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const { fork } = require("child_process");
+const path = require("path");
+const logger = require("../utils/logger");
+
+const executarCalculo = (req, res) => {
+  const { tipo, valor } = req.body;
+
+  if (!tipo || !valor) {
+    return res.status(400).json({
+      erro: "Informe 'tipo' (fatorial ou primos) e 'valor'",
+    });
+  }
+
+  const tiposValidos = ["fatorial", "primos"];
+
+  if (!tiposValidos.includes(tipo)) {
+    return res.status(400).json({
+      erro: `Tipo inválido. Use: ${tiposValidos.join(", ")}`,
+    });
+  }
+
+  logger.info(`Iniciando cálculo ${tipo}(${valor}) em processo filho`);
+
+  const caminhoWorker = path.join(
+    __dirname, "../../workers/calculo.js"
+  );
+
+  const worker = fork(caminhoWorker);
+
+  worker.send({ tipo, valor });
+
+  worker.on("message", (resultado) => {
+    res.json(resultado);
+    logger.info(`Cálculo ${tipo} concluído`);
+  });
+
+  worker.on("error", (erro) => {
+    logger.erro(`Erro no worker: ${erro.message}`);
+    res.status(500).json({ erro: "Erro no processamento" });
+  });
+};
+
+module.exports = { executarCalculo };
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Criar Rota de Cálculo</h3>
+
+          <p>Criar <strong>src/routes/calculoRoutes.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\routes\calculoRoutes.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const { executarCalculo } = require("../controllers/calculoController");
+
+router.post("/calculo", executarCalculo);
+
+module.exports = router;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Criar servidor com Cluster</h3>
+
+          <p>
+            Vamos substituir o <strong>server.js</strong> por uma versão com
+            cluster. Renomeie o original para <strong>server-single.js</strong>
+            e crie um novo <strong>server.js</strong>:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">ren server.js server-single.js
+type nul > server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">require("dotenv").config();
+
+const cluster = require("cluster");
+const os = require("os");
+
+const numCPUs = os.cpus().length;
+
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} rodando`);
+  console.log(`Criando ${numCPUs} workers...`);
+
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} caiu (código: ${code})`);
+    console.log("Reiniciando worker...");
+    cluster.fork();
+  });
+
+} else {
+  const app = require("./src/app");
+
+  const conectarBanco = require("./src/database/database");
+
+  conectarBanco();
+
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Worker ${process.pid} ouvindo na porta ${process.env.PORT || 3000}`);
+  });
+}
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 5 — Registrar rota de cálculo no app.js</h3>
+
+          <p>Adicione no <strong>src/app.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const calculoRoutes = require("./routes/calculoRoutes");
+
+// ... outros imports ...
+
+app.use(calculoRoutes);
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Rodar e testar</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Você verá múltiplos workers iniciando:</p>
+
+          <div class="code-container">
+            <pre><code>Master 12345 rodando
+Criando 8 workers...
+Worker 12346 ouvindo na porta 3000
+Worker 12347 ouvindo na porta 3000
+...
+</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Testar o cálculo sem bloquear o servidor:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl -X POST http://localhost:3000/calculo \
+  -H "Content-Type: application/json" \
+  -d "{\"tipo\":\"primos\",\"valor\":100000}"
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Enquanto esse cálculo roda, acesse outras rotas — elas continuarão
+            respondendo normalmente!
+          </p>
+
+          <h3>Passo 7 — Script de benchmark simples</h3>
+
+          <p>Criar <strong>benchmark.js</strong> na raiz:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > benchmark.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const http = require('http');
+
+const totalRequisicoes = 100;
+let completas = 0;
+const inicio = Date.now();
+
+for (let i = 0; i < totalRequisicoes; i++) {
+  http.get('http://localhost:3000/produtos', (res) => {
+    completas++;
+
+    if (completas === totalRequisicoes) {
+      const tempo = Date.now() - inicio;
+
+      console.log(`${totalRequisicoes} requisições em ${tempo}ms`);
+      console.log(`Média: ${(tempo / totalRequisicoes).toFixed(1)}ms por requisição`);
+    }
+  });
+}
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Teste com e sem cluster para ver a diferença:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node benchmark.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+            <h3>🔹 cluster.isMaster</h3>
+            <p>
+              Determina se o processo atual é o Master. O Master gerencia os
+              Workers; os Workers executam o servidor.
+            </p>
+
+            <h3>🔹 cluster.fork()</h3>
+            <p>
+              Cria um novo Worker. O código do arquivo atual é executado novamente,
+              mas desta vez <code>cluster.isMaster</code> será <code>false</code>,
+              caindo no bloco <code>else</code> do Worker.
+            </p>
+
+            <h3>🔹 cluster.on('exit')</h3>
+            <p>
+              Permite detectar quando um Worker morre e criar um substituto. Isso
+              garante <strong>zero downtime</strong> — sempre há Workers ativos.
+            </p>
+
+            <h3>🔹 Por que o fork() no controller?</h3>
+            <p>
+              Tarefas pesadas de CPU NÃO devem rodar no mesmo processo do servidor.
+              Usamos <code>fork()</code> para criar um processo isolado que faz o
+              cálculo. O servidor continua respondendo outras requisições enquanto
+              o cálculo roda em paralelo.
+            </p>
+          </div>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "implementa cluster, fork para calculos pesados e benchmark"
+git push --set-upstream origin aula10-escalabilidade-cluster
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Worker de geração de relatório PDF</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula10</strong>.
+              </p>
+
+              <p>Desenvolva:</p>
+
+              <ul>
+                <li>
+                  Um arquivo <strong>workers/relatorio.js</strong> que:
+                  <ul>
+                    <li>Recebe um array de produtos via <code>process.on('message')</code></li>
+                    <li>Calcula estatísticas: total de produtos, valor total em estoque, preço médio, produto mais caro e mais barato</li>
+                    <li>Envia o resultado de volta com <code>process.send()</code></li>
+                  </ul>
+                </li>
+                <li>
+                  Uma rota <code>POST /relatorio-produtos</code> que:
+                  <ul>
+                    <li>Busca os produtos do banco (MongoDB ou PostgreSQL)</li>
+                    <li>Envia para o worker processar</li>
+                    <li>Retorna o relatório gerado pelo worker</li>
+                  </ul>
+                </li>
+              </ul>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <h3><code>workers/relatorio.js</code></h3>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">process.on("message", (produtos) => {
+  if (!produtos || produtos.length === 0) {
+    process.send({ erro: "Nenhum produto para analisar" });
+    process.exit(0);
+  }
+
+  const precos = produtos.map((p) => p.preco);
+  const total = precos.reduce((a, b) => a + b, 0);
+  const media = total / produtos.length;
+  const max = Math.max(...precos);
+  const min = Math.min(...precos);
+
+  const maisCaro = produtos.find((p) => p.preco === max);
+  const maisBarato = produtos.find((p) => p.preco === min);
+
+  process.send({
+    totalProdutos: produtos.length,
+    valorTotalEstoque: total,
+    precoMedio: media.toFixed(2),
+    maisCaro: { nome: maisCaro.nome, preco: maisCaro.preco },
+    maisBarato: { nome: maisBarato.nome, preco: maisBarato.preco },
+  });
+
+  process.exit(0);
+});
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

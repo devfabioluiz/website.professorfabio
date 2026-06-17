@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6: EventEmitter, Callbacks e Async/Await</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">EventEmitter, Callbacks e Async/Await</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Classe EventEmitter, Manipulação de eventos, Callbacks e tratamento de erros.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que é a Classe EventEmitter?</h2>
+
+        <p>
+          A classe <strong>EventEmitter</strong> é o coração da arquitetura orientada
+          a eventos do Node.js. Ela está no módulo nativo <strong>events</strong> e
+          permite criar, registrar e disparar eventos personalizados.
+        </p>
+
+        <p>
+          Pense no EventEmitter como um sistema de som de uma festa: você "sintoniza"
+          em um evento (com <code>.on()</code>) e quando alguém "toca" esse evento
+          (com <code>.emit()</code>), sua função é executada.
+        </p>
+
+        <h3>Importando o EventEmitter</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const EventEmitter = require('events');
+
+const emissor = new EventEmitter();
+</code></pre>
+        </div>
+
+        <h3>Métodos principais</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>.on(evento, callback)</code></td>
+              <td>Registra um listener para o evento (executa sempre)</td>
+            </tr>
+            <tr>
+              <td><code>.once(evento, callback)</code></td>
+              <td>Registra um listener que executa apenas uma vez</td>
+            </tr>
+            <tr>
+              <td><code>.emit(evento, dados)</code></td>
+              <td>Dispara o evento, executando todos os listeners</td>
+            </tr>
+            <tr>
+              <td><code>.removeListener(evento, callback)</code></td>
+              <td>Remove um listener específico</td>
+            </tr>
+            <tr>
+              <td><code>.removeAllListeners(evento)</code></td>
+              <td>Remove todos os listeners de um evento</td>
+            </tr>
+            <tr>
+              <td><code>.listenerCount(evento)</code></td>
+              <td>Retorna quantos listeners estão registrados</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Exemplo Prático: Sistema de Pedidos</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const EventEmitter = require('events');
+
+const pedidos = new EventEmitter();
+
+pedidos.on('pedidoCriado', (pedido) => {
+  console.log(`Novo pedido #${pedido.id} recebido`);
+  console.log(`Cliente: ${pedido.cliente}`);
+  console.log(`Produto: ${pedido.produto}`);
+  console.log(`Valor: R$ ${pedido.valor}`);
+});
+
+pedidos.on('pedidoCriado', (pedido) => {
+  console.log(`[ESTOQUE] Baixando estoque do produto ${pedido.produto}`);
+});
+
+pedidos.on('pedidoCancelado', (id) => {
+  console.log(`Pedido #${id} foi cancelado`);
+});
+
+pedidos.emit('pedidoCriado', {
+  id: 101,
+  cliente: 'Maria',
+  produto: 'Mouse Gamer',
+  valor: 250
+});
+
+pedidos.emit('pedidoCancelado', 101);
+</code></pre>
+        </div>
+
+        <p>
+          Note que <strong>dois listeners</strong> diferentes respondem ao mesmo
+          evento <code>pedidoCriado</code>. Cada um executa uma responsabilidade
+          diferente — isso é chamado de <strong>separação de preocupações</strong>.
+        </p>
+
+        <h3>Resultado no terminal</h3>
+
+        <div class="code-container">
+          <pre><code>Novo pedido #101 recebido
+Cliente: Maria
+Produto: Mouse Gamer
+Valor: R$ 250
+[ESTOQUE] Baixando estoque do produto Mouse Gamer
+Pedido #101 foi cancelado
+</code></pre>
+        </div>
+
+        <h2>Estendendo a Classe EventEmitter</h2>
+
+        <p>
+          Podemos criar nossas próprias classes que herdam de EventEmitter. Isso é
+          útil para encapsular lógica de eventos em módulos reutilizáveis.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const EventEmitter = require('events');
+
+class Carrinho extends EventEmitter {
+  constructor() {
+    super();
+    this.itens = [];
+  }
+
+  adicionar(produto) {
+    this.itens.push(produto);
+    this.emit('itemAdicionado', produto);
+    this.emit('carrinhoAtualizado', this.itens);
+  }
+
+  remover(nome) {
+    const indice = this.itens.findIndex((item) => item.nome === nome);
+
+    if (indice === -1) {
+      this.emit('erro', { mensagem: 'Item não encontrado' });
+      return;
+    }
+
+    this.itens.splice(indice, 1);
+    this.emit('itemRemovido', nome);
+    this.emit('carrinhoAtualizado', this.itens);
+  }
+}
+
+module.exports = Carrinho;
+</code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const Carrinho = require('./Carrinho');
+
+const meuCarrinho = new Carrinho();
+
+meuCarrinho.on('itemAdicionado', (produto) => {
+  console.log(`✅ ${produto.nome} adicionado ao carrinho`);
+});
+
+meuCarrinho.on('itemRemovido', (nome) => {
+  console.log(`🗑️ ${nome} removido do carrinho`);
+});
+
+meuCarrinho.on('carrinhoAtualizado', (itens) => {
+  console.log(`Total de itens: ${itens.length}`);
+});
+
+meuCarrinho.on('erro', (erro) => {
+  console.log(`❌ Erro: ${erro.mensagem}`);
+});
+
+meuCarrinho.adicionar({ nome: 'Teclado', preco: 200 });
+meuCarrinho.adicionar({ nome: 'Monitor', preco: 1500 });
+meuCarrinho.remover('Teclado');
+meuCarrinho.remover('Cadeira');
+</code></pre>
+        </div>
+
+        <h2>O que são Callbacks?</h2>
+
+        <p>
+          Callback é uma função passada como argumento para outra função, que será
+          executada quando a operação assíncrona terminar.
+        </p>
+
+        <p>
+          Esse é o padrão mais antigo do Node.js para lidar com operações
+          assíncronas como leitura de arquivos, requisições HTTP e consultas ao
+          banco.
+        </p>
+
+        <h3>Exemplo simples de callback</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">function buscarDados(id, callback) {
+  console.log(`Buscando dados do ID ${id}...`);
+
+  setTimeout(() => {
+    const dados = {
+      id: id,
+      nome: 'Produto A',
+      preco: 99.90
+    };
+
+    callback(null, dados);
+  }, 2000);
+}
+
+buscarDados(1, (erro, resultado) => {
+  if (erro) {
+    console.log('Erro:', erro);
+    return;
+  }
+
+  console.log('Dados recebidos:', resultado);
+});
+
+console.log('Essa linha executa antes dos dados chegarem');
+</code></pre>
+        </div>
+
+        <h2>Padrão Error-First Callback</h2>
+
+        <p>
+          No Node.js, o padrão convencional de callbacks é o
+          <strong>error-first</strong>: o primeiro parâmetro do callback é sempre o
+          erro e o segundo é o resultado. Esse padrão é usado em todos os módulos
+          nativos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+
+fs.readFile('arquivo.txt', 'utf-8', (erro, conteudo) => {
+  if (erro) {
+    console.log('Erro ao ler arquivo:', erro.message);
+    return;
+  }
+
+  console.log('Conteúdo:', conteudo);
+});
+</code></pre>
+        </div>
+
+        <h3>Vantagens do padrão error-first</h3>
+
+        <ul>
+          <li>Sempre tratar o erro antes de prosseguir</li>
+          <li>Evita que erros sejam ignorados silenciosamente</li>
+          <li>Padroniza a forma como todos os módulos do Node.js funcionam</li>
+          <li>Facilita a leitura e manutenção do código</li>
+        </ul>
+
+        <h2>Callback Hell e como evitar</h2>
+
+        <p>
+          Quando encadeamos muitos callbacks, o código fica difícil de ler. Esse
+          problema é conhecido como <strong>callback hell</strong> ou
+          <strong>pirâmide da desgraça</strong>.
+        </p>
+
+        <h3>Callback Hell (não faça isso)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">fs.readFile('arquivo1.txt', (erro1, dado1) => {
+  if (erro1) return;
+
+  fs.readFile('arquivo2.txt', (erro2, dado2) => {
+    if (erro2) return;
+
+    fs.readFile('arquivo3.txt', (erro3, dado3) => {
+      if (erro3) return;
+
+      console.log(dado1, dado2, dado3);
+    });
+  });
+});
+</code></pre>
+        </div>
+
+        <h3>Refatorando com funções nomeadas</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">function lerArquivo1() {
+  fs.readFile('arquivo1.txt', 'utf-8', (erro, dado1) => {
+    if (erro) return console.log(erro);
+    lerArquivo2(dado1);
+  });
+}
+
+function lerArquivo2(dado1) {
+  fs.readFile('arquivo2.txt', 'utf-8', (erro, dado2) => {
+    if (erro) return console.log(erro);
+    lerArquivo3(dado1, dado2);
+  });
+}
+
+function lerArquivo3(dado1, dado2) {
+  fs.readFile('arquivo3.txt', 'utf-8', (erro, dado3) => {
+    if (erro) return console.log(erro);
+    console.log(dado1, dado2, dado3);
+  });
+}
+
+lerArquivo1();
+</code></pre>
+        </div>
+
+        <h2>Async/Await — A Solução Moderna</h2>
+
+        <p>
+          <strong>Async/Await</strong> é a forma moderna de trabalhar com código
+          assíncrono no JavaScript. Ele permite escrever código assíncrono com
+          sintaxe que parece síncrona, eliminando o callback hell.
+        </p>
+
+        <h3>Transformando callback em Promise</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+
+function lerArquivo(caminho) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(caminho, 'utf-8', (erro, conteudo) => {
+      if (erro) {
+        reject(erro);
+      } else {
+        resolve(conteudo);
+      }
+    });
+  });
+}
+
+async function processarArquivos() {
+  try {
+    const dado1 = await lerArquivo('arquivo1.txt');
+    const dado2 = await lerArquivo('arquivo2.txt');
+    const dado3 = await lerArquivo('arquivo3.txt');
+
+    console.log(dado1);
+    console.log(dado2);
+    console.log(dado3);
+  } catch (erro) {
+    console.log('Erro:', erro.message);
+  }
+}
+
+processarArquivos();
+</code></pre>
+        </div>
+
+        <h3>Comparação: Callback vs Promise vs Async/Await</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Abordagem</th>
+              <th>Leitura</th>
+              <th>Tratamento de erro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Callback</td>
+              <td>Difícil (aninhamento)</td>
+              <td>if (erro) return</td>
+            </tr>
+            <tr>
+              <td>Promise (.then/.catch)</td>
+              <td>Média (encadeamento)</td>
+              <td>.catch() no final</td>
+            </tr>
+            <tr>
+              <td>Async/Await</td>
+              <td>Fácil (parece síncrono)</td>
+              <td>try/catch tradicional</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Tratamento de Erros com Async/Await</h2>
+
+        <p>
+          O bloco <strong>try/catch</strong> é a forma recomendada de tratar erros
+          ao usar async/await.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">async function buscarUsuario(id) {
+  if (!id) {
+    throw new Error('ID é obrigatório');
+  }
+
+  try {
+    const usuario = await Usuario.findById(id);
+
+    if (!usuario) {
+      throw new Error('Usuário não encontrado');
+    }
+
+    return usuario;
+  } catch (erro) {
+    console.log('Erro ao buscar usuário:', erro.message);
+    throw erro;
+  }
+}
+</code></pre>
+        </div>
+
+        <h3>Erros personalizados</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">class ErroValidacao extends Error {
+  constructor(mensagem) {
+    super(mensagem);
+    this.name = 'ErroValidacao';
+    this.status = 400;
+  }
+}
+
+class ErroNaoEncontrado extends Error {
+  constructor(mensagem) {
+    super(mensagem);
+    this.name = 'ErroNaoEncontrado';
+    this.status = 404;
+  }
+}
+
+async function criarProduto(dados) {
+  if (!dados.nome) {
+    throw new ErroValidacao('Nome do produto é obrigatório');
+  }
+
+  if (!dados.preco || dados.preco <= 0) {
+    throw new ErroValidacao('Preço deve ser maior que zero');
+  }
+
+  return await Produto.create(dados);
+}
+</code></pre>
+        </div>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Sistema de Logs com EventEmitter</h2>
+
+          <p>
+            Vamos criar um sistema de logging que dispara eventos sempre que uma
+            rota é acessada. Usaremos o projeto da Aula 5 como base.
+          </p>
+
+          <h3>Passo 0 — Criar branch da aula</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git checkout aula5-jwt-auth
+git pull
+git checkout -b aula6-eventemitter-callbacks
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Criar a pasta de utils</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">mkdir src\utils
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Criar o sistema de logs com EventEmitter</h3>
+
+          <p>Criar o arquivo <strong>src/utils/logger.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\utils\logger.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const EventEmitter = require("events");
+const fs = require("fs");
+
+class Logger extends EventEmitter {
+  constructor() {
+    super();
+    this.arquivoLog = "logs/app.log";
+  }
+
+  info(mensagem) {
+    const log = `[${new Date().toISOString()}] INFO: ${mensagem}`;
+    this.emit("log", log);
+    this.salvar(log);
+  }
+
+  erro(mensagem) {
+    const log = `[${new Date().toISOString()}] ERRO: ${mensagem}`;
+    this.emit("erro", log);
+    this.salvar(log);
+  }
+
+  requisicao(metodo, rota) {
+    const log = `[${new Date().toISOString()}] ${metodo} ${rota}`;
+    this.emit("requisicao", log);
+    this.salvar(log);
+  }
+
+  salvar(log) {
+    const linha = log + "\n";
+
+    fs.appendFile(this.arquivoLog, linha, (erro) => {
+      if (erro) {
+        console.log("Erro ao salvar log:", erro.message);
+      }
+    });
+  }
+}
+
+const logger = new Logger();
+
+logger.on("log", (mensagem) => {
+  console.log("📝", mensagem);
+});
+
+logger.on("erro", (mensagem) => {
+  console.log("❌", mensagem);
+});
+
+logger.on("requisicao", (mensagem) => {
+  console.log("🌐", mensagem);
+});
+
+module.exports = logger;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+            <h3>🔹 extends EventEmitter</h3>
+
+            <p>
+              A classe <code>Logger</code> herda todos os poderes do EventEmitter:
+              <code>.on()</code>, <code>.emit()</code>, <code>.once()</code>, etc.
+              Isso é feito com <code>extends EventEmitter</code>.
+            </p>
+
+            <h3>🔹 super()</h3>
+
+            <p>
+              O <code>super()</code> no construtor chama o construtor da classe pai
+              (EventEmitter). Sempre que usamos <code>extends</code>, precisamos
+              chamar <code>super()</code> antes de usar <code>this</code>.
+            </p>
+
+            <h3>🔹 this.emit()</h3>
+
+            <p>
+              Dentro dos métodos <code>info()</code>, <code>erro()</code> e
+              <code>requisicao()</code>, usamos <code>this.emit()</code> para
+              disparar eventos. Os listeners registrados com <code>.on()</code>
+              reagem automaticamente.
+            </p>
+
+            <h3>🔹 fs.appendFile()</h3>
+
+            <p>
+              O método <code>fs.appendFile()</code> adiciona conteúdo ao final de um
+              arquivo. Se o arquivo não existir, ele é criado automaticamente.
+            </p>
+
+            <h3>🔹 Padrão Singleton</h3>
+
+            <p>
+              Note que exportamos <code>logger</code> (minúsculo), uma única
+              instância da classe. Isso significa que todos os arquivos que fizerem
+              <code>require('./utils/logger')</code> receberão a MESMA instância,
+              compartilhando os mesmos eventos.
+            </p>
+          </div>
+
+          <h3>Passo 3 — Criar middleware de logging</h3>
+
+          <p>Criar o arquivo <strong>src/middlewares/loggerMiddleware.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\middlewares\loggerMiddleware.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const logger = require("../utils/logger");
+
+const loggerMiddleware = (req, res, next) => {
+  logger.requisicao(req.method, req.url);
+
+  next();
+};
+
+module.exports = loggerMiddleware;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Registrar o middleware no app.js</h3>
+
+          <p>Atualize <strong>src/app.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
+const arquivoRoutes = require("./routes/arquivoRoutes");
+const authRoutes = require("./routes/authRoutes");
+
+const loggerMiddleware = require("./middlewares/loggerMiddleware");
+
+const app = express();
+
+app.use(loggerMiddleware);
+
+app.use(express.json());
+
+app.use(authRoutes);
+app.use(produtoRoutes);
+app.use(usuarioRoutes);
+app.use(arquivoRoutes);
+
+module.exports = app;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 5 — Criar pasta logs</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">mkdir logs
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Rodar a aplicação</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Acesse algumas rotas:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">http://localhost:3000/produtos
+http://localhost:3000/usuarios
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Você verá os logs no terminal e também no arquivo
+            <strong>logs/app.log</strong>.
+          </p>
+
+          <h3>Passo 7 — Melhorar controllers com async/await e tratamento de erros</h3>
+
+          <p>
+            Vamos refatorar o <strong>src/controllers/authController.js</strong> para
+            usar tratamento de erros mais robusto:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const Usuario = require("../models/Usuario");
+const logger = require("../utils/logger");
+const { ErroValidacao, ErroAutenticacao } = require("../utils/erros");
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo";
+
+const registrar = async (req, res) => {
+  try {
+    const { nome, email, idade, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+      throw new ErroValidacao("Nome, email e senha são obrigatórios");
+    }
+
+    const existe = await Usuario.findOne({ email });
+
+    if (existe) {
+      throw new ErroValidacao("Email já cadastrado");
+    }
+
+    const senhaHash = await bcrypt.hash(senha, 10);
+
+    const usuario = await Usuario.create({
+      nome,
+      email,
+      idade,
+      senha: senhaHash,
+    });
+
+    const token = jwt.sign(
+      { id: usuario._id, email: usuario.email },
+      JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    logger.info(`Usuário registrado: ${email}`);
+
+    res.status(201).json({
+      mensagem: "Usuário registrado",
+      token,
+    });
+  } catch (erro) {
+    logger.erro(`Falha no registro: ${erro.message}`);
+
+    if (erro instanceof ErroValidacao) {
+      return res.status(400).json({ erro: erro.message });
+    }
+
+    res.status(500).json({ erro: "Erro interno do servidor" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+
+    if (!email || !senha) {
+      throw new ErroValidacao("Email e senha são obrigatórios");
+    }
+
+    const usuario = await Usuario.findOne({ email });
+
+    if (!usuario) {
+      throw new ErroAutenticacao("Email ou senha inválidos");
+    }
+
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+
+    if (!senhaValida) {
+      throw new ErroAutenticacao("Email ou senha inválidos");
+    }
+
+    const token = jwt.sign(
+      { id: usuario._id, email: usuario.email },
+      JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    logger.info(`Login realizado: ${email}`);
+
+    res.json({
+      mensagem: "Login realizado",
+      token,
+    });
+  } catch (erro) {
+    logger.erro(`Falha no login: ${erro.message}`);
+
+    if (erro instanceof ErroValidacao) {
+      return res.status(400).json({ erro: erro.message });
+    }
+
+    if (erro instanceof ErroAutenticacao) {
+      return res.status(401).json({ erro: erro.message });
+    }
+
+    res.status(500).json({ erro: "Erro interno do servidor" });
+  }
+};
+
+module.exports = {
+  registrar,
+  login,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 8 — Criar arquivo de erros personalizados</h3>
+
+          <p>Criar <strong>src/utils/erros.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\utils\erros.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">class ErroValidacao extends Error {
+  constructor(mensagem) {
+    super(mensagem);
+    this.name = "ErroValidacao";
+    this.status = 400;
+  }
+}
+
+class ErroAutenticacao extends Error {
+  constructor(mensagem) {
+    super(mensagem);
+    this.name = "ErroAutenticacao";
+    this.status = 401;
+  }
+}
+
+class ErroNaoEncontrado extends Error {
+  constructor(mensagem) {
+    super(mensagem);
+    this.name = "ErroNaoEncontrado";
+    this.status = 404;
+  }
+}
+
+module.exports = {
+  ErroValidacao,
+  ErroAutenticacao,
+  ErroNaoEncontrado,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 9 — Testar o sistema completo</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>1. Acesse a lista de produtos (veja o log aparecer):</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl http://localhost:3000/produtos
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>2. Tente registrar um usuário sem nome (veja o log de erro):</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl -X POST http://localhost:3000/registrar \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"teste@email.com\",\"senha\":\"123\"}"
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>3. Verifique o arquivo de logs:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type logs\app.log
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <!-- EXPLICANDO O CÓDIGO -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+              <h3>🔹 instanceof</h3>
+
+              <p>
+                O operador <code>instanceof</code> verifica se um erro é de um tipo
+                específico. Isso permite tratar cada tipo de erro de forma diferente.
+              </p>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">if (erro instanceof ErroValidacao) {
+  res.status(400).json({ erro: erro.message });
+}
+                </code></pre>
+              </div>
+
+              <h3>🔹 throw</h3>
+
+              <p>
+                A palavra-chave <code>throw</code> lança um erro, interrompendo o
+                fluxo normal. Dentro de um <code>try/catch</code>, o erro é capturado
+                no bloco <code>catch</code>.
+              </p>
+
+              <h3>🔹 extends Error</h3>
+
+              <p>
+                Ao estender a classe <code>Error</code> do JavaScript, criamos erros
+                personalizados que podem carregar informações extras como
+                <code>status</code> HTTP, facilitando o tratamento no controller.
+              </p>
+
+              <h3>🔹 Singleton com EventEmitter</h3>
+
+              <p>
+                Como estamos usando o padrão singleton (uma única instância),
+                qualquer módulo que der <code>require('./utils/logger')</code>
+                recebe a MESMA instância. Isso significa que listeners registrados em
+                um lugar reagem a eventos emitidos em outro lugar. Muito útil para
+                sistemas de notificação, logging e eventos globais.
+              </p>
+            </div>
+          </section>
+
+          <h2>Resumo: Quando usar cada abordagem</h2>
+
+          <table border="1" cellpadding="10">
+            <thead>
+              <tr>
+                <th>Abordagem</th>
+                <th>Quando usar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EventEmitter</td>
+                <td>Sistemas de eventos, logs, notificações, comunicação entre módulos</td>
+              </tr>
+              <tr>
+                <td>Callbacks</td>
+                <td>APIs de terceiros que seguem padrão error-first, módulos nativos</td>
+              </tr>
+              <tr>
+                <td>Async/Await</td>
+                <td>Todo código novo — é o padrão moderno recomendado</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "implementa sistema de logs com EventEmitter e tratamento de erros com async/await"
+git push --set-upstream origin aula6-eventemitter-callbacks
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar sistema de notificações com EventEmitter</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula6</strong>.
+              </p>
+
+              <p>Dentro dela, desenvolva:</p>
+
+              <ul>
+                <li>
+                  Uma classe <code>Notificador</code> que estende
+                  <strong>EventEmitter</strong>
+                </li>
+                <li>
+                  Método <code>enviarEmail(para, assunto, corpo)</code> que emite um
+                  evento <code>emailEnviado</code>
+                </li>
+                <li>
+                  Método <code>enviarSMS(numero, mensagem)</code> que emite um evento
+                  <code>smsEnviado</code>
+                </li>
+                <li>
+                  Um listener para cada evento que exibe no console os dados da
+                  notificação
+                </li>
+                <li>
+                  Um middleware que dispara uma notificação quando um novo usuário é
+                  registrado (use o notificador no authController)
+                </li>
+              </ul>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <h3><code>src/utils/notificador.js</code></h3>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">const EventEmitter = require("events");
+
+class Notificador extends EventEmitter {
+  enviarEmail(para, assunto, corpo) {
+    const email = { para, assunto, corpo, data: new Date() };
+    this.emit("emailEnviado", email);
+  }
+
+  enviarSMS(numero, mensagem) {
+    const sms = { numero, mensagem, data: new Date() };
+    this.emit("smsEnviado", sms);
+  }
+}
+
+const notificador = new Notificador();
+
+notificador.on("emailEnviado", (email) => {
+  console.log("📧 Email enviado!");
+  console.log(`  Para: ${email.para}`);
+  console.log(`  Assunto: ${email.assunto}`);
+});
+
+notificador.on("smsEnviado", (sms) => {
+  console.log("📱 SMS enviado!");
+  console.log(`  Número: ${sms.numero}`);
+  console.log(`  Mensagem: ${sms.mensagem}`);
+});
+
+module.exports = notificador;
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

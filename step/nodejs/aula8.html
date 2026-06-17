@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8: Cliente HTTP, Formulários, Cookies e Sessões</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Cliente HTTP, Formulários, Cookies e Sessões</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Cliente Web em Node.js, Manipulação de formulários, Cookies e sessões.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Cliente Web no Node.js</h2>
+
+        <p>
+          Até agora usamos o Node.js como <strong>servidor</strong>. Mas ele também
+          pode atuar como <strong>cliente</strong>, fazendo requisições HTTP para
+          outros servidores, APIs externas e serviços web.
+        </p>
+
+        <p>Isso é útil para:</p>
+
+        <ul>
+          <li>Consumir APIs de terceiros (ViaCEP, OpenWeather, GitHub, etc.)</li>
+          <li>Integrar microsserviços</li>
+          <li>Buscar dados de fontes externas</li>
+          <li>Web scraping (coleta de dados de sites)</li>
+          <li>Enviar notificações para serviços externos</li>
+        </ul>
+
+        <h2>Fazendo Requisições HTTP</h2>
+
+        <p>O Node.js oferece várias formas de fazer requisições HTTP como cliente:</p>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Vantagem</th>
+              <th>Desvantagem</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>http.get()</code></td>
+              <td>Nativo, sem dependências</td>
+              <td>Verboso, não suporta Promises nativamente</td>
+            </tr>
+            <tr>
+              <td><code>fetch()</code></td>
+              <td>Nativo (Node 18+), simples, Promise-based</td>
+              <td>Menos controle de baixo nível</td>
+            </tr>
+            <tr>
+              <td><code>axios</code></td>
+              <td>Rico em recursos, interceptors</td>
+              <td>Dependência externa</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Usando o módulo http nativo (cliente)</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const http = require('http');
+
+const options = {
+  hostname: 'jsonplaceholder.typicode.com',
+  path: '/posts/1',
+  method: 'GET'
+};
+
+const req = http.request(options, (res) => {
+  let dados = '';
+
+  res.on('data', (pedaco) => {
+    dados += pedaco;
+  });
+
+  res.on('end', () => {
+    const post = JSON.parse(dados);
+    console.log('Título:', post.title);
+    console.log('Status:', res.statusCode);
+  });
+});
+
+req.on('error', (erro) => {
+  console.log('Erro:', erro.message);
+});
+
+req.end();
+</code></pre>
+        </div>
+
+        <p>
+          Note que o padrão é o mesmo de streams: os dados chegam em pedaços no
+          evento <code>data</code> e o evento <code>end</code> indica conclusão.
+        </p>
+
+        <h3>Enviando dados com POST</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const http = require('http');
+
+const dados = JSON.stringify({
+  title: 'Novo Post via Node.js',
+  body: 'Corpo do post',
+  userId: 1
+});
+
+const options = {
+  hostname: 'jsonplaceholder.typicode.com',
+  path: '/posts',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(dados)
+  }
+};
+
+const req = http.request(options, (res) => {
+  let resposta = '';
+
+  res.on('data', (pedaco) => {
+    resposta += pedaco;
+  });
+
+  res.on('end', () => {
+    console.log('Resposta:', JSON.parse(resposta));
+  });
+});
+
+req.write(dados);
+req.end();
+</code></pre>
+        </div>
+
+        <h2>Usando fetch (nativo a partir do Node 18)</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">async function buscarPost() {
+  const resposta = await fetch(
+    'https://jsonplaceholder.typicode.com/posts/1'
+  );
+
+  if (!resposta.ok) {
+    throw new Error(`Erro HTTP: ${resposta.status}`);
+  }
+
+  const post = await resposta.json();
+
+  console.log('Título:', post.title);
+  console.log('Corpo:', post.body);
+}
+
+buscarPost();
+</code></pre>
+        </div>
+
+        <h3>Fetch com POST</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">async function criarPost() {
+  const resposta = await fetch(
+    'https://jsonplaceholder.typicode.com/posts',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: 'Post criado com fetch',
+        body: 'Corpo do post',
+        userId: 1
+      })
+    }
+  );
+
+  const post = await resposta.json();
+  console.log('Criado:', post);
+}
+
+criarPost();
+</code></pre>
+        </div>
+
+        <h2>Exemplo Real: Buscando CEP com ViaCEP</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">async function buscarEndereco(cep) {
+  const cepLimpo = cep.replace(/\D/g, '');
+
+  const resposta = await fetch(
+    `https://viacep.com.br/ws/${cepLimpo}/json/`
+  );
+
+
+  const dados = await resposta.json();
+
+  if (dados.erro) {
+    throw new Error('CEP não encontrado');
+  }
+
+  return {
+    cep: dados.cep,
+    logradouro: dados.logradouro,
+    bairro: dados.bairro,
+    cidade: dados.localidade,
+    estado: dados.uf
+  };
+}
+
+buscarEndereco('01001000')
+  .then(console.log)
+  .catch(console.error);
+</code></pre>
+        </div>
+
+        <h2>O que são Formulários no Backend?</h2>
+
+        <p>
+          Quando um navegador envia um formulário, os dados podem chegar em
+          diferentes formatos. O Express precisa entender esses formatos para
+          conseguir acessar <code>req.body</code>.
+        </p>
+
+        <h3>Formatos de envio</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Content-Type</th>
+              <th>Origem</th>
+              <th>Middleware Express</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>application/json</code></td>
+              <td>APIs, fetch, axios</td>
+              <td><code>express.json()</code></td>
+            </tr>
+            <tr>
+              <td><code>application/x-www-form-urlencoded</code></td>
+              <td>Formulários HTML tradicionais</td>
+              <td><code>express.urlencoded()</code></td>
+            </tr>
+            <tr>
+              <td><code>multipart/form-data</code></td>
+              <td>Upload de arquivos</td>
+              <td><code>multer</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Formulário HTML tradicional</h3>
+
+        <div class="code-container">
+          <pre><code class="language-html">&lt;form action="/cadastrar" method="POST"&gt;
+  &lt;input type="text" name="nome" placeholder="Nome" /&gt;
+  &lt;input type="email" name="email" placeholder="Email" /&gt;
+  &lt;input type="password" name="senha" placeholder="Senha" /&gt;
+  &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+        </div>
+
+        <p>
+          Esse formulário envia os dados no formato
+          <code>application/x-www-form-urlencoded</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code>nome=Maria&email=maria@email.com&senha=123456
+</code></pre>
+        </div>
+
+        <h3>Configurando o Express para formulários HTML</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/cadastrar', (req, res) => {
+  console.log(req.body);
+
+  res.send('Cadastro recebido!');
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 express.urlencoded({ extended: true })</h3>
+
+          <p>
+            Esse middleware interpreta dados enviados por formulários HTML
+            tradicionais. A opção <code>extended: true</code> permite objetos
+            aninhados (ex: <code>endereco[rua]=X</code>). Com
+            <code>extended: false</code>, apenas strings e arrays simples.
+          </p>
+
+          <h3>🔹 req.body</h3>
+
+          <p>
+            Após registrar os middlewares <code>express.json()</code> e
+            <code>express.urlencoded()</code>, o <code>req.body</code> estará
+            disponível automaticamente para requisições POST, PUT e PATCH.
+          </p>
+        </div>
+
+        <h2>O que são Cookies?</h2>
+
+        <p>
+          Cookies são pequenos pedaços de dados que o servidor envia para o
+          navegador e que o navegador devolve automaticamente em requisições
+          seguintes. Eles são armazenados no lado do cliente.
+        </p>
+
+        <p>Usos comuns de cookies:</p>
+
+        <ul>
+          <li>Manter preferências do usuário (tema, idioma)</li>
+          <li>Rastrear sessões de navegação</li>
+          <li>Armazenar tokens de autenticação</li>
+          <li>Carregar carrinhos de compras</li>
+        </ul>
+
+        <h3>Instalando o cookie-parser</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm install cookie-parser
+</code></pre>
+        </div>
+
+        <h3>Enviando e lendo cookies</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+app.use(cookieParser());
+
+app.get('/definir-cookie', (req, res) => {
+  res.cookie('tema', 'escuro', {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true
+  });
+
+  res.send('Cookie definido!');
+});
+
+app.get('/ler-cookie', (req, res) => {
+  const tema = req.cookies.tema || 'claro';
+
+  res.json({ tema: tema });
+});
+
+app.get('/remover-cookie', (req, res) => {
+  res.clearCookie('tema');
+
+  res.send('Cookie removido!');
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 res.cookie()</h3>
+
+          <p>Define um cookie no navegador do cliente. Principais opções:</p>
+
+          <table border="1" cellpadding="10">
+            <thead>
+              <tr>
+                <th>Opção</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>maxAge</code></td>
+                <td>Tempo de vida em milissegundos</td>
+              </tr>
+              <tr>
+                <td><code>httpOnly</code></td>
+                <td>Impede acesso via JavaScript no navegador (mais seguro)</td>
+              </tr>
+              <tr>
+                <td><code>secure</code></td>
+                <td>Só envia em conexões HTTPS</td>
+              </tr>
+              <tr>
+                <td><code>sameSite</code></td>
+                <td>Proteção contra CSRF (strict, lax, none)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>🔹 req.cookies</h3>
+
+          <p>
+            Contém todos os cookies enviados pelo navegador na requisição atual.
+            É um objeto onde a chave é o nome do cookie.
+          </p>
+        </div>
+
+        <h2>O que são Sessões?</h2>
+
+        <p>
+          Sessões permitem manter dados do usuário entre múltiplas requisições.
+          Diferente de cookies (armazenados no cliente), os dados da sessão ficam
+          no servidor. Apenas um identificador (session ID) é armazenado no cookie
+          do navegador.
+        </p>
+
+        <h3>Instalando express-session</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm install express-session
+</code></pre>
+        </div>
+
+        <h3>Configurando sessões</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require('express');
+const session = require('express-session');
+
+const app = express();
+
+app.use(session({
+  secret: 'segredo-muito-forte-aqui',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 60 * 1000,
+    httpOnly: true
+  }
+}));
+
+app.post('/login', (req, res) => {
+  const { email } = req.body;
+
+  req.session.usuario = {
+    email: email,
+    logadoEm: new Date()
+  };
+
+  res.json({ mensagem: 'Login realizado' });
+});
+
+app.get('/perfil', (req, res) => {
+  if (!req.session.usuario) {
+    return res.status(401).json({
+      erro: 'Faça login primeiro'
+    });
+  }
+
+  res.json({
+    usuario: req.session.usuario
+  });
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy((erro) => {
+    if (erro) {
+      return res.status(500).json({ erro: 'Erro ao encerrar sessão' });
+    }
+
+    res.json({ mensagem: 'Logout realizado' });
+  });
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 secret</h3>
+
+          <p>
+            Usado para assinar o cookie de sessão, garantindo que não foi alterado
+            pelo cliente. Deve ser uma string longa e aleatória — NUNCA coloque em
+            código (use variável de ambiente).
+          </p>
+
+          <h3>🔹 resave: false</h3>
+
+          <p>
+            Evita salvar a sessão de volta no armazenamento se ela não foi
+            modificada. Reduz operações desnecessárias.
+          </p>
+
+          <h3>🔹 saveUninitialized: false</h3>
+
+          <p>
+            Não cria uma sessão para usuários que ainda não "fizeram nada".
+            Importante para compliance com leis como LGPD/GDPR.
+          </p>
+
+          <h3>🔹 req.session.destroy()</h3>
+
+          <p>
+            Remove completamente a sessão do servidor e o cookie do navegador.
+          </p>
+
+          <h3>🔹 Sessão vs JWT</h3>
+
+          <table border="1" cellpadding="10">
+            <thead>
+              <tr>
+                <th>Sessão (Stateful)</th>
+                <th>JWT (Stateless)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dados ficam no servidor</td>
+                <td>Dados ficam no token</td>
+              </tr>
+              <tr>
+                <td>Fácil invalidar (destroy)</td>
+                <td>Difícil invalidar (precisa blacklist)</td>
+              </tr>
+              <tr>
+                <td>Não escala bem horizontalmente</td>
+                <td>Escala melhor (qualquer servidor valida)</td>
+              </tr>
+              <tr>
+                <td>Ideal para apps tradicionais</td>
+                <td>Ideal para APIs e microsserviços</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Consulta de CEP, Cookies e Sessões</h2>
+
+          <p>
+            Vamos adicionar ao nosso projeto uma rota que consulta um CEP usando a
+            API ViaCEP, além de implementar cookies de preferência e sessões de
+            contador de visitas. Use o projeto da Aula 7 como base.
+          </p>
+
+          <h3>Passo 0 — Criar branch da aula</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git checkout aula7-buffers-streams
+git pull
+git checkout -b aula8-cliente-cookies-sessoes
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Instalar dependências</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">npm install cookie-parser express-session
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Atualizar app.js com cookies e sessões</h3>
+
+          <p>Atualize <strong>src/app.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
+const arquivoRoutes = require("./routes/arquivoRoutes");
+const authRoutes = require("./routes/authRoutes");
+const streamRoutes = require("./routes/streamRoutes");
+const cepRoutes = require("./routes/cepRoutes");
+const sessaoRoutes = require("./routes/sessaoRoutes");
+
+const loggerMiddleware = require("./middlewares/loggerMiddleware");
+
+const app = express();
+
+app.use(loggerMiddleware);
+
+app.use(cookieParser());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "segredo-super-seguro",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 60 * 1000,
+    httpOnly: true,
+  },
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(authRoutes);
+app.use(produtoRoutes);
+app.use(usuarioRoutes);
+app.use(arquivoRoutes);
+app.use(streamRoutes);
+app.use(cepRoutes);
+app.use(sessaoRoutes);
+
+module.exports = app;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Criar Controller de Busca de CEP</h3>
+
+          <p>Criar <strong>src/controllers/cepController.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\controllers\cepController.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const logger = require("../utils/logger");
+
+const buscarCEP = async (req, res) => {
+  const { cep } = req.params;
+
+  const cepLimpo = cep.replace(/\D/g, "");
+
+  if (cepLimpo.length !== 8) {
+    return res.status(400).json({
+      erro: "CEP deve ter 8 dígitos",
+    });
+  }
+
+  try {
+    const resposta = await fetch(
+      `https://viacep.com.br/ws/${cepLimpo}/json/`
+    );
+
+    if (!resposta.ok) {
+      throw new Error("Serviço de CEP indisponível");
+    }
+
+    const dados = await resposta.json();
+
+    if (dados.erro) {
+      return res.status(404).json({
+        erro: "CEP não encontrado",
+      });
+    }
+
+    logger.info(`CEP consultado: ${cepLimpo}`);
+
+    res.json({
+      cep: dados.cep,
+      logradouro: dados.logradouro,
+      bairro: dados.bairro,
+      cidade: dados.localidade,
+      estado: dados.uf,
+    });
+  } catch (erro) {
+    logger.erro(`Erro ao buscar CEP: ${erro.message}`);
+
+    res.status(500).json({
+      erro: "Erro ao consultar serviço de CEP",
+    });
+  }
+};
+
+module.exports = {
+  buscarCEP,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Criar Rotas de CEP</h3>
+
+          <p>Criar <strong>src/routes/cepRoutes.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\routes\cepRoutes.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const { buscarCEP } = require("../controllers/cepController");
+
+router.get("/cep/:cep", buscarCEP);
+
+module.exports = router;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 5 — Criar Controller de Sessão e Cookies</h3>
+
+          <p>Criar <strong>src/controllers/sessaoController.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\controllers\sessaoController.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const logger = require("../utils/logger");
+
+const definirTema = (req, res) => {
+  const { tema } = req.body;
+
+  if (!tema || !["claro", "escuro"].includes(tema)) {
+    return res.status(400).json({
+      erro: "Tema inválido. Use 'claro' ou 'escuro'",
+    });
+  }
+
+  res.cookie("temaPreferido", tema, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  });
+
+  logger.info(`Tema alterado para: ${tema}`);
+
+  res.json({ tema: tema });
+};
+
+const obterTema = (req, res) => {
+  const tema = req.cookies.temaPreferido || "claro";
+
+  res.json({ tema: tema });
+};
+
+const abrirSessao = (req, res) => {
+  req.session.visitas = (req.session.visitas || 0) + 1;
+
+  res.json({
+    mensagem: "Sessão iniciada",
+    visitas: req.session.visitas,
+    sessaoId: req.sessionID,
+  });
+};
+
+const statusSessao = (req, res) => {
+  if (!req.session.visitas) {
+    return res.json({
+      autenticado: false,
+      visitas: 0,
+    });
+  }
+
+  res.json({
+    autenticado: true,
+    visitas: req.session.visitas,
+    sessaoId: req.sessionID,
+  });
+};
+
+const encerrarSessao = (req, res) => {
+  req.session.destroy((erro) => {
+    if (erro) {
+      return res.status(500).json({
+        erro: "Erro ao encerrar sessão",
+      });
+    }
+
+    res.clearCookie("connect.sid");
+
+    res.json({ mensagem: "Sessão encerrada" });
+  });
+};
+
+module.exports = {
+  definirTema,
+  obterTema,
+  abrirSessao,
+  statusSessao,
+  encerrarSessao,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Criar Rotas de Sessão</h3>
+
+          <p>Criar <strong>src/routes/sessaoRoutes.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\routes\sessaoRoutes.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  definirTema,
+  obterTema,
+  abrirSessao,
+  statusSessao,
+  encerrarSessao,
+} = require("../controllers/sessaoController");
+
+router.post("/tema", definirTema);
+router.get("/tema", obterTema);
+
+router.get("/sessao/iniciar", abrirSessao);
+router.get("/sessao/status", statusSessao);
+router.get("/sessao/encerrar", encerrarSessao);
+
+module.exports = router;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 7 — Rodar e testar</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Teste de busca de CEP:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl http://localhost:3000/cep/01001000
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Resposta esperada:</p>
+
+          <div class="code-container">
+            <pre><code class="language-json">{
+  "cep": "01001-000",
+  "logradouro": "Praça da Sé",
+  "bairro": "Sé",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Teste de tema (cookies):</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl -X POST http://localhost:3000/tema \
+  -H "Content-Type: application/json" \
+  -d "{\"tema\":\"escuro\"}" \
+  -c cookies.txt
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Teste de sessão (contador de visitas):</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl http://localhost:3000/sessao/iniciar -b cookies.txt -c cookies.txt
+curl http://localhost:3000/sessao/iniciar -b cookies.txt -c cookies.txt
+curl http://localhost:3000/sessao/status -b cookies.txt
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>O contador de visitas deve incrementar a cada chamada.</p>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "implementa cliente HTTP, cookies, sessoes e integracao com ViaCEP"
+git push --set-upstream origin aula8-cliente-cookies-sessoes
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Consumir API de clima + carrinho com sessão</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula8</strong>.
+              </p>
+
+              <p>Desenvolva:</p>
+
+              <ul>
+                <li>
+                  Uma rota <code>GET /clima/:cidade</code> que busca a temperatura
+                  em uma API pública (sugestão:
+                  <code>https://wttr.in/{cidade}?format=j1</code>)
+                </li>
+                <li>
+                  Uma rota <code>POST /carrinho/adicionar</code> que adiciona itens
+                  a um carrinho armazenado em sessão
+                </li>
+                <li>
+                  Uma rota <code>GET /carrinho</code> que retorna os itens do
+                  carrinho
+                </li>
+                <li>
+                  Uma rota <code>POST /carrinho/limpar</code> que limpa o carrinho
+                </li>
+                <li>O carrinho deve ser um array de objetos na sessão</li>
+              </ul>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">const buscarClima = async (req, res) => {
+  const { cidade } = req.params;
+
+  const resposta = await fetch(
+    `https://wttr.in/${cidade}?format=j1`
+  );
+
+  const dados = await resposta.json();
+
+  const atual = dados.current_condition[0];
+
+  res.json({
+    cidade: cidade,
+    temperatura: atual.temp_C + "°C",
+    descricao: atual.weatherDesc[0].value,
+    umidade: atual.humidity + "%",
+    vento: atual.windSpeed + " km/h",
+  });
+};
+
+const adicionarAoCarrinho = (req, res) => {
+  if (!req.session.carrinho) {
+    req.session.carrinho = [];
+  }
+
+  req.session.carrinho.push(req.body);
+
+  res.json({
+    mensagem: "Item adicionado",
+    carrinho: req.session.carrinho,
+  });
+};
+
+const verCarrinho = (req, res) => {
+  res.json({
+    carrinho: req.session.carrinho || [],
+  });
+};
+
+const limparCarrinho = (req, res) => {
+  req.session.carrinho = [];
+
+  res.json({
+    mensagem: "Carrinho limpo",
+  });
+};
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

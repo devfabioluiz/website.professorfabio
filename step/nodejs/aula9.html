@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9: Arquivos Estáticos e PostgreSQL</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Arquivos Estáticos e Integração com PostgreSQL</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Arquivos estáticos, Integração com PostgreSQL, Aplicar princípios de
+        modelagem relacional.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Arquivos Estáticos no Express</h2>
+
+        <p>
+          Arquivos estáticos são recursos que o servidor entrega exatamente como
+          estão no disco: imagens, arquivos CSS, JavaScript de frontend, fontes,
+          PDFs e qualquer outro arquivo que não precise ser processado pelo
+          servidor.
+        </p>
+
+        <p>
+          O Express oferece o middleware <strong>express.static()</strong> para
+          servir esses arquivos de forma eficiente e com cache automático.
+        </p>
+
+        <h3>Configuração básica</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require('express');
+const path = require('path');
+
+const app = express();
+
+app.use(express.static('public'));
+</code></pre>
+        </div>
+
+        <p>
+          Com essa configuração, a pasta <strong>public</strong> se torna pública.
+          Um arquivo <code>public/css/style.css</code> pode ser acessado pelo
+          navegador como:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">http://localhost:3000/css/style.css
+</code></pre>
+        </div>
+
+        <h3>Usando caminho absoluto (recomendado)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const path = require('path');
+
+app.use(
+  express.static(path.join(__dirname, '../public'))
+);
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 path.join()</h3>
+
+          <p>
+            Constrói caminhos de forma segura, independente do sistema operacional
+            (Windows usa <code>\</code>, Linux/Mac usam <code>/</code>). SEMPRE
+            use <code>path.join()</code> em vez de concatenar strings.
+          </p>
+
+          <h3>🔹 __dirname</h3>
+
+          <p>
+            Contém o caminho absoluto do diretório onde o arquivo atual está. Isso
+            garante que o caminho funcione independente de onde o comando
+            <code>node</code> foi executado.
+          </p>
+
+          <h3>🔹 Como funciona o express.static()</h3>
+
+          <ol>
+            <li>O navegador solicita <code>/css/style.css</code></li>
+            <li>O Express procura o arquivo na pasta configurada</li>
+            <li>Se encontrar, envia o arquivo com o Content-Type correto</li>
+            <li>Se não encontrar, chama <code>next()</code> (próximo middleware)</li>
+          </ol>
+        </div>
+
+        <h3>Múltiplas pastas estáticas</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">app.use('/css', express.static(path.join(__dirname, '../public/css')));
+app.use('/js', express.static(path.join(__dirname, '../public/js')));
+app.use('/imagens', express.static(path.join(__dirname, '../public/imagens')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+</code></pre>
+        </div>
+
+        <h3>Cache e performance</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">app.use(
+  express.static(path.join(__dirname, '../public'), {
+    maxAge: '7d',
+    etag: true,
+    immutable: true
+  })
+);
+</code></pre>
+        </div>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Opção</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>maxAge</code></td>
+              <td>Tempo que o navegador pode usar o cache (ms ou string como '7d')</td>
+            </tr>
+            <tr>
+              <td><code>etag</code></td>
+              <td>Gera um hash do arquivo para validação condicional (304 Not Modified)</td>
+            </tr>
+            <tr>
+              <td><code>immutable</code></td>
+              <td>Informa que o arquivo nunca muda durante seu maxAge</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>O que é PostgreSQL?</h2>
+
+        <p>
+          PostgreSQL é um banco de dados <strong>relacional</strong> open source,
+          considerado um dos mais robustos e completos do mercado. Diferente do
+          MongoDB (NoSQL, documentos), o PostgreSQL organiza dados em
+          <strong>tabelas</strong> com <strong>colunas</strong> e
+          <strong>linhas</strong>, com relacionamentos entre elas.
+        </p>
+
+        <h3>MongoDB vs PostgreSQL</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>MongoDB (NoSQL)</th>
+              <th>PostgreSQL (Relacional)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Modelo</td>
+              <td>Documentos (JSON/BSON)</td>
+              <td>Tabelas (linhas e colunas)</td>
+            </tr>
+            <tr>
+              <td>Schema</td>
+              <td>Flexível (schemaless)</td>
+              <td>Rígido (schema definido)</td>
+            </tr>
+            <tr>
+              <td>Relacionamentos</td>
+              <td>Embute ou referencia</td>
+              <td>Foreign keys e JOINs</td>
+            </tr>
+            <tr>
+              <td>Transações</td>
+              <td>Limitado (a partir da 4.0)</td>
+              <td>Completo (ACID nativo)</td>
+            </tr>
+            <tr>
+              <td>Quando usar</td>
+              <td>Dados flexíveis, alta escrita</td>
+              <td>Dados estruturados, integridade</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Instalando e Configurando PostgreSQL</h2>
+
+        <h3>Instalação local</h3>
+
+        <p>Baixe em: <code>https://www.postgresql.org/download/</code></p>
+
+        <p>Durante a instalação, anote:</p>
+        <ul>
+          <li><strong>Porta:</strong> 5432 (padrão)</li>
+          <li><strong>Usuário:</strong> postgres</li>
+          <li><strong>Senha:</strong> a que você definir</li>
+        </ul>
+
+        <h3>Criando o banco de dados</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">CREATE DATABASE meubanco;
+</code></pre>
+        </div>
+
+        <h3>Criando tabelas</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">CREATE TABLE categorias (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL UNIQUE,
+  descricao TEXT,
+  criado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE produtos (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  preco DECIMAL(10, 2) NOT NULL CHECK (preco > 0),
+  estoque INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+  categoria_id INTEGER REFERENCES categorias(id),
+  criado_em TIMESTAMP DEFAULT NOW(),
+  atualizado_em TIMESTAMP DEFAULT NOW()
+);
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 SERIAL</h3>
+          <p>
+            Tipo especial do PostgreSQL que cria um campo auto-incrementável.
+            Equivalente ao AUTO_INCREMENT do MySQL.
+          </p>
+
+          <h3>🔹 PRIMARY KEY</h3>
+          <p>
+            Identificador único de cada linha. Garante que não haja duplicatas e
+            que o campo nunca seja nulo.
+          </p>
+
+          <h3>🔹 FOREIGN KEY (REFERENCES)</h3>
+          <p>
+            Cria um relacionamento entre tabelas. O <code>categoria_id</code> na
+            tabela produtos referencia o <code>id</code> da tabela categorias. O
+            banco impede que você insira um <code>categoria_id</code> que não existe.
+          </p>
+
+          <h3>🔹 CHECK</h3>
+          <p>
+            Restrição que valida os dados antes de inserir. <code>CHECK (preco > 0)</code>
+            impede preços negativos ou zero.
+          </p>
+        </div>
+
+        <h2>Conectando Node.js ao PostgreSQL</h2>
+
+        <p>
+          Usaremos a biblioteca <strong>pg</strong> (node-postgres), a mais popular
+          para conectar Node.js ao PostgreSQL.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm install pg
+</code></pre>
+        </div>
+
+        <h3>Configurando a conexão</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Pool } = require('pg');
+
+const pool = new Pool({
+  host: process.env.PG_HOST || 'localhost',
+  port: process.env.PG_PORT || 5432,
+  user: process.env.PG_USER || 'postgres',
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE || 'meubanco'
+});
+
+module.exports = pool;
+</code></pre>
+        </div>
+
+        <h3>Pool de Conexões</h3>
+
+        <p>
+          O <strong>Pool</strong> mantém um conjunto de conexões abertas e
+          reutilizáveis. Isso evita o custo de abrir/fechar conexões a cada
+          requisição. É a forma recomendada para aplicações web.
+        </p>
+
+        <h3>Executando queries</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require('./database/pg');
+
+async function listarProdutos() {
+  const resultado = await pool.query(
+    'SELECT * FROM produtos ORDER BY nome'
+  );
+
+  return resultado.rows;
+}
+
+async function criarProduto(dados) {
+  const { nome, preco, estoque, categoria_id } = dados;
+
+  const resultado = await pool.query(
+    `INSERT INTO produtos (nome, preco, estoque, categoria_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [nome, preco, estoque, categoria_id]
+  );
+
+  return resultado.rows[0];
+}
+
+async function buscarProdutoPorId(id) {
+  const resultado = await pool.query(
+    'SELECT * FROM produtos WHERE id = $1',
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+}
+
+async function atualizarProduto(id, dados) {
+  const { nome, preco, estoque } = dados;
+
+  const resultado = await pool.query(
+    `UPDATE produtos
+     SET nome = $1, preco = $2, estoque = $3,
+         atualizado_em = NOW()
+     WHERE id = $4
+     RETURNING *`,
+    [nome, preco, estoque, id]
+  );
+
+  return resultado.rows[0] || null;
+}
+
+async function deletarProduto(id) {
+  const resultado = await pool.query(
+    'DELETE FROM produtos WHERE id = $1 RETURNING *',
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+}
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 Parâmetros com $1, $2, $3...</h3>
+
+          <p>
+            NUNCA concatene valores diretamente na string SQL. Isso abre brecha
+            para <strong>SQL Injection</strong>. O <code>pg</code> usa
+            <strong>parameterized queries</strong>: os placeholders <code>$1</code>,
+            <code>$2</code> são substituídos de forma segura pelo segundo argumento
+            (o array de valores).
+          </p>
+
+          <h3>🔹 RETURNING *</h3>
+
+          <p>
+            Clausula específica do PostgreSQL que retorna as linhas afetadas pela
+            operação. Muito útil para INSERT, UPDATE e DELETE — evita uma query
+            extra de SELECT.
+          </p>
+
+          <h3>🔹 resultado.rows</h3>
+
+          <p>
+            O <code>pool.query()</code> retorna um objeto com várias propriedades.
+            A mais usada é <code>.rows</code>, que é um array de objetos onde cada
+            objeto é uma linha da tabela.
+          </p>
+        </div>
+
+        <h2>JOINs: Relacionando Tabelas</h2>
+
+        <p>
+          JOIN é a operação mais poderosa do SQL. Ela combina dados de duas ou
+          mais tabelas baseadas em um relacionamento.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">SELECT
+  p.id,
+  p.nome,
+  p.preco,
+  p.estoque,
+  c.nome AS categoria
+
+FROM produtos p
+
+JOIN categorias c
+  ON p.categoria_id = c.id
+
+ORDER BY p.nome;
+</code></pre>
+        </div>
+
+        <p>Resultado:</p>
+
+        <div class="code-container">
+          <pre><code> id |    nome     | preco | estoque |  categoria
+----+-------------+-------+---------+-------------
+  1 | Mouse       | 120.00|      50 | Periféricos
+  2 | Monitor     |1500.00|      10 | Periféricos
+  3 | PostgreSQL  |  0.00 |   99999 | Livros
+</code></pre>
+        </div>
+
+        <h3>Tipos de JOIN</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Retorna</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>INNER JOIN</code></td>
+              <td>Apenas registros com correspondência em ambas as tabelas</td>
+            </tr>
+            <tr>
+              <td><code>LEFT JOIN</code></td>
+              <td>Todos da tabela esquerda + correspondências da direita (ou NULL)</td>
+            </tr>
+            <tr>
+              <td><code>RIGHT JOIN</code></td>
+              <td>Todos da tabela direita + correspondências da esquerda (ou NULL)</td>
+            </tr>
+            <tr>
+              <td><code>FULL JOIN</code></td>
+              <td>Todos os registros de ambas as tabelas</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">async function listarProdutosComCategoria() {
+  const resultado = await pool.query(`
+    SELECT
+      p.id,
+      p.nome,
+      p.preco,
+      p.estoque,
+      c.nome AS categoria_nome,
+      c.id AS categoria_id
+
+    FROM produtos p
+
+    LEFT JOIN categorias c
+      ON p.categoria_id = c.id
+
+    ORDER BY c.nome, p.nome
+  `);
+
+  return resultado.rows;
+}
+</code></pre>
+        </div>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Integrando PostgreSQL e Servindo Arquivos Estáticos</h2>
+
+          <p>
+            Vamos adicionar uma pasta pública ao projeto e criar um módulo de
+            produtos usando PostgreSQL (mantendo o MongoDB para usuários). Use o
+            projeto da Aula 8 como base.
+          </p>
+
+          <h3>Passo 0 — Criar branch da aula</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git checkout aula8-cliente-cookies-sessoes
+git pull
+git checkout -b aula9-estaticos-postgresql
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Instalar dependências</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">npm install pg
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Adicionar variáveis de ambiente</h3>
+
+          <p>No arquivo <strong>.env</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">PG_HOST=localhost
+PG_PORT=5432
+PG_USER=postgres
+PG_PASSWORD=sua_senha
+PG_DATABASE=meubanco
+SESSION_SECRET=segredo-super-seguro
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Criar conexão com PostgreSQL</h3>
+
+          <p>Criar <strong>src/database/pg.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\database\pg.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const { Pool } = require("pg");
+
+const pool = new Pool({
+  host: process.env.PG_HOST || "localhost",
+  port: process.env.PG_PORT || 5432,
+  user: process.env.PG_USER || "postgres",
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE || "meubanco",
+});
+
+pool.on("error", (erro) => {
+  console.log("Erro no pool do PostgreSQL:", erro.message);
+});
+
+module.exports = pool;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Criar script de migração (criar tabelas)</h3>
+
+          <p>Criar <strong>src/database/migrate.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\database\migrate.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">require("dotenv").config();
+
+const pool = require("./pg");
+
+const criarTabelas = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS categorias (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL UNIQUE,
+        descricao TEXT,
+        criado_em TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS produtos_pg (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(150) NOT NULL,
+        preco DECIMAL(10, 2) NOT NULL CHECK (preco > 0),
+        estoque INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+        categoria_id INTEGER REFERENCES categorias(id),
+        criado_em TIMESTAMP DEFAULT NOW(),
+        atualizado_em TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    console.log("Tabelas criadas com sucesso!");
+
+    process.exit(0);
+  } catch (erro) {
+    console.log("Erro ao criar tabelas:", erro.message);
+    process.exit(1);
+  }
+};
+
+criarTabelas();
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 5 — Executar a migração</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node src\database\migrate.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Criar Repository para PostgreSQL</h3>
+
+          <p>Criar <strong>src/repositories/produtoPgRepository.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">mkdir src\repositories
+type nul > src\repositories\produtoPgRepository.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listarTodos = async () => {
+  const resultado = await pool.query(`
+    SELECT
+      p.id, p.nome, p.preco, p.estoque,
+      c.nome AS categoria_nome, p.categoria_id,
+      p.criado_em, p.atualizado_em
+    FROM produtos_pg p
+    LEFT JOIN categorias c ON p.categoria_id = c.id
+    ORDER BY p.nome
+  `);
+
+  return resultado.rows;
+};
+
+const buscarPorId = async (id) => {
+  const resultado = await pool.query(
+    "SELECT * FROM produtos_pg WHERE id = $1",
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const criar = async (dados) => {
+  const { nome, preco, estoque, categoria_id } = dados;
+
+  const resultado = await pool.query(
+    `INSERT INTO produtos_pg (nome, preco, estoque, categoria_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [nome, preco, estoque, categoria_id]
+  );
+
+  return resultado.rows[0];
+};
+
+const atualizar = async (id, dados) => {
+  const { nome, preco, estoque, categoria_id } = dados;
+
+  const resultado = await pool.query(
+    `UPDATE produtos_pg
+     SET nome = $1, preco = $2, estoque = $3,
+         categoria_id = $4, atualizado_em = NOW()
+     WHERE id = $5
+     RETURNING *`,
+    [nome, preco, estoque, categoria_id, id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM produtos_pg WHERE id = $1 RETURNING *",
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+module.exports = {
+  listarTodos,
+  buscarPorId,
+  criar,
+  atualizar,
+  deletar,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 7 — Criar Controller para produtos PostgreSQL</h3>
+
+          <p>Criar <strong>src/controllers/produtoPgController.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\controllers\produtoPgController.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const repository = require("../repositories/produtoPgRepository");
+const logger = require("../utils/logger");
+
+const listar = async (req, res) => {
+  try {
+    const produtos = await repository.listarTodos();
+    res.json(produtos);
+  } catch (erro) {
+    logger.erro(`Erro ao listar produtos PG: ${erro.message}`);
+    res.status(500).json({ erro: "Erro ao listar produtos" });
+  }
+};
+
+const criar = async (req, res) => {
+  try {
+    const { nome, preco, estoque, categoria_id } = req.body;
+
+    if (!nome || !preco) {
+      return res.status(400).json({
+        erro: "Nome e preço são obrigatórios",
+      });
+    }
+
+    const produto = await repository.criar({
+      nome,
+      preco: Number(preco),
+      estoque: Number(estoque) || 0,
+      categoria_id: categoria_id || null,
+    });
+
+    logger.info(`Produto PG criado: ${nome}`);
+
+    res.status(201).json(produto);
+  } catch (erro) {
+    logger.erro(`Erro ao criar produto PG: ${erro.message}`);
+    res.status(500).json({ erro: "Erro ao criar produto" });
+  }
+};
+
+const deletar = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const produto = await repository.deletar(id);
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json({ mensagem: "Produto removido", produto });
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao deletar produto" });
+  }
+};
+
+module.exports = { listar, criar, deletar };
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 8 — Criar rota para produtos PostgreSQL</h3>
+
+          <p>Criar <strong>src/routes/produtoPgRoutes.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\routes\produtoPgRoutes.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  listar,
+  criar,
+  deletar,
+} = require("../controllers/produtoPgController");
+
+const autenticar = require("../middlewares/autenticar");
+
+router.get("/pg/produtos", listar);
+router.post("/pg/produtos", autenticar, criar);
+router.delete("/pg/produtos/:id", autenticar, deletar);
+
+module.exports = router;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 9 — Criar pasta public com página HTML</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">mkdir public
+type nul > public\index.html
+type nul > public\estilo.css
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p><strong>public/index.html</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Minha Aplicação Node.js&lt;/title&gt;
+  &lt;link rel="stylesheet" href="/estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bem-vindo à API!&lt;/h1&gt;
+  &lt;p&gt;Esta página é servida como arquivo estático pelo Express.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/produtos"&gt;Produtos (MongoDB)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/pg/produtos"&gt;Produtos (PostgreSQL)&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/cep/01001000"&gt;Buscar CEP&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 10 — Atualizar app.js com arquivos estáticos</h3>
+
+          <p>Adicione no <strong>src/app.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+
+const produtoPgRoutes = require("./routes/produtoPgRoutes");
+// ... demais imports ...
+
+const app = express();
+
+app.use(loggerMiddleware);
+
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.use(cookieParser());
+// ... resto do app.js ...
+app.use(produtoPgRoutes);
+
+module.exports = app;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 11 — Rodar e testar</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>No navegador:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">http://localhost:3000/
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Testar a API PostgreSQL:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">curl http://localhost:3000/pg/produtos
+
+curl -X POST http://localhost:3000/pg/produtos \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Teclado\",\"preco\":250,\"estoque\":20}"
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "implementa arquivos estaticos, PostgreSQL e repository pattern"
+git push --set-upstream origin aula9-estaticos-postgresql
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar CRUD completo de categorias com PostgreSQL</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula9</strong>.
+              </p>
+
+              <p>Desenvolva:</p>
+
+              <ul>
+                <li>Repository para categorias (CRUD completo)</li>
+                <li>Controller para categorias</li>
+                <li>Rotas REST para categorias</li>
+                <li>
+                  Rota <code>GET /pg/produtos-por-categoria/:categoriaId</code> que
+                  lista produtos de uma categoria específica usando JOIN
+                </li>
+                <li>
+                  Uma página HTML servida estaticamente com uma tabela que exibe as
+                  categorias (use fetch para consumir a API)
+                </li>
+              </ul>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listar = async () => {
+  const resultado = await pool.query(
+    "SELECT * FROM categorias ORDER BY nome"
+  );
+  return resultado.rows;
+};
+
+const criar = async (dados) => {
+  const resultado = await pool.query(
+    `INSERT INTO categorias (nome, descricao)
+     VALUES ($1, $2) RETURNING *`,
+    [dados.nome, dados.descricao]
+  );
+  return resultado.rows[0];
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM categorias WHERE id = $1 RETURNING *",
+    [id]
+  );
+  return resultado.rows[0];
+};
+
+const buscarProdutosPorCategoria = async (categoriaId) => {
+  const resultado = await pool.query(
+    `SELECT p.*, c.nome AS categoria_nome
+     FROM produtos_pg p
+     JOIN categorias c ON p.categoria_id = c.id
+     WHERE c.id = $1
+     ORDER BY p.nome`,
+    [categoriaId]
+  );
+  return resultado.rows;
+};
+
+module.exports = { listar, criar, deletar, buscarProdutosPorCategoria };
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

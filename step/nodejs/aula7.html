@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7: Buffers, Streams e Objetos Globais</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">Node.js</h4>
+      <h4 class="text-center">Buffers, Streams e Objetos Globais</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Buffers: criação, leitura, escrita e manipulação; Streams: leitura, escrita,
+        duplex e transform; Objetos globais e funções globais.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O que são Buffers?</h2>
+
+        <p>
+          <strong>Buffer</strong> é uma área de memória temporária usada para
+          armazenar dados binários. No Node.js, o Buffer é uma classe nativa que
+          lida diretamente com bytes — essencial para manipular arquivos, imagens,
+          vídeos, streams de rede e dados criptografados.
+        </p>
+
+        <p>
+          Pense no Buffer como um contêiner de bytes: ele armazena dados brutos
+          antes de serem processados, transformados ou enviados para algum lugar.
+        </p>
+
+        <h3>Por que precisamos de Buffers?</h3>
+
+        <ul>
+          <li>JavaScript não foi projetado para manipular dados binários</li>
+          <li>Arquivos, imagens e vídeos são sequências de bytes</li>
+          <li>Protocolos de rede (TCP, HTTP) transmitem bytes</li>
+          <li>Criptografia trabalha com dados binários</li>
+          <li>O Buffer preenche essa lacuna no JavaScript</li>
+        </ul>
+
+        <h2>Criando Buffers</h2>
+
+        <h3>A partir de uma string</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const buffer = Buffer.from('Olá, Node.js');
+
+console.log(buffer);
+console.log(buffer.toString());
+console.log(buffer.toString('hex'));
+console.log(buffer.toString('base64'));
+</code></pre>
+        </div>
+
+        <p>Resultado:</p>
+
+        <div class="code-container">
+          <pre><code>&lt;Buffer 4f 6c c3 a1 2c 20 4e 6f 64 65 2e 6a 73&gt;
+Olá, Node.js
+4f6cc3a12c204e6f64652e6a73
+T2zDoSwgTm9kZS5qcw==
+</code></pre>
+        </div>
+
+        <h3>A partir de um tamanho específico</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const bufferVazio = Buffer.alloc(10);
+console.log(bufferVazio);
+
+const bufferPreenchido = Buffer.alloc(10, 'A');
+console.log(bufferPreenchido.toString());
+
+const bufferNaoInicializado = Buffer.allocUnsafe(10);
+console.log(bufferNaoInicializado);
+</code></pre>
+        </div>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+              <th>Performance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Buffer.alloc(n)</code></td>
+              <td>Cria buffer preenchido com zeros</td>
+              <td>Mais lento, mais seguro</td>
+            </tr>
+            <tr>
+              <td><code>Buffer.allocUnsafe(n)</code></td>
+              <td>Cria buffer sem limpar memória</td>
+              <td>Mais rápido, pode conter dados antigos</td>
+            </tr>
+            <tr>
+              <td><code>Buffer.from(dado)</code></td>
+              <td>Cria buffer a partir de string/array</td>
+              <td>Médio</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Manipulando Buffers</h2>
+
+        <h3>Lendo e escrevendo bytes individuais</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const buffer = Buffer.alloc(5);
+
+buffer[0] = 72;
+buffer[1] = 101;
+buffer[2] = 108;
+buffer[3] = 108;
+buffer[4] = 111;
+
+console.log(buffer.toString());
+</code></pre>
+        </div>
+
+        <h3>Escrevendo números em diferentes formatos</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const buffer = Buffer.alloc(8);
+
+buffer.writeUInt32BE(0xDEADBEEF, 0);
+buffer.writeUInt32LE(0xCAFEBABE, 4);
+
+console.log(buffer.toString('hex'));
+</code></pre>
+        </div>
+
+        <p>Os sufixos <strong>BE</strong> (Big Endian) e <strong>LE</strong> (Little Endian) determinam a ordem dos bytes. Big Endian escreve o byte mais significativo primeiro; Little Endian escreve o menos significativo primeiro.</p>
+
+        <h3>Fatiando e copiando buffers</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const original = Buffer.from('abcdefghij');
+
+const fatiado = original.slice(0, 5);
+console.log(fatiado.toString());
+
+const copia = Buffer.alloc(5);
+original.copy(copia, 0, 0, 5);
+console.log(copia.toString());
+
+const concatenado = Buffer.concat([
+  Buffer.from('Hello '),
+  Buffer.from('World')
+]);
+console.log(concatenado.toString());
+</code></pre>
+        </div>
+
+        <h2>O que são Streams?</h2>
+
+        <p>
+          <strong>Streams</strong> são fluxos de dados processados em pedaços, em
+          vez de carregar tudo na memória de uma vez. Isso é fundamental para
+          eficiência em aplicações Node.js.
+        </p>
+
+        <p>
+          Imagine assistir a um vídeo no YouTube: você não baixa o vídeo inteiro
+          antes de assistir — os dados chegam em pequenos pedaços (streams) e são
+          reproduzidos conforme chegam.
+        </p>
+
+        <h3>Por que usar Streams?</h3>
+
+        <ul>
+          <li>Eficiência de memória: não carrega arquivos gigantes na RAM</li>
+          <li>Tempo de resposta: começa processando antes de receber tudo</li>
+          <li>Composição: encadeie operações com <code>.pipe()</code></li>
+          <li>Contrapressão: controle automático de fluxo entre streams</li>
+        </ul>
+
+        <h2>Tipos de Streams</h2>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Função</th>
+              <th>Método principal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Readable</strong></td>
+              <td>Lê dados</td>
+              <td><code>.read()</code>, <code>.pipe()</code></td>
+            </tr>
+            <tr>
+              <td><strong>Writable</strong></td>
+              <td>Escreve dados</td>
+              <td><code>.write()</code>, <code>.end()</code></td>
+            </tr>
+            <tr>
+              <td><strong>Duplex</strong></td>
+              <td>Lê E escreve (ex: socket TCP)</td>
+              <td>Ambos acima</td>
+            </tr>
+            <tr>
+              <td><strong>Transform</strong></td>
+              <td>Lê, transforma e escreve</td>
+              <td><code>._transform()</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Streams de Leitura (Readable)</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+
+const streamLeitura = fs.createReadStream('entrada.txt', {
+  encoding: 'utf-8',
+  highWaterMark: 16
+});
+
+let dados = '';
+
+streamLeitura.on('data', (pedaco) => {
+  console.log('Recebendo pedaço:', pedaco.length, 'bytes');
+  dados += pedaco;
+});
+
+streamLeitura.on('end', () => {
+  console.log('Leitura completa!');
+  console.log('Total:', dados.length, 'caracteres');
+});
+
+streamLeitura.on('error', (erro) => {
+  console.log('Erro:', erro.message);
+});
+</code></pre>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+          <h3>🔹 highWaterMark</h3>
+
+          <p>
+            Define o tamanho máximo de cada pedaço (chunk) lido. O valor padrão é
+            <strong>65536</strong> (64 KB). Aqui usamos 16 bytes para vermos vários
+            eventos <code>data</code>.
+          </p>
+
+          <h3>🔹 Evento 'data'</h3>
+
+          <p>
+            É disparado toda vez que um pedaço de dados está disponível. Cada pedaço
+            é um <strong>Buffer</strong> (a menos que encoding seja definido).
+          </p>
+
+          <h3>🔹 Evento 'end'</h3>
+
+          <p>É disparado quando não há mais dados para ler.</p>
+        </div>
+
+        <h2>Streams de Escrita (Writable)</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+
+const streamEscrita = fs.createWriteStream('saida.txt', {
+  encoding: 'utf-8'
+});
+
+const linhas = [
+  'Linha 1\n',
+  'Linha 2\n',
+  'Linha 3\n'
+];
+
+linhas.forEach((linha) => {
+  streamEscrita.write(linha);
+});
+
+streamEscrita.end('Fim do arquivo\n');
+
+streamEscrita.on('finish', () => {
+  console.log('Escrita completa!');
+});
+</code></pre>
+        </div>
+
+        <h2>Pipe: Conectando Streams</h2>
+
+        <p>
+          O método <code>.pipe()</code> conecta uma stream de leitura a uma de
+          escrita, transferindo dados automaticamente. É a forma mais elegante de
+          trabalhar com streams.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+
+const leitura = fs.createReadStream('entrada.txt');
+const escrita = fs.createWriteStream('copia.txt');
+
+leitura.pipe(escrita);
+
+escrita.on('finish', () => {
+  console.log('Cópia concluída!');
+});
+</code></pre>
+        </div>
+
+        <h2>Streams de Transformação (Transform)</h2>
+
+        <p>
+          Transform streams são as mais interessantes: elas leem, transformam e
+          escrevem dados em tempo real.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Transform } = require('stream');
+const fs = require('fs');
+
+const transformarMaiusculo = new Transform({
+  transform(pedaco, encoding, callback) {
+    const pedacoTransformado = pedaco
+      .toString()
+      .toUpperCase();
+
+    callback(null, pedacoTransformado);
+  }
+});
+
+const leitura = fs.createReadStream('entrada.txt');
+const escrita = fs.createWriteStream('maiusculo.txt');
+
+leitura
+  .pipe(transformarMaiusculo)
+  .pipe(escrita);
+
+escrita.on('finish', () => {
+  console.log('Arquivo convertido para maiúsculas!');
+});
+</code></pre>
+        </div>
+
+        <h2>Exemplo Prático: Compactando Arquivos</h2>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const fs = require('fs');
+const zlib = require('zlib');
+
+const leitura = fs.createReadStream('grande.txt');
+const compressao = zlib.createGzip();
+const escrita = fs.createWriteStream('grande.txt.gz');
+
+leitura
+  .pipe(compressao)
+  .pipe(escrita);
+
+escrita.on('finish', () => {
+  console.log('Arquivo comprimido!');
+
+  const original = fs.statSync('grande.txt').size;
+  const comprimido = fs.statSync('grande.txt.gz').size;
+
+  console.log(`Original: ${original} bytes`);
+  console.log(`Comprimido: ${comprimido} bytes`);
+  console.log(`Redução: ${(100 - (comprimido / original) * 100).toFixed(1)}%`);
+});
+</code></pre>
+        </div>
+
+        <h2>Criando uma Stream de Transformação Customizada</h2>
+
+        <p>
+          Vamos criar uma stream que filtra linhas contendo uma palavra específica:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Transform } = require('stream');
+
+class FiltroStream extends Transform {
+  constructor(palavra) {
+    super();
+    this.palavra = palavra.toLowerCase();
+    this.sobra = '';
+  }
+
+  _transform(pedaco, encoding, callback) {
+    const texto = (this.sobra + pedaco.toString()).split('\n');
+
+    this.sobra = texto.pop();
+
+    const filtrado = texto
+      .filter((linha) =>
+        linha.toLowerCase().includes(this.palavra)
+      )
+      .join('\n');
+
+    if (filtrado.length > 0) {
+      this.push(filtrado + '\n');
+    }
+
+    callback();
+  }
+
+  _flush(callback) {
+    if (this.sobra &&
+        this.sobra.toLowerCase().includes(this.palavra)) {
+      this.push(this.sobra + '\n');
+    }
+
+    callback();
+  }
+}
+
+const fs = require('fs');
+
+fs.createReadStream('log.txt')
+  .pipe(new FiltroStream('ERRO'))
+  .pipe(fs.createWriteStream('apenas-erros.txt'));
+</code></pre>
+        </div>
+
+        <h2>Objetos Globais no Node.js</h2>
+
+        <p>
+          Diferente do navegador, o Node.js NÃO possui <code>window</code>. Em vez
+          disso, o escopo global é <strong>global</strong>. Mas o Node.js oferece
+          várias variáveis e funções globais que podem ser usadas em qualquer
+          arquivo sem importação.
+p;</p>
+
+        <h3>Objetos Globais Principais</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Global</th>
+              <th>Descrição</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>__dirname</code></td>
+              <td>Caminho absoluto do diretório atual</td>
+              <td><code>C:\projeto\src</code></td>
+            </tr>
+            <tr>
+              <td><code>__filename</code></td>
+              <td>Caminho absoluto do arquivo atual</td>
+              <td><code>C:\projeto\src\index.js</code></td>
+            </tr>
+            <tr>
+              <td><code>process</code></td>
+              <td>Informações do processo em execução</td>
+              <td><code>process.env</code>, <code>process.argv</code></td>
+            </tr>
+            <tr>
+              <td><code>console</code></td>
+              <td>Saída no terminal</td>
+              <td><code>console.log()</code></td>
+            </tr>
+            <tr>
+              <td><code>Buffer</code></td>
+              <td>Classe para dados binários</td>
+              <td>Já vimos nesta aula</td>
+            </tr>
+            <tr>
+              <td><code>setTimeout</code></td>
+              <td>Executa após um tempo (ms)</td>
+              <td><code>setTimeout(fn, 1000)</code></td>
+            </tr>
+            <tr>
+              <td><code>setInterval</code></td>
+              <td>Executa repetidamente (ms)</td>
+              <td><code>setInterval(fn, 1000)</code></td>
+            </tr>
+            <tr>
+              <td><code>clearTimeout</code></td>
+              <td>Cancela um setTimeout</td>
+              <td><code>clearTimeout(id)</code></td>
+            </tr>
+            <tr>
+              <td><code>clearInterval</code></td>
+              <td>Cancela um setInterval</td>
+              <td><code>clearInterval(id)</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Explorando __dirname e __filename</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">console.log('Diretório:', __dirname);
+
+console.log('Arquivo:', __filename);
+
+const path = require('path');
+
+console.log(
+  'Nome do arquivo:',
+  path.basename(__filename)
+);
+
+console.log(
+  'Extensão:',
+  path.extname(__filename)
+);
+
+console.log(
+  'Diretório pai:',
+  path.dirname(__dirname)
+);
+</code></pre>
+        </div>
+
+        <h3>Explorando process</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">console.log('Versão do Node:', process.version);
+
+console.log('Sistema:', process.platform);
+
+console.log('PID:', process.pid);
+
+console.log('Memória usada:',
+  process.memoryUsage().heapUsed / 1024 / 1024,
+  'MB'
+);
+
+console.log('Variáveis de ambiente:');
+console.log('  PORT:', process.env.PORT);
+console.log('  NODE_ENV:', process.env.NODE_ENV);
+
+console.log('Argumentos CLI:');
+process.argv.forEach((arg, i) => {
+  console.log(`  [${i}] ${arg}`);
+});
+
+process.on('exit', (code) => {
+  console.log('Processo encerrado com código:', code);
+});
+</code></pre>
+        </div>
+
+        <h2>Diferenças entre Escopo Global no Navegador e no Node.js</h2>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Navegador</th>
+              <th>Node.js</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>window</code> é o objeto global</td>
+              <td><code>global</code> é o objeto global</td>
+            </tr>
+            <tr>
+              <td><code>document</code> para manipular DOM</td>
+              <td>Não existe DOM (não há navegador)</td>
+            </tr>
+            <tr>
+              <td><code>fetch</code> para requisições HTTP</td>
+              <td><code>fetch</code> disponível a partir do Node 18+</td>
+            </tr>
+            <tr>
+              <td>Variáveis com <code>var</code> vão para <code>window</code></td>
+              <td>Variáveis NÃO vão para <code>global</code> (módulo isolado)</td>
+            </tr>
+            <tr>
+              <td><code>localStorage</code> / <code>sessionStorage</code></td>
+              <td>Não existem (use arquivos ou banco)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Criando um Servidor com Stream de Arquivo</h2>
+
+<p>
+            Vamos criar uma rota que serve arquivos grandes usando streams, sem
+            carregar o arquivo inteiro na memória. Usaremos o projeto da Aula 6 como
+            base.
+          </p>
+
+          <h3>Passo 0 — Criar branch da aula</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git checkout aula6-eventemitter-callbacks
+git pull
+git checkout -b aula7-buffers-streams
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Criar um arquivo grande de teste</h3>
+
+          <p>Criar o script <strong>gerar-dados.js</strong> na raiz do projeto:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > gerar-dados.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const fs = require("fs");
+
+const streamEscrita = fs.createWriteStream("uploads/dados.csv");
+const linhas = 10000;
+
+streamEscrita.write("id,nome,email,idade\n");
+
+for (let i = 1; i <= linhas; i++) {
+  const linha = `${i},Usuario ${i},usuario${i}@email.com,${20 + (i % 30)}\n`;
+  streamEscrita.write(linha);
+}
+
+streamEscrita.end();
+
+streamEscrita.on("finish", () => {
+  const tamanho = fs.statSync("uploads/dados.csv").size;
+  console.log(`Arquivo gerado! ${linhas} linhas, ${tamanho} bytes`);
+});
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — Rodar o script gerador</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node gerar-dados.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — Criar Controller de Download com Stream</h3>
+
+          <p>Criar <strong>src/controllers/streamController.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\controllers\streamController.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const fs = require("fs");
+const path = require("path");
+const zlib = require("zlib");
+const { Transform } = require("stream");
+
+const logger = require("../utils/logger");
+
+const downloadCSV = (req, res) => {
+  const caminho = path.join(__dirname, "../../uploads/dados.csv");
+
+  if (!fs.existsSync(caminho)) {
+    logger.erro(`Arquivo não encontrado: ${caminho}`);
+    return res.status(404).json({ erro: "Arquivo não encontrado" });
+  }
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=dados.csv"
+  );
+
+  logger.info("Iniciando download com stream");
+
+  const streamLeitura = fs.createReadStream(caminho);
+
+  streamLeitura.pipe(res);
+
+  streamLeitura.on("end", () => {
+    logger.info("Download concluído");
+  });
+
+  streamLeitura.on("error", (erro) => {
+    logger.erro(`Erro no download: ${erro.message}`);
+    res.status(500).json({ erro: "Erro ao fazer download" });
+  });
+};
+
+const downloadCSVComprimido = (req, res) => {
+  const caminho = path.join(__dirname, "../../uploads/dados.csv");
+
+  if (!fs.existsSync(caminho)) {
+    return res.status(404).json({ erro: "Arquivo não encontrado" });
+  }
+
+  const nomeArquivo = "dados.csv.gz";
+
+  res.setHeader("Content-Type", "application/gzip");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${nomeArquivo}`
+  );
+
+  logger.info("Iniciando download comprimido com stream");
+
+  fs.createReadStream(caminho)
+    .pipe(zlib.createGzip())
+    .pipe(res);
+};
+
+module.exports = {
+  downloadCSV,
+  downloadCSVComprimido,
+};
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Criar Rotas de Stream</h3>
+
+          <p>Criar <strong>src/routes/streamRoutes.js</strong>:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">type nul > src\routes\streamRoutes.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  downloadCSV,
+  downloadCSVComprimido,
+} = require("../controllers/streamController");
+
+router.get("/download/csv", downloadCSV);
+router.get("/download/csv-comprimido", downloadCSVComprimido);
+
+module.exports = router;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 5 — Registrar Rotas no app.js</h3>
+
+          <p>Atualize <strong>src/app.js</strong> adicionando a linha:</p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">const express = require("express");
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
+const arquivoRoutes = require("./routes/arquivoRoutes");
+const authRoutes = require("./routes/authRoutes");
+const streamRoutes = require("./routes/streamRoutes");
+
+const loggerMiddleware = require("./middlewares/loggerMiddleware");
+
+const app = express();
+
+app.use(loggerMiddleware);
+app.use(express.json());
+
+app.use(authRoutes);
+app.use(produtoRoutes);
+app.use(usuarioRoutes);
+app.use(arquivoRoutes);
+app.use(streamRoutes);
+
+module.exports = app;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 6 — Rodar e testar</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">node server.js
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>No navegador:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">http://localhost:3000/download/csv
+http://localhost:3000/download/csv-comprimido
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            O arquivo será baixado sem carregar tudo na memória — o Node.js envia
+            os dados em pedaços (chunks) através da stream.
+          </p>
+
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+
+            <h3>🔹 Por que stream para download?</h3>
+
+            <p>
+              Se o arquivo tiver 500 MB e você usar <code>fs.readFileSync()</code>,
+              o Node.js tentará carregar 500 MB na memória de uma vez — isso pode
+              travar o servidor. Com streams, os dados fluem em pedaços pequenos,
+              consumindo pouca memória.
+            </p>
+
+            <h3>🔹 Content-Disposition</h3>
+
+            <p>
+              O header <code>Content-Disposition: attachment</code> instrui o
+              navegador a baixar o arquivo em vez de tentar exibi-lo.
+            </p>
+
+            <h3>🔹 zlib.createGzip()</h3>
+
+            <p>
+              O módulo <code>zlib</code> cria streams de compressão nativas. Ao
+              conectar com <code>.pipe()</code>, os dados são comprimidos em tempo
+              real enquanto são enviados.
+            </p>
+
+            <h3>🔹 fs.existsSync()</h3>
+
+            <p>
+              Método síncrono que verifica se um arquivo existe. Útil para
+              validação inicial antes de criar a stream.
+            </p>
+          </div>
+
+          <h3>Último Passo — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "implementa download com streams e compressao com zlib"
+git push --set-upstream origin aula7-buffers-streams
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar transform stream de log para JSON</h3>
+
+              <p>
+                Crie uma branch chamada
+                <strong>dever-de-casa-aula7</strong>.
+              </p>
+
+              <p>Desenvolva:</p>
+
+              <ul>
+                <li>
+                  Uma classe <strong>LogToJsonStream</strong> que estende
+                  <code>Transform</code>
+                </li>
+                <li>
+                  Ela deve ler o arquivo <code>logs/app.log</code> (criado na Aula 6)
+                </li>
+                <li>Cada linha do log deve ser convertida para um objeto JSON com os campos: <code>data</code>, <code>nivel</code> (INFO/ERRO), <code>mensagem</code></li>
+                <li>A saída deve ser salva em <code>logs/app.json</code> como um array de objetos</li>
+                <li>Use streams com <code>.pipe()</code> — NÃO use <code>readFileSync</code></li>
+              </ul>
+
+              <p><strong>Dica:</strong> Use <code>JSON.parse()</code> para validar o JSON.</p>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">const { Transform } = require("stream");
+const fs = require("fs");
+
+class LogToJsonStream extends Transform {
+  constructor() {
+    super();
+    this.primeiro = true;
+  }
+
+  _transform(pedaco, encoding, callback) {
+    if (this.primeiro) {
+      this.push("[\n");
+      this.primeiro = false;
+    } else {
+      this.push(",\n");
+    }
+
+    const linha = pedaco.toString().trim();
+
+    const regex = /\[(.*?)\]\s+(\w+):\s+(.*)/;
+    const match = linha.match(regex);
+
+    if (match) {
+      const obj = {
+        data: match[1],
+        nivel: match[2],
+        mensagem: match[3],
+      };
+
+      this.push("  " + JSON.stringify(obj));
+    }
+
+    callback();
+  }
+
+  _flush(callback) {
+    if (!this.primeiro) {
+      this.push("\n]\n");
+    } else {
+      this.push("[]\n");
+    }
+
+    callback();
+  }
+}
+
+fs.createReadStream("logs/app.log")
+  .pipe(new LogToJsonStream())
+  .pipe(fs.createWriteStream("logs/app.json"))
+  .on("finish", () => {
+    console.log("Conversão concluída!");
+  });
+                  </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
