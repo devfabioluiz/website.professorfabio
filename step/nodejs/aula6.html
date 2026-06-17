@@ -695,31 +695,7 @@ module.exports = app;
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 6 — Rodar a aplicação</h3>
-
-                    <p>No terminal do CMD digite o código abaixo:</p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">node server.js
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-
-          <p>Acesse algumas rotas:</p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">http://localhost:3000/produtos
-http://localhost:3000/usuarios
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-
-          <p>
-            Você verá os logs no terminal e também no arquivo
-            <strong>logs/app.log</strong>.
-          </p>
-
-          <h3>Passo 7 — Melhorar controllers com async/await e tratamento de erros</h3>
+          <h3>Passo 6 — Melhorar controllers com async/await e tratamento de erros</h3>
 
           <p>
             Vamos refatorar o <strong>src/controllers/authController.js</strong> para
@@ -837,7 +813,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 8 — Criar arquivo de erros personalizados</h3>
+          <h3>Passo 7 — Criar arquivo de erros personalizados</h3>
 
           <p>Criar <strong>src/utils/erros.js</strong>:</p>
 
@@ -881,7 +857,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 9 — Testar o sistema completo</h3>
+          <h3>Passo 8 — Testar o sistema completo</h3>
 
           <div class="code-container">
             <pre><code class="language-bash">node server.js
@@ -889,7 +865,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>1. Acesse a lista de produtos (veja o log aparecer):</p>
+          <p>Acesse a lista de produtos (veja o log aparecer):</p>
 
           <div class="code-container">
             <pre><code class="language-bash">curl http://localhost:3000/produtos
@@ -897,7 +873,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>2. Tente registrar um usuário sem nome (veja o log de erro):</p>
+          <p>Tente registrar um usuário sem nome (veja o log de erro):</p>
 
           <div class="code-container">
             <pre><code class="language-bash">curl -X POST http://localhost:3000/registrar \
@@ -907,7 +883,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>3. Verifique o arquivo de logs:</p>
+          <p>Verifique o arquivo de logs:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">type logs\app.log
