@@ -492,6 +492,8 @@ async function criarProduto(dados) {
 
           <h3>Passo 0 — Criar branch da aula</h3>
 
+                    <p>No terminal do CMD digite o código abaixo:</p>
+
           <div class="code-container">
             <pre><code class="language-bash">git checkout aula5-jwt-auth
 git pull
@@ -501,6 +503,8 @@ git checkout -b aula6-eventemitter-callbacks
           </div>
 
           <h3>Passo 1 — Criar a pasta de utils</h3>
+
+                    <p>No terminal do CMD digite o código abaixo:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">mkdir src\utils
@@ -512,11 +516,15 @@ git checkout -b aula6-eventemitter-callbacks
 
           <p>Criar o arquivo <strong>src/utils/logger.js</strong>:</p>
 
+                    <p>No terminal do CMD digite o código abaixo:</p>
+
           <div class="code-container">
             <pre><code class="language-bash">type nul > src\utils\logger.js
             </code></pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+
+          <p>Coloque o código abaixo no arquivo <strong>logger.js</strong></p>
 
           <div class="code-container">
             <pre><code class="language-javascript">const EventEmitter = require("events");
@@ -631,6 +639,8 @@ module.exports = logger;
             <button class="btn-copy">Copiar Código</button>
           </div>
 
+                    <p>Coloque o código abaixo no arquivo <strong>loggerMiddleware.js</strong></p>
+
           <div class="code-container">
             <pre><code class="language-javascript">const logger = require("../utils/logger");
 
@@ -647,7 +657,7 @@ module.exports = loggerMiddleware;
 
           <h3>Passo 4 — Registrar o middleware no app.js</h3>
 
-          <p>Atualize <strong>src/app.js</strong>:</p>
+          <p>Atualize <strong>src/app.js</strong> com o código abaixo, substituindo nosso código antigo do app:</p>
 
           <div class="code-container">
             <pre><code class="language-javascript">const express = require("express");
@@ -677,35 +687,15 @@ module.exports = app;
 
           <h3>Passo 5 — Criar pasta logs</h3>
 
+          <p>No terminal do CMD digite o código abaixo:</p>
+
           <div class="code-container">
             <pre><code class="language-bash">mkdir logs
             </code></pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 6 — Rodar a aplicação</h3>
-
-          <div class="code-container">
-            <pre><code class="language-bash">node server.js
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-
-          <p>Acesse algumas rotas:</p>
-
-          <div class="code-container">
-            <pre><code class="language-bash">http://localhost:3000/produtos
-http://localhost:3000/usuarios
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-
-          <p>
-            Você verá os logs no terminal e também no arquivo
-            <strong>logs/app.log</strong>.
-          </p>
-
-          <h3>Passo 7 — Melhorar controllers com async/await e tratamento de erros</h3>
+          <h3>Passo 6 — Melhorar controllers com async/await e tratamento de erros</h3>
 
           <p>
             Vamos refatorar o <strong>src/controllers/authController.js</strong> para
@@ -823,7 +813,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 8 — Criar arquivo de erros personalizados</h3>
+          <h3>Passo 7 — Criar arquivo de erros personalizados</h3>
 
           <p>Criar <strong>src/utils/erros.js</strong>:</p>
 
@@ -867,7 +857,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <h3>Passo 9 — Testar o sistema completo</h3>
+          <h3>Passo 8 — Testar o sistema completo</h3>
 
           <div class="code-container">
             <pre><code class="language-bash">node server.js
@@ -875,7 +865,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>1. Acesse a lista de produtos (veja o log aparecer):</p>
+          <p>Acesse a lista de produtos (veja o log aparecer):</p>
 
           <div class="code-container">
             <pre><code class="language-bash">curl http://localhost:3000/produtos
@@ -883,7 +873,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>2. Tente registrar um usuário sem nome (veja o log de erro):</p>
+          <p>Tente registrar um usuário sem nome (veja o log de erro):</p>
 
           <div class="code-container">
             <pre><code class="language-bash">curl -X POST http://localhost:3000/registrar \
@@ -893,7 +883,7 @@ module.exports = {
             <button class="btn-copy">Copiar Código</button>
           </div>
 
-          <p>3. Verifique o arquivo de logs:</p>
+          <p>Verifique o arquivo de logs:</p>
 
           <div class="code-container">
             <pre><code class="language-bash">type logs\app.log
