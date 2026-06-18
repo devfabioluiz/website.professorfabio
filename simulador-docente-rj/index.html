@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Salário - Professor SEEDUC/RJ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              seeduc: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                500: "#2563eb",
+                600: "#1d4ed8",
+                700: "#1e40af",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-100 min-h-screen py-8 px-4">
+    <div class="max-w-xl mx-auto">
+      <div class="text-center mb-6">
+        <div
+          class="inline-block bg-seeduc-600 text-white text-xs font-semibold px-3 py-1 rounded-full mb-2"
+        >
+          SEEDUC/RJ
+        </div>
+        <h1 class="text-2xl font-bold text-gray-800">
+          Simulador de Salário Líquido
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+          Professor da Rede Estadual do Rio de Janeiro
+        </p>
+      </div>
+
+      <!-- FORMULÁRIO -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <!-- Cargo -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Cargo</label
+          >
+          <select
+            id="cargo"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="docente1_18h">Professor Docente I - 18h</option>
+            <option value="docente1_30h">Professor Docente I - 30h</option>
+            <option value="docente2_22h">Professor Docente II - 22h</option>
+            <option value="exfaep1_40h">
+              Professor Ex-Faep Docente I - 40h
+            </option>
+          </select>
+        </div>
+
+        <!-- Referência -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Referência</label
+          >
+          <select
+            id="referencia"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          ></select>
+        </div>
+
+        <!-- Data de Ingresso -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Data de ingresso no serviço público</label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="ingresso"
+                value="ate2021"
+                checked
+                class="accent-blue-600 ingresso-radio"
+              />
+              <span class="text-sm text-gray-700">Edital até 31/12/2021</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="ingresso"
+                value="pos2022"
+                class="accent-blue-600 ingresso-radio"
+              />
+              <span class="text-sm text-gray-700"
+                >Edital a partir de 01/01/2022</span
+              >
+            </label>
+          </div>
+          <p id="msg-trienio" class="text-xs text-amber-600 mt-1 hidden">
+            Sem direito a triênio (LC 194/2021)
+          </p>
+        </div>
+
+        <!-- Triênios -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Triênios
+            <span class="text-gray-400 font-normal"
+              >(1º triênio = 10%, demais = +5% cada)</span
+            ></label
+          >
+          <select
+            id="trienios"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="0">0 triênio (0%)</option>
+            <option value="1">1 triênio - 3 a 5 anos (10%)</option>
+            <option value="2">2 triênios - 6 a 8 anos (15%)</option>
+            <option value="3">3 triênios - 9 a 11 anos (20%)</option>
+            <option value="4">4 triênios - 12 a 14 anos (25%)</option>
+            <option value="5">5 triênios - 15 a 17 anos (30%)</option>
+            <option value="6">6 triênios - 18 a 20 anos (35%)</option>
+            <option value="7">7 triênios - 21 a 23 anos (40%)</option>
+            <option value="8">8 triênios - 24 a 26 anos (45%)</option>
+            <option value="9">9 triênios - 27 a 29 anos (50%)</option>
+            <option value="10">10 triênios - 30 a 32 anos (55%)</option>
+            <option value="11">11 triênios - 33+ anos (60%)</option>
+          </select>
+        </div>
+
+        <!-- Qualificação -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Adicional de Qualificação (AQ)</label
+          >
+          <select
+            id="qualificacao"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="nenhuma">Nenhuma</option>
+            <option value="mestrado">Mestrado</option>
+            <option value="doutorado">Doutorado</option>
+          </select>
+        </div>
+
+        <!-- Regência -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Auxílio Transporte</label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="regencia"
+                value="com"
+                checked
+                class="accent-blue-600 regencia-radio"
+              />
+              <span class="text-sm text-gray-700"
+                >Com regência de turma (R$ 205,20)</span
+              >
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="regencia"
+                value="demais"
+                class="accent-blue-600 regencia-radio"
+              />
+              <span class="text-sm text-gray-700">Demais (R$ 342,00)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dependentes -->
+        <div class="mb-2">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Dependentes para IRPF</label
+          >
+          <input
+            type="number"
+            id="dependentes"
+            min="0"
+            max="99"
+            value="0"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          />
+        </div>
+      </div>
+
+      <!-- RESULTADO -->
+      <div id="resultado" class="bg-white rounded-xl shadow-md p-6">
+        <h2
+          class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200"
+        >
+          Resultado da Simulação
+        </h2>
+
+        <div id="linhas-resultado" class="space-y-2 text-sm"></div>
+      </div>
+
+      <p class="text-center text-xs text-gray-400 mt-4">
+        Valores baseados no Caderno de Remuneração SEEDUC. Atualização:
+        Jan/2025.
+      </p>
+    </div>
+
+    <script src="js/dados.js"></script>
+    <script src="js/calculadora.js"></script>
+    <script>
+      (function () {
+        var elCargo = document.getElementById("cargo");
+        var elRef = document.getElementById("referencia");
+        var elTrienios = document.getElementById("trienios");
+        var elQualificacao = document.getElementById("qualificacao");
+        var elDependentes = document.getElementById("dependentes");
+        var elMsgTrienio = document.getElementById("msg-trienio");
+        var elResultado = document.getElementById("linhas-resultado");
+
+        function getIngresso() {
+          return document.querySelector('input[name="ingresso"]:checked').value;
+        }
+
+        function getRegencia() {
+          return document.querySelector('input[name="regencia"]:checked').value;
+        }
+
+        function atualizarReferencias() {
+          var cargoKey = elCargo.value;
+          var cargo = CARGOS[cargoKey];
+          elRef.innerHTML = "";
+          cargo.referencias.forEach(function (r, i) {
+            var opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = "Ref. " + r.ref + " - Nível " + r.nivel;
+            elRef.appendChild(opt);
+          });
+        }
+
+        function atualizarTrienio() {
+          var semDireito = getIngresso() === "pos2022";
+          elTrienios.disabled = semDireito;
+          elMsgTrienio.classList.toggle("hidden", !semDireito);
+          if (semDireito) {
+            elTrienios.value = "0";
+          }
+        }
+
+        function atualizarResultado() {
+          var params = {
+            cargoKey: elCargo.value,
+            refIndex: parseInt(elRef.value),
+            trienios: parseInt(elTrienios.value),
+            qualificacao: elQualificacao.value,
+            comRegencia: getRegencia() === "com",
+            dependentes: parseInt(elDependentes.value) || 0,
+          };
+
+          var r = calcular(params);
+
+          var linhas = [];
+
+          // Vencimento Base
+          linhas.push(linha("Vencimento Base", r.vb, "text-gray-600"));
+          // Complemento Piso
+          if (r.exibeComplemento) {
+            linhas.push(
+              linha("Complemento Piso", r.complemento, "text-gray-500"),
+            );
+          }
+          // Total Base
+          if (r.exibeComplemento || r.exibeTrienio) {
+            linhas.push(
+              linha("Total Base", r.total, "text-gray-700 font-medium"),
+            );
+          }
+          // Triênio
+          if (r.exibeTrienio) {
+            linhas.push(
+              linha(
+                "Triênio (" + r.trienioPct + "%)",
+                r.trienioValor,
+                "text-blue-600",
+              ),
+            );
+          }
+          // AQ
+          if (r.exibeAQ) {
+            linhas.push(
+              linha(
+                "AQ (" + r.qualificacaoNome + ")",
+                r.aqValor,
+                "text-blue-600",
+              ),
+            );
+          }
+          // Auxílios
+          linhas.push(
+            linha("Auxílio Transporte", r.auxTransporte, "text-green-600"),
+          );
+          linhas.push(
+            linha("Auxílio Alimentação", r.auxAlimentacao, "text-green-600"),
+          );
+
+          // Separador
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+
+          // Bruta
+          linhas.push(
+            linha("Remuneração Bruta", r.bruta, "text-gray-800 font-bold"),
+          );
+
+          // Espaço
+          linhas.push({ html: '<div class="h-1"></div>' });
+
+          // Previdência
+          linhas.push(
+            linha("Previdência RPPS (14%)", -r.previdencia, "text-red-500"),
+          );
+          // IRPF
+          linhas.push(linha("IRPF", -r.irrf, "text-red-500"));
+
+          // Separador
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+
+          // Líquido
+          linhas.push({
+            html:
+              '<div class="flex justify-between items-center py-1">' +
+              '<span class="text-base font-bold text-gray-800">Salário Líquido</span>' +
+              '<span class="text-xl font-bold text-green-700">R$ ' +
+              formatarReal(r.liquido) +
+              "</span>" +
+              "</div>",
+          });
+
+          // Informações adicionais
+          linhas.push({ html: '<div class="h-2"></div>' });
+          linhas.push({
+            html:
+              '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
+              '<div class="flex justify-between"><span>Base de cálculo IRRF:</span><span class="font-medium">R$ ' +
+              formatarReal(r.baseIRRF) +
+              "</span></div>" +
+              '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
+              formatarReal(r.basePrev) +
+              "</span></div>" +
+              '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' +
+              r.aliquotaEfetivaIR.toFixed(1) +
+              "%</span></div>" +
+              "</div>",
+          });
+
+          elResultado.innerHTML = linhas
+            .map(function (l) {
+              return l.html;
+            })
+            .join("");
+        }
+
+        function linha(label, valor, classeValor) {
+          var sinal = valor >= 0 ? "" : "-";
+          var absValor = Math.abs(valor);
+          return {
+            html:
+              '<div class="flex justify-between items-center">' +
+              '<span class="text-gray-600">' +
+              label +
+              "</span>" +
+              '<span class="' +
+              classeValor +
+              '">' +
+              sinal +
+              "R$ " +
+              formatarReal(absValor) +
+              "</span>" +
+              "</div>",
+          };
+        }
+
+        elCargo.addEventListener("change", function () {
+          atualizarReferencias();
+          atualizarResultado();
+        });
+        elRef.addEventListener("change", atualizarResultado);
+        elTrienios.addEventListener("change", atualizarResultado);
+        elQualificacao.addEventListener("change", atualizarResultado);
+        elDependentes.addEventListener("input", atualizarResultado);
+
+        var elIngressoRadios = document.querySelectorAll(".ingresso-radio");
+        elIngressoRadios.forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            atualizarTrienio();
+            atualizarResultado();
+          });
+        });
+
+        var elRegenciaRadios = document.querySelectorAll(".regencia-radio");
+        elRegenciaRadios.forEach(function (radio) {
+          radio.addEventListener("change", atualizarResultado);
+        });
+
+        atualizarReferencias();
+        atualizarTrienio();
+        atualizarResultado();
+      })();
+    </script>
+  </body>
+</html>
