@@ -447,6 +447,8 @@ mkdir loja\templatetags
 type nul > loja\templatetags\__init__.py
 mkdir loja\static\css
 mkdir loja\static\js
+type nul > loja\static\css\estilo.css
+type nul > loja\static\js\scripts.js
 type nul > loja\templates\loja\base.html
 type nul > loja\templates\loja\_mensagens.html
 type nul > loja\templates\loja\_card_produto.html
@@ -462,8 +464,8 @@ type nul > loja\templates\loja\_paginacao.html
           com o sistema de <strong>arquivos estáticos</strong>.
         </p>
         <p>
-          Dentro de <code>loja/templates/loja/</code>, insira dentro do
-          arquivo <code>base.html</code> o seguinte conteúdo:
+          Dentro de <code>loja/templates/loja/</code>, insira dentro do arquivo
+          <code>base.html</code> o seguinte conteúdo:
         </p>
         <div class="code-container">
           <pre><code class="language-html">
@@ -596,11 +598,10 @@ type nul > loja\templates\loja\_paginacao.html
 
         <p>
           <strong>Importante:</strong> Para o Django reconhecer o pacote de
-          template tags, o diretório
-          <code>loja/templatetags/</code> precisa existir com um arquivo
-          <code>__init__.py</code> dentro (já criado no Passo 0). Esse arquivo
-          pode ficar vazio — ele só indica ao Python que o diretório é um
-          pacote.
+          template tags, o diretório <code>loja/templatetags/</code> precisa
+          existir com um arquivo <code>__init__.py</code> dentro (já criado no
+          Passo 0). Esse arquivo pode ficar vazio — ele só indica ao Python que
+          o diretório é um pacote.
         </p>
 
         <div class="code-container">
@@ -649,17 +650,16 @@ def label_status(estoque):
         </div>
 
         <p>
-          Após criar ou modificar template tags, <strong>reinicie o
-          servidor</strong> (<code>Ctrl+C</code> e <code>python manage.py
-          runserver</code> novamente). O Django carrega as bibliotecas de
-          template tags apenas na inicialização.
+          Após criar ou modificar template tags,
+          <strong>reinicie o servidor</strong> (<code>Ctrl+C</code> e
+          <code>python manage.py runserver</code> novamente). O Django carrega
+          as bibliotecas de template tags apenas na inicialização.
         </p>
 
         <h3>Passo 5 — Criar arquivos estáticos</h3>
         <p>
-          Crie o arquivo <code>loja/static/css/estilo.css</code> com algumas
-          customizações visuais e <code>loja/static/js/scripts.js</code> com
-          interações (ex: confirmação ao deletar).
+          Dentro do arquivo <code>loja/static/css/estilo.css</code>, insira o
+          seguinte conteúdo:
         </p>
 
         <div class="code-container">
@@ -679,7 +679,10 @@ def label_status(estoque):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <br />
+        <p>
+          Dentro do arquivo <code>loja/static/js/script.js</code>, insira o
+          seguinte conteúdo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
