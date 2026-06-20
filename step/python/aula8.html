@@ -551,35 +551,20 @@ def label_status(estoque):
       <section>
         <h2>Passo a passo: Refatorando os templates do CMS</h2>
 
-        <h3>Passo 0 — Versionamento com Git</h3>
+        <h3>Passo 0 — Iniciando o projeto</h3>
         <p>
           Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
           feito.
         </p>
-        <ul>
-          <li>
-            Acesse o repositório <strong>projeto-python-step</strong> no GitHub
-          </li>
-          <li>No seletor de branch, clique em <strong>main</strong></li>
-          <li>
-            Digite o nome da nova branch:
-            <strong>aula8-templates-avancados</strong>
-          </li>
-          <li>Clique em <strong>Create branch</strong></li>
-          <li>No VS Code, abra o terminal e execute:</li>
-        </ul>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
+git checkout aula7-cms-produtos
+git checkout -b aula8-templates-avancados
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-
-        <ul>
-          <li>No canto inferior esquerdo do VS Code, clique na branch atual</li>
-          <li>Selecione <strong>aula8-templates-avancados</strong></li>
-        </ul>
 
         <h3>Passo 1 — Criar o template base</h3>
         <p>
