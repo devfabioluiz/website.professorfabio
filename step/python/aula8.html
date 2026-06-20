@@ -402,16 +402,6 @@
           </li>
         </ul>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-cd produtos
-mkdir templatetags
-type nul > templatetags/__init__.py
-type nul > templatetags/filtros_produto.py
-cd ..
-          </code></pre>
-        </div>
-
         <p>
           O arquivo <code>__init__.py</code> (vazio) transforma a pasta em um
           pacote Python.
@@ -488,12 +478,38 @@ def label_status(estoque):
       </section>
 
       <section>
-        <h2>Arquivos Estáticos (CSS, JS, Imagens)</h2>
+        <h2>Passo a passo: Refatorando os templates do CMS</h2>
 
+        <h3>Passo 0 — Iniciando o projeto</h3>
+        <p>
+          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
+          feito.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula7-cms-produtos
+git checkout -b aula8-templates-avancados
+cd projeto_django_mvt
+mkdir produtos/templates/produtos[
+type nul > produtos/templates/produtos/base.html
+type nul > produtos/templates/produtos/_mensagens.html
+type nul > produtos/templates/produtos/_card_produto.html
+type nul > produtos/templates/produtos/_paginacao.html
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o template base</h3>
         <p>
           Até agora usamos Bootstrap via CDN. Para um projeto real, você vai
           querer seus próprios arquivos CSS e JavaScript. O Django gerencia isso
           com o sistema de <strong>arquivos estáticos</strong>.
+        </p>
+        <p>
+          Dentro de <code>produtos/templates/produtos/</code>, insira dentro do
+          arquivo <code>base.html</code> o seguinte conteúdo:
         </p>
         <div class="code-container">
           <pre><code class="language-html">
@@ -545,40 +561,15 @@ def label_status(estoque):
 &lt;/body&gt;
 &lt;/html&gt;
           </code></pre>
-        </div>
-      </section>
-
-      <section>
-        <h2>Passo a passo: Refatorando os templates do CMS</h2>
-
-        <h3>Passo 0 — Iniciando o projeto</h3>
-        <p>
-          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
-          feito.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-git fetch
-git checkout aula7-cms-produtos
-git checkout -b aula8-templates-avancados
-          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-
-        <h3>Passo 1 — Criar o template base</h3>
-        <p>
-          Dentro de <code>produtos/templates/produtos/</code>, crie o arquivo
-          <strong><code>base.html</code></strong> com o conteúdo da seção 5
-          acima (navbar Bootstrap + container + footer).
-        </p>
 
         <h3>Passo 2 — Refatorar os templates existentes</h3>
         <p>
           Abra cada template do CMS (<code>lista.html</code>,
           <code>cadastro.html</code>, <code>editar.html</code>, etc.) e faça:
         </p>
-        <ol>
+        <ul>
           <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
           <li>
             Adicione <code>{% extends 'produtos/base.html' %}</code> na primeira
@@ -588,23 +579,13 @@ git checkout -b aula8-templates-avancados
             Coloque o conteúdo específico da página dentro de
             <code>{% block conteudo %}</code>
           </li>
-        </ol>
+        </ul>
 
         <h3>Passo 3 — Criar partials reutilizáveis</h3>
         <p>
-          Crie os arquivos de partial (sugestão: prefixar com <code>_</code>):
+          Dentro de <code>produtos/templates/produtos/</code>, edite o arquivo
+          <code>_mensagens.html</code> com o seguinte conteúdo:
         </p>
-        <ul>
-          <li>
-            <code>_mensagens.html</code> — exibe mensagens de sucesso/erro do
-            Django
-          </li>
-          <li>
-            <code>_card_produto.html</code> — card de produto reutilizável
-          </li>
-          <li><code>_paginacao.html</code> — navegação de páginas</li>
-        </ul>
-
         <div class="code-container">
           <pre><code class="language-html">
 &lt;!-- _mensagens.html --&gt;
@@ -620,7 +601,10 @@ git checkout -b aula8-templates-avancados
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <br />
+        <p>
+          Dentro de <code>produtos/templates/produtos/</code>, edite o arquivo
+          <code>_card_produto.html</code> com o seguinte conteúdo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-html">
