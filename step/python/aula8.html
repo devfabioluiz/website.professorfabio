@@ -520,25 +520,7 @@ type nul > loja\templates\loja\_paginacao.html
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2 — Refatorar os templates existentes</h3>
-        <p>
-          Abra cada template do CMS (<code>lista_produtos.html</code>,
-          <code>form_produto.html</code>
-          etc.) e faça:
-        </p>
-        <ul>
-          <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
-          <li>
-            Adicione <code>{% extends 'loja/base.html' %}</code> na primeira
-            linha
-          </li>
-          <li>
-            Coloque o conteúdo específico da página dentro de
-            <code>{% block conteudo %}</code>
-          </li>
-        </ul>
-
-        <h3>Passo 3 — Criar partials reutilizáveis</h3>
+        <h3>Passo 2 — Criar partials reutilizáveis</h3>
         <p>
           Dentro de <code>loja/templates/loja/</code>, edite o arquivo
           <code>_mensagens.html</code> com o seguinte conteúdo:
@@ -590,7 +572,7 @@ type nul > loja\templates\loja\_paginacao.html
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 4 — Criar os filtros customizados</h3>
+        <h3>Passo 3 — Criar os filtros customizados</h3>
 
         <p>
           Insira o código abaixo dentro de
@@ -657,7 +639,7 @@ def label_status(estoque):
           as bibliotecas de template tags apenas na inicialização.
         </p>
 
-        <h3>Passo 5 — Criar arquivos estáticos</h3>
+        <h3>Passo 4 — Criar arquivos estáticos</h3>
         <p>
           Dentro do arquivo <code>loja/static/css/estilo.css</code>, insira o
           seguinte conteúdo:
@@ -703,7 +685,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 6 — Testar tudo</h3>
+        <h3>Passo 5 — Testar tudo</h3>
         <ul>
           <li>Ative o ambiente virtual: <code>venv\Scripts\activate</code></li>
           <li>Entre na pasta do projeto: <code>cd projeto_django_mvt</code></li>
@@ -715,7 +697,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <li>Teste a confirmação de exclusão</li>
         </ul>
 
-        <h3>Passo 7 — Salvar no Git</h3>
+        <h3>Último Passo — Salvar no Git</h3>
         <div class="code-container">
           <pre><code class="language-bash">
 git status
