@@ -118,7 +118,7 @@
     &lt;/nav&gt;
 
     &lt;main&gt;
-        {% block conteudo %}
+        {% block content %}
         &lt;!-- O conteúdo de cada página vai aqui --&gt;
         {% endblock %}
     &lt;/main&gt;
@@ -140,7 +140,7 @@
 
 {% block titulo %}Lista de Produtos{% endblock %}
 
-{% block conteudo %}
+{% block content %}
     &lt;h1&gt;Produtos Cadastrados&lt;/h1&gt;
     &lt;table&gt;
         {% for produto in produtos %}
@@ -407,7 +407,7 @@
 {% extends 'base.html' %}
 {% load filtros_produto %}
 
-{% block conteudo %}
+{% block content %}
     &lt;h1&gt;Produtos&lt;/h1&gt;
 
     {% for produto in produtos %}
@@ -505,7 +505,7 @@ type nul > loja\templates\loja\_paginacao.html
     &lt;/nav&gt;
 
     &lt;main class="container mt-4"&gt;
-        {% block conteudo %}{% endblock %}
+        {% block content %}{% endblock %}
     &lt;/main&gt;
 
     &lt;footer class="bg-dark text-white text-center py-3 mt-5"&gt;
@@ -705,10 +705,9 @@ python manage.py runserver
         <h3>Último Passo — Salvar no Git</h3>
         <div class="code-container">
           <pre><code class="language-bash">
-git status
 git add .
 git commit -m "aula8: templates avancados, heranca, filtros customizados e estaticos"
-git push origin aula8-templates-avancados
+git push --set-upstream origin aula8-templates-avancados
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -918,7 +917,7 @@ def status_pagamento(valor):
     {% endif %}
 {% endblock %}
 
-{% block conteudo %}
+{% block content %}
     &lt;h1&gt;{{ produto.nome }}&lt;/h1&gt;
     &lt;p&gt;{{ produto.descricao }}&lt;/p&gt;
     &lt;p&gt;{{ produto.preco|format_moeda }}&lt;/p&gt;
