@@ -402,9 +402,205 @@
           </li>
         </ul>
 
+        <div class="code-container">
+          <pre><code class="language-html">
+{% extends 'base.html' %}
+{% load filtros_produto %}
+
+{% block conteudo %}
+    &lt;h1&gt;Produtos&lt;/h1&gt;
+
+    {% for produto in produtos %}
+        &lt;div class="produto"&gt;
+            &lt;h3&gt;{{ produto.nome }}&lt;/h3&gt;
+            &lt;p&gt;{{ produto.preco|format_moeda }}&lt;/p&gt;
+            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
+        &lt;/div&gt;
+    {% endfor %}
+{% endblock %}
+          </code></pre>
+        </div>
+
         <p>
-          O arquivo <code>__init__.py</code> (vazio) transforma a pasta em um
-          pacote Python.
+          <strong>Atenção:</strong> O filtro <code>label_status</code> retorna
+          HTML. Use <code>|safe</code> depois dele para que o Django renderize o
+          HTML em vez de escapar as tags.
+        </p>
+      </section>
+
+      <section>
+        <h2>Passo a passo: Refatorando os templates do CMS</h2>
+
+        <h3>Passo 0 — Iniciando o projeto</h3>
+        <p>
+          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
+          feito.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula7-cms-produtos
+git checkout -b aula8-templates-avancados
+cd projeto_django_mvt
+mkdir loja\templatetags
+type nul > loja\templatetags\__init__.py
+mkdir loja\static\css
+mkdir loja\static\js
+type nul > loja\templates\loja\base.html
+type nul > loja\templates\loja\_mensagens.html
+type nul > loja\templates\loja\_card_produto.html
+type nul > loja\templates\loja\_paginacao.html
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o template base</h3>
+        <p>
+          Até agora usamos Bootstrap via CDN. Para um projeto real, você vai
+          querer seus próprios arquivos CSS e JavaScript. O Django gerencia isso
+          com o sistema de <strong>arquivos estáticos</strong>.
+        </p>
+        <p>
+          Dentro de <code>loja/templates/loja/</code>, insira dentro do
+          arquivo <code>base.html</code> o seguinte conteúdo:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-html">
+{% load static %}
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;{% block titulo %}CMS Produtos{% endblock %}&lt;/title&gt;
+
+    &lt;!-- Bootstrap CDN --&gt;
+    &lt;link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
+
+    &lt;!-- Seu CSS personalizado --&gt;
+    &lt;link rel="stylesheet" href="{% static 'css/estilo.css' %}"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+        &lt;div class="container"&gt;
+            &lt;a class="navbar-brand" href="{% url 'listar_produtos' %}"&gt;📦 CMS Produtos&lt;/a&gt;
+            &lt;div class="navbar-nav"&gt;
+                &lt;a class="nav-link" href="{% url 'listar_produtos' %}"&gt;Produtos&lt;/a&gt;
+                &lt;a class="nav-link" href="{% url 'criar_produto' %}"&gt;Novo&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class="navbar-nav ms-auto"&gt;
+                {% if user.is_authenticated %}
+                    &lt;span class="nav-link"&gt;{{ user.username }}&lt;/span&gt;
+                    &lt;a class="nav-link" href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
+                {% else %}
+                    &lt;a class="nav-link" href="{% url 'login' %}"&gt;Entrar&lt;/a&gt;
+                {% endif %}
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+
+    &lt;main class="container mt-4"&gt;
+        {% block conteudo %}{% endblock %}
+    &lt;/main&gt;
+
+    &lt;footer class="bg-dark text-white text-center py-3 mt-5"&gt;
+        &lt;p&gt;CMS Produtos &amp;copy; 2026 — Todos os direitos reservados&lt;/p&gt;
+    &lt;/footer&gt;
+
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    &lt;script src="{% static 'js/scripts.js' %}"&gt;&lt;/script&gt;
+{% block scripts %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Refatorar os templates existentes</h3>
+        <p>
+          Abra cada template do CMS (<code>lista.html</code>,
+          <code>cadastro.html</code>, <code>editar.html</code>, etc.) e faça:
+        </p>
+        <ul>
+          <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
+          <li>
+            Adicione <code>{% extends 'loja/base.html' %}</code> na primeira
+            linha
+          </li>
+          <li>
+            Coloque o conteúdo específico da página dentro de
+            <code>{% block conteudo %}</code>
+          </li>
+        </ul>
+
+        <h3>Passo 3 — Criar partials reutilizáveis</h3>
+        <p>
+          Dentro de <code>loja/templates/loja/</code>, edite o arquivo
+          <code>_mensagens.html</code> com o seguinte conteúdo:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- _mensagens.html --&gt;
+{% if messages %}
+    {% for message in messages %}
+        &lt;div class="alert alert-{{ message.tags }} alert-dismissible fade show"&gt;
+            {{ message }}
+            &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+        &lt;/div&gt;
+    {% endfor %}
+{% endif %}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Dentro de <code>loja/templates/loja/</code>, edite o arquivo
+          <code>_card_produto.html</code> com o seguinte conteúdo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-html">
+&lt;!-- _card_produto.html --&gt;
+{% load filtros_produto %}
+&lt;div class="col-md-4 mb-4"&gt;
+    &lt;div class="card h-100"&gt;
+        {% if produto.imagem %}
+            &lt;img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}"&gt;
+        {% endif %}
+        &lt;div class="card-body"&gt;
+            &lt;h5 class="card-title"&gt;{{ produto.nome|title }}&lt;/h5&gt;
+            &lt;p class="card-text"&gt;{{ produto.descricao|default:"Sem descrição"|truncatechars:80 }}&lt;/p&gt;
+            &lt;p class="card-text"&gt;
+                &lt;strong&gt;{{ produto.preco|format_moeda }}&lt;/strong&gt;
+            &lt;/p&gt;
+            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+            &lt;a href="{% url 'editar_produto' produto.id %}" class="btn btn-sm btn-warning"&gt;Editar&lt;/a&gt;
+            &lt;a href="{% url 'excluir_produto' produto.id %}" class="btn btn-sm btn-danger"&gt;Excluir&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar os filtros customizados</h3>
+
+        <p>
+          Insira o código abaixo dentro de
+          <code>loja/templatetags/filtros_produto.py</code>:
+        </p>
+
+        <p>
+          <strong>Importante:</strong> Para o Django reconhecer o pacote de
+          template tags, o diretório
+          <code>loja/templatetags/</code> precisa existir com um arquivo
+          <code>__init__.py</code> dentro (já criado no Passo 0). Esse arquivo
+          pode ficar vazio — ele só indica ao Python que o diretório é um
+          pacote.
         </p>
 
         <div class="code-container">
@@ -449,201 +645,21 @@ def label_status(estoque):
     else:
         return f'&lt;span class="badge badge-success"&gt;{estoque} un.&lt;/span&gt;'
           </code></pre>
-        </div>
-
-        <div class="code-container">
-          <pre><code class="language-html">
-{% extends 'base.html' %}
-{% load filtros_produto %}
-
-{% block conteudo %}
-    &lt;h1&gt;Produtos&lt;/h1&gt;
-
-    {% for produto in produtos %}
-        &lt;div class="produto"&gt;
-            &lt;h3&gt;{{ produto.nome }}&lt;/h3&gt;
-            &lt;p&gt;{{ produto.preco|format_moeda }}&lt;/p&gt;
-            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
-        &lt;/div&gt;
-    {% endfor %}
-{% endblock %}
-          </code></pre>
-        </div>
-
-        <p>
-          <strong>Atenção:</strong> O filtro <code>label_status</code> retorna
-          HTML. Use <code>|safe</code> depois dele para que o Django renderize o
-          HTML em vez de escapar as tags.
-        </p>
-      </section>
-
-      <section>
-        <h2>Passo a passo: Refatorando os templates do CMS</h2>
-
-        <h3>Passo 0 — Iniciando o projeto</h3>
-        <p>
-          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
-          feito.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-git fetch
-git checkout aula7-cms-produtos
-git checkout -b aula8-templates-avancados
-cd projeto_django_mvt
-mkdir produtos/templates/produtos[
-type nul > produtos/templates/produtos/base.html
-type nul > produtos/templates/produtos/_mensagens.html
-type nul > produtos/templates/produtos/_card_produto.html
-type nul > produtos/templates/produtos/_paginacao.html
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 1 — Criar o template base</h3>
-        <p>
-          Até agora usamos Bootstrap via CDN. Para um projeto real, você vai
-          querer seus próprios arquivos CSS e JavaScript. O Django gerencia isso
-          com o sistema de <strong>arquivos estáticos</strong>.
-        </p>
-        <p>
-          Dentro de <code>produtos/templates/produtos/</code>, insira dentro do
-          arquivo <code>base.html</code> o seguinte conteúdo:
-        </p>
-        <div class="code-container">
-          <pre><code class="language-html">
-{% load static %}
-&lt;!DOCTYPE html&gt;
-&lt;html lang="pt-BR"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;{% block titulo %}CMS Produtos{% endblock %}&lt;/title&gt;
-
-    &lt;!-- Bootstrap CDN --&gt;
-    &lt;link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"&gt;
-
-    &lt;!-- Seu CSS personalizado --&gt;
-    &lt;link rel="stylesheet" href="{% static 'css/estilo.css' %}"&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
-        &lt;div class="container"&gt;
-            &lt;a class="navbar-brand" href="{% url 'home' %}"&gt;📦 CMS Produtos&lt;/a&gt;
-            &lt;div class="navbar-nav"&gt;
-                &lt;a class="nav-link" href="{% url 'produto_lista' %}"&gt;Produtos&lt;/a&gt;
-                &lt;a class="nav-link" href="{% url 'produto_cadastrar' %}"&gt;Novo&lt;/a&gt;
-            &lt;/div&gt;
-            &lt;div class="navbar-nav ms-auto"&gt;
-                {% if user.is_authenticated %}
-                    &lt;span class="nav-link"&gt;{{ user.username }}&lt;/span&gt;
-                    &lt;a class="nav-link" href="{% url 'logout' %}"&gt;Sair&lt;/a&gt;
-                {% else %}
-                    &lt;a class="nav-link" href="{% url 'login' %}"&gt;Entrar&lt;/a&gt;
-                {% endif %}
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/nav&gt;
-
-    &lt;main class="container mt-4"&gt;
-        {% block conteudo %}{% endblock %}
-    &lt;/main&gt;
-
-    &lt;footer class="bg-dark text-white text-center py-3 mt-5"&gt;
-        &lt;p&gt;CMS Produtos &amp;copy; 2026 — Todos os direitos reservados&lt;/p&gt;
-    &lt;/footer&gt;
-
-    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
-    &lt;script src="{% static 'js/scripts.js' %}"&gt;&lt;/script&gt;
-{% block scripts %}{% endblock %}
-&lt;/body&gt;
-&lt;/html&gt;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Refatorar os templates existentes</h3>
-        <p>
-          Abra cada template do CMS (<code>lista.html</code>,
-          <code>cadastro.html</code>, <code>editar.html</code>, etc.) e faça:
-        </p>
-        <ul>
-          <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
-          <li>
-            Adicione <code>{% extends 'produtos/base.html' %}</code> na primeira
-            linha
-          </li>
-          <li>
-            Coloque o conteúdo específico da página dentro de
-            <code>{% block conteudo %}</code>
-          </li>
-        </ul>
-
-        <h3>Passo 3 — Criar partials reutilizáveis</h3>
-        <p>
-          Dentro de <code>produtos/templates/produtos/</code>, edite o arquivo
-          <code>_mensagens.html</code> com o seguinte conteúdo:
-        </p>
-        <div class="code-container">
-          <pre><code class="language-html">
-&lt;!-- _mensagens.html --&gt;
-{% if messages %}
-    {% for message in messages %}
-        &lt;div class="alert alert-{{ message.tags }} alert-dismissible fade show"&gt;
-            {{ message }}
-            &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
-        &lt;/div&gt;
-    {% endfor %}
-{% endif %}
-          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
-          Dentro de <code>produtos/templates/produtos/</code>, edite o arquivo
-          <code>_card_produto.html</code> com o seguinte conteúdo:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-html">
-&lt;!-- _card_produto.html --&gt;
-{% load filtros_produto %}
-&lt;div class="col-md-4 mb-4"&gt;
-    &lt;div class="card h-100"&gt;
-        {% if produto.imagem %}
-            &lt;img src="{{ produto.imagem.url }}" class="card-img-top" alt="{{ produto.nome }}"&gt;
-        {% endif %}
-        &lt;div class="card-body"&gt;
-            &lt;h5 class="card-title"&gt;{{ produto.nome|title }}&lt;/h5&gt;
-            &lt;p class="card-text"&gt;{{ produto.descricao|default:"Sem descrição"|truncatechars:80 }}&lt;/p&gt;
-            &lt;p class="card-text"&gt;
-                &lt;strong&gt;{{ produto.preco|format_moeda }}&lt;/strong&gt;
-            &lt;/p&gt;
-            &lt;p&gt;{{ produto.estoque|label_status|safe }}&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="card-footer"&gt;
-            &lt;a href="{% url 'produto_editar' produto.id %}" class="btn btn-sm btn-warning"&gt;Editar&lt;/a&gt;
-            &lt;a href="{% url 'produto_deletar' produto.id %}" class="btn btn-sm btn-danger"&gt;Excluir&lt;/a&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 4 — Criar os filtros customizados</h3>
-        <p>
-          Siga os passos da seção 4 (criar <code>templatetags/</code>,
-          <code>__init__.py</code>, <code>filtros_produto.py</code>).
+          Após criar ou modificar template tags, <strong>reinicie o
+          servidor</strong> (<code>Ctrl+C</code> e <code>python manage.py
+          runserver</code> novamente). O Django carrega as bibliotecas de
+          template tags apenas na inicialização.
         </p>
 
         <h3>Passo 5 — Criar arquivos estáticos</h3>
         <p>
-          Crie o arquivo <code>estilo.css</code> com algumas customizações
-          visuais e <code>scripts.js</code> com interações (ex: confirmação ao
-          deletar).
+          Crie o arquivo <code>loja/static/css/estilo.css</code> com algumas
+          customizações visuais e <code>loja/static/js/scripts.js</code> com
+          interações (ex: confirmação ao deletar).
         </p>
 
         <div class="code-container">
@@ -688,7 +704,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <li>Ative o ambiente virtual: <code>venv\Scripts\activate</code></li>
           <li>Entre na pasta do projeto: <code>cd projeto_django_mvt</code></li>
           <li>Execute: <code>python manage.py runserver</code></li>
-          <li>Acesse <code>http://localhost:8000/produtos/</code></li>
+          <li>Acesse <code>http://localhost:8000/</code></li>
           <li>Verifique se o layout base aparece em todas as páginas</li>
           <li>Teste os filtros customizados nos cards de produto</li>
           <li>Teste o CSS hover nos cards</li>
@@ -901,7 +917,7 @@ def status_pagamento(valor):
 {% endblock %}
 
 &lt;!-- No detalhe_produto.html --&gt;
-{% extends 'produtos/base.html' %}
+{% extends 'loja/base.html' %}
 
 {% block meta %}
     &lt;meta property="og:title" content="{{ produto.nome }}"&gt;
