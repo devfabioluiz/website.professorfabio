@@ -16,40 +16,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-
-    
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 8</h1>
       <h4 class="text-center">Python Backend</h4>
-      <h4 class="text-center">Templates Django Avançados: Herança de Layout, Tags, Filtros e Arquivos Estáticos</h4>
+      <h4 class="text-center">
+        Templates Django Avançados: Herança de Layout, Tags, Filtros e Arquivos
+        Estáticos
+      </h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Templates (Tags e filtros, Arquivos estáticos, Template inheritance), Criação de templates, Passagem de dados.
+        Templates (Tags e filtros, Arquivos estáticos, Template inheritance),
+        Criação de templates, Passagem de dados.
       </div>
     </header>
 
     <main class="container">
-
       <section>
         <h2>Objetivo da aula</h2>
         <p>
-          Nesta aula, vamos transformar os templates do nosso CMS de produtos (Aula 7)
-          em uma aplicação com visual profissional. Você aprenderá a reutilizar código HTML com
-          herança de templates, criar filtros personalizados, usar tags avançadas do Django e
-          organizar arquivos estáticos (CSS, JS, imagens).
+          Nesta aula, vamos transformar os templates do nosso CMS de produtos
+          (Aula 7) em uma aplicação com visual profissional. Você aprenderá a
+          reutilizar código HTML com herança de templates, criar filtros
+          personalizados, usar tags avançadas do Django e organizar arquivos
+          estáticos (CSS, JS, imagens).
         </p>
 
         <h3>Conteúdos da aula</h3>
         <ul>
           <li>Template inheritance — layouts reutilizáveis</li>
-          <li>Tags de template — <code>{% extends %}</code>, <code>{% block %}</code>, <code>{% include %}</code>, <code>{% url %}</code></li>
-          <li>Filtros nativos do Django — <code>|date</code>, <code>|default</code>, <code>|length</code>, <code>|truncatechars</code></li>
+          <li>
+            Tags de template — <code>{% extends %}</code>,
+            <code>{% block %}</code>, <code>{% include %}</code>,
+            <code>{% url %}</code>
+          </li>
+          <li>
+            Filtros nativos do Django — <code>|date</code>,
+            <code>|default</code>, <code>|length</code>,
+            <code>|truncatechars</code>
+          </li>
           <li>Filtros personalizados — criando seus próprios</li>
-          <li>Arquivos estáticos — CSS, JavaScript e imagens com <code>{% static %}</code></li>
+          <li>
+            Arquivos estáticos — CSS, JavaScript e imagens com
+            <code>{% static %}</code>
+          </li>
           <li>Organizando partials com <code>{% include %}</code></li>
         </ul>
       </section>
@@ -58,22 +73,32 @@
         <h2>1. Template Inheritance (Herança de Templates)</h2>
 
         <p>
-          Um dos recursos mais poderosos do Django Templates é a herança. Em vez de
-          repetir HTML (navbar, footer, estrutura da página) em cada arquivo, você cria
-          um <strong>template base</strong> e os outros templates <strong>estendem</strong> ele,
-          substituindo apenas os blocos que precisam mudar.
+          Um dos recursos mais poderosos do Django Templates é a herança. Em vez
+          de repetir HTML (navbar, footer, estrutura da página) em cada arquivo,
+          você cria um <strong>template base</strong> e os outros templates
+          <strong>estendem</strong> ele, substituindo apenas os blocos que
+          precisam mudar.
         </p>
 
         <h3>Como funciona</h3>
         <p>
-          Imagine que toda página do seu CMS tem: cabeçalho, menu lateral, área de conteúdo
-          e rodapé. Sem herança, você repetiria esse HTML em cada arquivo. Com herança:
+          Imagine que toda página do seu CMS tem: cabeçalho, menu lateral, área
+          de conteúdo e rodapé. Sem herança, você repetiria esse HTML em cada
+          arquivo. Com herança:
         </p>
 
         <ul>
-          <li><strong>Base:</strong> define a estrutura comum (HTML, head, nav, footer)</li>
-          <li><strong>Blocos:</strong> marca as áreas que podem ser substituídas</li>
-          <li><strong>Filhos:</strong> estendem a base e preenchem apenas os blocos necessários</li>
+          <li>
+            <strong>Base:</strong> define a estrutura comum (HTML, head, nav,
+            footer)
+          </li>
+          <li>
+            <strong>Blocos:</strong> marca as áreas que podem ser substituídas
+          </li>
+          <li>
+            <strong>Filhos:</strong> estendem a base e preenchem apenas os
+            blocos necessários
+          </li>
         </ul>
 
         <div class="code-container">
@@ -104,7 +129,6 @@
 &lt;/body&gt;
 &lt;/html&gt;
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>Agora, um template filho que lista produtos:</p>
@@ -130,21 +154,32 @@
     &lt;/table&gt;
 {% endblock %}
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
-          O Django renderiza o filho <strong>dentro</strong> da estrutura da base.
-          O resultado final é uma página completa com nav, conteúdo da lista e footer,
-          sem repetir código.
+          O Django renderiza o filho <strong>dentro</strong> da estrutura da
+          base. O resultado final é uma página completa com nav, conteúdo da
+          lista e footer, sem repetir código.
         </p>
 
         <h3>Regras importantes</h3>
         <ul>
-          <li><code>{% extends 'base.html' %}</code> precisa ser a <strong>primeira linha</strong> do template filho</li>
-          <li>Você pode ter <strong>vários blocos</strong> na base (titulo, conteudo, scripts, etc.)</li>
-          <li>Blocos podem ter conteúdo padrão (o que aparece se o filho não sobrescrever)</li>
-          <li>Use <code>{{ block.super }}</code> para incluir o conteúdo do bloco pai e adicionar mais</li>
+          <li>
+            <code>{% extends 'base.html' %}</code> precisa ser a
+            <strong>primeira linha</strong> do template filho
+          </li>
+          <li>
+            Você pode ter <strong>vários blocos</strong> na base (titulo,
+            conteudo, scripts, etc.)
+          </li>
+          <li>
+            Blocos podem ter conteúdo padrão (o que aparece se o filho não
+            sobrescrever)
+          </li>
+          <li>
+            Use <code>{{ block.super }}</code> para incluir o conteúdo do bloco
+            pai e adicionar mais
+          </li>
         </ul>
       </section>
 
@@ -152,13 +187,16 @@
         <h2>2. Tags de Template Essenciais</h2>
 
         <h3>2.1 — {% extends %} e {% block %}</h3>
-        <p>Já vimos acima. A combinação que possibilita herança de templates.</p>
+        <p>
+          Já vimos acima. A combinação que possibilita herança de templates.
+        </p>
 
         <h3>2.2 — {% include %} (Partials)</h3>
         <p>
-          O <code>{% include %}</code> insere o conteúdo de outro template dentro do atual.
-          É ideal para componentes reutilizáveis como cards de produto, mensagens de alerta,
-          ou qualquer pedaço de HTML que aparece em várias páginas.
+          O <code>{% include %}</code> insere o conteúdo de outro template
+          dentro do atual. É ideal para componentes reutilizáveis como cards de
+          produto, mensagens de alerta, ou qualquer pedaço de HTML que aparece
+          em várias páginas.
         </p>
 
         <div class="code-container">
@@ -175,17 +213,18 @@
     {% include '_card_produto.html' %}
 {% endfor %}
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
-          Por convenção, partials costumam começar com <code>_</code> (underline) no nome do arquivo.
+          Por convenção, partials costumam começar com
+          <code>_</code> (underline) no nome do arquivo.
         </p>
 
         <h3>2.3 — {% url %} (URLs nomeadas)</h3>
         <p>
-          Em vez de escrever URLs fixas no HTML, use <code>{% url 'nome_da_rota' %}</code>.
-          Se a URL mudar no <code>urls.py</code>, os templates se ajustam automaticamente.
+          Em vez de escrever URLs fixas no HTML, use
+          <code>{% url 'nome_da_rota' %}</code>. Se a URL mudar no
+          <code>urls.py</code>, os templates se ajustam automaticamente.
         </p>
 
         <div class="code-container">
@@ -205,7 +244,8 @@
         <h3>2.4 — {% csrf_token %}</h3>
         <p>
           Obrigatório em <strong>todo formulário que usa POST</strong>. O Django
-          rejeita requisições POST sem esse token como proteção contra ataques CSRF.
+          rejeita requisições POST sem esse token como proteção contra ataques
+          CSRF.
         </p>
 
         <div class="code-container">
@@ -246,8 +286,8 @@
         <h2>3. Filtros Nativos do Django</h2>
 
         <p>
-          Filtros transformam o valor de uma variável na hora de exibir. Eles são aplicados
-          com o caractere pipe <code>|</code>.
+          Filtros transformam o valor de uma variável na hora de exibir. Eles
+          são aplicados com o caractere pipe <code>|</code>.
         </p>
 
         <table>
@@ -269,7 +309,9 @@
             <tr>
               <td><code>|default:"-"</code></td>
               <td>Valor padrão se variável for vazia</td>
-              <td><code>{{ produto.descricao|default:"Sem descrição" }}</code></td>
+              <td>
+                <code>{{ produto.descricao|default:"Sem descrição" }}</code>
+              </td>
               <td>Sem descrição</td>
             </tr>
             <tr>
@@ -286,7 +328,7 @@
             </tr>
             <tr>
               <td><code>|linebreaks</code></td>
-              <td>Converte quebras de linha em <br></td>
+              <td>Converte quebras de linha em <br /></td>
               <td><code>{{ descricao|linebreaks }}</code></td>
               <td>Texto com &lt;br&gt;</td>
             </tr>
@@ -344,20 +386,21 @@
         <h2>4. Filtros Personalizados</h2>
 
         <p>
-          Além dos filtros nativos, você pode criar os seus próprios para lógicas específicas
-          do seu projeto. Vamos criar dois filtros úteis para o CMS:
+          Além dos filtros nativos, você pode criar os seus próprios para
+          lógicas específicas do seu projeto. Vamos criar dois filtros úteis
+          para o CMS:
         </p>
 
         <ul>
-          <li><strong>format_moeda:</strong> formata um número como moeda brasileira (R$ 1.999,90)</li>
-          <li><strong>label_status:</strong> retorna um badge colorido baseado no estoque</li>
+          <li>
+            <strong>format_moeda:</strong> formata um número como moeda
+            brasileira (R$ 1.999,90)
+          </li>
+          <li>
+            <strong>label_status:</strong> retorna um badge colorido baseado no
+            estoque
+          </li>
         </ul>
-
-        <h3>Passo 1 — Criar a estrutura de template tags</h3>
-
-        <p>
-          Dentro do app <code>produtos</code>, crie a seguinte estrutura:
-        </p>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -370,11 +413,10 @@ cd ..
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>O arquivo <code>__init__.py</code> (vazio) transforma a pasta em um pacote Python.</p>
-
-        <h3>Passo 2 — Escrever os filtros</h3>
-
-        <p>Arquivo: <code>produtos/templatetags/filtros_produto.py</code></p>
+        <p>
+          O arquivo <code>__init__.py</code> (vazio) transforma a pasta em um
+          pacote Python.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -421,10 +463,6 @@ def label_status(estoque):
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 3 — Usar os filtros no template</h3>
-
-        <p>Primeiro, carregue os filtros no topo do template com <code>{% load %}</code>:</p>
-
         <div class="code-container">
           <pre><code class="language-html">
 {% extends 'base.html' %}
@@ -446,9 +484,9 @@ def label_status(estoque):
         </div>
 
         <p>
-          <strong>Atenção:</strong> O filtro <code>label_status</code> retorna HTML.
-          Use <code>|safe</code> depois dele para que o Django renderize o HTML
-          em vez de escapar as tags.
+          <strong>Atenção:</strong> O filtro <code>label_status</code> retorna
+          HTML. Use <code>|safe</code> depois dele para que o Django renderize o
+          HTML em vez de escapar as tags.
         </p>
       </section>
 
@@ -456,31 +494,10 @@ def label_status(estoque):
         <h2>5. Arquivos Estáticos (CSS, JS, Imagens)</h2>
 
         <p>
-          Até agora usamos Bootstrap via CDN. Para um projeto real, você vai querer
-          seus próprios arquivos CSS e JavaScript. O Django gerencia isso com o sistema
-          de <strong>arquivos estáticos</strong>.
+          Até agora usamos Bootstrap via CDN. Para um projeto real, você vai
+          querer seus próprios arquivos CSS e JavaScript. O Django gerencia isso
+          com o sistema de <strong>arquivos estáticos</strong>.
         </p>
-
-        <h3>Passo 1 — Criar a pasta static</h3>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-cd produtos
-mkdir static
-mkdir static\css
-mkdir static\js
-mkdir static\img
-type nul > static\css\estilo.css
-type nul > static\js\scripts.js
-cd ..\..
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Usar {% static %} nos templates</h3>
-
-        <p>No topo do template base, carregue a tag <code>static</code> e use-a para referenciar arquivos:</p>
-
         <div class="code-container">
           <pre><code class="language-html">
 {% load static %}
@@ -531,24 +548,6 @@ cd ..\..
 &lt;/body&gt;
 &lt;/html&gt;
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 3 — Configurar STATIC_URL (já vem por padrão)</h3>
-
-        <p>
-          No <code>settings.py</code>, verifique se estas linhas existem (por padrão já vêm):
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-python">
-STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',       # pasta static global (opcional)
-]
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -557,12 +556,18 @@ STATICFILES_DIRS = [
 
         <h3>Passo 0 — Versionamento com Git</h3>
         <p>
-          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi feito.
+          Vamos criar uma branch a partir da Aula 7 para não perder o que já foi
+          feito.
         </p>
         <ul>
-          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>
+            Acesse o repositório <strong>projeto-python-step</strong> no GitHub
+          </li>
           <li>No seletor de branch, clique em <strong>main</strong></li>
-          <li>Digite o nome da nova branch: <strong>aula8-templates-avancados</strong></li>
+          <li>
+            Digite o nome da nova branch:
+            <strong>aula8-templates-avancados</strong>
+          </li>
           <li>Clique em <strong>Create branch</strong></li>
           <li>No VS Code, abra o terminal e execute:</li>
         </ul>
@@ -582,19 +587,25 @@ git fetch
         <h3>Passo 1 — Criar o template base</h3>
         <p>
           Dentro de <code>produtos/templates/produtos/</code>, crie o arquivo
-          <strong><code>base.html</code></strong> com o conteúdo da seção 5 acima
-          (navbar Bootstrap + container + footer).
+          <strong><code>base.html</code></strong> com o conteúdo da seção 5
+          acima (navbar Bootstrap + container + footer).
         </p>
 
         <h3>Passo 2 — Refatorar os templates existentes</h3>
         <p>
-          Abra cada template do CMS (<code>lista.html</code>, <code>cadastro.html</code>,
-          <code>editar.html</code>, etc.) e faça:
+          Abra cada template do CMS (<code>lista.html</code>,
+          <code>cadastro.html</code>, <code>editar.html</code>, etc.) e faça:
         </p>
         <ol>
           <li>Remova todo o HTML de estrutura (head, body, nav, footer)</li>
-          <li>Adicione <code>{% extends 'produtos/base.html' %}</code> na primeira linha</li>
-          <li>Coloque o conteúdo específico da página dentro de <code>{% block conteudo %}</code></li>
+          <li>
+            Adicione <code>{% extends 'produtos/base.html' %}</code> na primeira
+            linha
+          </li>
+          <li>
+            Coloque o conteúdo específico da página dentro de
+            <code>{% block conteudo %}</code>
+          </li>
         </ol>
 
         <h3>Passo 3 — Criar partials reutilizáveis</h3>
@@ -602,8 +613,13 @@ git fetch
           Crie os arquivos de partial (sugestão: prefixar com <code>_</code>):
         </p>
         <ul>
-          <li><code>_mensagens.html</code> — exibe mensagens de sucesso/erro do Django</li>
-          <li><code>_card_produto.html</code> — card de produto reutilizável</li>
+          <li>
+            <code>_mensagens.html</code> — exibe mensagens de sucesso/erro do
+            Django
+          </li>
+          <li>
+            <code>_card_produto.html</code> — card de produto reutilizável
+          </li>
           <li><code>_paginacao.html</code> — navegação de páginas</li>
         </ul>
 
@@ -622,7 +638,7 @@ git fetch
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <br>
+        <br />
 
         <div class="code-container">
           <pre><code class="language-html">
@@ -653,14 +669,15 @@ git fetch
 
         <h3>Passo 4 — Criar os filtros customizados</h3>
         <p>
-          Siga os passos da seção 4 (criar <code>templatetags/</code>, <code>__init__.py</code>,
-          <code>filtros_produto.py</code>).
+          Siga os passos da seção 4 (criar <code>templatetags/</code>,
+          <code>__init__.py</code>, <code>filtros_produto.py</code>).
         </p>
 
         <h3>Passo 5 — Criar arquivos estáticos</h3>
         <p>
-          Crie o arquivo <code>estilo.css</code> com algumas customizações visuais
-          e <code>scripts.js</code> com interações (ex: confirmação ao deletar).
+          Crie o arquivo <code>estilo.css</code> com algumas customizações
+          visuais e <code>scripts.js</code> com interações (ex: confirmação ao
+          deletar).
         </p>
 
         <div class="code-container">
@@ -680,7 +697,7 @@ git fetch
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <br>
+        <br />
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -758,12 +775,18 @@ git push origin aula8-templates-avancados
             </tr>
             <tr>
               <td>Controle de fluxo</td>
-              <td><code>{% if %}</code>, <code>{% for %}</code>, <code>{% empty %}</code></td>
+              <td>
+                <code>{% if %}</code>, <code>{% for %}</code>,
+                <code>{% empty %}</code>
+              </td>
               <td>Lógica condicional e loops no template</td>
             </tr>
             <tr>
               <td>Filtros nativos</td>
-              <td><code>|date</code>, <code>|default</code>, <code>|length</code>, <code>|floatformat</code></td>
+              <td>
+                <code>|date</code>, <code>|default</code>, <code>|length</code>,
+                <code>|floatformat</code>
+              </td>
               <td>Transformar dados na exibição</td>
             </tr>
             <tr>
@@ -784,14 +807,14 @@ git push origin aula8-templates-avancados
         <h2>Dever de Casa</h2>
 
         <div id="question-container-casa">
-
           <div class="question">
             <h3>1. Crie um partial de paginação</h3>
             <p>
-              Crie o arquivo <code>_paginacao.html</code> que exibe links de navegação
-              entre páginas. Use o objeto <code>page_obj</code> que o Django fornece
-              quando você usa <code>Paginator</code> na view. O partial deve mostrar:
-              "Página X de Y", links "Anterior" e "Próximo", e o número total de itens.
+              Crie o arquivo <code>_paginacao.html</code> que exibe links de
+              navegação entre páginas. Use o objeto <code>page_obj</code> que o
+              Django fornece quando você usa <code>Paginator</code> na view. O
+              partial deve mostrar: "Página X de Y", links "Anterior" e
+              "Próximo", e o número total de itens.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -856,9 +879,10 @@ git push origin aula8-templates-avancados
           <div class="question">
             <h3>2. Crie um filtro customizado para status de pagamento</h3>
             <p>
-              Crie um filtro chamado <code>status_pagamento</code> que recebe um valor
-              ("pago", "pendente", "cancelado") e retorna um badge HTML com a cor correspondente:
-              verde para pago, amarelo para pendente, vermelho para cancelado.
+              Crie um filtro chamado <code>status_pagamento</code> que recebe um
+              valor ("pago", "pendente", "cancelado") e retorna um badge HTML
+              com a cor correspondente: verde para pago, amarelo para pendente,
+              vermelho para cancelado.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -892,9 +916,11 @@ def status_pagamento(valor):
           <div class="question">
             <h3>3. Crie um bloco extra no template base para meta tags</h3>
             <p>
-              Adicione um bloco chamado <code>{% block meta %}</code> no <code>&lt;head&gt;</code>
-              do template base. Depois, em uma página de detalhes de produto, sobrescreva esse
-              bloco para incluir meta tags de Open Graph (para compartilhamento em redes sociais).
+              Adicione um bloco chamado <code>{% block meta %}</code> no
+              <code>&lt;head&gt;</code>
+              do template base. Depois, em uma página de detalhes de produto,
+              sobrescreva esse bloco para incluir meta tags de Open Graph (para
+              compartilhamento em redes sociais).
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -929,7 +955,6 @@ def status_pagamento(valor):
               </div>
             </div>
           </div>
-
         </div>
       </section>
     </main>
