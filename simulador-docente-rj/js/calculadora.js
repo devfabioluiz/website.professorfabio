@@ -44,11 +44,14 @@ function calcular(params) {
 
   var aqValor = params.qualificacao === "nenhuma" ? 0 : round2(AQ[carga][params.qualificacao]);
 
+  var glpTempos = params.glpTempos || 0;
+  var glpValor = glpTempos > 0 ? round2(glpTempos * 4 * (GLP.baseMensal / GLP.temposBase)) : 0;
+
   var basePrev = round2(total + trienioValor + aqValor);
 
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
 
-  var baseIRRF = round2(basePrev - previdencia - (params.dependentes * DEDUCAO_DEPENDENTE));
+  var baseIRRF = round2(basePrev + glpValor - previdencia - (params.dependentes * DEDUCAO_DEPENDENTE));
   if (baseIRRF < 0) baseIRRF = 0;
 
   var irrf = round2(calcularIRRF(baseIRRF));
@@ -57,7 +60,7 @@ function calcular(params) {
   var auxAlimentacao = ALIMENTACAO[carga];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + auxilios);
+  var bruta = round2(total + trienioValor + aqValor + glpValor + auxilios);
 
   var liquido = round2(bruta - previdencia - irrf);
 
@@ -71,6 +74,8 @@ function calcular(params) {
     trienioPct: trienioPct,
     aqValor: aqValor,
     qualificacaoNome: params.qualificacao === "nenhuma" ? "Nenhuma" : (params.qualificacao === "mestrado" ? "Mestrado" : "Doutorado"),
+    glpTempos: glpTempos,
+    glpValor: glpValor,
     auxTransporte: auxTransporte,
     auxAlimentacao: auxAlimentacao,
     auxilios: auxilios,
@@ -84,6 +89,7 @@ function calcular(params) {
     ref: ref,
     exibeComplemento: ref.complemento > 0,
     exibeTrienio: params.trienios > 0,
-    exibeAQ: aqValor > 0
+    exibeAQ: aqValor > 0,
+    exibeGLP: glpValor > 0
   };
 }

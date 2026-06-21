@@ -53,9 +53,7 @@
             <option value="docente1_18h">Professor Docente I - 18h</option>
             <option value="docente1_30h">Professor Docente I - 30h</option>
             <option value="docente2_22h">Professor Docente II - 22h</option>
-            <option value="exfaep1_40h">
-              Professor Ex-Faep Docente I - 40h
-            </option>
+            <option value="docente1_40h">Professor Docente I - 40h</option>
           </select>
         </div>
 
@@ -145,6 +143,50 @@
           </select>
         </div>
 
+        <!-- GLP -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Gratificação por Lotação Prioritária (GLP)</label
+          >
+          <div class="flex gap-4 mb-2">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="glp"
+                value="nao"
+                checked
+                class="accent-blue-600 glp-radio"
+              />
+              <span class="text-sm text-gray-700">Não</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="glp"
+                value="sim"
+                class="accent-blue-600 glp-radio"
+              />
+              <span class="text-sm text-gray-700">Sim</span>
+            </label>
+          </div>
+          <div id="glp-tempos-container" class="hidden">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-400">Tempos semanais:</span>
+              <input
+                type="number"
+                id="glp-tempos"
+                min="1"
+                max="47"
+                value="1"
+                class="w-20 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              />
+              <span id="glp-max-label" class="text-xs text-gray-400"
+                >(máx. 47)</span
+              >
+            </div>
+          </div>
+        </div>
+
         <!-- Regência -->
         <div class="mb-4">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
@@ -228,6 +270,14 @@
           return document.querySelector('input[name="regencia"]:checked').value;
         }
 
+        function getGlpTempos() {
+          var temGlp =
+            document.querySelector('input[name="glp"]:checked').value === "sim";
+          return temGlp
+            ? parseInt(document.getElementById("glp-tempos").value) || 0
+            : 0;
+        }
+
         function atualizarReferencias() {
           var cargoKey = elCargo.value;
           var cargo = CARGOS[cargoKey];
@@ -256,6 +306,7 @@
             trienios: parseInt(elTrienios.value),
             qualificacao: elQualificacao.value,
             comRegencia: getRegencia() === "com",
+            glpTempos: getGlpTempos(),
             dependentes: parseInt(elDependentes.value) || 0,
           };
 
@@ -294,6 +345,16 @@
                 "AQ (" + r.qualificacaoNome + ")",
                 r.aqValor,
                 "text-blue-600",
+              ),
+            );
+          }
+          // GLP
+          if (r.exibeGLP) {
+            linhas.push(
+              linha(
+                "GLP (" + r.glpTempos + " tempos/sem)",
+                r.glpValor,
+                "text-purple-600",
               ),
             );
           }
@@ -343,20 +404,24 @@
 
           // Informações adicionais
           linhas.push({ html: '<div class="h-2"></div>' });
-          linhas.push({
-            html:
-              '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
-              '<div class="flex justify-between"><span>Base de cálculo IRRF:</span><span class="font-medium">R$ ' +
-              formatarReal(r.baseIRRF) +
-              "</span></div>" +
-              '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
-              formatarReal(r.basePrev) +
-              "</span></div>" +
-              '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' +
-              r.aliquotaEfetivaIR.toFixed(1) +
-              "%</span></div>" +
-              "</div>",
-          });
+          var infoHtml =
+            '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
+            '<div class="flex justify-between"><span>Base de cálculo IRRF:</span><span class="font-medium">R$ ' +
+            formatarReal(r.baseIRRF) +
+            "</span></div>" +
+            '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
+            formatarReal(r.basePrev) +
+            "</span></div>";
+          if (r.exibeGLP) {
+            infoHtml +=
+              '<div class="text-gray-400 mt-1">* GLP não integra a base previdenciária</div>';
+          }
+          infoHtml +=
+            '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' +
+            r.aliquotaEfetivaIR.toFixed(1) +
+            "%</span></div>" +
+            "</div>";
+          linhas.push({ html: infoHtml });
 
           elResultado.innerHTML = linhas
             .map(function (l) {
@@ -387,6 +452,7 @@
 
         elCargo.addEventListener("change", function () {
           atualizarReferencias();
+          atualizarGlpMax();
           atualizarResultado();
         });
         elRef.addEventListener("change", atualizarResultado);
@@ -405,6 +471,42 @@
         var elRegenciaRadios = document.querySelectorAll(".regencia-radio");
         elRegenciaRadios.forEach(function (radio) {
           radio.addEventListener("change", atualizarResultado);
+        });
+
+        function atualizarGlpMax() {
+          var cargoKey = elCargo.value;
+          var carga = CARGOS[cargoKey].carga;
+          var maxTempos = Math.max(GLP.minTempos, 65 - carga);
+          var elGlpTempos = document.getElementById("glp-tempos");
+          var elGlpMaxLabel = document.getElementById("glp-max-label");
+
+          elGlpTempos.max = maxTempos;
+          elGlpMaxLabel.textContent = "(max. " + maxTempos + ")";
+
+          if (parseInt(elGlpTempos.value) > maxTempos) {
+            elGlpTempos.value = maxTempos;
+          }
+        }
+
+        var elGlpRadios = document.querySelectorAll(".glp-radio");
+        var elGlpTempos = document.getElementById("glp-tempos");
+        var elGlpTemposContainer = document.getElementById(
+          "glp-tempos-container",
+        );
+
+        elGlpRadios.forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            var temGlp = radio.value === "sim";
+            elGlpTemposContainer.classList.toggle("hidden", !temGlp);
+            if (temGlp) {
+              atualizarGlpMax();
+            }
+            atualizarResultado();
+          });
+        });
+
+        elGlpTempos.addEventListener("input", function () {
+          atualizarResultado();
         });
 
         atualizarReferencias();
