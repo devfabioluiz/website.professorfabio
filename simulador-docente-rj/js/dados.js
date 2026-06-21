@@ -92,6 +92,9 @@ var IRPF_FAIXAS = [
   { ate: Infinity, aliquota: 27.5, deducao: 908.73 },
 ];
 
+var DIFICIL_PROVIMENTO = 400.00;   // Decreto 44.710/2014 (majorou Dec. 43.384/2011)
+var DIFICIL_ACESSO = 141.02;       // Art. 38, II, Lei 1.614/1990 c/c Decreto 15.186/90
+
 var PREVIDENCIA_ALIQUOTA = 0.14;
 var DEDUCAO_DEPENDENTE = 189.59;
 var MAX_TRIENIOS = 11;

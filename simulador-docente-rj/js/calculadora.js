@@ -47,6 +47,9 @@ function calcular(params) {
   var glpTempos = params.glpTempos || 0;
   var glpValor = glpTempos > 0 ? round2(glpTempos * 4 * (GLP.baseMensal / GLP.temposBase)) : 0;
 
+  var dpValor = params.dificilProvimento ? DIFICIL_PROVIMENTO : 0;
+  var daValor = params.dificilAcesso ? DIFICIL_ACESSO : 0;
+
   var basePrev = round2(total + trienioValor + aqValor);
 
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
@@ -60,7 +63,7 @@ function calcular(params) {
   var auxAlimentacao = ALIMENTACAO[carga];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + glpValor + auxilios);
+  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + auxilios);
 
   var liquido = round2(bruta - previdencia - irrf);
 
@@ -76,6 +79,8 @@ function calcular(params) {
     qualificacaoNome: params.qualificacao === "nenhuma" ? "Nenhuma" : (params.qualificacao === "mestrado" ? "Mestrado" : "Doutorado"),
     glpTempos: glpTempos,
     glpValor: glpValor,
+    dpValor: dpValor,
+    daValor: daValor,
     auxTransporte: auxTransporte,
     auxAlimentacao: auxAlimentacao,
     auxilios: auxilios,
@@ -90,6 +95,8 @@ function calcular(params) {
     exibeComplemento: ref.complemento > 0,
     exibeTrienio: params.trienios > 0,
     exibeAQ: aqValor > 0,
-    exibeGLP: glpValor > 0
+    exibeGLP: glpValor > 0,
+    exibeDP: dpValor > 0,
+    exibeDA: daValor > 0
   };
 }
