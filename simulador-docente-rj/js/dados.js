@@ -65,11 +65,28 @@ var CARGOS = {
       { nivel: "D", ref: 9, vb: 6967.11, complemento: 0.0 },
     ],
   },
+  supervisor_oe_ie_25h: {
+    nome: "Prof. Supervisor/Orient./Inspetor Escolar - 25h",
+    carga: 25,
+    extincao: false,
+    regencia: false,
+    glp: false,
+    referencias: [
+      { nivel: "C", ref: 3, vb: 2206.08, complemento: 836.28 },
+      { nivel: "D", ref: 4, vb: 2470.83, complemento: 571.53 },
+      { nivel: "D", ref: 5, vb: 2767.32, complemento: 275.04 },
+      { nivel: "D", ref: 6, vb: 3099.40, complemento: 0.0 },
+      { nivel: "D", ref: 7, vb: 3471.32, complemento: 0.0 },
+      { nivel: "D", ref: 8, vb: 3887.89, complemento: 0.0 },
+      { nivel: "D", ref: 9, vb: 4354.44, complemento: 0.0 },
+    ],
+  },
 };
 
 var AQ = {
   18: { mestrado: 310.75, doutorado: 621.47 },
   22: { mestrado: 310.75, doutorado: 621.47 },
+  25: { mestrado: 310.75, doutorado: 621.47 },
   30: { mestrado: 582.67, doutorado: 1165.28 },
   40: { mestrado: 621.47, doutorado: 1243.04 },
 };
@@ -77,6 +94,7 @@ var AQ = {
 var ALIMENTACAO = {
   18: 239.52,
   22: 329.34,
+  25: 374.25,
   30: 449.1,
   40: 598.8,
 };
@@ -85,6 +103,76 @@ var GLP = {
   baseMensal: 1588.41,
   temposBase: 48,
   minTempos: 1,
+};
+
+var FUNCOES = {
+  nenhuma: {
+    nome: "Nenhuma",
+    gratificacao: 0,
+    carga40h: false,
+    permiteGLP: true,
+    permiteDPDA: true,
+    ajudaCusto: 0,
+    incidePrev: false,
+  },
+  coordenador_pedagogico: {
+    nome: "Coordenador Pedagógico",
+    gratificacao: 950.00,      // Dec. 44.711/14
+    carga40h: true,             // Lei 9.584/2022
+    permiteGLP: true,           // Art. 7 §único Dec. 46.920/20
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: true,           // gratificação de encargos especiais
+  },
+  diretor_geral: {
+    nome: "Diretor Geral",
+    gratificacao: null,
+    categorias: {
+      A: 2689.32,  // Dec. 42.926/11
+      B: 2370.96,
+      C: 1911.26,
+      D: 1751.58,
+      E: 1603.56,
+    },
+    carga40h: true,            // Lei 9.584/2022
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: true,
+  },
+  diretor_adjunto: {
+    nome: "Diretor Adjunto",
+    gratificacao: null,
+    categorias: {
+      A: 1251.76,  // Dec. 43.299/11
+      B: 1092.06,
+      C: 1047.24,
+      D:  950.00,
+    },
+    carga40h: true,            // Lei 9.584/2022
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: true,
+  },
+  secretario_escolar: {
+    nome: "Secretário Escolar",
+    gratificacao: null,        // Anexo Dec. 43.668/12
+    carga40h: false,           // Lei 9.584 NÃO menciona secretário
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: true,
+  },
+  agente_acompanhamento: {
+    nome: "Agente de Acomp. da Gestão Escolar",
+    gratificacao: null,        // Anexo Dec. 44.812/14
+    carga40h: false,           // já é 40h por criação (Lei 6.479/13 Art. 2º §2º)
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 300.00,        // Lei 6.834/14 Art. 4º (indenizatório)
+    incidePrev: false,         // ajuda de custo é indenizatória
+  },
 };
 
 var TRANSPORTE = {

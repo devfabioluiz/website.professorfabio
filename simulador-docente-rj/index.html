@@ -73,6 +73,7 @@
             <option value="docente1_30h">Professor Docente I - 30h</option>
             <option value="docente2_22h">Professor Docente II - 22h</option>
             <option value="docente1_40h">Professor Docente I - 40h</option>
+            <option value="supervisor_oe_ie_25h">Prof. Supervisor/Orient./Inspetor Escolar - 25h</option>
           </select>
         </div>
 
@@ -85,6 +86,44 @@
             id="referencia"
             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
           ></select>
+        </div>
+
+        <!-- Função Gratificada -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Função Gratificada</label
+          >
+          <select
+            id="funcao"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="nenhuma">Nenhuma</option>
+            <option value="coordenador_pedagogico">Coordenador Pedagógico</option>
+            <option value="diretor_geral">Diretor Geral</option>
+            <option value="diretor_adjunto">Diretor Adjunto</option>
+            <option value="secretario_escolar">Secretário Escolar</option>
+            <option value="agente_acompanhamento">Agente de Acomp. da Gestão Escolar</option>
+          </select>
+          <p id="msg-carga40h" class="text-xs text-blue-600 mt-1 hidden">
+            Carga horária convertida para 40h (Lei 9.584/2022)
+          </p>
+        </div>
+
+        <!-- Categoria da Escola -->
+        <div class="mb-4" id="categoria-escola-section">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Categoria da Escola</label
+          >
+          <select
+            id="categoria-escola"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="A">A — mais de 50 turmas ou horário integral</option>
+            <option value="B">B — 31 a 50 turmas</option>
+            <option value="C">C — 16 a 30 turmas</option>
+            <option value="D">D — 6 a 15 turmas</option>
+            <option value="E">E — até 5 turmas</option>
+          </select>
         </div>
 
         <!-- Data de Ingresso -->
@@ -163,7 +202,7 @@
         </div>
 
         <!-- GLP -->
-        <div class="mb-4">
+        <div class="mb-4" id="glp-section">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
             >Gratificação por Lotação Prioritária (GLP)</label
           >
@@ -207,7 +246,7 @@
         </div>
 
         <!-- Difícil Provimento -->
-        <div class="mb-4">
+        <div class="mb-4" id="dp-section">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
             >Gratificação de Difícil Provimento</label
           >
@@ -235,7 +274,7 @@
         </div>
 
         <!-- Difícil Acesso -->
-        <div class="mb-4">
+        <div class="mb-4" id="da-section">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
             >Gratificação de Difícil Acesso</label
           >
@@ -260,6 +299,37 @@
               <span class="text-sm text-gray-700">Sim</span>
             </label>
           </div>
+        </div>
+
+        <!-- Cedido / Disposição -->
+        <div class="mb-4" id="cedido-section">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Cedido / Disposição para outro órgão</label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="cedido"
+                value="nao"
+                checked
+                class="accent-blue-600 cedido-radio"
+              />
+              <span class="text-sm text-gray-700">Não</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="cedido"
+                value="sim"
+                class="accent-blue-600 cedido-radio"
+              />
+              <span class="text-sm text-gray-700">Sim (cessão/disposição)</span>
+            </label>
+          </div>
+          <p id="msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
+            GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam ao servidor cedido. Mantém-se vencimento-base, triênio, AQ e auxílios (Dec. 47.469/21 para PROMURJ).
+          </p>
         </div>
 
         <!-- Auxílio Transporte -->
@@ -386,6 +456,18 @@
           );
         }
 
+        function getFuncaoKey() {
+          return document.getElementById("funcao").value;
+        }
+
+        function getCedido() {
+          return document.querySelector('input[name="cedido"]:checked').value === "sim";
+        }
+
+        function getCategoriaEscola() {
+          return document.getElementById("categoria-escola").value;
+        }
+
         function atualizarReferencias() {
           var cargoKey = elCargo.value;
           var cargo = CARGOS[cargoKey];
@@ -413,10 +495,13 @@
             refIndex: parseInt(elRef.value),
             trienios: parseInt(elTrienios.value),
             qualificacao: elQualificacao.value,
+            funcaoKey: getFuncaoKey(),
+            categoriaEscola: getCategoriaEscola(),
             comRegencia: getRegencia() === "com",
             glpTempos: getGlpTempos(),
             dificilProvimento: getDificilProvimento(),
             dificilAcesso: getDificilAcesso(),
+            cedido: getCedido(),
             dependentes: parseInt(elDependentes.value) || 0,
             dataSimulacao: document.getElementById("sim-periodo").value,
           };
@@ -464,6 +549,20 @@
               '<div class="bg-gray-50 rounded-lg px-3 py-1.5 text-xs text-gray-400">Nenhum reajuste adicional vigente para esta data</div>';
           }
           linhas.push({ html: recMsg });
+
+          // Conversão 40h
+          if (r.exibeConversao40h) {
+            linhas.push({
+              html: '<div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5 text-xs text-blue-700">Carga convertida para 40h (Lei 9.584/2022)</div>',
+            });
+          }
+
+          // Cedido
+          if (params.cedido) {
+            linhas.push({
+              html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Servidor cedido: GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam</div>',
+            });
+          }
 
           // Vencimento Base
           linhas.push(linha("Vencimento Base", r.vb, "text-gray-600"));
@@ -519,6 +618,16 @@
           if (r.exibeDA) {
             linhas.push(linha("Difícil Acesso", r.daValor, "text-purple-600"));
           }
+          // Gratificação da Função
+          if (r.exibeGratFuncao) {
+            linhas.push(
+              linha("Gratificação (" + r.funcaoNome + ")", r.gratFuncao, "text-purple-600"),
+            );
+          }
+          // Ajuda de Custo
+          if (r.exibeAjudaCusto) {
+            linhas.push(linha("Ajuda de Custo (indenizatória)", r.ajudaCusto, "text-purple-600"));
+          }
           // Auxílios
           linhas.push(
             linha("Auxílio Transporte", r.auxTransporte, "text-green-600"),
@@ -573,9 +682,12 @@
             '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
             formatarReal(r.basePrev) +
             "</span></div>";
-          if (r.exibeGLP || r.exibeDP || r.exibeDA) {
+          if (r.exibeGLP || r.exibeDP || r.exibeDA || r.exibeAjudaCusto) {
+            var notas = [];
+            if (r.exibeGLP || r.exibeDP || r.exibeDA) notas.push("GLP, Difícil Provimento e Difícil Acesso");
+            if (r.exibeAjudaCusto) notas.push("Ajuda de Custo");
             infoHtml +=
-              '<div class="text-gray-400 mt-1">* GLP, Difícil Provimento e Difícil Acesso não integram a base previdenciária</div>';
+              '<div class="text-gray-400 mt-1">* ' + notas.join(" e ") + ' não integram a base previdenciária</div>';
           }
           infoHtml +=
             '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' +
@@ -614,12 +726,22 @@
         elCargo.addEventListener("change", function () {
           atualizarReferencias();
           atualizarGlpMax();
+          atualizarRestricoes();
           atualizarResultado();
         });
         elRef.addEventListener("change", atualizarResultado);
         elTrienios.addEventListener("change", atualizarResultado);
         elQualificacao.addEventListener("change", atualizarResultado);
         elDependentes.addEventListener("input", atualizarResultado);
+
+        var elFuncao = document.getElementById("funcao");
+        elFuncao.addEventListener("change", function () {
+          atualizarRestricoes();
+          atualizarResultado();
+        });
+
+        var elCategoriaEscola = document.getElementById("categoria-escola");
+        elCategoriaEscola.addEventListener("change", atualizarResultado);
 
         var elIngressoRadios = document.querySelectorAll(".ingresso-radio");
         elIngressoRadios.forEach(function (radio) {
@@ -637,8 +759,10 @@
         function atualizarAuxilioTransporte() {
           var temGlp =
             document.querySelector('input[name="glp"]:checked').value === "sim";
+          var cargo = CARGOS[elCargo.value];
+          var semRegencia = cargo.regencia === false;
 
-          if (temGlp) {
+          if (temGlp || semRegencia) {
             regenciaAnterior = getRegencia();
             elRegenciaDemais.checked = true;
             elRegenciaCom.disabled = true;
@@ -707,12 +831,57 @@
           radio.addEventListener("change", atualizarResultado);
         });
 
+        var elCedidoRadios = document.querySelectorAll(".cedido-radio");
+        elCedidoRadios.forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            atualizarRestricoes();
+            atualizarResultado();
+          });
+        });
+
         // Data simulacao
         var elSimPeriodo = document.getElementById("sim-periodo");
         elSimPeriodo.addEventListener("change", atualizarResultado);
 
+        function atualizarRestricoes() {
+          var cargo = CARGOS[elCargo.value];
+          var funcao = FUNCOES[getFuncaoKey()];
+          var cedido = getCedido();
+
+          // GLP
+          var permiteGLP = !cedido && cargo.glp !== false && funcao.permiteGLP;
+          document.getElementById("glp-section").classList.toggle("hidden", !permiteGLP);
+          if (!permiteGLP) {
+            document.querySelector('input[name="glp"][value="nao"]').checked = true;
+            document.getElementById("glp-tempos-container").classList.add("hidden");
+          }
+
+          // DP/DA
+          var permiteDPDA = !cedido && funcao.permiteDPDA;
+          document.getElementById("dp-section").classList.toggle("hidden", !permiteDPDA);
+          document.getElementById("da-section").classList.toggle("hidden", !permiteDPDA);
+          if (!permiteDPDA) {
+            document.querySelector('input[name="dificilProvimento"][value="nao"]').checked = true;
+            document.querySelector('input[name="dificilAcesso"][value="nao"]').checked = true;
+          }
+
+          // Aviso 40h (só relevante se não cedido)
+          var converteu40h = !cedido && funcao.carga40h && cargo.carga < 40;
+          document.getElementById("msg-carga40h").classList.toggle("hidden", !converteu40h);
+
+          // Categoria da Escola (só para funções com categorias)
+          var temCategorias = !cedido && !!funcao.categorias;
+          document.getElementById("categoria-escola-section").classList.toggle("hidden", !temCategorias);
+
+          // Aviso cedido
+          document.getElementById("msg-cedido").classList.toggle("hidden", !cedido);
+
+          atualizarAuxilioTransporte();
+        }
+
         atualizarReferencias();
         atualizarTrienio();
+        atualizarRestricoes();
         atualizarResultado();
       })();
     </script>
