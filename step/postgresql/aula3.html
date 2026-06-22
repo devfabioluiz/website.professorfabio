@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3 - Trabalhar com Views no Oracle - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 3</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 3: Trabalhar com Views no Oracle</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Revisão de views, Gerenciamento de views no Oracle (CREATE VIEW, CREATE
+        OR REPLACE VIEW, DROP VIEW, FORCE VIEW), Views materializadas (CREATE
+        MATERIALIZED VIEW, refresh options), Diferenças entre views comuns e
+        materializadas.
+      </div>
+    </header>
+    <main class="container">
+      <!-- REVISÃO DE VIEWS -->
+      <section>
+        <h2>Revisão de Views</h2>
+        <p>
+          Uma <strong>view</strong> (visão) é uma tabela virtual baseada no
+          resultado de uma consulta SQL. Ela não armazena dados fisicamente — em
+          vez disso, a consulta que a define é executada toda vez que a view é
+          acessada. Pense nela como uma "janela" para os dados de uma ou mais
+          tabelas.
+        </p>
+
+        <h3>Benefícios das Views</h3>
+        <ul>
+          <li>
+            <strong>Segurança:</strong> ocultar colunas sensíveis (ex: salários)
+            e expor apenas os dados necessários para determinados usuários. Você
+            pode conceder acesso à view sem dar acesso direto às tabelas base.
+          </li>
+          <li>
+            <strong>Simplicidade:</strong> encapsular consultas complexas com
+            JOINs, agregações e subconsultas em um único objeto reutilizável. O
+            usuário faz <code>SELECT * FROM resumo_vendas</code> em vez de
+            escrever uma query de 20 linhas.
+          </li>
+          <li>
+            <strong>Abstração de dados:</strong> isolar aplicações de mudanças
+            na estrutura das tabelas. Se uma tabela for alterada, você só
+            precisa atualizar a view, não todos os sistemas que a consomem.
+          </li>
+          <li>
+            <strong>Consistência:</strong> garantir que todos os usuários e
+            aplicações vejam os dados da mesma forma, seguindo as mesmas regras
+            de negócio definidas na view.
+          </li>
+        </ul>
+
+        <p>
+          No Oracle, views são objetos de esquema armazenados no dicionário de
+          dados. Diferente de alguns SGBDs, o Oracle oferece recursos avançados
+          como <strong>FORCE VIEW</strong>, <strong>WITH READ ONLY</strong>,
+          <strong>WITH CHECK OPTION</strong> e, principalmente,
+          <strong>Materialized Views</strong>, que abordaremos em detalhes nesta
+          aula.
+        </p>
+      </section>
+
+      <!-- CRIANDO VIEWS NO ORACLE -->
+      <section>
+        <h2>Criando Views no Oracle</h2>
+
+        <h3>Sintaxe Básica — CREATE VIEW</h3>
+        <p>A sintaxe fundamental para criar uma view é:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [OR REPLACE] [FORCE | NOFORCE] VIEW nome_view [(alias1, alias2, ...)]
+AS
+  consulta_select
+[WITH READ ONLY]
+[WITH CHECK OPTION [CONSTRAINT nome_constraint]];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Cada cláusula opcional tem um propósito específico:</p>
+        <ul>
+          <li>
+            <strong>OR REPLACE:</strong> recria a view se ela já existir, sem
+            precisar de DROP primeiro
+          </li>
+          <li>
+            <strong>FORCE:</strong> cria a view mesmo que as tabelas
+            referenciadas não existam ou você não tenha privilégios sobre elas
+          </li>
+          <li>
+            <strong>NOFORCE:</strong> (padrão) só cria se as tabelas base
+            existirem
+          </li>
+          <li>
+            <strong>WITH READ ONLY:</strong> impede operações DML (INSERT,
+            UPDATE, DELETE) na view
+          </li>
+          <li>
+            <strong>WITH CHECK OPTION:</strong> garante que dados
+            inseridos/atualizados pela view respeitem a cláusula WHERE da view
+          </li>
+        </ul>
+
+        <h5>Exemplo 1 — View Simples</h5>
+        <p>Filtrar funcionários ativos de uma tabela:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW funcionarios_ativos AS
+SELECT id, nome, cargo, departamento, data_admissao
+FROM funcionarios
+WHERE status = 'A';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Agora, ao executar <code>SELECT * FROM funcionarios_ativos;</code>,
+          você vê apenas os funcionários com status 'A' (Ativo), sem precisar
+          repetir o filtro toda vez.
+        </p>
+
+        <h5>Exemplo 2 — View com JOIN</h5>
+        <p>Encapsular relacionamentos entre tabelas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW resumo_pedidos AS
+SELECT
+  c.nome AS cliente,
+  c.email,
+  p.data_pedido,
+  p.valor_total,
+  p.status AS status_pedido
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Esta view combina dados de <code>clientes</code> e
+          <code>pedidos</code> em um único lugar. Qualquer consulta futura pode
+          simplesmente usar
+          <code
+            >SELECT * FROM resumo_pedidos WHERE status_pedido =
+            'Pendente';</code
+          >
+        </p>
+
+        <h5>Exemplo 3 — View com Agregação</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW vendas_por_categoria AS
+SELECT
+  c.nome_categoria,
+  COUNT(v.id) AS total_vendas,
+  SUM(v.valor) AS receita_total,
+  AVG(v.valor) AS ticket_medio
+FROM vendas v
+JOIN categorias c ON v.categoria_id = c.id
+GROUP BY c.nome_categoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FORCE VIEW — Criando Views com Dependências Inexistentes</h3>
+        <p>
+          O Oracle permite criar uma view mesmo que o objeto base (tabela ou
+          outra view) ainda não exista. Isso é útil durante desenvolvimento,
+          quando você está construindo objetos em uma ordem específica ou quando
+          executa scripts de migração.
+        </p>
+        <p>
+          A view criada com FORCE ficará com status <strong>INVALID</strong> até
+          que o objeto referenciado seja criado. Depois disso, o Oracle a
+          recompila automaticamente no primeiro uso (ou você pode forçar a
+          compilação manualmente).
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE FORCE VIEW visao_teste AS
+SELECT id, descricao, valor
+FROM tabela_inexistente
+WHERE ativo = 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Verificando o status da view:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT object_name, status
+FROM user_objects
+WHERE object_type = 'VIEW'
+  AND object_name = 'VISAO_TESTE';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WITH READ ONLY — Views Somente Leitura</h3>
+        <p>
+          Por padrão, views simples (baseadas em uma única tabela, sem
+          agregações ou DISTINCT) permitem operações DML. Para impedir isso, use
+          <code>WITH READ ONLY</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW salarios_rh AS
+SELECT id, nome, cargo, salario
+FROM funcionarios
+WHERE departamento = 'RH'
+WITH READ ONLY;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Qualquer tentativa de INSERT, UPDATE ou DELETE em
+          <code>salarios_rh</code> resultará em erro:
+          <em>ORA-42399: cannot perform a DML operation on a read-only view</em
+          >.
+        </p>
+
+        <h3>WITH CHECK OPTION — Restringindo DML à Condição da View</h3>
+        <p>
+          O <code>WITH CHECK OPTION</code> garante que qualquer linha inserida
+          ou atualizada <strong>através da view</strong> satisfaça a condição
+          WHERE da view. Isso evita que você insira dados que depois
+          "desapareceriam" da view.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW produtos_caros AS
+SELECT id, nome, preco, categoria
+FROM produtos
+WHERE preco > 1000
+WITH CHECK OPTION;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Agora:</p>
+        <ul>
+          <li>
+            <code
+              >INSERT INTO produtos_caros VALUES (1, 'Notebook', 3500,
+              'TI');</code
+            >
+            — funciona (preço > 1000)
+          </li>
+          <li>
+            <code
+              >INSERT INTO produtos_caros VALUES (2, 'Mouse', 50, 'TI');</code
+            >
+            — falha (preço < 1000, viola CHECK OPTION)
+          </li>
+          <li>
+            <code>UPDATE produtos_caros SET preco = 500 WHERE id = 1;</code> —
+            falha (alteraria para preço fora da condição)
+          </li>
+        </ul>
+
+        <h5>Exemplo com CONSTRAINT nomeada:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW funcionarios_ti AS
+SELECT id, nome, salario
+FROM funcionarios
+WHERE departamento = 'TI'
+WITH CHECK OPTION CONSTRAINT ck_func_ti_dept;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- MODIFICANDO VIEWS -->
+      <section>
+        <h2>Modificando Views</h2>
+
+        <h3>CREATE OR REPLACE VIEW</h3>
+        <p>
+          No Oracle, não existe <code>ALTER VIEW ... AS SELECT ...</code>. Para
+          modificar a definição de uma view, usa-se
+          <code>CREATE OR REPLACE VIEW</code>. Isso preserva as permissões
+          (grants) já concedidas sobre a view.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE VIEW funcionarios_ativos AS
+SELECT id, nome, cargo, departamento, data_admissao, salario
+FROM funcionarios
+WHERE status = 'A'
+WITH READ ONLY;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Neste exemplo, adicionamos a coluna <code>salario</code> e a cláusula
+          <code>WITH READ ONLY</code> a uma view que já existia. Os privilégios
+          concedidos anteriormente (GRANT SELECT, etc.) são mantidos.
+        </p>
+
+        <h3>ALTER VIEW ... COMPILE — Recompilando Views Inválidas</h3>
+        <p>
+          Quando a estrutura de uma tabela base muda (ex: coluna é removida ou
+          renomeada), a view pode ficar com status <strong>INVALID</strong>. O
+          Oracle recompila automaticamente no primeiro uso, mas você pode forçar
+          a recompilação manualmente:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+ALTER VIEW resumo_pedidos COMPILE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Para recompilar todas as views inválidas de uma vez:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+  FOR r IN (SELECT object_name FROM user_objects
+            WHERE object_type = 'VIEW' AND status = 'INVALID')
+  LOOP
+    EXECUTE IMMEDIATE 'ALTER VIEW ' || r.object_name || ' COMPILE';
+  END LOOP;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- EXCLUINDO VIEWS -->
+      <section>
+        <h2>Excluindo Views</h2>
+
+        <h3>DROP VIEW</h3>
+        <p>Para remover uma view do banco de dados:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DROP VIEW nome_view;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DROP VIEW ... CASCADE CONSTRAINTS</h3>
+        <p>
+          Se outras views ou constraints referenciam a view que você está
+          excluindo, será necessário usar <code>CASCADE CONSTRAINTS</code>. Isso
+          remove as constraints dependentes (como FOREIGN KEYs que referenciam a
+          view):
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DROP VIEW produtos_caros CASCADE CONSTRAINTS;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Excluir view apenas se existir (Oracle 23c+)
+DROP VIEW IF EXISTS visao_teste;
+
+-- Ou use bloco PL/SQL para evitar erro:
+BEGIN
+  EXECUTE IMMEDIATE 'DROP VIEW visao_teste';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN
+      RAISE;
+    END IF;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CONSULTANDO METADADOS -->
+      <section>
+        <h2>Consultando Metadados de Views no Oracle</h2>
+        <p>
+          O Oracle armazena informações sobre todas as views no dicionário de
+          dados. Existem três níveis de visão do dicionário:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Visão</th>
+              <th>Escopo</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>USER_VIEWS</code></td>
+              <td>Esquema atual</td>
+              <td>Views que pertencem ao usuário logado</td>
+            </tr>
+            <tr>
+              <td><code>ALL_VIEWS</code></td>
+              <td>Esquemas acessíveis</td>
+              <td>Views que o usuário tem permissão para acessar</td>
+            </tr>
+            <tr>
+              <td><code>DBA_VIEWS</code></td>
+              <td>Todo o banco</td>
+              <td>Todas as views do banco (requer privilégios DBA)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>Consultar o texto SQL de uma view:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT view_name, text_length, text
+FROM user_views
+WHERE view_name = 'FUNCIONARIOS_ATIVOS';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Listar todas as views do esquema atual:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT object_name, status, created, last_ddl_time
+FROM user_objects
+WHERE object_type = 'VIEW'
+ORDER BY object_name;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Listar colunas de uma view:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT column_name, data_type, data_length
+FROM user_tab_columns
+WHERE table_name = 'RESUMO_PEDIDOS'
+ORDER BY column_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Verificar dependências de uma view:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT referenced_owner, referenced_name, referenced_type
+FROM user_dependencies
+WHERE name = 'RESUMO_PEDIDOS'
+  AND type = 'VIEW';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Ver quais objetos dependem de uma view:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT owner, name, type, status
+FROM all_dependencies
+WHERE referenced_name = 'FUNCIONARIOS_ATIVOS'
+  AND referenced_type = 'VIEW';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- VIEWS MATERIALIZADAS -->
+      <section>
+        <h2>Views Materializadas</h2>
+        <p>
+          Uma <strong>Materialized View (MV)</strong> é um objeto de banco de
+          dados que armazena <strong>fisicamente</strong> o resultado de uma
+          consulta, diferentemente de uma view comum que é apenas uma consulta
+          armazenada executada sob demanda. As MVs são extremamente úteis para:
+        </p>
+        <ul>
+          <li>
+            <strong>Data Warehousing:</strong> pré-agregar grandes volumes de
+            dados para consultas analíticas rápidas
+          </li>
+          <li>
+            <strong>Replicação:</strong> manter cópias de dados entre bancos de
+            dados distribuídos
+          </li>
+          <li>
+            <strong>Resumos e relatórios:</strong> armazenar resultados de
+            consultas pesadas que não precisam ser em tempo real
+          </li>
+          <li>
+            <strong>Query Rewrite:</strong> o otimizador do Oracle pode
+            redirecionar automaticamente consultas às tabelas base para usar a
+            MV, melhorando drasticamente a performance
+          </li>
+        </ul>
+
+        <h3>Sintaxe CREATE MATERIALIZED VIEW</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW nome_mv
+[BUILD IMMEDIATE | BUILD DEFERRED]
+[REFRESH [FAST | COMPLETE | FORCE]
+  [ON DEMAND | ON COMMIT]
+  [START WITH data_hora NEXT intervalo]]
+[ENABLE QUERY REWRITE | DISABLE QUERY REWRITE]
+AS
+  consulta_select;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Opção</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>BUILD IMMEDIATE</code></td>
+              <td>Preenche a MV com dados no momento da criação (padrão)</td>
+            </tr>
+            <tr>
+              <td><code>BUILD DEFERRED</code></td>
+              <td>
+                Cria a MV vazia; os dados são carregados no primeiro refresh
+              </td>
+            </tr>
+            <tr>
+              <td><code>REFRESH COMPLETE</code></td>
+              <td>Reexecuta a consulta inteira e substitui todos os dados</td>
+            </tr>
+            <tr>
+              <td><code>REFRESH FAST</code></td>
+              <td>Aplica apenas as mudanças incrementais (requer MV Log)</td>
+            </tr>
+            <tr>
+              <td><code>REFRESH FORCE</code></td>
+              <td>Tenta FAST; se não for possível, faz COMPLETE (padrão)</td>
+            </tr>
+            <tr>
+              <td><code>ON DEMAND</code></td>
+              <td>Refresh manual ou agendado (padrão)</td>
+            </tr>
+            <tr>
+              <td><code>ON COMMIT</code></td>
+              <td>Refresh automático a cada COMMIT nas tabelas base</td>
+            </tr>
+            <tr>
+              <td><code>ENABLE QUERY REWRITE</code></td>
+              <td>
+                Permite que o otimizador use esta MV para responder consultas às
+                tabelas base
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>Exemplo 1 — MV com Agregação (Data Warehouse)</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW mv_vendas_resumo
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+  regiao,
+  EXTRACT(YEAR FROM data_venda) AS ano,
+  EXTRACT(MONTH FROM data_venda) AS mes,
+  COUNT(*) AS total_vendas,
+  SUM(valor) AS receita_total,
+  AVG(valor) AS ticket_medio
+FROM vendas
+GROUP BY regiao, EXTRACT(YEAR FROM data_venda), EXTRACT(MONTH FROM data_venda);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 2 — MV com JOIN</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW mv_cliente_compras
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+  c.id AS cliente_id,
+  c.nome,
+  c.cidade,
+  COUNT(p.id) AS qtd_pedidos,
+  SUM(p.valor_total) AS valor_acumulado,
+  MAX(p.data_pedido) AS ultima_compra
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome, c.cidade;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 3 — ON COMMIT Refresh</h5>
+        <p>
+          A MV é atualizada automaticamente sempre que ocorre um COMMIT nas
+          tabelas base:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW mv_estoque_atual
+BUILD IMMEDIATE
+REFRESH FAST ON COMMIT
+AS
+SELECT
+  produto_id,
+  nome_produto,
+  SUM(quantidade) AS estoque_total,
+  COUNT(DISTINCT armazem_id) AS armazens
+FROM movimentacao_estoque
+GROUP BY produto_id, nome_produto;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo 4 — Refresh Agendado</h5>
+        <p>Atualiza diariamente às 6h da manhã:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW mv_dashboard_diario
+BUILD IMMEDIATE
+REFRESH COMPLETE
+START WITH TRUNC(SYSDATE) + 6/24
+NEXT SYSDATE + 1
+AS
+SELECT
+  TRUNC(data_venda) AS dia,
+  COUNT(*) AS total_pedidos,
+  SUM(valor) AS faturamento
+FROM pedidos
+GROUP BY TRUNC(data_venda);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- MATERIALIZED VIEW LOGS -->
+      <section>
+        <h2>Materialized View Logs — Habilitando Refresh FAST</h2>
+        <p>
+          Para que o Oracle consiga fazer
+          <strong>REFRESH FAST</strong> (incremental), é necessário criar um
+          <strong>Materialized View Log</strong> na tabela base. O log registra
+          todas as alterações (INSERT, UPDATE, DELETE) para que o Oracle saiba
+          exatamente quais linhas precisam ser atualizadas na MV, em vez de
+          reconstruí-la completamente.
+        </p>
+
+        <h5>Criando um MV Log:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE MATERIALIZED VIEW LOG ON vendas
+WITH ROWID, SEQUENCE (valor, regiao, data_venda)
+INCLUDING NEW VALUES;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Parâmetros importantes:</p>
+        <ul>
+          <li>
+            <strong>WITH ROWID:</strong> registra o ROWID de cada linha alterada
+            — necessário para identificar unicamente as linhas afetadas
+          </li>
+          <li>
+            <strong>WITH SEQUENCE:</strong> inclui um número de sequência que
+            permite ao Oracle ordenar as operações cronologicamente
+          </li>
+          <li>
+            <strong>WITH PRIMARY KEY:</strong> alternativa ao ROWID, usa a chave
+            primária da tabela
+          </li>
+          <li>
+            <strong>INCLUDING NEW VALUES:</strong> registra tanto o valor antigo
+            quanto o novo, necessário para atualizações em MVs com agregação
+          </li>
+        </ul>
+
+        <h5>Exemplo completo — Tabela base + MV Log + MV com FAST Refresh:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- 1. MV Log na tabela base
+CREATE MATERIALIZED VIEW LOG ON vendas
+WITH ROWID, SEQUENCE (valor, regiao)
+INCLUDING NEW VALUES;
+
+-- 2. Criar a MV com FAST refresh
+CREATE MATERIALIZED VIEW mv_vendas_fast
+BUILD IMMEDIATE
+REFRESH FAST ON DEMAND
+AS
+SELECT
+  regiao,
+  COUNT(*) AS total,
+  SUM(valor) AS soma
+FROM vendas
+GROUP BY regiao;
+
+-- 3. Após inserir/atualizar dados na tabela VENDAS, atualize a MV:
+EXEC DBMS_MVIEW.REFRESH('mv_vendas_fast', 'F');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- REFRESH MANUAL E DBMS_MVIEW -->
+      <section>
+        <h2>Gerenciando Refresh de Materialized Views</h2>
+
+        <h3>DBMS_MVIEW.REFRESH — Refresh Manual</h3>
+        <p>
+          O pacote <code>DBMS_MVIEW</code> oferece procedimentos para gerenciar
+          MVs programaticamente:
+        </p>
+
+        <h5>Refresh de uma única MV:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+EXEC DBMS_MVIEW.REFRESH('mv_vendas_resumo', 'C');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Refresh de múltiplas MVs:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+  DBMS_MVIEW.REFRESH('mv_vendas_resumo,mv_cliente_compras');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Métodos de Refresh (parâmetro method):</h5>
+        <ul>
+          <li><strong>'C'</strong> — Complete refresh</li>
+          <li><strong>'F'</strong> — Fast refresh</li>
+          <li><strong>'?'</strong> — Force refresh</li>
+          <li>
+            <strong>'A'</strong> — Always refresh (equivale a COMPLETE, mas
+            considera atomicidade)
+          </li>
+          <li>
+            <strong>'P'</strong> — Refresh usando particionamento (PCT —
+            Partition Change Tracking)
+          </li>
+        </ul>
+
+        <h5>Refresh com verificação de status:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Verificar última data de refresh de uma MV
+SELECT
+  mview_name,
+  last_refresh_type,
+  last_refresh_date,
+  staleness,
+  compile_state
+FROM user_mviews
+WHERE mview_name = 'MV_VENDAS_RESUMO';
+
+-- Verificar logs de refresh
+SELECT
+  mview_name,
+  master,
+  log_table,
+  log_owner
+FROM user_mview_logs;
+
+-- Forçar refresh atômico (tudo ou nada)
+EXEC DBMS_MVIEW.REFRESH('mv_vendas_resumo', 'C', atomic_refresh => TRUE);
+
+-- Estimativa de tempo para refresh
+EXEC DBMS_MVIEW.EXPLAIN_MVIEW('mv_vendas_resumo');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- QUERY REWRITE -->
+      <section>
+        <h2>Query Rewrite — Redirecionamento Automático de Consultas</h2>
+        <p>
+          O <strong>Query Rewrite</strong> é um recurso poderoso do Oracle em
+          que o otimizador de consultas automaticamente redireciona uma consulta
+          feita às tabelas base para usar uma Materialized View,
+          <strong>sem que o usuário ou aplicação precise alterar o SQL</strong>.
+          Isso é transparente e pode trazer ganhos de performance de 10x a
+          1000x.
+        </p>
+
+        <h5>Habilitar Query Rewrite:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+ALTER MATERIALIZED VIEW mv_vendas_resumo ENABLE QUERY REWRITE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Verificar se Query Rewrite está sendo usado em uma consulta:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Executar a consulta com EXPLAIN PLAN
+EXPLAIN PLAN FOR
+SELECT
+  regiao,
+  SUM(valor) AS receita
+FROM vendas
+GROUP BY regiao;
+
+-- Ver o plano de execução
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+-- Procurar a operação "MAT_VIEW REWRITE ACCESS FULL" no plano
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Para Query Rewrite funcionar, são necessários:</p>
+        <ul>
+          <li>
+            O parâmetro de inicialização <code>QUERY_REWRITE_ENABLED</code> deve
+            estar como <code>TRUE</code>
+          </li>
+          <li>
+            O parâmetro <code>QUERY_REWRITE_INTEGRITY</code> deve estar
+            configurado (STALE_TOLERATED, TRUSTED ou ENFORCED)
+          </li>
+          <li>A MV deve ter <code>ENABLE QUERY REWRITE</code></li>
+          <li>
+            O esquema deve ter o privilégio <code>GLOBAL QUERY REWRITE</code> ou
+            <code>QUERY REWRITE</code>
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder privilégio de Query Rewrite
+GRANT QUERY REWRITE TO nome_usuario;
+
+-- Verificar parâmetros de inicialização
+SHOW PARAMETER query_rewrite;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO -->
+      <section>
+        <h2>Comparação: Views Convencionais vs Materialized Views</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>View Convencional</th>
+              <th>Materialized View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Armazenamento</strong></td>
+              <td>
+                Não armazena dados fisicamente. Apenas a query SQL é guardada no
+                dicionário de dados.
+              </td>
+              <td>
+                Armazena os dados fisicamente em segmentos (tablespace). Ocupa
+                espaço em disco.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Desempenho</strong></td>
+              <td>
+                A consulta é reexecutada a cada SELECT. Pode ser lenta em
+                tabelas grandes com JOINs complexos.
+              </td>
+              <td>
+                Os dados já estão pré-calculados e prontos. Leitura quase
+                instantânea, ideal para ambientes analíticos.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Atualização dos dados</strong></td>
+              <td>Sempre mostra o dado atual da tabela base em tempo real.</td>
+              <td>
+                Mostra o dado no momento do último refresh. Pode estar
+                desatualizada (stale) até o próximo refresh.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Uso de índices</strong></td>
+              <td>Usa os índices das tabelas base.</td>
+              <td>
+                Pode ter seus próprios índices, otimizados para a consulta
+                específica da MV.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Custo de manutenção</strong></td>
+              <td>Zero. Não requer manutenção.</td>
+              <td>
+                Requer agendamento de refresh, MV Logs para FAST refresh, e
+                planejamento de espaço.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Casos de uso</strong></td>
+              <td>
+                Segurança, simplificação de queries, abstração de schema. Ideal
+                para sistemas OLTP.
+              </td>
+              <td>
+                Data Warehousing, relatórios, dashboards, replicação. Ideal para
+                sistemas OLAP.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Query Rewrite</strong></td>
+              <td>Não aplicável.</td>
+              <td>
+                Suporta Query Rewrite — o otimizador redireciona automaticamente
+                consultas para usar a MV.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DML na própria view</strong></td>
+              <td>
+                Permitido (com restrições) em views de tabela única sem
+                agregação.
+              </td>
+              <td>Não permite DML. Apenas SELECT.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Criar view com JOIN entre 2 tabelas com WITH READ ONLY</h3>
+            <p>
+              Crie duas tabelas: <code>alunos</code> (id, nome, turma_id) e
+              <code>turmas</code> (id, nome_turma, turno). Insira pelo menos 5
+              registros em cada. Depois, crie uma view chamada
+              <code>alunos_turma</code> que faça JOIN entre elas mostrando: nome
+              do aluno, nome da turma e turno. A view deve ser
+              <strong>WITH READ ONLY</strong>. Teste tentando fazer um INSERT na
+              view para verificar o erro.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabelas
+CREATE TABLE turmas (
+  id NUMBER PRIMARY KEY,
+  nome_turma VARCHAR2(50),
+  turno VARCHAR2(20)
+);
+
+CREATE TABLE alunos (
+  id NUMBER PRIMARY KEY,
+  nome VARCHAR2(100),
+  turma_id NUMBER REFERENCES turmas(id)
+);
+
+-- Inserir dados
+INSERT INTO turmas VALUES (1, 'Oracle Básico', 'Manhã');
+INSERT INTO turmas VALUES (2, 'PL/SQL Avançado', 'Noite');
+INSERT INTO turmas VALUES (3, 'DBA Fundamentals', 'Manhã');
+
+INSERT INTO alunos VALUES (1, 'Ana Silva', 1);
+INSERT INTO alunos VALUES (2, 'Bruno Costa', 1);
+INSERT INTO alunos VALUES (3, 'Carla Souza', 2);
+INSERT INTO alunos VALUES (4, 'Daniel Lima', 3);
+INSERT INTO alunos VALUES (5, 'Eduarda Rocha', 2);
+
+-- Criar view com JOIN e WITH READ ONLY
+CREATE VIEW alunos_turma AS
+SELECT
+  a.id AS aluno_id,
+  a.nome AS aluno,
+  t.nome_turma AS turma,
+  t.turno
+FROM alunos a
+JOIN turmas t ON a.turma_id = t.id
+WITH READ ONLY;
+
+-- Teste (deve gerar erro ORA-42399)
+INSERT INTO alunos_turma (aluno_id, aluno, turma, turno)
+VALUES (6, 'Teste', 'Novo', 'Manhã');
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Criar Materialized View com agregação e configurar refresh ON
+              DEMAND
+            </h3>
+            <p>
+              Crie uma tabela <code>vendas_curso</code> (id, produto, valor,
+              data_venda). Insira pelo menos 10 registros. Crie uma Materialized
+              View chamada <code>mv_curso_resumo</code> que agrupe por produto
+              com COUNT e SUM, usando BUILD IMMEDIATE e REFRESH COMPLETE ON
+              DEMAND. Insira mais 3 registros na tabela base e execute o refresh
+              manualmente. Verifique que os novos dados aparecem na MV.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabela base
+CREATE TABLE vendas_curso (
+  id NUMBER PRIMARY KEY,
+  produto VARCHAR2(100),
+  valor NUMBER(10,2),
+  data_venda DATE DEFAULT SYSDATE
+);
+
+-- Inserir dados iniciais
+INSERT INTO vendas_curso VALUES (1, 'Curso Oracle SQL', 1500, DATE '2026-01-15');
+INSERT INTO vendas_curso VALUES (2, 'Curso PL/SQL', 2000, DATE '2026-01-20');
+INSERT INTO vendas_curso VALUES (3, 'Curso Oracle SQL', 1500, DATE '2026-02-01');
+INSERT INTO vendas_curso VALUES (4, 'Curso DBA', 3500, DATE '2026-02-10');
+INSERT INTO vendas_curso VALUES (5, 'Curso PL/SQL', 2000, DATE '2026-02-15');
+INSERT INTO vendas_curso VALUES (6, 'Curso Oracle SQL', 1500, DATE '2026-03-01');
+INSERT INTO vendas_curso VALUES (7, 'Curso DBA', 3500, DATE '2026-03-05');
+INSERT INTO vendas_curso VALUES (8, 'Curso PL/SQL', 2000, DATE '2026-03-10');
+INSERT INTO vendas_curso VALUES (9, 'Curso Oracle SQL', 1500, DATE '2026-04-01');
+INSERT INTO vendas_curso VALUES (10, 'Curso DBA', 3500, DATE '2026-04-15');
+
+COMMIT;
+
+-- Criar Materialized View
+CREATE MATERIALIZED VIEW mv_curso_resumo
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+  produto,
+  COUNT(*) AS quantidade_vendida,
+  SUM(valor) AS receita_total,
+  AVG(valor) AS ticket_medio
+FROM vendas_curso
+GROUP BY produto;
+
+-- Consultar MV (deve mostrar 3 produtos com seus totais)
+SELECT * FROM mv_curso_resumo;
+
+-- Inserir mais dados
+INSERT INTO vendas_curso VALUES (11, 'Curso Oracle SQL', 1500, DATE '2026-05-01');
+INSERT INTO vendas_curso VALUES (12, 'Curso PL/SQL', 2000, DATE '2026-05-10');
+INSERT INTO vendas_curso VALUES (13, 'Curso DBA', 3500, DATE '2026-05-15');
+COMMIT;
+
+-- A MV ainda não mostra os novos dados
+SELECT * FROM mv_curso_resumo;
+
+-- Executar refresh manual
+EXEC DBMS_MVIEW.REFRESH('mv_curso_resumo', 'C');
+
+-- Agora os novos dados aparecem
+SELECT * FROM mv_curso_resumo;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Comparar performance de SELECT direto vs Materialized View com
+              EXPLAIN PLAN
+            </h3>
+            <p>
+              Utilizando a tabela <code>vendas_curso</code> criada no exercício
+              anterior e a <code>mv_curso_resumo</code>, execute EXPLAIN PLAN em
+              ambas as consultas abaixo e compare os planos de execução.
+              Verifique a diferença de custo e operações realizadas. Habilite
+              Query Rewrite na MV e execute novamente a consulta à tabela base
+              para ver se o Oracle redireciona para a MV automaticamente.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- 1. EXPLAIN PLAN na tabela base diretamente
+EXPLAIN PLAN FOR
+SELECT
+  produto,
+  COUNT(*) AS quantidade,
+  SUM(valor) AS total
+FROM vendas_curso
+GROUP BY produto;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+-- 2. EXPLAIN PLAN na Materialized View
+EXPLAIN PLAN FOR
+SELECT * FROM mv_curso_resumo;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+-- Você verá: TABLE ACCESS FULL de MV_CURSO_RESUMO (custo muito menor)
+
+-- 3. Habilitar Query Rewrite
+ALTER MATERIALIZED VIEW mv_curso_resumo ENABLE QUERY REWRITE;
+
+-- 4. EXPLAIN PLAN com Query Rewrite habilitado
+-- (consulta a tabela base, mas Oracle pode redirecionar para a MV)
+EXPLAIN PLAN FOR
+SELECT
+  produto,
+  COUNT(*) AS quantidade,
+  SUM(valor) AS total
+FROM vendas_curso
+GROUP BY produto;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+-- Se aparecer "MAT_VIEW REWRITE ACCESS FULL", o Oracle usou a MV automaticamente
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Verifique se todas as views foram criadas sem erros, se
+          as Materialized Views estão compiladas e populadas, e se os comandos
+          de refresh executam conforme esperado.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

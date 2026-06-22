@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - Tipos de Dados Oracle - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 2: Tipos de dados Oracle</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Tipos de dados Oracle (CHAR, VARCHAR2, NUMBER, DATE, TIMESTAMP, CLOB,
+        BLOB), Criando estrutura de BD de treinamento, Consultas com JOINs,
+        funções agregadas, ordenação, Operadores ROLLUP e CUBE, Diferenças entre
+        sintaxe Oracle SQL e SQL padrão
+      </div>
+    </header>
+    <main class="container">
+      <!-- VISÃO GERAL DOS TIPOS DE DADOS ORACLE -->
+      <section>
+        <h2>Visão Geral dos Tipos de Dados Oracle</h2>
+        <p>
+          O Oracle oferece uma ampla variedade de tipos de dados, cada um
+          projetado para um propósito específico. Diferente de outros SGBDs, o
+          Oracle possui tipos com comportamentos e limitações próprios. Conhecer
+          esses tipos é essencial para modelar corretamente o banco de dados.
+        </p>
+
+        <h3>Tabela Completa de Tipos de Dados Oracle</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Tamanho Máximo</th>
+              <th>Uso Típico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CHAR(n)</strong></td>
+              <td>
+                String de tamanho fixo. Sempre ocupa <code>n</code> bytes,
+                preenchendo com espaços
+              </td>
+              <td>2000 bytes</td>
+              <td>
+                Códigos fixos (ex: UF, sexo, status). Ex:
+                <code>CHAR(2)</code> para siglas de estado
+              </td>
+            </tr>
+            <tr>
+              <td><strong>VARCHAR2(n)</strong></td>
+              <td>
+                String de tamanho variável. Apenas o espaço usado é ocupado
+              </td>
+              <td>4000 bytes (até 32767 em PL/SQL)</td>
+              <td>
+                Nomes, emails, endereços. É o tipo de string padrão Oracle
+              </td>
+            </tr>
+            <tr>
+              <td><strong>NUMBER(p,s)</strong></td>
+              <td>
+                Numérico com precisão (<code>p</code>) e escala
+                (<code>s</code>). Armazena inteiros e decimais
+              </td>
+              <td>p = 1 a 38 dígitos</td>
+              <td>
+                Valores monetários, quantidades, IDs. <code>NUMBER</code> sem
+                parâmetros = ponto flutuante
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DATE</strong></td>
+              <td>
+                Data e hora com precisão de segundos (07-JUN-2025 14:30:25)
+              </td>
+              <td>Armazena século, ano, mês, dia, hora, minuto, segundo</td>
+              <td>Datas de nascimento, admissão, transações, logs</td>
+            </tr>
+            <tr>
+              <td><strong>TIMESTAMP(f)</strong></td>
+              <td>
+                Data com frações de segundos. <code>f</code> = precisão
+                fracionária (0-9, padrão 6)
+              </td>
+              <td>Igual DATE + nanossegundos</td>
+              <td>Logs de alta precisão, sistemas de trading</td>
+            </tr>
+            <tr>
+              <td><strong>TIMESTAMP WITH TIME ZONE</strong></td>
+              <td>
+                TIMESTAMP + fuso horário. Armazena offset (ex: -03:00) ou região
+                (ex: America/Sao_Paulo)
+              </td>
+              <td>Mesmo que TIMESTAMP</td>
+              <td>Aplicações globais com múltiplos fusos horários</td>
+            </tr>
+            <tr>
+              <td><strong>TIMESTAMP WITH LOCAL TIME ZONE</strong></td>
+              <td>
+                TIMESTAMP normalizado para o fuso do banco. Exibe no fuso da
+                sessão
+              </td>
+              <td>Mesmo que TIMESTAMP</td>
+              <td>Sistemas onde fusos diferentes acessam o mesmo banco</td>
+            </tr>
+            <tr>
+              <td><strong>INTERVAL YEAR TO MONTH</strong></td>
+              <td>Período de tempo em anos e meses</td>
+              <td>—</td>
+              <td>Duração de contratos, idade, tempo de serviço</td>
+            </tr>
+            <tr>
+              <td><strong>INTERVAL DAY TO SECOND</strong></td>
+              <td>Período de tempo em dias, horas, minutos e segundos</td>
+              <td>—</td>
+              <td>Duração de eventos, intervalos entre operações</td>
+            </tr>
+            <tr>
+              <td><strong>CLOB</strong></td>
+              <td>Character Large Object — texto grande em caracteres</td>
+              <td>Até 128 TB</td>
+              <td>Documentos, XML, JSON grande, texto descritivo extenso</td>
+            </tr>
+            <tr>
+              <td><strong>NCLOB</strong></td>
+              <td>CLOB com suporte a caracteres Unicode nacionais</td>
+              <td>Até 128 TB</td>
+              <td>Textos em múltiplos idiomas simultaneamente</td>
+            </tr>
+            <tr>
+              <td><strong>BLOB</strong></td>
+              <td>Binary Large Object — dados binários</td>
+              <td>Até 128 TB</td>
+              <td>Imagens, PDFs, vídeos, arquivos compactados, executáveis</td>
+            </tr>
+            <tr>
+              <td><strong>BFILE</strong></td>
+              <td>Ponteiro para arquivo binário externo (fora do banco)</td>
+              <td>Arquivo no sistema operacional</td>
+              <td>
+                Arquivos de mídia armazenados fora do banco, leitura externa
+              </td>
+            </tr>
+            <tr>
+              <td><strong>RAW(n)</strong></td>
+              <td>Dados binários crus de tamanho fixo</td>
+              <td>Até 2000 bytes</td>
+              <td>Hashes, chaves criptográficas, UUIDs</td>
+            </tr>
+            <tr>
+              <td><strong>LONG</strong></td>
+              <td>Texto grande (obsoleto). Substituído por CLOB</td>
+              <td>Até 2 GB</td>
+              <td>
+                <strong>Não use!</strong> Use CLOB no lugar. Restrições severas
+                em consultas
+              </td>
+            </tr>
+            <tr>
+              <td><strong>LONG RAW</strong></td>
+              <td>Binário grande (obsoleto). Substituído por BLOB</td>
+              <td>Até 2 GB</td>
+              <td><strong>Não use!</strong> Use BLOB no lugar</td>
+            </tr>
+            <tr>
+              <td><strong>ROWID</strong></td>
+              <td>
+                Identificador único físico da linha no banco (endereço do bloco)
+              </td>
+              <td>10 bytes</td>
+              <td>Localização exata de uma linha, otimização de acesso</td>
+            </tr>
+            <tr>
+              <td><strong>UROWID</strong></td>
+              <td>
+                ROWID universal — funciona para tabelas heap e index-organized
+              </td>
+              <td>—</td>
+              <td>Tabelas IOT (Index-Organized Tables)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Detalhes Importantes: VARCHAR2 vs VARCHAR vs CHAR</h3>
+        <p>
+          O Oracle <strong>recomenda VARCHAR2</strong> ao invés de VARCHAR —
+          embora atualmente sejam sinônimos, a Oracle se reserva o direito de
+          alterar o comportamento de VARCHAR no futuro.
+        </p>
+        <ul>
+          <li>
+            <strong>CHAR(10)</strong> com valor 'ABC' ocupa
+            <strong>10 bytes</strong> (7 espaços extras em branco)
+          </li>
+          <li>
+            <strong>VARCHAR2(10)</strong> com valor 'ABC' ocupa
+            <strong>3 bytes</strong> (apenas o necessário)
+          </li>
+          <li>
+            Em comparações, <code>'ABC' = 'ABC '</code> retorna
+            <code>TRUE</code> para CHAR (espaços ignorados), mas
+            <code>FALSE</code> para VARCHAR2
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Demonstração: diferença entre CHAR e VARCHAR2
+CREATE TABLE teste_char_varchar (
+  col_char     CHAR(10),
+  col_varchar  VARCHAR2(10)
+);
+
+INSERT INTO teste_char_varchar VALUES ('ABC', 'ABC');
+
+-- CHAR: LENGTH = 10 (com espaços)
+-- VARCHAR2: LENGTH = 3 (sem espaços)
+SELECT
+  LENGTH(col_char)     AS len_char,
+  LENGTH(col_varchar)  AS len_varchar
+FROM teste_char_varchar;
+
+-- Comparação: CHAR ignora espaços, VARCHAR2 não
+-- Ambas retornam 'IGUAL'
+SELECT
+  CASE WHEN col_char = 'ABC'    THEN 'IGUAL' ELSE 'DIFERENTE' END AS comp_char,
+  CASE WHEN col_varchar = 'ABC' THEN 'IGUAL' ELSE 'DIFERENTE' END AS comp_varchar
+FROM teste_char_varchar;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Detalhes: NUMBER — Precisão e Escala</h3>
+        <p>
+          O <code>NUMBER(p,s)</code> é o tipo numérico universal do Oracle.
+          Entenda <code>p</code> (precisão = total de dígitos) e
+          <code>s</code> (escala = dígitos após a vírgula):
+        </p>
+        <ul>
+          <li>
+            <code>NUMBER(7,2)</code>: máximo 99.999,99 (5 dígitos antes, 2
+            depois)
+          </li>
+          <li>
+            <code>NUMBER(5)</code>: inteiro com até 5 dígitos (escala 0
+            implícita)
+          </li>
+          <li>
+            <code>NUMBER</code>: ponto flutuante com precisão máxima (38
+            dígitos)
+          </li>
+          <li>
+            <code>NUMBER(3,-2)</code>: arredonda para centenas (ex: 12345 →
+            12300)
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Demonstração: precisão e escala do NUMBER
+CREATE TABLE teste_number (
+  valor_sem_formato  NUMBER,
+  preco              NUMBER(10,2),
+  qtd_int            NUMBER(5),
+  arredonda_centena  NUMBER(5,-2)
+);
+
+INSERT INTO teste_number VALUES (12345.6789, 12345.6789, 123.45, 12345);
+
+SELECT
+  valor_sem_formato,        -- 12345.6789
+  preco,                    -- 12345.68 (arredondado)
+  qtd_int,                  -- 123 (truncado, não arredondado)
+  arredonda_centena         -- 12300
+FROM teste_number;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DATE e TIMESTAMP — Formatos e Conversões</h3>
+        <p>
+          O Oracle armazena datas em um formato interno próprio. Para exibição,
+          use <code>TO_CHAR</code> e para conversão, <code>TO_DATE</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trabalhando com DATE no Oracle
+SELECT
+  SYSDATE                                          AS data_atual,
+  SYSTIMESTAMP                                     AS timestamp_atual,
+  TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI:SS')        AS formatado_br,
+  TO_CHAR(SYSDATE, 'Day, DD "de" Month "de" YYYY') AS data_extenso,
+  TO_CHAR(SYSDATE, 'YYYY-MM-DD')                   AS iso_format
+FROM DUAL;
+
+-- Converter string para data
+SELECT
+  TO_DATE('15/08/2025', 'DD/MM/YYYY')              AS data_convertida,
+  TO_DATE('2025-08-15 14:30:00', 'YYYY-MM-DD HH24:MI:SS') AS data_hora
+FROM DUAL;
+
+-- Operações aritméticas com datas
+SELECT
+  SYSDATE               AS hoje,
+  SYSDATE + 1           AS amanha,
+  SYSDATE - 7           AS uma_semana_atras,
+  SYSDATE + 1/24        AS uma_hora_depois,
+  SYSDATE + 30/1440     AS trinta_minutos_depois
+FROM DUAL;
+
+-- Diferença entre datas (resultado em dias)
+SELECT
+  TO_DATE('01/07/2025', 'DD/MM/YYYY') - TO_DATE('01/01/2025', 'DD/MM/YYYY') AS dias_diferenca
+FROM DUAL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CRIANDO ESTRUTURA DE BANCO DE TREINAMENTO -->
+      <section>
+        <h2>Criando Estrutura de Banco de Treinamento</h2>
+        <p>
+          Vamos criar um banco de dados de exemplo para uma empresa, utilizando
+          os tipos de dados Oracle de forma apropriada e demonstrando
+          constraints (restrições).
+        </p>
+
+        <h3>Tabela: Departamentos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE departamentos (
+  id_depto     NUMBER(5) PRIMARY KEY,
+  nome         VARCHAR2(80) NOT NULL UNIQUE,
+  sigla        CHAR(4) NOT NULL,
+  orcamento    NUMBER(12,2) DEFAULT 0,
+  data_criacao DATE DEFAULT SYSDATE,
+  ativo        CHAR(1) DEFAULT 'S' CHECK (ativo IN ('S', 'N'))
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tabela: Funcionários</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE funcionarios (
+  id_func       NUMBER(10) PRIMARY KEY,
+  nome          VARCHAR2(120) NOT NULL,
+  email         VARCHAR2(150) UNIQUE,
+  cpf           CHAR(11) UNIQUE,
+  salario       NUMBER(10,2) CHECK (salario > 0),
+  bonus         NUMBER(8,2) DEFAULT 0,
+  data_admissao DATE DEFAULT SYSDATE,
+  data_nasc     DATE,
+  id_depto      NUMBER(5) NOT NULL,
+  cargo         VARCHAR2(80),
+  foto          BLOB,
+  observacoes   CLOB,
+  ultima_atual  TIMESTAMP DEFAULT SYSTIMESTAMP,
+  CONSTRAINT fk_func_depto FOREIGN KEY (id_depto)
+    REFERENCES departamentos(id_depto),
+  CONSTRAINT ck_salario_bonus CHECK (bonus <= salario * 0.5)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tabela: Projetos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE projetos (
+  id_projeto   NUMBER(8) PRIMARY KEY,
+  nome         VARCHAR2(150) NOT NULL,
+  descricao    CLOB,
+  data_inicio  DATE NOT NULL,
+  data_fim     DATE,
+  orcamento    NUMBER(12,2),
+  status       VARCHAR2(20) DEFAULT 'PLANEJADO'
+               CHECK (status IN ('PLANEJADO','EM ANDAMENTO','CONCLUIDO','CANCELADO')),
+  id_gerente   NUMBER(10),
+  CONSTRAINT fk_proj_gerente FOREIGN KEY (id_gerente)
+    REFERENCES funcionarios(id_func),
+  CONSTRAINT ck_data_projeto CHECK (data_fim IS NULL OR data_fim > data_inicio)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tabela: Alocação de Funcionários em Projetos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE alocacao_projeto (
+  id_alocacao    NUMBER(10) PRIMARY KEY,
+  id_func        NUMBER(10) NOT NULL,
+  id_projeto     NUMBER(8) NOT NULL,
+  horas_alocadas NUMBER(4) CHECK (horas_alocadas > 0 AND horas_alocadas <= 200),
+  papel          VARCHAR2(50),
+  data_entrada   DATE DEFAULT SYSDATE,
+  CONSTRAINT fk_aloc_func FOREIGN KEY (id_func)
+    REFERENCES funcionarios(id_func),
+  CONSTRAINT fk_aloc_proj FOREIGN KEY (id_projeto)
+    REFERENCES projetos(id_projeto),
+  CONSTRAINT uk_aloc UNIQUE (id_func, id_projeto)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tabela: Vendas (para exercícios de agregação)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE vendas (
+  id_venda    NUMBER(12) PRIMARY KEY,
+  regiao      VARCHAR2(50) NOT NULL,
+  produto     VARCHAR2(100) NOT NULL,
+  categoria   VARCHAR2(50),
+  quantidade  NUMBER(8) CHECK (quantidade > 0),
+  valor_unit  NUMBER(10,2) CHECK (valor_unit > 0),
+  valor_total NUMBER(12,2) GENERATED ALWAYS AS (quantidade * valor_unit) VIRTUAL,
+  data_venda  DATE DEFAULT SYSDATE,
+  vendedor    VARCHAR2(120),
+  canal       VARCHAR2(30) CHECK (canal IN ('ONLINE','LOJA FISICA','TELEVENDAS','REVENDA'))
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- SEQUENCES NO ORACLE -->
+      <section>
+        <h2>Sequences no Oracle</h2>
+        <p>
+          Diferente do PostgreSQL que oferece <code>SERIAL</code> e do MySQL que
+          oferece <code>AUTO_INCREMENT</code>, o Oracle utiliza
+          <strong>SEQUENCES</strong> — objetos independentes que geram números
+          sequenciais. Não existe auto-incremento nativo em colunas Oracle (até
+          o 12c, que introduziu <code>GENERATED AS IDENTITY</code>).
+        </p>
+
+        <h3>Criando uma Sequence</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE SEQUENCE seq_funcionarios
+  START WITH 1
+  INCREMENT BY 1
+  MINVALUE 1
+  MAXVALUE 9999999999
+  NOCACHE
+  NOCYCLE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Usando NEXTVAL e CURRVAL</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Obter o próximo valor da sequence (avança a sequence)
+SELECT seq_funcionarios.NEXTVAL FROM DUAL;
+
+-- Obter o valor atual (sem avançar) — só pode ser usado na mesma sessão após um NEXTVAL
+SELECT seq_funcionarios.CURRVAL FROM DUAL;
+
+-- Inserir com sequence
+INSERT INTO funcionarios (id_func, nome, email, salario, id_depto) VALUES
+  (seq_funcionarios.NEXTVAL, 'João Silva', 'joao@empresa.com.br', 5000, 1);
+
+INSERT INTO funcionarios (id_func, nome, email, salario, id_depto) VALUES
+  (seq_funcionarios.NEXTVAL, 'Maria Oliveira', 'maria@empresa.com.br', 6200, 2);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Oracle 12c+: Coluna Identity (substituto do SERIAL)</h3>
+        <p>
+          A partir do Oracle 12c, você pode usar
+          <code>GENERATED AS IDENTITY</code> como alternativa às sequences
+          manuais:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Coluna com identity (similar ao SERIAL do PostgreSQL)
+CREATE TABLE categorias (
+  id_categoria NUMBER(10) GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  nome          VARCHAR2(80) NOT NULL
+);
+
+-- Inserir sem especificar o ID (gerado automaticamente)
+INSERT INTO categorias (nome) VALUES ('Eletrônicos');
+INSERT INTO categorias (nome) VALUES ('Vestuário');
+INSERT INTO categorias (nome) VALUES ('Alimentos');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Populando as tabelas com dados de exemplo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserindo departamentos
+INSERT INTO departamentos (id_depto, nome, sigla, orcamento) VALUES
+  (1, 'Tecnologia da Informação', 'TI', 500000);
+INSERT INTO departamentos (id_depto, nome, sigla, orcamento) VALUES
+  (2, 'Recursos Humanos', 'RH', 150000);
+INSERT INTO departamentos (id_depto, nome, sigla, orcamento) VALUES
+  (3, 'Financeiro', 'FIN', 200000);
+INSERT INTO departamentos (id_depto, nome, sigla, orcamento) VALUES
+  (4, 'Marketing', 'MKT', 300000);
+INSERT INTO departamentos (id_depto, nome, sigla, orcamento) VALUES
+  (5, 'Vendas', 'VEN', 400000);
+
+-- Inserindo funcionários
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'João Silva', 'joao@empresa.com.br', '11122233344', 8500, 1000, TO_DATE('15/03/2020','DD/MM/YYYY'), TO_DATE('10/05/1985','DD/MM/YYYY'), 1, 'Desenvolvedor Senior');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Maria Oliveira', 'maria@empresa.com.br', '22233344455', 9200, 1500, TO_DATE('01/07/2019','DD/MM/YYYY'), TO_DATE('22/08/1988','DD/MM/YYYY'), 1, 'Arquiteta de Software');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Carlos Souza', 'carlos@empresa.com.br', '33344455566', 4500, 500, TO_DATE('10/01/2022','DD/MM/YYYY'), TO_DATE('15/12/1995','DD/MM/YYYY'), 1, 'Desenvolvedor Junior');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Ana Paula', 'ana@empresa.com.br', '44455566677', 7200, 800, TO_DATE('20/06/2021','DD/MM/YYYY'), TO_DATE('04/03/1990','DD/MM/YYYY'), 2, 'Gerente de RH');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Pedro Santos', 'pedro@empresa.com.br', '55566677788', 6800, 600, TO_DATE('05/09/2021','DD/MM/YYYY'), TO_DATE('30/07/1992','DD/MM/YYYY'), 3, 'Analista Financeiro');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Juliana Costa', 'juliana@empresa.com.br', '66677788899', 5500, 700, TO_DATE('12/04/2022','DD/MM/YYYY'), TO_DATE('18/11/1993','DD/MM/YYYY'), 4, 'Analista de Marketing');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Roberto Lima', 'roberto@empresa.com.br', '77788899900', 7800, 1200, TO_DATE('03/08/2018','DD/MM/YYYY'), TO_DATE('25/01/1982','DD/MM/YYYY'), 5, 'Gerente de Vendas');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Fernanda Alves', 'fernanda@empresa.com.br', '88899900011', 4200, 300, TO_DATE('25/11/2022','DD/MM/YYYY'), TO_DATE('09/06/1998','DD/MM/YYYY'), 5, 'Vendedora');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Rafael Mendes', 'rafael@empresa.com.br', '99900011122', 3500, 0, TO_DATE('15/02/2023','DD/MM/YYYY'), TO_DATE('17/04/2000','DD/MM/YYYY'), 5, 'Vendedor');
+
+INSERT INTO funcionarios (id_func, nome, email, cpf, salario, bonus, data_admissao, data_nasc, id_depto, cargo) VALUES
+  (seq_funcionarios.NEXTVAL, 'Beatriz Nunes', 'beatriz@empresa.com.br', '00011122233', 8800, 1100, TO_DATE('08/10/2020','DD/MM/YYYY'), TO_DATE('03/12/1987','DD/MM/YYYY'), 1, 'Tech Lead');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CONSULTAS COM JOINS NO ORACLE -->
+      <section>
+        <h2>Consultas com JOINs no Oracle</h2>
+        <p>
+          O Oracle suporta tanto a sintaxe ANSI SQL (INNER JOIN, LEFT JOIN,
+          RIGHT JOIN, FULL JOIN) quanto a sintaxe antiga Oracle com o operador
+          <code>(+)</code> para outer joins. A sintaxe ANSI é recomendada para
+          novos desenvolvimentos.
+        </p>
+
+        <h3>INNER JOIN</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Sintaxe ANSI (recomendada)
+SELECT
+  f.nome       AS funcionario,
+  f.cargo,
+  d.nome       AS departamento,
+  d.sigla
+FROM funcionarios f
+INNER JOIN departamentos d ON f.id_depto = d.id_depto
+ORDER BY d.nome, f.nome;
+
+-- Sintaxe Oracle tradicional (equivalente)
+SELECT
+  f.nome       AS funcionario,
+  f.cargo,
+  d.nome       AS departamento,
+  d.sigla
+FROM funcionarios f, departamentos d
+WHERE f.id_depto = d.id_depto
+ORDER BY d.nome, f.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LEFT JOIN — Sintaxe ANSI vs Operador (+) Oracle</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- LEFT JOIN ANSI: todos os funcionários, mesmo sem departamento
+SELECT
+  f.nome       AS funcionario,
+  NVL(d.nome, 'SEM DEPARTAMENTO') AS departamento
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.id_depto = d.id_depto;
+
+-- Sintaxe Oracle com (+) — MESMO resultado
+SELECT
+  f.nome       AS funcionario,
+  NVL(d.nome, 'SEM DEPARTAMENTO') AS departamento
+FROM funcionarios f, departamentos d
+WHERE f.id_depto = d.id_depto(+);
+  -- (+) colocado do lado RIGHT (departamentos)
+  -- indica que departamentos é opcional
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>RIGHT JOIN — Operador (+)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- RIGHT JOIN ANSI: todos os departamentos, mesmo sem funcionários
+SELECT
+  d.nome       AS departamento,
+  NVL(f.nome, 'Nenhum funcionário') AS funcionario
+FROM funcionarios f
+RIGHT JOIN departamentos d ON f.id_depto = d.id_depto;
+
+-- Sintaxe Oracle com (+) — note que (+) se move
+SELECT
+  d.nome       AS departamento,
+  NVL(f.nome, 'Nenhum funcionário') AS funcionario
+FROM funcionarios f, departamentos d
+WHERE f.id_depto(+) = d.id_depto;
+  -- (+) colocado do lado LEFT (funcionarios)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FULL OUTER JOIN — Múltiplas tabelas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- FULL OUTER JOIN com 3 tabelas
+SELECT
+  d.nome       AS departamento,
+  f.nome       AS funcionario,
+  p.nome       AS projeto
+FROM departamentos d
+LEFT JOIN funcionarios f ON d.id_depto = f.id_depto
+LEFT JOIN alocacao_projeto ap ON f.id_func = ap.id_func
+LEFT JOIN projetos p ON ap.id_projeto = p.id_projeto
+ORDER BY d.nome, f.nome, p.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Self-Join — Funcionários e seus gerentes</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- SELF JOIN: listar funcionários com nome do gerente do projeto
+SELECT
+  f.nome              AS funcionario,
+  f.cargo,
+  p.nome              AS projeto,
+  g.nome              AS gerente_projeto
+FROM alocacao_projeto ap
+JOIN funcionarios f   ON ap.id_func = f.id_func
+JOIN projetos p       ON ap.id_projeto = p.id_projeto
+LEFT JOIN funcionarios g ON p.id_gerente = g.id_func
+ORDER BY p.nome, f.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- FUNÇÕES AGREGADAS -->
+      <section>
+        <h2>Funções Agregadas no Oracle</h2>
+        <p>
+          As funções agregadas do Oracle seguem o padrão SQL e permitem
+          sumarizar dados agrupados. As principais são: <code>COUNT</code>,
+          <code>SUM</code>, <code>AVG</code>, <code>MIN</code>,
+          <code>MAX</code>. O Oracle também oferece funções estatísticas
+          avançadas.
+        </p>
+
+        <h3>Funções Básicas com GROUP BY</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Contagem e soma por departamento
+SELECT
+  d.nome                     AS departamento,
+  COUNT(f.id_func)            AS total_funcionarios,
+  SUM(f.salario)              AS folha_total,
+  ROUND(AVG(f.salario), 2)    AS media_salarial,
+  MIN(f.salario)              AS menor_salario,
+  MAX(f.salario)              AS maior_salario,
+  SUM(f.bonus)                AS total_bonus
+FROM funcionarios f
+JOIN departamentos d ON f.id_depto = d.id_depto
+GROUP BY d.nome
+ORDER BY media_salarial DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>HAVING — Filtrando Grupos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Departamentos com média salarial acima de 6000
+SELECT
+  d.nome                     AS departamento,
+  COUNT(*)                   AS total_funcionarios,
+  ROUND(AVG(f.salario), 2)   AS media_salarial
+FROM funcionarios f
+JOIN departamentos d ON f.id_depto = d.id_depto
+GROUP BY d.nome
+HAVING AVG(f.salario) > 6000
+ORDER BY media_salarial DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Funções Oracle Específicas: MEDIAN, STDDEV, VARIANCE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Funções estatísticas avançadas (Oracle-specific)
+SELECT
+  d.nome                         AS departamento,
+  ROUND(MEDIAN(f.salario), 2)    AS mediana_salarial,
+  ROUND(STDDEV(f.salario), 2)    AS desvio_padrao,
+  ROUND(VARIANCE(f.salario), 2)  AS variancia,
+  ROUND(AVG(f.salario), 2)       AS media
+FROM funcionarios f
+JOIN departamentos d ON f.id_depto = d.id_depto
+GROUP BY d.nome
+ORDER BY media DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Ordenação — ORDER BY com múltiplas colunas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ordenação múltipla: por departamento e salário decrescente
+SELECT
+  d.nome   AS departamento,
+  f.nome   AS funcionario,
+  f.salario,
+  f.cargo
+FROM funcionarios f
+JOIN departamentos d ON f.id_depto = d.id_depto
+ORDER BY d.nome ASC, f.salario DESC;
+
+-- Ordenação com NULLS FIRST / NULLS LAST (Oracle-specific)
+SELECT nome, bonus
+FROM funcionarios
+ORDER BY bonus DESC NULLS LAST;
+
+-- Ordenação por expressão
+SELECT nome, salario, bonus, (salario + bonus) AS remuneracao_total
+FROM funcionarios
+ORDER BY 4 DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- OPERADORES ROLLUP E CUBE -->
+      <section>
+        <h2>Operadores ROLLUP e CUBE</h2>
+        <p>
+          Os operadores <strong>ROLLUP</strong> e <strong>CUBE</strong> são
+          extensões do <code>GROUP BY</code> que geram subtotais hierárquicos e
+          todas as combinações possíveis de subtotais, respectivamente. São
+          fundamentais para relatórios analíticos e OLAP.
+        </p>
+
+        <h3>Preparando dados de vendas para os exemplos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserindo dados na tabela de vendas
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (1, 'Sudeste', 'Notebook', 'Eletrônicos', 10, 3500, TO_DATE('10/01/2025','DD/MM/YYYY'), 'Roberto Lima', 'LOJA FISICA');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (2, 'Sudeste', 'Smartphone', 'Eletrônicos', 25, 2000, TO_DATE('15/01/2025','DD/MM/YYYY'), 'Roberto Lima', 'ONLINE');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (3, 'Sul', 'Notebook', 'Eletrônicos', 5, 3500, TO_DATE('20/01/2025','DD/MM/YYYY'), 'Fernanda Alves', 'LOJA FISICA');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (4, 'Sul', 'Smartphone', 'Eletrônicos', 15, 2000, TO_DATE('25/01/2025','DD/MM/YYYY'), 'Fernanda Alves', 'TELEVENDAS');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (5, 'Nordeste', 'Notebook', 'Eletrônicos', 8, 3500, TO_DATE('30/01/2025','DD/MM/YYYY'), 'Rafael Mendes', 'ONLINE');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (6, 'Nordeste', 'Smartphone', 'Eletrônicos', 20, 2000, TO_DATE('05/02/2025','DD/MM/YYYY'), 'Rafael Mendes', 'LOJA FISICA');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (7, 'Sudeste', 'Camiseta', 'Vestuário', 100, 50, TO_DATE('10/02/2025','DD/MM/YYYY'), 'Roberto Lima', 'LOJA FISICA');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (8, 'Sul', 'Calça Jeans', 'Vestuário', 60, 120, TO_DATE('15/02/2025','DD/MM/YYYY'), 'Fernanda Alves', 'ONLINE');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (9, 'Nordeste', 'Camiseta', 'Vestuário', 80, 50, TO_DATE('20/02/2025','DD/MM/YYYY'), 'Rafael Mendes', 'TELEVENDAS');
+INSERT INTO vendas (id_venda, regiao, produto, categoria, quantidade, valor_unit, data_venda, vendedor, canal) VALUES
+  (10, 'Sudeste', 'Mouse', 'Informática', 200, 80, TO_DATE('25/02/2025','DD/MM/YYYY'), 'Roberto Lima', 'ONLINE');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>ROLLUP — Subtotais Hierárquicos</h3>
+        <p>
+          O <strong>ROLLUP</strong> gera subtotais seguindo uma hierarquia da
+          direita para a esquerda. Por exemplo,
+          <code>ROLLUP(regiao, produto)</code> gera: subtotais por (região,
+          produto), subtotais por (região) e total geral.
+        </p>
+        <p>
+          Os níveis de agregação são: <code>(região, produto)</code> →
+          <code>(região, ALL)</code> → <code>(ALL, ALL)</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- ROLLUP: Vendas por região e produto com subtotais hierárquicos
+SELECT
+  regiao,
+  produto,
+  SUM(quantidade)   AS total_qtd,
+  SUM(valor_total)  AS receita_total
+FROM vendas
+GROUP BY ROLLUP(regiao, produto)
+ORDER BY regiao, produto;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Resultado do ROLLUP (explicado)</h3>
+        <p>O resultado da consulta acima terá linhas como:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Região</th>
+              <th>Produto</th>
+              <th>Total Qtd</th>
+              <th>Receita Total</th>
+              <th>Tipo de Linha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nordeste</td>
+              <td>Camiseta</td>
+              <td>80</td>
+              <td>4000</td>
+              <td>Detalhe (região, produto)</td>
+            </tr>
+            <tr>
+              <td>Nordeste</td>
+              <td>Notebook</td>
+              <td>8</td>
+              <td>28000</td>
+              <td>Detalhe (região, produto)</td>
+            </tr>
+            <tr>
+              <td>Nordeste</td>
+              <td>Smartphone</td>
+              <td>20</td>
+              <td>40000</td>
+              <td>Detalhe (região, produto)</td>
+            </tr>
+            <tr>
+              <td><strong>Nordeste</strong></td>
+              <td><strong>—</strong></td>
+              <td><strong>108</strong></td>
+              <td><strong>72000</strong></td>
+              <td>Subtotal por Região</td>
+            </tr>
+            <tr>
+              <td>Sul</td>
+              <td>...</td>
+              <td>...</td>
+              <td>...</td>
+              <td>Detalhe</td>
+            </tr>
+            <tr>
+              <td><strong>Sul</strong></td>
+              <td><strong>—</strong></td>
+              <td><strong>...</strong></td>
+              <td><strong>...</strong></td>
+              <td>Subtotal por Região</td>
+            </tr>
+            <tr>
+              <td><strong>—</strong></td>
+              <td><strong>—</strong></td>
+              <td><strong>TOTAL</strong></td>
+              <td><strong>TOTAL</strong></td>
+              <td>Total Geral</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>ROLLUP com GROUPING — Identificando linhas de subtotal</h3>
+        <p>
+          A função <strong>GROUPING(coluna)</strong> retorna <code>1</code> se a
+          linha é um subtotal para aquela coluna (ou seja, a coluna foi agregada
+          / é NULL devido ao ROLLUP/CUBE), e <code>0</code> caso contrário.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- ROLLUP com GROUPING para labels descritivos
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN '*** TOTAL ***'
+    ELSE regiao
+  END                         AS regiao,
+  CASE GROUPING(produto)
+    WHEN 1 THEN '-- SUBTOTAL --'
+    ELSE produto
+  END                         AS produto,
+  SUM(quantidade)             AS total_qtd,
+  SUM(valor_total)            AS receita_total,
+  GROUPING(regiao)            AS grp_regiao,
+  GROUPING(produto)           AS grp_produto
+FROM vendas
+GROUP BY ROLLUP(regiao, produto)
+ORDER BY regiao, produto;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CUBE — Todas as Combinações de Subtotais</h3>
+        <p>
+          O <strong>CUBE</strong> gera subtotais para
+          <strong>todas as combinações possíveis</strong> das colunas
+          especificadas. Para <code>CUBE(regiao, produto)</code>, os níveis são:
+        </p>
+        <ul>
+          <li><code>(região, produto)</code> — detalhe por região e produto</li>
+          <li><code>(região, ALL)</code> — subtotal por região</li>
+          <li>
+            <code>(ALL, produto)</code> — subtotal por produto (independente da
+            região)
+          </li>
+          <li><code>(ALL, ALL)</code> — total geral</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- CUBE: Todas as combinações de subtotais (região e produto)
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN 'TODAS REGIÕES'
+    ELSE regiao
+  END                         AS regiao,
+  CASE GROUPING(produto)
+    WHEN 1 THEN 'TODOS PRODUTOS'
+    ELSE produto
+  END                         AS produto,
+  SUM(quantidade)             AS total_qtd,
+  SUM(valor_total)            AS receita_total
+FROM vendas
+GROUP BY CUBE(regiao, produto)
+ORDER BY
+  GROUPING(regiao),
+  regiao,
+  GROUPING(produto),
+  produto;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CUBE com 3 dimensões — Análise Multidimensional</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- CUBE com 3 dimensões: regiao, categoria, canal
+-- Gera 2³ = 8 níveis de agregação
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN '-- TODAS --'
+    ELSE regiao
+  END                         AS regiao,
+  CASE GROUPING(categoria)
+    WHEN 1 THEN '-- TODAS --'
+    ELSE categoria
+  END                         AS categoria,
+  CASE GROUPING(canal)
+    WHEN 1 THEN '-- TODOS --'
+    ELSE canal
+  END                         AS canal,
+  SUM(quantidade)             AS total_qtd,
+  SUM(valor_total)            AS receita_total,
+  GROUPING_ID(regiao, categoria, canal) AS nivel_agregacao
+FROM vendas
+GROUP BY CUBE(regiao, categoria, canal)
+ORDER BY
+  GROUPING_ID(regiao, categoria, canal),
+  regiao,
+  categoria,
+  canal;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>GROUPING SETS — Controle Exato dos Subtotais</h3>
+        <p>
+          O <strong>GROUPING SETS</strong> permite especificar exatamente quais
+          combinações de subtotais você deseja. É como um CUBE seletivo.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- GROUPING SETS: apenas os subtotais que queremos
+SELECT
+  regiao,
+  produto,
+  canal,
+  SUM(quantidade)   AS total_qtd,
+  SUM(valor_total)  AS receita_total
+FROM vendas
+GROUP BY GROUPING SETS (
+  (regiao, produto, canal),   -- detalhe completo
+  (regiao, produto),          -- subtotal por região e produto
+  (regiao),                   -- subtotal por região
+  ()                          -- total geral
+)
+ORDER BY regiao, produto, canal;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Aplicação Prática: Relatório de Vendas com ROLLUP</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Relatório completo de vendas por região e categoria com ROLLUP
+SELECT
+  DECODE(GROUPING(regiao), 1, 'TOTAL GERAL', regiao)     AS regiao,
+  DECODE(GROUPING(categoria), 1, 'SUBTOTAL', categoria)  AS categoria,
+  COUNT(*)                                               AS num_vendas,
+  SUM(quantidade)                                        AS total_itens,
+  TO_CHAR(SUM(valor_total), 'FM999G999G990D00')          AS receita,
+  ROUND(AVG(valor_total), 2)                             AS ticket_medio
+FROM vendas
+GROUP BY ROLLUP(regiao, categoria)
+ORDER BY
+  GROUPING(regiao),
+  regiao,
+  GROUPING(categoria),
+  categoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DIFERENÇAS SINTAXE ORACLE VS SQL PADRÃO -->
+      <section>
+        <h2>Diferenças entre Sintaxe Oracle SQL e SQL Padrão</h2>
+        <p>
+          O Oracle SQL tem diversas peculiaridades em relação ao SQL padrão
+          (ANSI/ISO). A tabela a seguir destaca as principais diferenças que
+          você encontrará ao migrar entre SGBDs.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Recurso</th>
+              <th>Oracle</th>
+              <th>SQL Padrão / PostgreSQL</th>
+              <th>MySQL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Data/Hora atual</strong></td>
+              <td><code>SYSDATE</code></td>
+              <td><code>CURRENT_DATE</code>, <code>CURRENT_TIMESTAMP</code></td>
+              <td><code>NOW()</code>, <code>CURRENT_DATE</code></td>
+            </tr>
+            <tr>
+              <td><strong>Tabela dummy</strong></td>
+              <td><code>SELECT SYSDATE FROM DUAL;</code></td>
+              <td><code>SELECT CURRENT_DATE;</code> (sem FROM)</td>
+              <td><code>SELECT NOW();</code> (sem FROM)</td>
+            </tr>
+            <tr>
+              <td><strong>String variável</strong></td>
+              <td><code>VARCHAR2(n)</code></td>
+              <td><code>VARCHAR(n)</code></td>
+              <td><code>VARCHAR(n)</code></td>
+            </tr>
+            <tr>
+              <td><strong>Outer join antigo</strong></td>
+              <td><code>WHERE a.col = b.col(+)</code></td>
+              <td>Não existe</td>
+              <td>Não existe</td>
+            </tr>
+            <tr>
+              <td><strong>Limite de linhas</strong></td>
+              <td>
+                <code>WHERE ROWNUM <= 10</code> ou
+                <code>FETCH FIRST 10 ROWS ONLY</code> (12c+)
+              </td>
+              <td>
+                <code>LIMIT 10</code> / <code>FETCH FIRST 10 ROWS ONLY</code>
+              </td>
+              <td><code>LIMIT 10</code></td>
+            </tr>
+            <tr>
+              <td><strong>Concatenação</strong></td>
+              <td><code>a || b</code></td>
+              <td><code>a || b</code> ou <code>CONCAT(a,b)</code></td>
+              <td>
+                <code>CONCAT(a,b)</code> ou <code>a || b</code> (modo
+                PIPES_AS_CONCAT)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>If/Else em SQL</strong></td>
+              <td><code>DECODE(expr, v1, r1, v2, r2, default)</code></td>
+              <td><code>CASE WHEN expr = v1 THEN r1 ... END</code></td>
+              <td><code>IF(expr, v1, v2)</code></td>
+            </tr>
+            <tr>
+              <td><strong>Tratamento de NULL</strong></td>
+              <td><code>NVL(expr, substituto)</code></td>
+              <td><code>COALESCE(expr, substituto)</code></td>
+              <td>
+                <code>IFNULL(expr, substituto)</code> ou <code>COALESCE()</code>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Truncar data</strong></td>
+              <td><code>TRUNC(data)</code> (remove hora)</td>
+              <td><code>DATE_TRUNC('day', data)</code></td>
+              <td><code>DATE(data)</code></td>
+            </tr>
+            <tr>
+              <td><strong>Auto incremento</strong></td>
+              <td>
+                <code>SEQUENCE</code> + <code>NEXTVAL</code> ou
+                <code>GENERATED AS IDENTITY</code> (12c+)
+              </td>
+              <td>
+                <code>SERIAL</code> / <code>BIGSERIAL</code> ou
+                <code>GENERATED AS IDENTITY</code>
+              </td>
+              <td><code>AUTO_INCREMENT</code></td>
+            </tr>
+            <tr>
+              <td><strong>Tipo booleano</strong></td>
+              <td>
+                Não existe em SQL. Usa-se <code>CHAR(1)</code> com CHECK ou
+                <code>NUMBER(1)</code>
+              </td>
+              <td><code>BOOLEAN</code></td>
+              <td><code>BOOLEAN</code> / <code>TINYINT(1)</code></td>
+            </tr>
+            <tr>
+              <td><strong>String com escape</strong></td>
+              <td><code>q'[texto com 'aspas']'</code> (quote operator)</td>
+              <td><code>$$texto$$</code> (dollar quoting)</td>
+              <td>Backslash ou doubling de aspas</td>
+            </tr>
+            <tr>
+              <td><strong>Subquery em SELECT</strong></td>
+              <td>Permitido: <code>SELECT (SELECT ...) FROM DUAL;</code></td>
+              <td>Permitido (escalar)</td>
+              <td>Permitido (escalar)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplos Práticos das Diferenças</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- ====== DIFERENÇA 1: Data atual ======
+-- Oracle:
+SELECT SYSDATE FROM DUAL;
+
+-- SQL Padrão / PostgreSQL:
+-- SELECT CURRENT_DATE;
+
+-- MySQL:
+-- SELECT NOW();
+
+-- ====== DIFERENÇA 2: DECODE vs CASE ======
+-- Oracle DECODE (específico do Oracle)
+SELECT
+  nome,
+  cargo,
+  DECODE(cargo,
+    'Desenvolvedor Senior', 'SENIOR',
+    'Desenvolvedor Junior', 'JUNIOR',
+    'Tech Lead', 'LIDER',
+    'OUTROS'  -- default
+  ) AS nivel
+FROM funcionarios;
+
+-- Equivalente em SQL Padrão (funciona no Oracle também)
+SELECT
+  nome,
+  cargo,
+  CASE cargo
+    WHEN 'Desenvolvedor Senior' THEN 'SENIOR'
+    WHEN 'Desenvolvedor Junior' THEN 'JUNIOR'
+    WHEN 'Tech Lead' THEN 'LIDER'
+    ELSE 'OUTROS'
+  END AS nivel
+FROM funcionarios;
+
+-- ====== DIFERENÇA 3: NVL vs COALESCE ======
+-- Oracle:
+SELECT
+  nome,
+  NVL(bonus, 0) AS bonus_tratado
+FROM funcionarios;
+
+-- SQL Padrão (funciona no Oracle também):
+SELECT
+  nome,
+  COALESCE(bonus, 0) AS bonus_tratado
+FROM funcionarios;
+
+-- ====== DIFERENÇA 4: Limite de linhas ======
+-- Oracle (12c+):
+SELECT nome, salario
+FROM funcionarios
+ORDER BY salario DESC
+FETCH FIRST 5 ROWS ONLY;
+
+-- Oracle (todas versões) com ROWNUM:
+SELECT *
+FROM (
+  SELECT nome, salario
+  FROM funcionarios
+  ORDER BY salario DESC
+)
+WHERE ROWNUM <= 5;
+
+-- SQL Padrão / PostgreSQL / MySQL:
+-- SELECT nome, salario FROM funcionarios ORDER BY salario DESC LIMIT 5;
+
+-- ====== DIFERENÇA 5: TRUNC date ======
+-- Oracle:
+SELECT
+  TRUNC(SYSDATE)                           AS hoje_sem_hora,
+  TRUNC(SYSDATE, 'MM')                     AS primeiro_dia_mes,
+  TRUNC(SYSDATE, 'YYYY')                   AS primeiro_dia_ano,
+  TRUNC(SYSDATE, 'Q')                      AS primeiro_dia_trimestre
+FROM DUAL;
+
+-- SQL Padrão / PostgreSQL:
+-- SELECT DATE_TRUNC('day', CURRENT_DATE) ...
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>ROWNUM e FETCH FIRST — Paginação no Oracle</h3>
+        <p>
+          O Oracle não possui <code>LIMIT</code>. A paginação pode ser feita com
+          <code>ROWNUM</code> ou, a partir do 12c, com
+          <code>OFFSET ... FETCH</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Paginação com OFFSET/FETCH (Oracle 12c+) — sintaxe moderna
+SELECT nome, salario, cargo
+FROM funcionarios
+ORDER BY salario DESC
+OFFSET 3 ROWS FETCH NEXT 3 ROWS ONLY;
+-- Pula 3 linhas, retorna próximas 3
+
+-- Paginação com ROWNUM (todas versões Oracle)
+SELECT *
+FROM (
+  SELECT f.*, ROWNUM AS rn
+  FROM (
+    SELECT nome, salario, cargo
+    FROM funcionarios
+    ORDER BY salario DESC
+  ) f
+  WHERE ROWNUM <= 6
+)
+WHERE rn > 3;
+-- Mesmo resultado: pula 3, retorna 3
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- POPULANDO TABELAS E EXECUTANDO CONSULTAS -->
+      <section>
+        <h2>
+          Passo a passo: Populando tabelas e executando consultas analíticas
+        </h2>
+        <p>
+          Vamos consolidar o conhecimento executando um fluxo completo de
+          consultas analíticas sobre os dados que criamos.
+        </p>
+
+        <h3>Consulta 1: Funcionários por departamento com média e ranking</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+  d.nome                      AS departamento,
+  f.nome                      AS funcionario,
+  f.salario,
+  ROUND(AVG(f.salario) OVER (PARTITION BY d.id_depto), 2) AS media_depto,
+  RANK() OVER (PARTITION BY d.id_depto ORDER BY f.salario DESC) AS ranking_salarial
+FROM funcionarios f
+JOIN departamentos d ON f.id_depto = d.id_depto
+ORDER BY d.nome, ranking_salarial;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>
+          Consulta 2: Funcionários com remuneração total (salário + bônus)
+        </h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+  nome,
+  cargo,
+  salario,
+  bonus,
+  salario + bonus                 AS remuneracao_total,
+  ROUND(bonus / NULLIF(salario, 0) * 100, 1) || '%' AS pct_bonus
+FROM funcionarios
+ORDER BY remuneracao_total DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Consulta 3: Tempo de casa dos funcionários</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+  nome,
+  data_admissao,
+  TRUNC(MONTHS_BETWEEN(SYSDATE, data_admissao) / 12) AS anos_empresa,
+  TRUNC(MOD(MONTHS_BETWEEN(SYSDATE, data_admissao), 12)) AS meses,
+  TO_CHAR(data_admissao, 'YYYY') AS ano_contratacao
+FROM funcionarios
+ORDER BY data_admissao;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>
+          Consulta 4: Análise multidimensional com CUBE (Região x Categoria x
+          Canal)
+        </h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN 'TODAS REGIÕES'
+    ELSE regiao
+  END                                 AS regiao,
+  CASE GROUPING(categoria)
+    WHEN 1 THEN 'TODAS CATEGORIAS'
+    ELSE categoria
+  END                                 AS categoria,
+  CASE GROUPING(canal)
+    WHEN 1 THEN 'TODOS CANAIS'
+    ELSE canal
+  END                                 AS canal,
+  SUM(quantidade)                     AS total_qtd,
+  TO_CHAR(SUM(valor_total), 'FM999G999G990D00') AS receita,
+  GROUPING_ID(regiao, categoria, canal) AS grp_id
+FROM vendas
+GROUP BY CUBE(regiao, categoria, canal)
+HAVING GROUPING_ID(regiao, categoria, canal) IN (0, 1, 3, 7)
+ORDER BY grp_id, regiao, categoria, canal;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Consulta 5: Vendedores com melhor desempenho</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+  vendedor,
+  COUNT(*)                                   AS total_vendas,
+  SUM(quantidade)                            AS total_itens,
+  TO_CHAR(SUM(valor_total), 'FM999G999G990D00') AS receita_total,
+  ROUND(AVG(valor_total), 2)                 AS ticket_medio,
+  RANK() OVER (ORDER BY SUM(valor_total) DESC) AS ranking
+FROM vendas
+GROUP BY vendedor
+ORDER BY ranking;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. Criar tabela "vendas_trimestre" com tipos Oracle apropriados e
+              inserir 10 registros
+            </h3>
+            <p>
+              Crie uma tabela chamada <code>vendas_trimestre</code> com os
+              seguintes campos usando tipos Oracle: id (chave primária com
+              sequence), regiao (VARCHAR2), produto (VARCHAR2), categoria
+              (VARCHAR2), quantidade (NUMBER), valor_unitario (NUMBER),
+              data_venda (DATE), vendedor (VARCHAR2). Insira pelo menos 10
+              registros variados.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE SEQUENCE seq_vendas_trimestre
+  START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE vendas_trimestre (
+  id_venda       NUMBER(10) PRIMARY KEY,
+  regiao         VARCHAR2(50) NOT NULL,
+  produto        VARCHAR2(100) NOT NULL,
+  categoria      VARCHAR2(50),
+  quantidade     NUMBER(8) CHECK (quantidade > 0),
+  valor_unitario NUMBER(10,2) CHECK (valor_unitario > 0),
+  data_venda     DATE DEFAULT SYSDATE,
+  vendedor       VARCHAR2(120)
+);
+
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sul', 'Monitor', 'Eletrônicos', 12, 800, TO_DATE('01/04/2025','DD/MM/YYYY'), 'Ana');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sul', 'Teclado', 'Informática', 30, 150, TO_DATE('05/04/2025','DD/MM/YYYY'), 'Ana');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sudeste', 'Monitor', 'Eletrônicos', 20, 800, TO_DATE('10/04/2025','DD/MM/YYYY'), 'Carlos');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sudeste', 'Mouse', 'Informática', 50, 80, TO_DATE('15/04/2025','DD/MM/YYYY'), 'Carlos');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Nordeste', 'Monitor', 'Eletrônicos', 8, 800, TO_DATE('20/04/2025','DD/MM/YYYY'), 'Beatriz');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sul', 'Notebook', 'Eletrônicos', 5, 3500, TO_DATE('25/04/2025','DD/MM/YYYY'), 'Ana');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Nordeste', 'Teclado', 'Informática', 25, 150, TO_DATE('30/04/2025','DD/MM/YYYY'), 'Beatriz');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sudeste', 'Notebook', 'Eletrônicos', 15, 3500, TO_DATE('05/05/2025','DD/MM/YYYY'), 'Carlos');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Nordeste', 'Mouse', 'Informática', 40, 80, TO_DATE('10/05/2025','DD/MM/YYYY'), 'Beatriz');
+INSERT INTO vendas_trimestre VALUES
+  (seq_vendas_trimestre.NEXTVAL, 'Sul', 'Cadeira', 'Móveis', 10, 500, TO_DATE('15/05/2025','DD/MM/YYYY'), 'Ana');
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Criar consulta com ROLLUP mostrando vendas por região e produto
+            </h3>
+            <p>
+              Usando a tabela <code>vendas_trimestre</code>, escreva uma
+              consulta com ROLLUP que mostre a quantidade total vendida e a
+              receita (quantidade * valor_unitario) agrupada por região e
+              produto, incluindo subtotais por região e total geral.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN 'TOTAL GERAL'
+    ELSE regiao
+  END                               AS regiao,
+  CASE GROUPING(produto)
+    WHEN 1 THEN 'SUBTOTAL REGIAO'
+    ELSE produto
+  END                               AS produto,
+  SUM(quantidade)                   AS total_qtd,
+  SUM(quantidade * valor_unitario)  AS receita_total
+FROM vendas_trimestre
+GROUP BY ROLLUP(regiao, produto)
+ORDER BY GROUPING(regiao), regiao, GROUPING(produto), produto;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Criar consulta com CUBE para análise multidimensional</h3>
+            <p>
+              Usando a tabela <code>vendas_trimestre</code>, escreva uma
+              consulta com CUBE que analise vendas por região, categoria e
+              vendedor, mostrando todas as combinações de subtotais. Use
+              GROUPING para labels amigáveis.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+  CASE GROUPING(regiao)
+    WHEN 1 THEN '-- TODAS --'
+    ELSE regiao
+  END                               AS regiao,
+  CASE GROUPING(categoria)
+    WHEN 1 THEN '-- TODAS --'
+    ELSE categoria
+  END                               AS categoria,
+  CASE GROUPING(vendedor)
+    WHEN 1 THEN '-- TODOS --'
+    ELSE vendedor
+  END                               AS vendedor,
+  SUM(quantidade)                   AS total_qtd,
+  SUM(quantidade * valor_unitario)  AS receita_total,
+  GROUPING_ID(regiao, categoria, vendedor) AS nivel
+FROM vendas_trimestre
+GROUP BY CUBE(regiao, categoria, vendedor)
+ORDER BY
+  GROUPING_ID(regiao, categoria, vendedor),
+  regiao,
+  categoria,
+  vendedor;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              4. Converter consulta Oracle com (+) para sintaxe padrão LEFT JOIN
+            </h3>
+            <p>
+              Converta a consulta abaixo que usa o operador Oracle (+) para a
+              sintaxe ANSI com LEFT JOIN. A consulta lista todos os funcionários
+              (mesmo os sem departamento) e seus respectivos departamentos:
+            </p>
+            <div class="code-container">
+              <pre><code class="language-sql">
+SELECT f.nome, d.nome AS departamento
+FROM funcionarios f, departamentos d
+WHERE f.id_depto = d.id_depto(+);
+              </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+  f.nome,
+  d.nome AS departamento
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.id_depto = d.id_depto;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>
+                <strong>Regra:</strong> o operador <code>(+)</code> fica do lado
+                da tabela que pode ter valores nulos (tabela opcional). Para
+                converter: a tabela sem <code>(+)</code> vira a LEFT table, e a
+                tabela com <code>(+)</code> vira a RIGHT table do LEFT JOIN.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se todas as consultas executaram
+          corretamente. Verifique se as tabelas foram criadas com os tipos
+          Oracle apropriados, se os JOINs retornam os resultados esperados e se
+          os operadores ROLLUP e CUBE geram os subtotais corretos.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

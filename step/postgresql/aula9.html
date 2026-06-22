@@ -1,0 +1,1464 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9 - Regras e Views no PostgreSQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 9: Regras e Views no PostgreSQL</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Regras (CREATE RULE, ON SELECT/INSERT/UPDATE/DELETE, DO INSTEAD/DO
+        ALSO), Views (CREATE VIEW, CREATE OR REPLACE VIEW, DROP VIEW, updatable
+        views, materialized views com REFRESH), WITH CHECK OPTION, Sistema de
+        logging com Rules, Comparação Rules vs Triggers.
+      </div>
+    </header>
+    <main class="container">
+      <!-- O QUE SÃO REGRAS -->
+      <section>
+        <h2>O que são Regras (Rules)?</h2>
+        <p>
+          O <strong>Rule System</strong> (sistema de regras) do PostgreSQL é um
+          mecanismo de <strong>reescrita de queries</strong> (query rewriting).
+          Quando você define uma regra em uma tabela ou view, o PostgreSQL
+          intercepta comandos SQL (SELECT, INSERT, UPDATE, DELETE) e os
+          <strong>reescreve</strong> — transformando-os em outros comandos —
+          antes mesmo da execução.
+        </p>
+
+        <h3>Como as Regras funcionam</h3>
+        <p>O processo funciona em três etapas:</p>
+        <ol>
+          <li>
+            <strong>Parser:</strong> o comando SQL original é analisado e
+            transformado em uma árvore de consulta (query tree)
+          </li>
+          <li>
+            <strong>Rewriter:</strong> o sistema de regras inspeciona a query
+            tree e aplica as regras definidas, modificando a árvore conforme as
+            ações especificadas (DO INSTEAD ou DO ALSO)
+          </li>
+          <li>
+            <strong>Planner/Executor:</strong> a query tree modificada é
+            planejada e executada normalmente
+          </li>
+        </ol>
+
+        <div class="info-box">
+          <strong>Diferença fundamental entre Rules e Triggers:</strong> Regras
+          atuam na <strong>reescrita da query</strong> (antes do planejamento),
+          enquanto Triggers atuam durante a <strong>execução</strong> da query
+          (em cada linha ou statement). Isso tem implicações profundas de
+          performance e comportamento.
+        </div>
+
+        <h3>Sintaxe CREATE RULE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [ OR REPLACE ] RULE nome_regra
+AS ON evento
+   [ TO tabela_ou_view ]
+   [ WHERE condicao ]
+DO [ ALSO | INSTEAD ]
+   { NOTHING | comando; ( comandos... ) }
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>Componentes da sintaxe:</strong></p>
+        <ul>
+          <li>
+            <strong>evento:</strong> SELECT, INSERT, UPDATE ou DELETE (um por
+            regra)
+          </li>
+          <li>
+            <strong>tabela_ou_view:</strong> a tabela ou view alvo da regra
+          </li>
+          <li>
+            <strong>WHERE (opcional):</strong> condição para a regra ser
+            aplicada. <code>NEW</code> e <code>OLD</code> podem ser
+            referenciados
+          </li>
+          <li>
+            <strong>DO ALSO:</strong> executa o comando da regra
+            <strong>além</strong> do comando original (ação adicional)
+          </li>
+          <li>
+            <strong>DO INSTEAD:</strong> executa o comando da regra
+            <strong>no lugar</strong> do comando original (substituição)
+          </li>
+          <li>
+            <strong>NOTHING:</strong> não executa nada (usado com DO INSTEAD
+            para suprimir a ação)
+          </li>
+        </ul>
+      </section>
+
+      <!-- CRIANDO REGRAS -->
+      <section>
+        <h2>Criando Regras — Exemplos Práticos</h2>
+
+        <h3>Exemplo 1: DO ALSO — Log de auditoria em INSERT</h3>
+        <p>
+          Cenário: queremos registrar cada INSERT na tabela
+          <code>clientes</code> em uma tabela de log automaticamente, sem
+          alterar a aplicação.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar a tabela de clientes
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'ativo',
+    criado_em TIMESTAMP DEFAULT now()
+);
+
+-- Criar a tabela de log (auditoria)
+CREATE TABLE log_auditoria (
+    id SERIAL PRIMARY KEY,
+    operacao VARCHAR(20),
+    tabela VARCHAR(100),
+    registro_id INTEGER,
+    data_operacao TIMESTAMP DEFAULT now(),
+    usuario_sessao VARCHAR(100) DEFAULT current_user
+);
+
+-- Criar a regra: para cada INSERT em clientes, faça TAMBÉM um INSERT no log
+CREATE RULE log_insert_clientes
+AS ON INSERT TO clientes
+DO ALSO
+    INSERT INTO log_auditoria (operacao, tabela, registro_id, data_operacao)
+    VALUES ('INSERT', 'clientes', NEW.id, now());
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Ao executar
+          <code
+            >INSERT INTO clientes (nome, email) VALUES ('Ana',
+            'ana@email.com');</code
+          >, o PostgreSQL automaticamente insere um registro em
+          <code>log_auditoria</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Testar: inserir um cliente
+INSERT INTO clientes (nome, email) VALUES ('Ana Silva', 'ana@email.com');
+INSERT INTO clientes (nome, email) VALUES ('João Souza', 'joao@email.com');
+
+-- Verificar o log gerado automaticamente
+SELECT * FROM log_auditoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>
+          Exemplo 2: DO INSTEAD — Redirecionar INSERT em view para tabela base
+        </h3>
+        <p>
+          Quando criamos uma view, podemos usar DO INSTEAD para tornar a view
+          "updatable" — ou seja, que aceite comandos de INSERT, UPDATE e DELETE
+          que são redirecionados para a tabela base.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar uma view de clientes ativos
+CREATE VIEW view_clientes_ativos AS
+    SELECT id, nome, email, status, criado_em
+    FROM clientes
+    WHERE status = 'ativo';
+
+-- Criar regra DO INSTEAD para INSERT na view
+CREATE RULE redirect_insert_view
+AS ON INSERT TO view_clientes_ativos
+DO INSTEAD
+    INSERT INTO clientes (nome, email, status)
+    VALUES (NEW.nome, NEW.email, 'ativo');
+
+-- Agora podemos inserir via view!
+INSERT INTO view_clientes_ativos (nome, email) VALUES ('Carlos Lima', 'carlos@email.com');
+
+-- Verificar: o cliente aparece na tabela base e na view
+SELECT * FROM clientes;
+SELECT * FROM view_clientes_ativos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 3: DO INSTEAD — Simulando UPDATE via view</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Regra para UPDATE na view
+CREATE RULE redirect_update_view
+AS ON UPDATE TO view_clientes_ativos
+DO INSTEAD
+    UPDATE clientes
+    SET nome = NEW.nome,
+        email = NEW.email
+    WHERE id = OLD.id;
+
+-- Atualizar via view
+UPDATE view_clientes_ativos
+SET email = 'carlos.novo@email.com'
+WHERE id = 3;
+
+-- Verificar atualização
+SELECT * FROM view_clientes_ativos WHERE id = 3;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 4: DO INSTEAD com DELETE — Remoção lógica via view</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Regra para DELETE na view: ao invés de deletar, marca como inativo
+CREATE RULE redirect_delete_view
+AS ON DELETE TO view_clientes_ativos
+DO INSTEAD
+    UPDATE clientes
+    SET status = 'inativo'
+    WHERE id = OLD.id;
+
+-- "Deletar" via view (na verdade, soft delete)
+DELETE FROM view_clientes_ativos WHERE id = 3;
+
+-- O registro não aparece mais na view, mas ainda existe na tabela base
+SELECT * FROM clientes WHERE id = 3;       -- status = 'inativo'
+SELECT * FROM view_clientes_ativos;         -- id 3 sumiu!
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>
+          Exemplo 5: Regra com condição WHERE — Proteção contra DELETE indevido
+        </h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Regra que bloqueia DELETE em clientes com status 'ativo'
+-- Se o status for 'inativo', permite o DELETE normalmente
+-- Se o status for 'ativo', DO INSTEAD NOTHING (não faz nada)
+
+CREATE RULE protege_delete_ativos
+AS ON DELETE TO clientes
+WHERE OLD.status = 'ativo'
+DO INSTEAD NOTHING;
+
+-- Testar: tentar deletar cliente ativo
+DELETE FROM clientes WHERE id = 1;  -- cliente ativo → NÃO deletado!
+
+-- Verificar
+SELECT * FROM clientes WHERE id = 1;  -- ainda existe!
+
+-- Atualizar para inativo e tentar novamente
+UPDATE clientes SET status = 'inativo' WHERE id = 1;
+DELETE FROM clientes WHERE id = 1;  -- cliente inativo → DELETADO!
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 6: Regra para SELECT — Redirecionamento de consulta</h3>
+        <p>
+          Regras de SELECT permitem interceptar consultas e modificá-las. Útil
+          para particionamento transparente ou filtros automáticos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Suponha uma tabela particionada manualmente por ano
+CREATE TABLE vendas_2024 (
+    id SERIAL PRIMARY KEY,
+    produto VARCHAR(100),
+    valor NUMERIC,
+    data_venda DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT vendas_2024_ano_check CHECK (EXTRACT(YEAR FROM data_venda) = 2024)
+);
+
+CREATE TABLE vendas_2025 (
+    id SERIAL PRIMARY KEY,
+    produto VARCHAR(100),
+    valor NUMERIC,
+    data_venda DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT vendas_2025_ano_check CHECK (EXTRACT(YEAR FROM data_venda) = 2025)
+);
+
+-- View que une as partições
+CREATE VIEW vendas AS
+    SELECT * FROM vendas_2024
+    UNION ALL
+    SELECT * FROM vendas_2025;
+
+-- Regra que redireciona INSERTs para a partição correta
+CREATE RULE vendas_insert_2024
+AS ON INSERT TO vendas
+WHERE EXTRACT(YEAR FROM NEW.data_venda) = 2024
+DO INSTEAD
+    INSERT INTO vendas_2024 (produto, valor, data_venda)
+    VALUES (NEW.produto, NEW.valor, NEW.data_venda);
+
+CREATE RULE vendas_insert_2025
+AS ON INSERT TO vendas
+WHERE EXTRACT(YEAR FROM NEW.data_venda) = 2025
+DO INSTEAD
+    INSERT INTO vendas_2025 (produto, valor, data_venda)
+    VALUES (NEW.produto, NEW.valor, NEW.data_venda);
+
+-- Agora o INSERT na view é automaticamente redirecionado
+INSERT INTO vendas (produto, valor, data_venda) VALUES ('Notebook', 4500, '2024-06-15');
+INSERT INTO vendas (produto, valor, data_venda) VALUES ('Mouse', 120, '2025-02-10');
+
+SELECT * FROM vendas_2024;
+SELECT * FROM vendas_2025;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 7: Múltiplas ações em uma regra</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Regra que loga DELETE + registra no log de auditoria
+CREATE RULE log_e_registra_delete
+AS ON DELETE TO clientes
+DO ALSO (
+    INSERT INTO log_auditoria (operacao, tabela, registro_id, data_operacao)
+    VALUES ('DELETE', 'clientes', OLD.id, now());
+
+    INSERT INTO clientes_historico (cliente_id, nome, email, status, deletado_em)
+    VALUES (OLD.id, OLD.nome, OLD.email, OLD.status, now());
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- METAS E OBJETIVOS DAS REGRAS -->
+      <section>
+        <h2>Metas e Objetivos das Regras — Casos de Uso</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Caso de Uso</th>
+              <th>Descrição</th>
+              <th>Tipo de Regra</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Auditoria / Logging</strong></td>
+              <td>Registrar automaticamente operações DML em tabelas de log</td>
+              <td>DO ALSO + INSERT</td>
+            </tr>
+            <tr>
+              <td><strong>Views atualizáveis (Updatable Views)</strong></td>
+              <td>
+                Permitir INSERT/UPDATE/DELETE em views complexas, redirecionando
+                para tabelas base
+              </td>
+              <td>DO INSTEAD</td>
+            </tr>
+            <tr>
+              <td><strong>Soft Delete</strong></td>
+              <td>
+                Transformar DELETE em UPDATE de status (marcar como inativo ao
+                invés de remover)
+              </td>
+              <td>DO INSTEAD</td>
+            </tr>
+            <tr>
+              <td><strong>Particionamento de dados</strong></td>
+              <td>
+                Redirecionar INSERTs para a partição correta baseado em condição
+                (data, região, etc.)
+              </td>
+              <td>DO INSTEAD + WHERE</td>
+            </tr>
+            <tr>
+              <td><strong>Segurança / Bloqueio</strong></td>
+              <td>
+                Prevenir operações perigosas em registros específicos (ex:
+                bloquear DELETE em registros ativos)
+              </td>
+              <td>DO INSTEAD NOTHING + WHERE</td>
+            </tr>
+            <tr>
+              <td><strong>Denormalização automática</strong></td>
+              <td>
+                Atualizar automaticamente colunas derivadas em outras tabelas
+                quando dados mudam
+              </td>
+              <td>DO ALSO + UPDATE</td>
+            </tr>
+            <tr>
+              <td><strong>Migração transparente</strong></td>
+              <td>
+                Durante migração de schema, redirecionar operações da tabela
+                antiga para a nova
+              </td>
+              <td>DO INSTEAD</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- COMPARAÇÃO REGRAS VS TRIGGERS -->
+      <section>
+        <h2>Comparação: Regras vs Triggers</h2>
+        <p>
+          Embora ambos possam ser usados para automatizar ações no banco,
+          <strong>regras</strong> e <strong>triggers</strong> operam em momentos
+          diferentes e têm características distintas. A escolha errada pode
+          levar a bugs sutis ou problemas de performance.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Regras (Rules)</th>
+              <th>Triggers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Momento de atuação</strong></td>
+              <td>Antes da execução (reescrita da query)</td>
+              <td>Durante/após a execução (BEFORE/AFTER)</td>
+            </tr>
+            <tr>
+              <td><strong>Nível de operação</strong></td>
+              <td>Sempre a nível de statement (comando inteiro)</td>
+              <td>FOR EACH ROW ou FOR EACH STATEMENT</td>
+            </tr>
+            <tr>
+              <td><strong>Acesso a OLD/NEW</strong></td>
+              <td>Sim, via OLD e NEW na cláusula WHERE e comandos</td>
+              <td>Sim, via variáveis OLD e NEW (FOR EACH ROW)</td>
+            </tr>
+            <tr>
+              <td><strong>Performance</strong></td>
+              <td>
+                Mais rápido para operações em lote, pois reescreve a query
+                inteira uma vez
+              </td>
+              <td>Mais lento para operações em massa (executado por linha)</td>
+            </tr>
+            <tr>
+              <td><strong>Suporte a SELECT</strong></td>
+              <td>Sim (regras de SELECT são únicas das regras)</td>
+              <td>Não (triggers não interceptam SELECT)</td>
+            </tr>
+            <tr>
+              <td><strong>Múltiplas regras</strong></td>
+              <td>
+                Múltiplas regras para o mesmo evento são possíveis, mas a ordem
+                de aplicação pode ser complexa
+              </td>
+              <td>Triggers têm ordem definida (alfabética por nome)</td>
+            </tr>
+            <tr>
+              <td><strong>RETURNING</strong></td>
+              <td>
+                Pode não funcionar corretamente com regras complexas (DO INSTEAD
+                quebra o vínculo)
+              </td>
+              <td>Funciona normalmente com triggers</td>
+            </tr>
+            <tr>
+              <td><strong>Debuggability</strong></td>
+              <td>
+                Difícil de debugar — a query original é reescrita antes de
+                chegar ao log
+              </td>
+              <td>Mais fácil — triggers aparecem nos logs e no EXPLAIN</td>
+            </tr>
+            <tr>
+              <td><strong>Recomendação</strong></td>
+              <td>
+                Casos específicos: views atualizáveis, particionamento, log
+                simples
+              </td>
+              <td>
+                Caso geral: validação, auditoria complexa, lógica de negócio
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="warning-box">
+          <strong>Atenção:</strong> A documentação oficial do PostgreSQL
+          recomenda:
+          <em
+            >"For the things that can be implemented by both, which is best
+            depends on the usage of the database. A trigger is fired for any row
+            affected once. A rule manipulates the query or generates an
+            additional query. So if many rows are affected in one statement, a
+            rule issuing one extra command is likely to be faster than a trigger
+            that is called for every single row and must execute its operations
+            many times."</em
+          >
+        </div>
+      </section>
+
+      <!-- VIEWS NO POSTGRESQL -->
+      <section>
+        <h2>Views no PostgreSQL — Revisão e Tópicos Avançados</h2>
+
+        <h3>CRUD básico de Views</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar view
+CREATE VIEW clientes_ativos AS
+    SELECT id, nome, email, criado_em
+    FROM clientes
+    WHERE status = 'ativo';
+
+-- Substituir view (sem perder permissões e dependências)
+CREATE OR REPLACE VIEW clientes_ativos AS
+    SELECT id, nome, email, status, criado_em
+    FROM clientes
+    WHERE status = 'ativo' AND email IS NOT NULL;
+
+-- Listar views do schema atual
+SELECT table_schema, table_name
+FROM information_schema.views
+WHERE table_schema NOT IN ('pg_catalog', 'information_schema');
+
+-- Remover view
+DROP VIEW IF EXISTS clientes_ativos;
+
+-- Remover view e todas as views dependentes (CASCADE)
+DROP VIEW IF EXISTS clientes_ativos CASCADE;
+
+-- Renomear view
+ALTER VIEW clientes_ativos RENAME TO v_clientes_ativos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Views que são automaticamente atualizáveis</h3>
+        <p>
+          O PostgreSQL suporta views <strong>simples</strong> que são
+          automaticamente atualizáveis (auto-updatable) — ou seja, você pode
+          fazer INSERT, UPDATE e DELETE diretamente, sem precisar de regras ou
+          triggers, desde que:
+        </p>
+        <ul>
+          <li>
+            A view referencia <strong>apenas uma tabela</strong> (ou uma view
+            atualizável)
+          </li>
+          <li>
+            A view <strong>não contém</strong>: DISTINCT, GROUP BY, HAVING,
+            LIMIT/OFFSET, UNION/INTERSECT/EXCEPT, funções de agregação, funções
+            de janela
+          </li>
+          <li>
+            Todas as colunas da view que não têm valor default na tabela base
+            precisam estar presentes na view para INSERT
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Esta view é automaticamente atualizável (single table, no aggregation)
+CREATE VIEW v_clientes_nordeste AS
+    SELECT id, nome, email, estado, cidade
+    FROM clientes
+    WHERE estado IN ('BA', 'PE', 'CE', 'MA', 'PI', 'RN', 'PB', 'SE', 'AL');
+
+-- INSERT funciona diretamente!
+INSERT INTO v_clientes_nordeste (nome, email, estado, cidade)
+VALUES ('Maria Oliveira', 'maria@email.com', 'BA', 'Salvador');
+
+-- UPDATE funciona diretamente!
+UPDATE v_clientes_nordeste
+SET email = 'maria.nova@email.com'
+WHERE id = 10;
+
+-- DELETE funciona diretamente! (remove da tabela base)
+DELETE FROM v_clientes_nordeste WHERE id = 10;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WITH CHECK OPTION — Protegendo a integridade da view</h3>
+        <p>
+          O <strong>WITH CHECK OPTION</strong> impede que operações de INSERT ou
+          UPDATE criem/alterem linhas que depois
+          <strong>não seriam visíveis</strong> na própria view. Isso garante a
+          consistência lógica da view.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar view COM CHECK OPTION
+CREATE VIEW clientes_nordeste_check AS
+    SELECT id, nome, email, estado, cidade
+    FROM clientes
+    WHERE estado IN ('BA', 'PE', 'CE', 'MA', 'PI', 'RN', 'PB', 'SE', 'AL')
+WITH CHECK OPTION;
+
+-- Isto FUNCIONA: insere cliente no Nordeste
+INSERT INTO clientes_nordeste_check (nome, email, estado, cidade)
+VALUES ('Pedro Santos', 'pedro@email.com', 'PE', 'Recife');
+
+-- Isto FALHA: tenta inserir cliente de São Paulo (fora do Nordeste)
+-- ERRO: new row violates check option for view "clientes_nordeste_check"
+INSERT INTO clientes_nordeste_check (nome, email, estado, cidade)
+VALUES ('Paulo Souza', 'paulo@email.com', 'SP', 'São Paulo');
+
+-- Isto FALHA: tenta atualizar cliente do Nordeste para estado de SP
+UPDATE clientes_nordeste_check
+SET estado = 'SP'
+WHERE id = 10;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WITH LOCAL CHECK OPTION vs WITH CASCADED CHECK OPTION</h3>
+        <p>
+          Quando você tem views aninhadas (uma view que referencia outra view),
+          a diferença entre LOCAL e CASCADED se torna importante:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View base (sem check option)
+CREATE VIEW v_clientes_ativos AS
+    SELECT * FROM clientes
+    WHERE status = 'ativo';
+
+-- View derivada LOCAL: verifica APENAS a condição DESTA view (email NOT NULL)
+-- Não propaga a verificação para a view base
+CREATE VIEW v_clientes_contato_local AS
+    SELECT * FROM v_clientes_ativos
+    WHERE email IS NOT NULL
+WITH LOCAL CHECK OPTION;
+
+-- View derivada CASCADED (padrão): verifica esta view E TODAS as views base na hierarquia
+CREATE VIEW v_clientes_contato_cascaded AS
+    SELECT * FROM v_clientes_ativos
+    WHERE email IS NOT NULL
+WITH CASCADED CHECK OPTION;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="info-box">
+          <strong>Resumo:</strong> <code>WITH LOCAL CHECK OPTION</code> verifica
+          apenas a condição da view atual.
+          <code>WITH CASCADED CHECK OPTION</code> (padrão quando se usa apenas
+          <code>WITH CHECK OPTION</code>) verifica a condição da view atual
+          <strong>e</strong> de todas as views base na hierarquia.
+        </div>
+
+        <h3>Views com JOIN — Não são automaticamente atualizáveis</h3>
+        <p>
+          Views que envolvem JOIN entre múltiplas tabelas
+          <strong>não são</strong> automaticamente atualizáveis. Para permitir
+          INSERT/UPDATE/DELETE, você precisa criar regras ou triggers DO
+          INSTEAD.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View com JOIN (não é automaticamente atualizável)
+CREATE VIEW v_pedidos_clientes AS
+    SELECT p.id AS pedido_id,
+           p.data_pedido,
+           p.valor_total,
+           c.nome AS cliente_nome,
+           c.email AS cliente_email
+    FROM pedidos p
+    JOIN clientes c ON p.cliente_id = c.id;
+
+-- Para tornar atualizável, criamos regras
+CREATE RULE insert_v_pedidos_clientes
+AS ON INSERT TO v_pedidos_clientes
+DO INSTEAD (
+    -- Primeiro garante que o cliente existe (ou insere)
+    INSERT INTO clientes (nome, email)
+    VALUES (NEW.cliente_nome, NEW.cliente_email)
+    ON CONFLICT (email) DO NOTHING;
+
+    -- Depois insere o pedido
+    INSERT INTO pedidos (cliente_id, data_pedido, valor_total)
+    SELECT id, NEW.data_pedido, NEW.valor_total
+    FROM clientes
+    WHERE email = NEW.cliente_email;
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- VIEWS MATERIALIZADAS -->
+      <section>
+        <h2>Views Materializadas no PostgreSQL</h2>
+        <p>
+          Uma <strong>Materialized View</strong> é uma view cujo resultado é
+          <strong>armazenado fisicamente em disco</strong>. Diferente de uma
+          view comum (que é apenas uma query salva, executada sob demanda), a
+          materialized view contém uma cópia dos dados no momento do último
+          refresh. Isso oferece
+          <strong>performance de leitura muito superior</strong> para consultas
+          complexas, ao custo de os dados poderem ficar
+          <strong>desatualizados (stale)</strong>.
+        </p>
+
+        <h3>Criando uma Materialized View</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar tabelas de exemplo para demonstração
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    categoria VARCHAR(50),
+    preco NUMERIC(10,2),
+    estoque INTEGER DEFAULT 0,
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+
+-- Inserir dados de exemplo
+INSERT INTO produtos (nome, categoria, preco, estoque) VALUES
+    ('Notebook Dell', 'Informática', 4500.00, 15),
+    ('Mouse Logitech', 'Informática', 150.00, 200),
+    ('Teclado Mecânico', 'Informática', 350.00, 80),
+    ('Cadeira Gamer', 'Móveis', 1800.00, 25),
+    ('Mesa Escritório', 'Móveis', 750.00, 40),
+    ('Monitor 27"', 'Informática', 2200.00, 30),
+    ('Headset Bluetooth', 'Áudio', 400.00, 55),
+    ('Caixa de Som', 'Áudio', 600.00, 35),
+    ('Webcam HD', 'Informática', 250.00, 90),
+    ('Hub USB', 'Informática', 80.00, 150);
+
+-- Criar materialized view com agregação
+CREATE MATERIALIZED VIEW mv_resumo_produtos AS
+    SELECT
+        categoria,
+        COUNT(*) AS total_produtos,
+        SUM(estoque) AS estoque_total,
+        ROUND(AVG(preco), 2) AS preco_medio,
+        MIN(preco) AS preco_minimo,
+        MAX(preco) AS preco_maximo,
+        SUM(preco * estoque) AS valor_total_estoque
+    FROM produtos
+    GROUP BY categoria
+    ORDER BY total_produtos DESC;
+
+-- Consultar a materialized view (muito rápido!)
+SELECT * FROM mv_resumo_produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>REFRESH MATERIALIZED VIEW</h3>
+        <p>
+          Como os dados da materialized view são uma
+          <strong>fotografia (snapshot)</strong> do momento da criação/refresh,
+          você precisa atualizá-la manualmente quando os dados base mudarem.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir novos produtos
+INSERT INTO produtos (nome, categoria, preco, estoque) VALUES
+    ('Suporte Monitor', 'Informática', 120.00, 60),
+    ('Fone de Ouvido', 'Áudio', 200.00, 45);
+
+-- Neste momento, mv_resumo_produtos NÃO reflete os novos dados!
+SELECT * FROM mv_resumo_produtos;  -- dados desatualizados!
+
+-- FORMA 1: Refresh simples (bloqueia leituras durante a atualização)
+REFRESH MATERIALIZED VIEW mv_resumo_produtos;
+
+-- Agora os dados estão atualizados
+SELECT * FROM mv_resumo_produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>REFRESH MATERIALIZED VIEW CONCURRENTLY</h3>
+        <p>
+          O <strong>REFRESH CONCURRENTLY</strong> permite atualizar a
+          materialized view <strong>sem bloquear leituras</strong> simultâneas.
+          Para isso funcionar, a view precisa ter um
+          <strong>índice único</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar índice único (obrigatório para CONCURRENTLY)
+CREATE UNIQUE INDEX idx_mv_resumo_categoria
+    ON mv_resumo_produtos (categoria);
+
+-- FORMA 2: Refresh concorrente (NÃO bloqueia leituras)
+REFRESH MATERIALIZED VIEW CONCURRENTLY mv_resumo_produtos;
+
+-- Verificar dados atualizados
+SELECT * FROM mv_resumo_produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Materialized Views vs Views — Comparação</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>View Regular</th>
+              <th>Materialized View</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Armazenamento</strong></td>
+              <td>Não armazena dados (apenas a definição da query)</td>
+              <td>Armazena fisicamente os dados em disco</td>
+            </tr>
+            <tr>
+              <td><strong>Velocidade de leitura</strong></td>
+              <td>Query executada toda vez que a view é consultada</td>
+              <td>Muito rápida — dados pré-calculados</td>
+            </tr>
+            <tr>
+              <td><strong>Atualização dos dados</strong></td>
+              <td>Sempre atualizados (reflete tabelas base em tempo real)</td>
+              <td>Ficam desatualizados até o próximo REFRESH</td>
+            </tr>
+            <tr>
+              <td><strong>Uso de disco</strong></td>
+              <td>Zero (não armazena dados)</td>
+              <td>Usa espaço em disco proporcional ao resultado</td>
+            </tr>
+            <tr>
+              <td><strong>Índices</strong></td>
+              <td>Não permite criar índices na view</td>
+              <td>Permite criar índices na materialized view</td>
+            </tr>
+            <tr>
+              <td><strong>Escrita (INSERT/UPDATE/DELETE)</strong></td>
+              <td>Possível com regras ou triggers DO INSTEAD</td>
+              <td>Não suporta operações de escrita</td>
+            </tr>
+            <tr>
+              <td><strong>Casos de uso ideais</strong></td>
+              <td>
+                Consultas simples, segurança (row-level security), abstração de
+                schema
+              </td>
+              <td>
+                Dashboards, relatórios, agregações pesadas, data warehousing
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Gerenciando Materialized Views</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todas as materialized views
+SELECT schemaname, matviewname, hasindexes, ispopulated
+FROM pg_matviews;
+
+-- Verificar tamanho em disco
+SELECT
+    schemaname,
+    matviewname,
+    pg_size_pretty(pg_total_relation_size(schemaname || '.' || matviewname)) AS tamanho
+FROM pg_matviews;
+
+-- Renomear
+ALTER MATERIALIZED VIEW mv_resumo_produtos RENAME TO mv_produtos_resumo;
+
+-- Alterar dono
+ALTER MATERIALIZED VIEW mv_produtos_resumo OWNER TO outro_usuario;
+
+-- Remover
+DROP MATERIALIZED VIEW IF EXISTS mv_produtos_resumo;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Agendando REFRESH automático (pg_cron ou pgAgent)</h3>
+        <p>
+          Para ambientes de produção, você pode agendar o refresh periódico
+          usando extensões como <strong>pg_cron</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Instalar extensão pg_cron (requer superuser)
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- Agendar refresh a cada 30 minutos
+SELECT cron.schedule(
+    'refresh-mv-resumo',     -- nome do job
+    '*/30 * * * *',          -- cron: a cada 30 minutos
+    'REFRESH MATERIALIZED VIEW CONCURRENTLY mv_resumo_produtos;'
+);
+
+-- Listar jobs agendados
+SELECT * FROM cron.job;
+
+-- Remover agendamento
+SELECT cron.unschedule('refresh-mv-resumo');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Alternativa: agendar via crontab do Linux (sem pg_cron)
+# Executar refresh a cada 30 minutos
+*/30 * * * * psql -U postgres -d meu_banco -c "REFRESH MATERIALIZED VIEW CONCURRENTLY mv_resumo_produtos;"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SISTEMA DE LOGGING -->
+      <section>
+        <h2>
+          Passo a passo: Sistema de logging com Rules + Views materializadas
+        </h2>
+        <p>
+          Vamos construir um sistema completo de auditoria usando Rules para
+          logging automático e uma Materialized View para o dashboard de
+          relatórios.
+        </p>
+
+        <h3>Passo 1 — Criar tabelas base e tabela de auditoria</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de clientes
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    telefone VARCHAR(20),
+    cidade VARCHAR(50),
+    estado CHAR(2),
+    status VARCHAR(20) DEFAULT 'ativo',
+    saldo NUMERIC(12,2) DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT now(),
+    atualizado_em TIMESTAMP DEFAULT now()
+);
+
+-- Tabela de pedidos
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER REFERENCES clientes(id),
+    descricao VARCHAR(200),
+    valor NUMERIC(12,2) NOT NULL,
+    status_pedido VARCHAR(20) DEFAULT 'pendente',
+    data_pedido DATE DEFAULT CURRENT_DATE
+);
+
+-- Tabela de auditoria centralizada
+CREATE TABLE auditoria (
+    id SERIAL PRIMARY KEY,
+    operacao VARCHAR(10) NOT NULL,       -- INSERT, UPDATE, DELETE
+    tabela VARCHAR(50) NOT NULL,
+    registro_id INTEGER,
+    dados_antigos JSONB,                 -- snapshot antes da mudança (UPDATE/DELETE)
+    dados_novos JSONB,                   -- snapshot depois da mudança (INSERT/UPDATE)
+    usuario_executor VARCHAR(100) DEFAULT current_user,
+    data_operacao TIMESTAMP DEFAULT now()
+);
+
+-- Criar índice para consultas de auditoria
+CREATE INDEX idx_auditoria_tabela ON auditoria (tabela);
+CREATE INDEX idx_auditoria_data ON auditoria (data_operacao);
+CREATE INDEX idx_auditoria_operacao ON auditoria (operacao);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar regras de auditoria para clientes</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Regra: logar INSERT em clientes
+CREATE RULE audit_insert_clientes
+AS ON INSERT TO clientes
+DO ALSO
+    INSERT INTO auditoria (operacao, tabela, registro_id, dados_novos)
+    VALUES ('INSERT', 'clientes', NEW.id,
+            jsonb_build_object(
+                'nome', NEW.nome, 'email', NEW.email,
+                'telefone', NEW.telefone, 'cidade', NEW.cidade,
+                'estado', NEW.estado, 'saldo', NEW.saldo
+            ));
+
+-- Regra: logar UPDATE em clientes
+CREATE RULE audit_update_clientes
+AS ON UPDATE TO clientes
+DO ALSO
+    INSERT INTO auditoria (operacao, tabela, registro_id, dados_antigos, dados_novos)
+    VALUES ('UPDATE', 'clientes', NEW.id,
+            jsonb_build_object(
+                'nome', OLD.nome, 'email', OLD.email,
+                'telefone', OLD.telefone, 'cidade', OLD.cidade,
+                'estado', OLD.estado, 'saldo', OLD.saldo
+            ),
+            jsonb_build_object(
+                'nome', NEW.nome, 'email', NEW.email,
+                'telefone', NEW.telefone, 'cidade', NEW.cidade,
+                'estado', NEW.estado, 'saldo', NEW.saldo
+            ));
+
+-- Regra: logar DELETE em clientes (apenas dados antigos)
+CREATE RULE audit_delete_clientes
+AS ON DELETE TO clientes
+DO ALSO
+    INSERT INTO auditoria (operacao, tabela, registro_id, dados_antigos)
+    VALUES ('DELETE', 'clientes', OLD.id,
+            jsonb_build_object(
+                'nome', OLD.nome, 'email', OLD.email,
+                'telefone', OLD.telefone, 'cidade', OLD.cidade,
+                'estado', OLD.estado, 'saldo', OLD.saldo
+            ));
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Inserir dados e verificar auditoria</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir clientes
+INSERT INTO clientes (nome, email, telefone, cidade, estado, saldo) VALUES
+    ('Ana Beatriz', 'ana@email.com', '11988887777', 'São Paulo', 'SP', 1500.00),
+    ('Bruno Costa', 'bruno@email.com', '21977776666', 'Rio de Janeiro', 'RJ', 3200.50),
+    ('Carla Mendes', 'carla@email.com', '31966665555', 'Belo Horizonte', 'MG', 850.75);
+
+-- Atualizar um cliente
+UPDATE clientes SET saldo = 2000.00, cidade = 'Campinas' WHERE id = 1;
+
+-- Deletar um cliente
+DELETE FROM clientes WHERE id = 3;
+
+-- Conferir a auditoria — tudo foi registrado automaticamente!
+SELECT * FROM auditoria ORDER BY data_operacao DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar Materialized View para dashboard de relatórios</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Materialized view com resumo de operações por dia/tabela
+CREATE MATERIALIZED VIEW mv_dashboard_auditoria AS
+    SELECT
+        DATE(data_operacao) AS data,
+        tabela,
+        operacao,
+        COUNT(*) AS total_operacoes,
+        COUNT(DISTINCT usuario_executor) AS usuarios_distintos
+    FROM auditoria
+    GROUP BY DATE(data_operacao), tabela, operacao
+    ORDER BY data DESC, total_operacoes DESC;
+
+-- Criar índice único para permitir CONCURRENTLY
+CREATE UNIQUE INDEX idx_mv_dash_data_tabela_op
+    ON mv_dashboard_auditoria (data, tabela, operacao);
+
+-- Consultar o dashboard
+SELECT * FROM mv_dashboard_auditoria;
+
+-- Atualizar após novas operações
+REFRESH MATERIALIZED VIEW CONCURRENTLY mv_dashboard_auditoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- REGRAS IMPORTANTES E COMANDOS ÚTEIS -->
+      <section>
+        <h2>Dicas importantes: Gerenciando regras e views</h2>
+
+        <h3>Listar regras existentes</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todas as regras do banco
+SELECT
+    schemaname,
+    tablename,
+    rulename,
+    definition
+FROM pg_rules
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY schemaname, tablename, rulename;
+
+-- Listar regras de uma tabela específica
+SELECT rulename, definition
+FROM pg_rules
+WHERE tablename = 'clientes';
+
+-- Remover regra
+DROP RULE IF EXISTS log_insert_clientes ON clientes;
+
+-- Substituir regra
+CREATE OR REPLACE RULE log_insert_clientes
+AS ON INSERT TO clientes
+DO ALSO
+    INSERT INTO auditoria (operacao, tabela, registro_id, dados_novos)
+    VALUES ('INSERT', 'clientes', NEW.id,
+            jsonb_build_object('nome', NEW.nome, 'email', NEW.email));
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo completo: soft delete com regra + view</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar tabela com soft delete
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    preco NUMERIC(10,2),
+    deletado BOOLEAN DEFAULT FALSE
+);
+
+-- View que oculta produtos deletados
+CREATE VIEW v_produtos_ativos AS
+    SELECT id, nome, preco
+    FROM produtos
+    WHERE deletado = FALSE;
+
+-- Regra que transforma DELETE em soft delete
+CREATE RULE soft_delete_produto
+AS ON DELETE TO v_produtos_ativos
+DO INSTEAD
+    UPDATE produtos
+    SET deletado = TRUE
+    WHERE id = OLD.id;
+
+-- Inserir dados
+INSERT INTO produtos (nome, preco) VALUES ('Produto A', 100);
+INSERT INTO produtos (nome, preco) VALUES ('Produto B', 200);
+INSERT INTO produtos (nome, preco) VALUES ('Produto C', 300);
+
+-- Soft delete via view
+DELETE FROM v_produtos_ativos WHERE id = 2;
+
+-- View não mostra mais o produto 2
+SELECT * FROM v_produtos_ativos;       -- Apenas produtos A e C
+
+-- Mas na tabela ele ainda existe com deletado = TRUE
+SELECT * FROM produtos;                 -- Todos os 3 produtos
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. Criar regra que loga todas as operações DELETE em tabela de
+              auditoria
+            </h3>
+            <p>
+              Crie uma tabela <code>funcionarios</code> e uma tabela
+              <code>audit_deletes</code>. Crie uma regra que, para cada DELETE
+              na tabela <code>funcionarios</code>, registre automaticamente os
+              dados deletados na tabela de auditoria (use DO ALSO com INSERT em
+              audit_deletes armazenando os dados como JSONB).
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabelas
+CREATE TABLE funcionarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50),
+    salario NUMERIC(10,2),
+    departamento VARCHAR(50),
+    data_contratacao DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE audit_deletes (
+    id SERIAL PRIMARY KEY,
+    tabela_origem VARCHAR(50),
+    registro_id INTEGER,
+    dados_deletados JSONB,
+    usuario_executor VARCHAR(100) DEFAULT current_user,
+    data_exclusao TIMESTAMP DEFAULT now()
+);
+
+-- Criar regra de auditoria de DELETE
+CREATE RULE audit_delete_funcionarios
+AS ON DELETE TO funcionarios
+DO ALSO
+    INSERT INTO audit_deletes (tabela_origem, registro_id, dados_deletados)
+    VALUES ('funcionarios', OLD.id,
+            jsonb_build_object(
+                'nome', OLD.nome,
+                'cargo', OLD.cargo,
+                'salario', OLD.salario,
+                'departamento', OLD.departamento,
+                'data_contratacao', OLD.data_contratacao
+            ));
+
+-- Testar
+INSERT INTO funcionarios (nome, cargo, salario, departamento) VALUES
+    ('João Silva', 'Analista', 5000, 'TI'),
+    ('Maria Santos', 'Gerente', 8000, 'RH'),
+    ('Pedro Costa', 'Desenvolvedor', 6000, 'TI');
+
+DELETE FROM funcionarios WHERE id = 2;
+
+SELECT * FROM audit_deletes;  -- Deve conter os dados do funcionário deletado
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Criar view com JOIN e WITH CHECK OPTION</h3>
+            <p>
+              Crie duas tabelas: <code>categorias</code> e
+              <code>produtos</code>. Crie uma view chamada
+              <code>v_produtos_eletronicos</code> que faz JOIN entre as tabelas
+              e mostra apenas produtos da categoria "Eletrônicos". Adicione WITH
+              CHECK OPTION para garantir que inserções via view respeitem a
+              condição da categoria.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabela categorias
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Criar tabela produtos
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco NUMERIC(10,2),
+    categoria_id INTEGER REFERENCES categorias(id)
+);
+
+-- Inserir categorias
+INSERT INTO categorias (nome) VALUES ('Eletrônicos'), ('Móveis'), ('Vestuário');
+
+-- Criar view com JOIN e CHECK OPTION
+CREATE VIEW v_produtos_eletronicos AS
+    SELECT p.id, p.nome, p.preco, c.nome AS categoria
+    FROM produtos p
+    JOIN categorias c ON p.categoria_id = c.id
+    WHERE c.nome = 'Eletrônicos'
+WITH CHECK OPTION;
+
+-- Como a view tem JOIN, ela NÃO é automaticamente atualizável
+-- Precisamos criar regras DO INSTEAD para INSERT/UPDATE/DELETE
+
+-- Regra para INSERT
+CREATE RULE insert_v_produtos_eletronicos
+AS ON INSERT TO v_produtos_eletronicos
+DO INSTEAD
+    INSERT INTO produtos (nome, preco, categoria_id)
+    SELECT NEW.nome, NEW.preco, c.id
+    FROM categorias c
+    WHERE c.nome = 'Eletrônicos';
+
+-- Regra para UPDATE
+CREATE RULE update_v_produtos_eletronicos
+AS ON UPDATE TO v_produtos_eletronicos
+DO INSTEAD
+    UPDATE produtos
+    SET nome = NEW.nome, preco = NEW.preco
+    WHERE id = OLD.id
+      AND categoria_id = (SELECT id FROM categorias WHERE nome = 'Eletrônicos');
+
+-- Regra para DELETE
+CREATE RULE delete_v_produtos_eletronicos
+AS ON DELETE TO v_produtos_eletronicos
+DO INSTEAD
+    DELETE FROM produtos
+    WHERE id = OLD.id
+      AND categoria_id = (SELECT id FROM categorias WHERE nome = 'Eletrônicos');
+
+-- Testar inserção via view
+INSERT INTO v_produtos_eletronicos (nome, preco, categoria) VALUES
+    ('Smartphone', 2500, 'Eletrônicos'),
+    ('Notebook', 4500, 'Eletrônicos');
+
+-- Isso deve FALHAR (CHECK OPTION violado)
+-- INSERT INTO v_produtos_eletronicos (nome, preco, categoria) VALUES
+--     ('Sofá', 3000, 'Móveis');
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Criar materialized view com agregação e configurar refresh
+              periódico
+            </h3>
+            <p>
+              Crie uma materialized view que sumarize vendas por mês e por
+              categoria de produto. A view deve conter: mês, categoria, total de
+              vendas, valor total vendido, ticket médio. Configure um refresh
+              periódico usando pg_cron (ou documente como faria via crontab).
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabelas base para o exercício
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco NUMERIC(10,2),
+    categoria_id INTEGER REFERENCES categorias(id)
+);
+
+CREATE TABLE vendas (
+    id SERIAL PRIMARY KEY,
+    produto_id INTEGER REFERENCES produtos(id),
+    quantidade INTEGER NOT NULL,
+    valor_unitario NUMERIC(10,2) NOT NULL,
+    data_venda DATE DEFAULT CURRENT_DATE
+);
+
+-- Inserir dados de exemplo
+INSERT INTO categorias (nome) VALUES ('Eletrônicos'), ('Móveis'), ('Vestuário');
+
+INSERT INTO produtos (nome, preco, categoria_id) VALUES
+    ('Notebook', 4500, 1),
+    ('Smartphone', 2500, 1),
+    ('Mesa', 750, 2),
+    ('Cadeira', 1200, 2),
+    ('Camiseta', 80, 3),
+    ('Calça Jeans', 150, 3);
+
+INSERT INTO vendas (produto_id, quantidade, valor_unitario, data_venda) VALUES
+    (1, 2, 4500, '2025-01-15'),
+    (1, 1, 4500, '2025-01-20'),
+    (2, 3, 2500, '2025-01-10'),
+    (3, 5, 750, '2025-02-05'),
+    (4, 2, 1200, '2025-02-18'),
+    (5, 10, 80, '2025-03-01'),
+    (6, 8, 150, '2025-03-15'),
+    (1, 1, 4500, '2025-03-20'),
+    (2, 4, 2500, '2025-04-01'),
+    (3, 3, 750, '2025-04-10');
+
+-- Criar materialized view de resumo mensal
+CREATE MATERIALIZED VIEW mv_vendas_mensais AS
+    SELECT
+        TO_CHAR(v.data_venda, 'YYYY-MM') AS mes,
+        c.nome AS categoria,
+        COUNT(*) AS total_vendas,
+        SUM(v.quantidade * v.valor_unitario) AS valor_total,
+        ROUND(AVG(v.quantidade * v.valor_unitario), 2) AS ticket_medio,
+        SUM(v.quantidade) AS total_itens_vendidos
+    FROM vendas v
+    JOIN produtos p ON v.produto_id = p.id
+    JOIN categorias c ON p.categoria_id = c.id
+    GROUP BY TO_CHAR(v.data_venda, 'YYYY-MM'), c.nome
+    ORDER BY mes DESC, valor_total DESC;
+
+-- Criar índice único para CONCURRENTLY
+CREATE UNIQUE INDEX idx_mv_vendas_mes_cat
+    ON mv_vendas_mensais (mes, categoria);
+
+-- Consultar o resumo
+SELECT * FROM mv_vendas_mensais;
+
+-- Refresh concorrente
+REFRESH MATERIALIZED VIEW CONCURRENTLY mv_vendas_mensais;
+
+-- Configurar refresh automático com pg_cron
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+SELECT cron.schedule(
+    'refresh-vendas-mensais',
+    '0 */6 * * *',              -- a cada 6 horas
+    'REFRESH MATERIALIZED VIEW CONCURRENTLY mv_vendas_mensais;'
+);
+
+-- Verificar jobs
+SELECT jobid, schedule, command FROM cron.job;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Verifique se as regras estão logando corretamente, se as
+          views materializadas estão refletindo os dados e se o sistema de
+          auditoria está operando como esperado.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula9</code></li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6 - Criando Gatilhos no Oracle DBMS - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 6: Criando Gatilhos no Oracle DBMS</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Revisão de triggers, Tipos por tempo de resposta (BEFORE, AFTER, INSTEAD
+        OF), Tipos por nível (statement-level, row-level), Palavras-chave
+        INSERT/UPDATE/DELETE, Objetos :NEW e :OLD e aliases (REFERENCING),
+        Trigger compounds, Triggers de sistema (DDL, DATABASE).
+      </div>
+    </header>
+    <main class="container">
+      <!-- REVISÃO DE TRIGGERS -->
+      <section>
+        <h2>Revisão de Triggers (Gatilhos)</h2>
+        <p>
+          Triggers (gatilhos) são blocos PL/SQL que são
+          <strong>executados automaticamente</strong> pelo Oracle em resposta a
+          eventos específicos no banco de dados. Diferente de procedures e
+          functions, triggers não podem ser chamadas manualmente — elas disparam
+          automaticamente quando o evento associado ocorre.
+        </p>
+
+        <h3>Casos de Uso Comuns</h3>
+        <ul>
+          <li>
+            <strong>Auditoria:</strong> registrar automaticamente quem alterou
+            qual dado e quando
+          </li>
+          <li>
+            <strong>Validação complexa:</strong> regras de negócio que não podem
+            ser expressas com constraints
+          </li>
+          <li>
+            <strong>Colunas derivadas:</strong> calcular e preencher
+            automaticamente valores derivados
+          </li>
+          <li>
+            <strong>Integridade referencial complexa:</strong> validações entre
+            tabelas que vão além de foreign keys
+          </li>
+          <li>
+            <strong>Log de alterações:</strong> manter histórico de todas as
+            mudanças em tabelas críticas
+          </li>
+          <li>
+            <strong>Sincronização:</strong> manter tabelas relacionadas
+            sincronizadas
+          </li>
+          <li>
+            <strong>Prevenção de operações:</strong> bloquear certas operações
+            em horários/datas específicas
+          </li>
+        </ul>
+
+        <div class="info-box">
+          <strong>Importante:</strong> Triggers adicionam overhead em operações
+          DML. Use-as com moderação e apenas quando constraints tradicionais
+          (CHECK, FOREIGN KEY, UNIQUE, NOT NULL) não forem suficientes.
+        </div>
+      </section>
+
+      <!-- SINTAXE BÁSICA -->
+      <section>
+        <h2>Sintaxe de Trigger no Oracle</h2>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [OR REPLACE] TRIGGER nome_trigger
+    {BEFORE | AFTER | INSTEAD OF}
+    {INSERT | UPDATE | DELETE}
+    [OF coluna1, coluna2] -- restringe a colunas específicas em UPDATE
+    ON nome_tabela
+    [REFERENCING {NEW AS novo | OLD AS antigo}] -- aliases para :NEW e :OLD
+    [FOR EACH ROW] -- trigger de linha (row-level)
+    [WHEN (condição)] -- condição adicional para disparo
+    [FOLLOWS outro_trigger] -- ordem de execução entre triggers
+    [ENABLE | DISABLE]
+DECLARE
+    -- variáveis locais (opcional)
+BEGIN
+    -- código PL/SQL a ser executado
+END nome_trigger;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O Oracle sempre finaliza o CREATE TRIGGER com uma barra
+          (<code>/</code>) para indicar o fim do bloco PL/SQL.
+        </p>
+
+        <h3>Primeiro Exemplo: Trigger de Auditoria Simples</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de auditoria
+CREATE TABLE auditoria_salarios (
+    id          NUMBER GENERATED ALWAYS AS IDENTITY,
+    func_id     NUMBER NOT NULL,
+    salario_antigo NUMBER,
+    salario_novo   NUMBER,
+    data_alteracao TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario     VARCHAR2(50) DEFAULT USER,
+    operacao    VARCHAR2(10)
+);
+
+-- Trigger que registra alterações de salário
+CREATE OR REPLACE TRIGGER trg_audita_salario
+    AFTER UPDATE OF salario ON funcionarios
+    FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_salarios (func_id, salario_antigo, salario_novo, operacao)
+    VALUES (:OLD.id, :OLD.salario, :NEW.salario, 'UPDATE');
+
+    DBMS_OUTPUT.PUT_LINE('Auditoria: Salário do func. ' || :OLD.id ||
+        ' alterado de ' || TO_CHAR(:OLD.salario, 'FM999G990D00') ||
+        ' para ' || TO_CHAR(:NEW.salario, 'FM999G990D00'));
+END trg_audita_salario;
+/
+
+-- Testando
+UPDATE funcionarios SET salario = 6000 WHERE id = 1;
+SELECT * FROM auditoria_salarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TIPOS POR TEMPO DE RESPOSTA -->
+      <section>
+        <h2>Tipos por Tempo de Resposta: BEFORE, AFTER e INSTEAD OF</h2>
+
+        <h3>BEFORE Trigger</h3>
+        <p>
+          Executa <strong>antes</strong> da operação DML. Ideal para validar ou
+          modificar dados antes que sejam efetivamente gravados na tabela.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- BEFORE INSERT: Valida e normaliza dados antes da inserção
+CREATE OR REPLACE TRIGGER trg_before_insert_func
+    BEFORE INSERT ON funcionarios
+    FOR EACH ROW
+BEGIN
+    -- Validação: salário não pode ser zero ou negativo
+    IF :NEW.salario <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20201,
+            'Salário deve ser maior que zero. Valor informado: ' || :NEW.salario);
+    END IF;
+
+    -- Normalização: nome em maiúsculo
+    :NEW.nome := UPPER(TRIM(:NEW.nome));
+
+    -- Preenche data de admissão automaticamente se não informada
+    IF :NEW.data_admissao IS NULL THEN
+        :NEW.data_admissao := SYSDATE;
+    END IF;
+END trg_before_insert_func;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- BEFORE UPDATE: Impede redução de salário
+CREATE OR REPLACE TRIGGER trg_proibe_reducao_salario
+    BEFORE UPDATE OF salario ON funcionarios
+    FOR EACH ROW
+BEGIN
+    IF :NEW.salario < :OLD.salario THEN
+        RAISE_APPLICATION_ERROR(-20202,
+            'Não é permitido reduzir salário. Salário atual: R$ ' ||
+            TO_CHAR(:OLD.salario, 'FM999G990D00') ||
+            '. Tentativa de redução para: R$ ' ||
+            TO_CHAR(:NEW.salario, 'FM999G990D00'));
+    END IF;
+END trg_proibe_reducao_salario;
+/
+
+-- BEFORE DELETE: Impede exclusões em horário comercial
+CREATE OR REPLACE TRIGGER trg_bloqueia_delete_horario
+    BEFORE DELETE ON funcionarios
+    FOR EACH ROW
+BEGIN
+    IF TO_CHAR(SYSDATE, 'HH24') BETWEEN 8 AND 18 THEN
+        RAISE_APPLICATION_ERROR(-20203,
+            'Exclusões de funcionários não são permitidas em horário comercial (08h-18h).');
+    END IF;
+END trg_bloqueia_delete_horario;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>AFTER Trigger</h3>
+        <p>
+          Executa <strong>depois</strong> da operação DML. Ideal para auditoria,
+          log e atualização de tabelas relacionadas. Neste ponto, os dados já
+          estão gravados.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- AFTER INSERT: Sincroniza tabela de resumo após inserção
+CREATE TABLE resumo_deptos (
+    depto_id    NUMBER PRIMARY KEY,
+    total_func  NUMBER DEFAULT 0,
+    soma_salarios NUMBER DEFAULT 0,
+    media_salarial NUMBER DEFAULT 0
+);
+
+CREATE OR REPLACE TRIGGER trg_atualiza_resumo_depto
+    AFTER INSERT OR UPDATE OR DELETE ON funcionarios
+    FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        -- Atualiza resumo para o departamento do novo funcionário
+        MERGE INTO resumo_deptos r
+        USING (SELECT :NEW.depto_id AS id FROM DUAL) n
+        ON (r.depto_id = n.id)
+        WHEN MATCHED THEN
+            UPDATE SET total_func = total_func + 1,
+                       soma_salarios = soma_salarios + :NEW.salario
+        WHEN NOT MATCHED THEN
+            INSERT (depto_id, total_func, soma_salarios)
+            VALUES (:NEW.depto_id, 1, :NEW.salario);
+
+    ELSIF UPDATING THEN
+        -- Atualiza resumo se o departamento mudou
+        IF :NEW.depto_id != :OLD.depto_id THEN
+            -- Remove do antigo
+            UPDATE resumo_deptos
+            SET total_func = total_func - 1,
+                soma_salarios = soma_salarios - :OLD.salario
+            WHERE depto_id = :OLD.depto_id;
+
+            -- Adiciona no novo
+            MERGE INTO resumo_deptos r
+            USING (SELECT :NEW.depto_id AS id FROM DUAL) n
+            ON (r.depto_id = n.id)
+            WHEN MATCHED THEN
+                UPDATE SET total_func = total_func + 1,
+                           soma_salarios = soma_salarios + :NEW.salario
+            WHEN NOT MATCHED THEN
+                INSERT (depto_id, total_func, soma_salarios)
+                VALUES (:NEW.depto_id, 1, :NEW.salario);
+        ELSE
+            -- Apenas atualiza soma se o salário mudou
+            IF :NEW.salario != :OLD.salario THEN
+                UPDATE resumo_deptos
+                SET soma_salarios = soma_salarios - :OLD.salario + :NEW.salario
+                WHERE depto_id = :NEW.depto_id;
+            END IF;
+        END IF;
+
+    ELSIF DELETING THEN
+        -- Remove do resumo
+        UPDATE resumo_deptos
+        SET total_func = total_func - 1,
+            soma_salarios = soma_salarios - :OLD.salario
+        WHERE depto_id = :OLD.depto_id;
+    END IF;
+
+    -- Recalcula média para todos
+    UPDATE resumo_deptos
+    SET media_salarial = CASE WHEN total_func > 0
+                              THEN ROUND(soma_salarios / total_func, 2)
+                              ELSE 0 END;
+END trg_atualiza_resumo_depto;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INSTEAD OF Trigger</h3>
+        <p>
+          Usado exclusivamente em <strong>Views</strong>. Redireciona operações
+          DML da view para as tabelas base subjacentes. Essencial quando a view
+          é complexa e não pode ser atualizada diretamente pelo Oracle.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View complexa (join entre funcionarios e departamentos)
+CREATE OR REPLACE VIEW vw_funcionarios_completo AS
+SELECT
+    f.id,
+    f.nome,
+    f.salario,
+    f.cargo,
+    f.depto_id,
+    d.nome AS nome_depto
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.depto_id = d.id;
+
+-- INSTEAD OF INSERT na view
+CREATE OR REPLACE TRIGGER trg_instead_insert_vw_func
+    INSTEAD OF INSERT ON vw_funcionarios_completo
+    FOR EACH ROW
+BEGIN
+    -- Insere na tabela base (ignora a coluna nome_depto da view)
+    INSERT INTO funcionarios (id, nome, salario, cargo, depto_id)
+    VALUES (:NEW.id, :NEW.nome, :NEW.salario, :NEW.cargo, :NEW.depto_id);
+
+    DBMS_OUTPUT.PUT_LINE('Funcionário inserido via view.');
+END trg_instead_insert_vw_func;
+/
+
+-- INSTEAD OF UPDATE na view
+CREATE OR REPLACE TRIGGER trg_instead_update_vw_func
+    INSTEAD OF UPDATE ON vw_funcionarios_completo
+    FOR EACH ROW
+BEGIN
+    UPDATE funcionarios
+    SET nome    = :NEW.nome,
+        salario = :NEW.salario,
+        cargo   = :NEW.cargo,
+        depto_id = :NEW.depto_id
+    WHERE id = :OLD.id;
+
+    DBMS_OUTPUT.PUT_LINE('Funcionário atualizado via view.');
+END trg_instead_update_vw_func;
+/
+
+-- INSTEAD OF DELETE na view
+CREATE OR REPLACE TRIGGER trg_instead_delete_vw_func
+    INSTEAD OF DELETE ON vw_funcionarios_completo
+    FOR EACH ROW
+BEGIN
+    DELETE FROM funcionarios WHERE id = :OLD.id;
+
+    DBMS_OUTPUT.PUT_LINE('Funcionário excluído via view.');
+END trg_instead_delete_vw_func;
+/
+
+-- Testando operações na view
+INSERT INTO vw_funcionarios_completo (id, nome, salario, cargo, depto_id)
+VALUES (50, 'Teste View', 4000, 'Analista', 10);
+
+UPDATE vw_funcionarios_completo SET salario = 4500 WHERE id = 50;
+
+DELETE FROM vw_funcionarios_completo WHERE id = 50;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TIPOS POR NÍVEL -->
+      <section>
+        <h2>Tipos por Nível de Disparo: Statement-Level vs Row-Level</h2>
+
+        <h3>Statement-Level Trigger (FOR EACH STATEMENT)</h3>
+        <p>
+          Dispara <strong>uma única vez</strong> por comando DML,
+          independentemente de quantas linhas são afetadas. É o padrão quando
+          não se especifica <code>FOR EACH ROW</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trigger de statement: registra que uma operação em lote foi executada
+CREATE TABLE log_operacoes (
+    id          NUMBER GENERATED ALWAYS AS IDENTITY,
+    operacao    VARCHAR2(20),
+    tabela      VARCHAR2(50),
+    linhas_afetadas NUMBER,
+    data_hora   TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario     VARCHAR2(50) DEFAULT USER
+);
+
+CREATE OR REPLACE TRIGGER trg_log_lote
+    AFTER INSERT OR UPDATE OR DELETE ON funcionarios
+    -- Sem FOR EACH ROW = statement-level
+DECLARE
+    v_operacao VARCHAR2(20);
+    v_linhas   NUMBER;
+BEGIN
+    IF INSERTING THEN
+        v_operacao := 'INSERT';
+        v_linhas := SQL%ROWCOUNT;
+    ELSIF UPDATING THEN
+        v_operacao := 'UPDATE';
+        v_linhas := SQL%ROWCOUNT;
+    ELSIF DELETING THEN
+        v_operacao := 'DELETE';
+        v_linhas := SQL%ROWCOUNT;
+    END IF;
+
+    INSERT INTO log_operacoes (operacao, tabela, linhas_afetadas)
+    VALUES (v_operacao, 'FUNCIONARIOS', v_linhas);
+END trg_log_lote;
+/
+
+-- Teste: statement-level dispara uma única vez
+UPDATE funcionarios SET salario = salario * 1.05 WHERE cargo = 'Analista';
+-- Se 3 analistas foram afetados, o trigger dispara 1 vez (não 3)
+SELECT * FROM log_operacoes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Row-Level Trigger (FOR EACH ROW)</h3>
+        <p>
+          Dispara <strong>para cada linha</strong> afetada pelo comando DML.
+          Permite acesso aos valores antigo (:OLD) e novo (:NEW) de cada linha.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Row-level trigger: valida cada linha individualmente
+CREATE OR REPLACE TRIGGER trg_valida_cada_linha
+    BEFORE INSERT OR UPDATE ON funcionarios
+    FOR EACH ROW
+BEGIN
+    -- Validação linha a linha
+    IF LENGTH(TRIM(:NEW.nome)) < 3 THEN
+        RAISE_APPLICATION_ERROR(-20210,
+            'Nome muito curto: "' || :NEW.nome || '". Mínimo 3 caracteres.');
+    END IF;
+
+    -- Cada linha tem seu próprio :NEW
+    DBMS_OUTPUT.PUT_LINE('Processando: ' || :NEW.nome);
+END trg_valida_cada_linha;
+/
+
+-- Comparação prática: inserção de 5 linhas
+-- Statement-level dispara: 1 vez
+-- Row-level dispara: 5 vezes (uma por linha)
+INSERT ALL
+    INTO funcionarios (id, nome, salario, cargo) VALUES (61, 'Ana', 4000, 'Analista')
+    INTO funcionarios (id, nome, salario, cargo) VALUES (62, 'Bruno', 5000, 'Analista')
+    INTO funcionarios (id, nome, salario, cargo) VALUES (63, 'Carla', 4500, 'Analista')
+    INTO funcionarios (id, nome, salario, cargo) VALUES (64, 'Diego', 5500, 'Analista')
+    INTO funcionarios (id, nome, salario, cargo) VALUES (65, 'Elaine', 4800, 'Analista')
+SELECT * FROM DUAL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Quando Usar Cada Tipo</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Critério</th>
+              <th>FOR EACH STATEMENT</th>
+              <th>FOR EACH ROW</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Frequência de disparo</td>
+              <td>1 vez por comando SQL</td>
+              <td>1 vez por linha afetada</td>
+            </tr>
+            <tr>
+              <td>Acesso a :NEW / :OLD</td>
+              <td>Não disponível</td>
+              <td>Disponível</td>
+            </tr>
+            <tr>
+              <td>Uso típico</td>
+              <td>Log de operações em lote, estatísticas</td>
+              <td>Validação por linha, auditoria detalhada</td>
+            </tr>
+            <tr>
+              <td>Performance</td>
+              <td>Melhor para operações em lote</td>
+              <td>Pode degradar em operações massivas</td>
+            </tr>
+            <tr>
+              <td>Exemplo</td>
+              <td>Proibir INSERT aos domingos</td>
+              <td>Validar salário mínimo por linha</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PALAVRAS-CHAVE INSERT, UPDATE, DELETE -->
+      <section>
+        <h2>Palavras-chave INSERT, UPDATE, DELETE e Condicionais</h2>
+        <p>
+          Um mesmo trigger pode responder a múltiplos tipos de eventos DML. As
+          funções condicionais <code>INSERTING</code>, <code>UPDATING</code> e
+          <code>DELETING</code> permitem diferenciar o tipo de operação dentro
+          do corpo do trigger.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trigger multi-evento com condicionais
+CREATE OR REPLACE TRIGGER trg_multi_evento
+    BEFORE INSERT OR UPDATE OR DELETE ON funcionarios
+    FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        DBMS_OUTPUT.PUT_LINE('>>> INSERT: Novo funcionário ' || :NEW.nome);
+
+    ELSIF UPDATING THEN
+        DBMS_OUTPUT.PUT_LINE('>>> UPDATE: ' || :OLD.nome ||
+            ' - Salário de ' || :OLD.salario || ' para ' || :NEW.salario);
+
+    ELSIF DELETING THEN
+        DBMS_OUTPUT.PUT_LINE('>>> DELETE: Removendo funcionário ' ||
+            :OLD.nome || ' (ID=' || :OLD.id || ')');
+    END IF;
+END trg_multi_evento;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Trigger com Cláusula WHEN (Condição de Disparo)</h3>
+        <p>
+          A cláusula <code>WHEN</code> permite filtrar quando o trigger deve
+          disparar, reduzindo execuções desnecessárias:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trigger só dispara para salários altos
+CREATE OR REPLACE TRIGGER trg_alerta_salario_alto
+    BEFORE INSERT OR UPDATE ON funcionarios
+    FOR EACH ROW
+    WHEN (NEW.salario > 15000)
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('⚠ ALERTA: Salário de ' || :NEW.nome ||
+        ' é R$ ' || TO_CHAR(:NEW.salario, 'FM999G990D00') ||
+        ' — requer aprovação especial.');
+END trg_alerta_salario_alto;
+/
+
+-- Trigger apenas para colunas específicas em UPDATE
+CREATE OR REPLACE TRIGGER trg_log_mudanca_cargo
+    AFTER UPDATE OF cargo ON funcionarios
+    FOR EACH ROW
+BEGIN
+    INSERT INTO log_operacoes (operacao, tabela, linhas_afetadas)
+    VALUES ('PROMOÇÃO', 'FUNCIONARIOS', 1);
+
+    DBMS_OUTPUT.PUT_LINE('📋 ' || :OLD.nome || ' mudou de ' ||
+        :OLD.cargo || ' para ' || :NEW.cargo);
+END trg_log_mudanca_cargo;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Uso Avançado de UPDATING com Colunas Específicas</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER trg_validacao_rh
+    BEFORE UPDATE ON funcionarios
+    FOR EACH ROW
+BEGIN
+    -- Verifica quais colunas foram alteradas
+    IF UPDATING('SALARIO') THEN
+        IF :NEW.salario > :OLD.salario * 1.5 THEN
+            RAISE_APPLICATION_ERROR(-20220,
+                'Aumento máximo permitido é 50%. Tentativa: ' ||
+                ROUND(((:NEW.salario - :OLD.salario) / :OLD.salario) * 100) || '%');
+        END IF;
+    END IF;
+
+    IF UPDATING('CARGO') THEN
+        -- Registra histórico de promoções
+        INSERT INTO historico_promocoes (func_id, cargo_antigo, cargo_novo, data_promocao)
+        VALUES (:NEW.id, :OLD.cargo, :NEW.cargo, SYSDATE);
+    END IF;
+END trg_validacao_rh;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- OBJETOS :NEW E :OLD -->
+      <section>
+        <h2>Objetos :NEW e :OLD — Referências de Linha</h2>
+
+        <p>
+          Os registros especiais <code>:NEW</code> e <code>:OLD</code> permitem
+          acessar os valores da linha que está sendo processada pelo trigger
+          row-level. Eles são fundamentais para triggers de validação, auditoria
+          e sincronização.
+        </p>
+
+        <h3>Disponibilidade por Operação</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Operação</th>
+              <th>:OLD (valores antigos)</th>
+              <th>:NEW (valores novos)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>INSERT</td>
+              <td>NULL (todos os campos são NULL)</td>
+              <td>Disponível (valores sendo inseridos)</td>
+            </tr>
+            <tr>
+              <td>UPDATE</td>
+              <td>Disponível (valores antes da alteração)</td>
+              <td>Disponível (valores após a alteração)</td>
+            </tr>
+            <tr>
+              <td>DELETE</td>
+              <td>Disponível (valores sendo excluídos)</td>
+              <td>NULL (todos os campos são NULL)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          <strong>Em triggers BEFORE:</strong> você pode modificar
+          <code>:NEW</code> para alterar o valor que será efetivamente gravado
+          na tabela. <code>:OLD</code> é somente leitura.
+        </div>
+
+        <h3>Exemplo: Bloqueando UPDATE com Base em :OLD e :NEW</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER trg_proibe_mudanca_nome
+    BEFORE UPDATE OF nome ON funcionarios
+    FOR EACH ROW
+BEGIN
+    -- Se o nome está sendo alterado, bloqueia
+    IF :OLD.nome != :NEW.nome THEN
+        RAISE_APPLICATION_ERROR(-20230,
+            'Não é permitido alterar o nome de um funcionário. ' ||
+            'Nome atual: "' || :OLD.nome || '".');
+    END IF;
+END trg_proibe_mudanca_nome;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo: Calculando Coluna Derivada com :NEW</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de pedidos com coluna de valor total calculada automaticamente
+CREATE TABLE pedidos (
+    id            NUMBER PRIMARY KEY,
+    quantidade    NUMBER NOT NULL,
+    preco_unitario NUMBER NOT NULL,
+    valor_total   NUMBER -- será preenchido pelo trigger
+);
+
+CREATE OR REPLACE TRIGGER trg_calcula_valor_total
+    BEFORE INSERT OR UPDATE ON pedidos
+    FOR EACH ROW
+BEGIN
+    -- Calcula automaticamente o valor total
+    :NEW.valor_total := :NEW.quantidade * :NEW.preco_unitario;
+END trg_calcula_valor_total;
+/
+
+-- Teste: valor_total é calculado automaticamente
+INSERT INTO pedidos (id, quantidade, preco_unitario) VALUES (1, 5, 150.00);
+SELECT * FROM pedidos;
+-- Resultado: id=1, quantidade=5, preco_unitario=150, valor_total=750
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cláusula REFERENCING — Aliases para :NEW e :OLD</h3>
+        <p>
+          A cláusula <code>REFERENCING</code> permite renomear os registros
+          <code>:NEW</code> e <code>:OLD</code>, útil para melhorar legibilidade
+          ou evitar conflitos com nomes de tabelas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER trg_referencing_exemplo
+    BEFORE UPDATE ON funcionarios
+    REFERENCING NEW AS novo OLD AS antigo
+    FOR EACH ROW
+BEGIN
+    -- Agora usamos :novo e :antigo em vez de :NEW e :OLD
+    DBMS_OUTPUT.PUT_LINE('Alterando salário de ' || :antigo.nome);
+    DBMS_OUTPUT.PUT_LINE('De: R$ ' || TO_CHAR(:antigo.salario, 'FM999G990D00'));
+    DBMS_OUTPUT.PUT_LINE('Para: R$ ' || TO_CHAR(:novo.salario, 'FM999G990D00'));
+    DBMS_OUTPUT.PUT_LINE('Diferença: R$ ' ||
+        TO_CHAR(:novo.salario - :antigo.salario, 'FM999G990D00'));
+END trg_referencing_exemplo;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SISTEMA DE AUDITORIA -->
+      <section>
+        <h2>Passo a Passo: Sistema de Auditoria Completo com Triggers</h2>
+        <p>
+          Vamos construir um sistema de auditoria profissional que registra
+          todas as alterações em uma tabela de produtos, incluindo timestamp,
+          usuário, tipo de operação e rastreamento de mudanças coluna por
+          coluna.
+        </p>
+
+        <h3>Passo 1 — Criar a Tabela de Produtos</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE produtos (
+    id          NUMBER PRIMARY KEY,
+    nome        VARCHAR2(100) NOT NULL,
+    categoria   VARCHAR2(50),
+    preco       NUMBER(10,2) NOT NULL CHECK (preco > 0),
+    estoque     NUMBER DEFAULT 0 CHECK (estoque >= 0),
+    ativo       CHAR(1) DEFAULT 'S' CHECK (ativo IN ('S', 'N')),
+    data_criacao DATE DEFAULT SYSDATE
+);
+
+CREATE SEQUENCE seq_produtos START WITH 1 INCREMENT BY 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a Tabela de Auditoria</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE auditoria_produtos (
+    id           NUMBER GENERATED ALWAYS AS IDENTITY,
+    produto_id   NUMBER NOT NULL,
+    operacao     VARCHAR2(10) NOT NULL, -- INSERT, UPDATE, DELETE
+    coluna       VARCHAR2(50),           -- qual coluna foi alterada
+    valor_antigo VARCHAR2(4000),         -- valor antes da mudança
+    valor_novo   VARCHAR2(4000),         -- valor depois da mudança
+    data_hora    TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario      VARCHAR2(50) DEFAULT USER,
+    ip_maquina   VARCHAR2(100) DEFAULT SYS_CONTEXT('USERENV', 'IP_ADDRESS')
+);
+
+CREATE INDEX idx_audit_prod_data ON auditoria_produtos(data_hora);
+CREATE INDEX idx_audit_prod_id   ON auditoria_produtos(produto_id);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Trigger de Auditoria Detalhada (Coluna por Coluna)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER trg_auditoria_produtos
+    AFTER INSERT OR UPDATE OR DELETE ON produtos
+    FOR EACH ROW
+DECLARE
+    v_operacao VARCHAR2(10);
+BEGIN
+    -- Determina o tipo de operação
+    IF INSERTING THEN
+        v_operacao := 'INSERT';
+
+        -- Audita cada campo da nova linha
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_novo)
+        VALUES (:NEW.id, v_operacao, 'NOME', :NEW.nome);
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_novo)
+        VALUES (:NEW.id, v_operacao, 'CATEGORIA', :NEW.categoria);
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_novo)
+        VALUES (:NEW.id, v_operacao, 'PRECO', TO_CHAR(:NEW.preco, 'FM999G990D00'));
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_novo)
+        VALUES (:NEW.id, v_operacao, 'ESTOQUE', TO_CHAR(:NEW.estoque));
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_novo)
+        VALUES (:NEW.id, v_operacao, 'ATIVO', :NEW.ativo);
+
+    ELSIF UPDATING THEN
+        v_operacao := 'UPDATE';
+
+        -- Audita apenas colunas que realmente mudaram
+        IF :NEW.nome != :OLD.nome OR (:NEW.nome IS NULL AND :OLD.nome IS NOT NULL)
+           OR (:NEW.nome IS NOT NULL AND :OLD.nome IS NULL) THEN
+            INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo, valor_novo)
+            VALUES (:NEW.id, v_operacao, 'NOME', :OLD.nome, :NEW.nome);
+        END IF;
+
+        IF :NEW.categoria != :OLD.categoria OR
+           (:NEW.categoria IS NULL AND :OLD.categoria IS NOT NULL) OR
+           (:NEW.categoria IS NOT NULL AND :OLD.categoria IS NULL) THEN
+            INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo, valor_novo)
+            VALUES (:NEW.id, v_operacao, 'CATEGORIA', :OLD.categoria, :NEW.categoria);
+        END IF;
+
+        IF :NEW.preco != :OLD.preco THEN
+            INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo, valor_novo)
+            VALUES (:NEW.id, v_operacao, 'PRECO',
+                TO_CHAR(:OLD.preco, 'FM999G990D00'),
+                TO_CHAR(:NEW.preco, 'FM999G990D00'));
+        END IF;
+
+        IF :NEW.estoque != :OLD.estoque THEN
+            INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo, valor_novo)
+            VALUES (:NEW.id, v_operacao, 'ESTOQUE',
+                TO_CHAR(:OLD.estoque),
+                TO_CHAR(:NEW.estoque));
+        END IF;
+
+        IF :NEW.ativo != :OLD.ativo THEN
+            INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo, valor_novo)
+            VALUES (:NEW.id, v_operacao, 'ATIVO', :OLD.ativo, :NEW.ativo);
+        END IF;
+
+    ELSIF DELETING THEN
+        v_operacao := 'DELETE';
+
+        -- Audita a remoção registrando os valores que foram excluídos
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo)
+        VALUES (:OLD.id, v_operacao, 'NOME', :OLD.nome);
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo)
+        VALUES (:OLD.id, v_operacao, 'CATEGORIA', :OLD.categoria);
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo)
+        VALUES (:OLD.id, v_operacao, 'PRECO', TO_CHAR(:OLD.preco, 'FM999G990D00'));
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo)
+        VALUES (:OLD.id, v_operacao, 'ESTOQUE', TO_CHAR(:OLD.estoque));
+
+        INSERT INTO auditoria_produtos (produto_id, operacao, coluna, valor_antigo)
+        VALUES (:OLD.id, v_operacao, 'ATIVO', :OLD.ativo);
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log de erro sem interromper a operação principal
+        DBMS_OUTPUT.PUT_LINE('Erro na auditoria: ' || SQLERRM);
+END trg_auditoria_produtos;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Testar o Sistema de Auditoria</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir produtos
+INSERT INTO produtos (id, nome, categoria, preco, estoque)
+VALUES (seq_produtos.NEXTVAL, 'Notebook XPS 15', 'Eletrônicos', 7500.00, 10);
+
+INSERT INTO produtos (id, nome, categoria, preco, estoque)
+VALUES (seq_produtos.NEXTVAL, 'Monitor 27" 4K', 'Eletrônicos', 3200.00, 25);
+
+-- Atualizar preço
+UPDATE produtos SET preco = 6800.00 WHERE nome = 'Notebook XPS 15';
+
+-- Atualizar múltiplas colunas
+UPDATE produtos
+SET estoque = 8, preco = 3100.00
+WHERE nome = 'Monitor 27" 4K';
+
+-- Excluir um produto
+DELETE FROM produtos WHERE nome = 'Monitor 27" 4K';
+
+-- Consultar o log de auditoria
+SELECT
+    ap.produto_id,
+    p.nome AS produto,
+    ap.operacao,
+    ap.coluna,
+    ap.valor_antigo,
+    ap.valor_novo,
+    ap.data_hora,
+    ap.usuario
+FROM auditoria_produtos ap
+LEFT JOIN produtos p ON ap.produto_id = p.id
+ORDER BY ap.id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRIGGER COMPOSTO -->
+      <section>
+        <h2>Trigger Composto (Compound Trigger) — Oracle 11g+</h2>
+        <p>
+          O Compound Trigger combina capacidades de statement-level e row-level
+          em uma única unidade. É dividido em quatro seções opcionais que
+          executam em momentos específicos.
+        </p>
+
+        <h3>Estrutura do Compound Trigger</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER nome_trigger
+    FOR INSERT OR UPDATE OR DELETE ON tabela
+    COMPOUND TRIGGER
+
+    -- Variáveis globais do trigger (compartilhadas entre seções)
+    v_total_linhas NUMBER := 0;
+
+    -- Seção 1: Antes do statement (uma vez por comando)
+    BEFORE STATEMENT IS
+    BEGIN
+        -- Inicializações
+        v_total_linhas := 0;
+    END BEFORE STATEMENT;
+
+    -- Seção 2: Antes de cada linha
+    BEFORE EACH ROW IS
+    BEGIN
+        -- Validações/transformações por linha
+        NULL;
+    END BEFORE EACH ROW;
+
+    -- Seção 3: Depois de cada linha
+    AFTER EACH ROW IS
+    BEGIN
+        -- Acumula dados para processamento em lote
+        v_total_linhas := v_total_linhas + 1;
+    END AFTER EACH ROW;
+
+    -- Seção 4: Depois do statement (uma vez por comando)
+    AFTER STATEMENT IS
+    BEGIN
+        -- Processa o total acumulado
+        DBMS_OUTPUT.PUT_LINE('Total de linhas processadas: ' || v_total_linhas);
+    END AFTER STATEMENT;
+
+END nome_trigger;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo Prático: Validação de Totais e Log em Lote</h3>
+        <p>
+          Um caso de uso clássico para compound triggers é quando você precisa
+          acumular valores de todas as linhas afetadas (row-level) e depois
+          validar ou processar o total (statement-level). Por exemplo: validar
+          que a soma dos salários de um departamento não exceda o orçamento.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de orçamento departamental
+CREATE TABLE orcamentos_depto (
+    depto_id  NUMBER PRIMARY KEY,
+    orcamento NUMBER(12,2) NOT NULL,
+    FOREIGN KEY (depto_id) REFERENCES departamentos(id)
+);
+
+INSERT INTO orcamentos_depto VALUES (10, 100000);
+INSERT INTO orcamentos_depto VALUES (20, 50000);
+INSERT INTO orcamentos_depto VALUES (30, 30000);
+
+CREATE OR REPLACE TRIGGER trg_valida_orcamento_depto
+    FOR INSERT OR UPDATE ON funcionarios
+    COMPOUND TRIGGER
+
+    -- Estrutura para acumular somas por departamento
+    TYPE t_soma_depto IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+    v_soma_por_depto   t_soma_depto;
+    v_orcamento_depto  NUMBER;
+
+    -- Seção 1: Inicializa a estrutura
+    BEFORE STATEMENT IS
+    BEGIN
+        v_soma_por_depto.DELETE;
+    END BEFORE STATEMENT;
+
+    -- Seção 2: Valida cada linha individualmente
+    BEFORE EACH ROW IS
+    BEGIN
+        IF :NEW.salario < 0 THEN
+            RAISE_APPLICATION_ERROR(-20301, 'Salário não pode ser negativo.');
+        END IF;
+
+        IF :NEW.salario > 50000 THEN
+            RAISE_APPLICATION_ERROR(-20302,
+                'Salário de ' || :NEW.nome || ' excede o teto de R$ 50.000,00.');
+        END IF;
+    END BEFORE EACH ROW;
+
+    -- Seção 3: Acumula a soma dos salários por departamento
+    AFTER EACH ROW IS
+        v_depto NUMBER;
+    BEGIN
+        -- Determina o departamento
+        IF INSERTING THEN
+            v_depto := :NEW.depto_id;
+        ELSIF UPDATING THEN
+            v_depto := :NEW.depto_id;
+
+            -- Se mudou de departamento, subtrai do antigo
+            IF :NEW.depto_id != :OLD.depto_id THEN
+                IF v_soma_por_depto.EXISTS(:OLD.depto_id) THEN
+                    v_soma_por_depto(:OLD.depto_id) :=
+                        v_soma_por_depto(:OLD.depto_id) - :OLD.salario;
+                END IF;
+            ELSE
+                -- Mesmo depto: diferença entre novo e antigo
+                IF v_soma_por_depto.EXISTS(v_depto) THEN
+                    v_soma_por_depto(v_depto) :=
+                        v_soma_por_depto(v_depto) - :OLD.salario;
+                END IF;
+            END IF;
+        END IF;
+
+        -- Adiciona o novo salário
+        IF v_soma_por_depto.EXISTS(v_depto) THEN
+            v_soma_por_depto(v_depto) :=
+                v_soma_por_depto(v_depto) + :NEW.salario;
+        ELSE
+            v_soma_por_depto(v_depto) := :NEW.salario;
+        END IF;
+    END AFTER EACH ROW;
+
+    -- Seção 4: Valida os totais contra o orçamento
+    AFTER STATEMENT IS
+        v_idx PLS_INTEGER;
+    BEGIN
+        v_idx := v_soma_por_depto.FIRST;
+
+        WHILE v_idx IS NOT NULL LOOP
+            -- Busca o orçamento do departamento
+            SELECT orcamento INTO v_orcamento_depto
+            FROM orcamentos_depto
+            WHERE depto_id = v_idx;
+
+            IF v_soma_por_depto(v_idx) > v_orcamento_depto THEN
+                RAISE_APPLICATION_ERROR(-20303,
+                    'Departamento ' || v_idx ||
+                    ' excedeu o orçamento! Total salários: R$ ' ||
+                    TO_CHAR(v_soma_por_depto(v_idx), 'FM999G990D00') ||
+                    ' / Orçamento: R$ ' ||
+                    TO_CHAR(v_orcamento_depto, 'FM999G990D00'));
+            END IF;
+
+            DBMS_OUTPUT.PUT_LINE('Depto ' || v_idx || ': Total salários = R$ ' ||
+                TO_CHAR(v_soma_por_depto(v_idx), 'FM999G990D00') ||
+                ' / Orçamento = R$ ' ||
+                TO_CHAR(v_orcamento_depto, 'FM999G990D00'));
+
+            v_idx := v_soma_por_depto.NEXT(v_idx);
+        END LOOP;
+    END AFTER STATEMENT;
+
+END trg_valida_orcamento_depto;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRIGGERS DE SISTEMA -->
+      <section>
+        <h2>Triggers de Sistema (DDL e DATABASE)</h2>
+        <p>
+          Triggers de sistema disparam em eventos do banco de dados como um
+          todo, como logon, logoff, criação/alteração de objetos (DDL) e erros
+          do servidor. São criados com a sintaxe <code>ON DATABASE</code> ou
+          <code>ON SCHEMA</code>.
+        </p>
+
+        <div class="info-box">
+          <strong>Privilégios necessários:</strong> Para criar triggers de
+          sistema, o usuário precisa do privilégio
+          <code>ADMINISTER DATABASE TRIGGER</code>. Triggers em
+          <code>ON SCHEMA</code> podem ser criados pelo próprio dono do schema.
+        </div>
+
+        <h3>Trigger de Logon</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log de acessos
+CREATE TABLE log_acessos (
+    id         NUMBER GENERATED ALWAYS AS IDENTITY,
+    usuario    VARCHAR2(50),
+    data_hora  TIMESTAMP DEFAULT SYSTIMESTAMP,
+    ip         VARCHAR2(100),
+    programa   VARCHAR2(200),
+    os_user    VARCHAR2(100)
+);
+
+-- Trigger que registra todo logon no schema
+CREATE OR REPLACE TRIGGER trg_logon_schema
+    AFTER LOGON ON SCHEMA
+BEGIN
+    INSERT INTO log_acessos (usuario, ip, programa, os_user)
+    VALUES (
+        USER,
+        SYS_CONTEXT('USERENV', 'IP_ADDRESS'),
+        SYS_CONTEXT('USERENV', 'MODULE'),
+        SYS_CONTEXT('USERENV', 'OS_USER')
+    );
+
+    -- Em trigger de sistema, COMMIT automático não existe
+    -- Use PRAGMA AUTONOMOUS_TRANSACTION se precisar commitar
+    COMMIT;
+END trg_logon_schema;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Trigger de DDL (Previne DROP de Tabelas)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trigger que bloqueia DROP de tabelas importantes
+CREATE OR REPLACE TRIGGER trg_proibe_drop_critico
+    BEFORE DROP ON SCHEMA
+BEGIN
+    IF ORA_DICT_OBJ_NAME IN ('FUNCIONARIOS', 'DEPARTAMENTOS', 'PRODUTOS') THEN
+        RAISE_APPLICATION_ERROR(-20999,
+            'Não é permitido excluir a tabela "' || ORA_DICT_OBJ_NAME ||
+            '". Contate o DBA.');
+    END IF;
+END trg_proibe_drop_critico;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Trigger de DDL — Auditoria de Alterações de Estrutura</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log de DDL
+CREATE TABLE log_ddl (
+    id          NUMBER GENERATED ALWAYS AS IDENTITY,
+    operacao    VARCHAR2(30),
+    tipo_obj    VARCHAR2(30),
+    nome_obj    VARCHAR2(128),
+    owner       VARCHAR2(128),
+    data_hora   TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario     VARCHAR2(50) DEFAULT USER
+);
+
+CREATE OR REPLACE TRIGGER trg_audita_ddl
+    AFTER CREATE OR ALTER OR DROP ON SCHEMA
+BEGIN
+    INSERT INTO log_ddl (operacao, tipo_obj, nome_obj, owner)
+    VALUES (
+        ORA_SYSEVENT,
+        ORA_DICT_OBJ_TYPE,
+        ORA_DICT_OBJ_NAME,
+        ORA_DICT_OBJ_OWNER
+    );
+END trg_audita_ddl;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Trigger de Erro do Servidor</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log de erros
+CREATE TABLE log_erros_servidor (
+    id         NUMBER GENERATED ALWAYS AS IDENTITY,
+    erro       VARCHAR2(10),
+    mensagem   VARCHAR2(4000),
+    data_hora  TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario    VARCHAR2(50) DEFAULT USER
+);
+
+-- Trigger que captura erros de servidor
+CREATE OR REPLACE TRIGGER trg_log_erro_servidor
+    AFTER SERVERERROR ON DATABASE
+BEGIN
+    INSERT INTO log_erros_servidor (erro, mensagem)
+    VALUES (
+        TO_CHAR(ORA_SERVER_ERROR(1)),
+        DBMS_UTILITY.FORMAT_ERROR_STACK
+    );
+
+    COMMIT;
+END trg_log_erro_servidor;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- GERENCIAMENTO DE TRIGGERS -->
+      <section>
+        <h2>Gerenciamento de Triggers — Habilitar, Desabilitar e Excluir</h2>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ver todos os triggers do schema
+SELECT trigger_name, table_name, triggering_event, status
+FROM user_triggers
+ORDER BY table_name, trigger_name;
+
+-- Desabilitar um trigger (não será disparado)
+ALTER TRIGGER trg_proibe_reducao_salario DISABLE;
+
+-- Habilitar novamente
+ALTER TRIGGER trg_proibe_reducao_salario ENABLE;
+
+-- Desabilitar todos os triggers de uma tabela
+ALTER TABLE funcionarios DISABLE ALL TRIGGERS;
+
+-- Habilitar todos os triggers de uma tabela
+ALTER TABLE funcionarios ENABLE ALL TRIGGERS;
+
+-- Excluir (dropar) um trigger
+DROP TRIGGER trg_proibe_reducao_salario;
+
+-- Excluir se existir (sem erro)
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER trg_proibe_reducao_salario';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -4080 THEN -- ORA-04080: trigger does not exist
+            RAISE;
+        END IF;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. Crie um trigger BEFORE INSERT que valida se o salário do
+              funcionário é maior que zero
+            </h3>
+            <p>
+              O trigger deve disparar antes de cada INSERT na tabela
+              <code>funcionarios</code> e rejeitar salários menores ou iguais a
+              zero com uma mensagem de erro clara.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE TRIGGER trg_valida_salario_positivo
+    BEFORE INSERT ON funcionarios
+    FOR EACH ROW
+BEGIN
+    IF :NEW.salario <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20401,
+            'Erro: O salário de ' || :NEW.nome ||
+            ' deve ser maior que zero. Valor informado: R$ ' ||
+            TO_CHAR(:NEW.salario, 'FM999G990D00'));
+    END IF;
+END trg_valida_salario_positivo;
+/
+
+-- Testes
+-- Deve funcionar:
+INSERT INTO funcionarios (id, nome, salario, cargo) VALUES (101, 'Teste OK', 3000, 'Analista');
+
+-- Deve falhar:
+INSERT INTO funcionarios (id, nome, salario, cargo) VALUES (102, 'Teste Erro', -500, 'Analista');
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Crie um trigger AFTER UPDATE que registra alteração de cargo em
+              uma tabela de histórico
+            </h3>
+            <p>
+              Crie uma tabela <code>historico_cargos</code> com as colunas
+              <code>func_id, cargo_antigo, cargo_novo, data_promocao</code> e um
+              trigger que insere nela sempre que o cargo de um funcionário for
+              alterado.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabela de histórico de cargos
+CREATE TABLE historico_cargos (
+    id            NUMBER GENERATED ALWAYS AS IDENTITY,
+    func_id       NUMBER NOT NULL,
+    cargo_antigo  VARCHAR2(50),
+    cargo_novo    VARCHAR2(50),
+    data_promocao DATE DEFAULT SYSDATE,
+    usuario       VARCHAR2(50) DEFAULT USER,
+    FOREIGN KEY (func_id) REFERENCES funcionarios(id)
+);
+
+-- Trigger que registra mudança de cargo
+CREATE OR REPLACE TRIGGER trg_historico_cargo
+    AFTER UPDATE OF cargo ON funcionarios
+    FOR EACH ROW
+BEGIN
+    -- Só registra se o cargo realmente mudou
+    IF :OLD.cargo != :NEW.cargo THEN
+        INSERT INTO historico_cargos (func_id, cargo_antigo, cargo_novo, data_promocao)
+        VALUES (:NEW.id, :OLD.cargo, :NEW.cargo, SYSDATE);
+
+        DBMS_OUTPUT.PUT_LINE('📋 Histórico: ' || :NEW.nome ||
+            ' promovido de ' || :OLD.cargo || ' para ' || :NEW.cargo);
+    END IF;
+END trg_historico_cargo;
+/
+
+-- Teste
+UPDATE funcionarios SET cargo = 'Coordenador' WHERE id = 1;
+SELECT * FROM historico_cargos;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Crie um trigger INSTEAD OF em uma view complexa que une 3
+              tabelas
+            </h3>
+            <p>
+              Considere as tabelas <code>pedidos(id, cliente_id, data)</code>,
+              <code
+                >itens_pedido(pedido_id, produto_id, quantidade,
+                preco_unit)</code
+              >
+              e <code>clientes(id, nome)</code>. Crie uma view que une as três e
+              um trigger INSTEAD OF INSERT que insere corretamente nas tabelas
+              base.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabelas base
+CREATE TABLE clientes (
+    id   NUMBER PRIMARY KEY,
+    nome VARCHAR2(100) NOT NULL
+);
+
+CREATE TABLE pedidos (
+    id         NUMBER PRIMARY KEY,
+    cliente_id NUMBER NOT NULL REFERENCES clientes(id),
+    data       DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE itens_pedido (
+    pedido_id    NUMBER NOT NULL REFERENCES pedidos(id),
+    produto_id   NUMBER NOT NULL,
+    quantidade   NUMBER NOT NULL CHECK (quantidade > 0),
+    preco_unit   NUMBER(10,2) NOT NULL CHECK (preco_unit > 0),
+    PRIMARY KEY (pedido_id, produto_id)
+);
+
+-- View que une as três tabelas
+CREATE OR REPLACE VIEW vw_pedidos_completo AS
+SELECT
+    p.id           AS pedido_id,
+    p.data         AS data_pedido,
+    c.id           AS cliente_id,
+    c.nome         AS cliente_nome,
+    ip.produto_id,
+    ip.quantidade,
+    ip.preco_unit,
+    (ip.quantidade * ip.preco_unit) AS subtotal
+FROM pedidos p
+JOIN clientes c ON p.cliente_id = c.id
+JOIN itens_pedido ip ON p.id = ip.pedido_id;
+
+-- Trigger INSTEAD OF INSERT
+CREATE OR REPLACE TRIGGER trg_instead_vw_pedidos
+    INSTEAD OF INSERT ON vw_pedidos_completo
+    FOR EACH ROW
+DECLARE
+    v_pedido_existe NUMBER;
+BEGIN
+    -- Verifica se o cliente existe
+    SELECT COUNT(*) INTO v_pedido_existe
+    FROM clientes
+    WHERE id = :NEW.cliente_id;
+
+    IF v_pedido_existe = 0 THEN
+        RAISE_APPLICATION_ERROR(-20601,
+            'Cliente ID ' || :NEW.cliente_id || ' não encontrado.');
+    END IF;
+
+    -- Insere o pedido (se não existir)
+    BEGIN
+        INSERT INTO pedidos (id, cliente_id, data)
+        VALUES (:NEW.pedido_id, :NEW.cliente_id, NVL(:NEW.data_pedido, SYSDATE));
+    EXCEPTION
+        WHEN DUP_VAL_ON_INDEX THEN
+            -- Pedido já existe, apenas insere o item
+            NULL;
+    END;
+
+    -- Insere o item do pedido
+    INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit)
+    VALUES (:NEW.pedido_id, :NEW.produto_id, :NEW.quantidade, :NEW.preco_unit);
+
+    DBMS_OUTPUT.PUT_LINE('✓ Item adicionado ao pedido ' || :NEW.pedido_id);
+END trg_instead_vw_pedidos;
+/
+
+-- Teste
+INSERT INTO clientes VALUES (1, 'Empresa ABC');
+
+INSERT INTO vw_pedidos_completo (pedido_id, cliente_id, data_pedido, produto_id, quantidade, preco_unit)
+VALUES (1001, 1, SYSDATE, 500, 3, 150.00);
+
+INSERT INTO vw_pedidos_completo (pedido_id, cliente_id, data_pedido, produto_id, quantidade, preco_unit)
+VALUES (1001, 1, SYSDATE, 501, 2, 200.00); -- mesmo pedido, outro item
+
+SELECT * FROM vw_pedidos_completo;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              4. Crie um trigger composto que valida totais e loga operações em
+              lote
+            </h3>
+            <p>
+              Crie um compound trigger na tabela <code>itens_pedido</code> que:
+            </p>
+            <ul>
+              <li>
+                Valida que quantidade e preço unitário são maiores que zero
+                (BEFORE EACH ROW)
+              </li>
+              <li>
+                Acumula a quantidade total de itens inseridos (AFTER EACH ROW)
+              </li>
+              <li>
+                Após o statement, grava um log com o total de itens e a soma dos
+                valores (AFTER STATEMENT)
+              </li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabela de log de lotes
+CREATE TABLE log_lotes_itens (
+    id               NUMBER GENERATED ALWAYS AS IDENTITY,
+    operacao         VARCHAR2(10),
+    total_itens      NUMBER,
+    soma_valores     NUMBER(12,2),
+    usuario          VARCHAR2(50) DEFAULT USER,
+    data_hora        TIMESTAMP DEFAULT SYSTIMESTAMP
+);
+
+-- Compound trigger
+CREATE OR REPLACE TRIGGER trg_compound_itens
+    FOR INSERT OR UPDATE ON itens_pedido
+    COMPOUND TRIGGER
+
+    -- Variáveis acumuladoras (compartilhadas entre seções)
+    v_contador      NUMBER := 0;
+    v_soma_valores  NUMBER := 0;
+    v_operacao      VARCHAR2(10);
+
+    -- Seção 1: Inicializa acumuladores
+    BEFORE STATEMENT IS
+    BEGIN
+        v_contador := 0;
+        v_soma_valores := 0;
+    END BEFORE STATEMENT;
+
+    -- Seção 2: Valida cada linha antes da operação
+    BEFORE EACH ROW IS
+    BEGIN
+        IF :NEW.quantidade <= 0 THEN
+            RAISE_APPLICATION_ERROR(-20701,
+                'Quantidade deve ser maior que zero. Valor: ' || :NEW.quantidade);
+        END IF;
+
+        IF :NEW.preco_unit <= 0 THEN
+            RAISE_APPLICATION_ERROR(-20702,
+                'Preço unitário deve ser maior que zero. Valor: R$ ' ||
+                TO_CHAR(:NEW.preco_unit, 'FM999G990D00'));
+        END IF;
+    END BEFORE EACH ROW;
+
+    -- Seção 3: Acumula após cada linha processada
+    AFTER EACH ROW IS
+        v_valor_item NUMBER;
+    BEGIN
+        v_valor_item := :NEW.quantidade * :NEW.preco_unit;
+
+        IF INSERTING THEN
+            v_contador := v_contador + 1;
+            v_soma_valores := v_soma_valores + v_valor_item;
+            v_operacao := 'INSERT';
+        ELSIF UPDATING THEN
+            v_contador := v_contador + 1;
+            v_soma_valores := v_soma_valores + (v_valor_item - (:OLD.quantidade * :OLD.preco_unit));
+            v_operacao := 'UPDATE';
+        END IF;
+    END AFTER EACH ROW;
+
+    -- Seção 4: Grava log do lote
+    AFTER STATEMENT IS
+    BEGIN
+        IF v_contador > 0 THEN
+            INSERT INTO log_lotes_itens (operacao, total_itens, soma_valores)
+            VALUES (v_operacao, v_contador, ROUND(v_soma_valores, 2));
+
+            DBMS_OUTPUT.PUT_LINE('========================================');
+            DBMS_OUTPUT.PUT_LINE('LOG DE LOTE');
+            DBMS_OUTPUT.PUT_LINE('Operação: ' || v_operacao);
+            DBMS_OUTPUT.PUT_LINE('Total de itens processados: ' || v_contador);
+            DBMS_OUTPUT.PUT_LINE('Soma dos valores: R$ ' ||
+                TO_CHAR(v_soma_valores, 'FM999G990D00'));
+            DBMS_OUTPUT.PUT_LINE('========================================');
+        END IF;
+    END AFTER STATEMENT;
+
+END trg_compound_itens;
+/
+
+-- Teste com múltiplos itens (lote)
+INSERT ALL
+    INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit) VALUES (1001, 101, 3, 150.00)
+    INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit) VALUES (1001, 102, 5, 89.90)
+    INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit) VALUES (1002, 201, 2, 450.00)
+SELECT * FROM DUAL;
+
+-- Verificar log
+SELECT * FROM log_lotes_itens ORDER BY id DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se todos os triggers estão
+          funcionando corretamente. Teste inserindo, atualizando e excluindo
+          dados nas tabelas <code>funcionarios</code>, <code>produtos</code> e
+          <code>itens_pedido</code> e verifique os logs de auditoria.
+        </p>
+        <p>
+          Compare sua implementação com a versão funcional disponível em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando:
+          <code>aula6</code>
+        </p>
+        <p>
+          Nesta branch você encontrará todos os triggers abordados —
+          BEFORE/AFTER/INSTEAD OF, row-level e statement-level, compound
+          triggers, sistema de auditoria completo e triggers de sistema (logon,
+          DDL, SERVERERROR).
+        </p>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

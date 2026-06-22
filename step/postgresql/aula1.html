@@ -1,0 +1,1384 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - Introdução ao Oracle - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 1: Introdução ao Oracle</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        História do banco de dados Oracle, Arquitetura do Oracle DBMS, Versões
+        do Oracle, Utilitários (SQL Plus, Database Configuration Assistant,
+        Administration Assistant for Windows, Network Configuration Assistant),
+        Instalação do Oracle DBMS, Criando banco de dados com DBCA e arquivo de
+        configuração
+      </div>
+    </header>
+    <main class="container">
+      <!-- HISTÓRIA DO ORACLE -->
+      <section>
+        <h2>História do Banco de Dados Oracle</h2>
+        <p>
+          O Oracle Database é um dos SGBDs (Sistema de Gerenciamento de Banco de
+          Dados) mais antigos e influentes do mercado. Sua história começa com
+          uma ideia visionária que revolucionou a forma como armazenamos e
+          consultamos dados.
+        </p>
+
+        <h3>Fundação e Primeiros Anos</h3>
+        <p>
+          Em <strong>1977</strong>, <strong>Larry Ellison</strong>,
+          <strong>Bob Miner</strong> e <strong>Ed Oates</strong> fundaram a
+          <strong>Software Development Laboratories (SDL)</strong>, que mais
+          tarde se tornaria a Oracle Corporation. A inspiração veio de um artigo
+          científico de Edgar F. Codd, publicado em 1970, que descrevia o modelo
+          relacional de banco de dados.
+        </p>
+        <p>
+          Em <strong>1979</strong>, a empresa lançou o
+          <strong>Oracle V2</strong> (não houve versão 1 por questões de
+          marketing), tornando-se o
+          <strong>primeiro SGBD relacional comercial</strong> do mundo. Escrito
+          em Assembly, o Oracle V2 já implementava SQL básico e transações.
+        </p>
+
+        <h3>Linha do Tempo da Evolução</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Ano</th>
+              <th>Versão</th>
+              <th>Marco Importante</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1977</td>
+              <td>—</td>
+              <td>Fundação da SDL (futura Oracle Corporation)</td>
+            </tr>
+            <tr>
+              <td>1979</td>
+              <td>Oracle V2</td>
+              <td>Primeiro SGBD relacional comercial com SQL</td>
+            </tr>
+            <tr>
+              <td>1983</td>
+              <td>Oracle V3</td>
+              <td>
+                Reescrito em C, portabilidade entre plataformas, suporte a
+                transações COMMIT/ROLLBACK
+              </td>
+            </tr>
+            <tr>
+              <td>1984</td>
+              <td>Oracle V4</td>
+              <td>
+                Consistência de leitura (read consistency), suporte a
+                ferramentas como Forms
+              </td>
+            </tr>
+            <tr>
+              <td>1985</td>
+              <td>Oracle V5</td>
+              <td>
+                Suporte a computação cliente-servidor, primeiras versões para PC
+              </td>
+            </tr>
+            <tr>
+              <td>1988</td>
+              <td>Oracle V6</td>
+              <td>
+                Row-level locking, hot backup, PL/SQL (linguagem procedural)
+              </td>
+            </tr>
+            <tr>
+              <td>1992</td>
+              <td>Oracle 7</td>
+              <td>
+                Integridade referencial declarativa, stored procedures,
+                triggers, 2PC (two-phase commit)
+              </td>
+            </tr>
+            <tr>
+              <td>1997</td>
+              <td>Oracle 8</td>
+              <td>
+                Suporte a objetos (ORDBMS), particionamento de tabelas, LOBs
+              </td>
+            </tr>
+            <tr>
+              <td>1999</td>
+              <td>Oracle 8i</td>
+              <td>Internet-ready, Java Virtual Machine integrada, XML DB</td>
+            </tr>
+            <tr>
+              <td>2001</td>
+              <td>Oracle 9i</td>
+              <td>
+                Real Application Clusters (RAC), Flashback Query, Oracle Data
+                Guard
+              </td>
+            </tr>
+            <tr>
+              <td>2004</td>
+              <td>Oracle 10g</td>
+              <td>
+                Grid Computing, Automatic Storage Management (ASM), Flashback
+                Database
+              </td>
+            </tr>
+            <tr>
+              <td>2007</td>
+              <td>Oracle 11g</td>
+              <td>
+                Real Application Testing, Advanced Compression, Total Recall
+              </td>
+            </tr>
+            <tr>
+              <td>2013</td>
+              <td>Oracle 12c</td>
+              <td>
+                Multitenant Architecture (CDB/PDB), In-Memory Column Store
+              </td>
+            </tr>
+            <tr>
+              <td>2018</td>
+              <td>Oracle 18c</td>
+              <td>Autonomous Database, Machine Learning integrado</td>
+            </tr>
+            <tr>
+              <td>2019</td>
+              <td>Oracle 19c</td>
+              <td>
+                Versão LTS (Long Term Support), JSON nativo, Active Data Guard
+                DML
+              </td>
+            </tr>
+            <tr>
+              <td>2021</td>
+              <td>Oracle 21c</td>
+              <td>Blockchain Tables, SQL Macros, Native JSON binary</td>
+            </tr>
+            <tr>
+              <td>2023</td>
+              <td>Oracle 23ai</td>
+              <td>
+                AI Vector Search, JSON Relational Duality, Microservice support
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ARQUITETURA DO ORACLE DBMS -->
+      <section>
+        <h2>Arquitetura do Oracle DBMS</h2>
+        <p>
+          A arquitetura do Oracle DBMS é composta por dois componentes
+          principais: a <strong>instância</strong> e o
+          <strong>banco de dados</strong>. Entender essa distinção é fundamental
+          para compreender como o Oracle funciona.
+        </p>
+
+        <h3>Instância vs Banco de Dados</h3>
+        <p>
+          <strong>Banco de dados:</strong> conjunto de arquivos físicos no disco
+          (data files, control files, redo logs). É a estrutura física que
+          armazena os dados de forma persistente.
+        </p>
+        <p>
+          <strong>Instância:</strong> conjunto de estruturas de memória (SGA) e
+          processos em background que acessam e gerenciam o banco de dados. A
+          instância é iniciada quando o Oracle é aberto (startup) e pode existir
+          sem um banco de dados associado (modo NOMOUNT).
+        </p>
+        <p>
+          Em uma configuração RAC (Real Application Clusters), múltiplas
+          instâncias podem acessar o mesmo banco de dados físico
+          simultaneamente.
+        </p>
+
+        <h3>SGA — System Global Area</h3>
+        <p>
+          A <strong>SGA</strong> é uma região de memória compartilhada que
+          contém dados e informações de controle da instância. Principais
+          componentes:
+        </p>
+        <ul>
+          <li>
+            <strong>Database Buffer Cache:</strong> armazena blocos de dados
+            lidos dos data files em memória para acesso rápido
+          </li>
+          <li>
+            <strong>Redo Log Buffer:</strong> armazena registros de alterações
+            (redo entries) antes de serem gravados nos redo logs físicos
+          </li>
+          <li>
+            <strong>Shared Pool:</strong> subdividido em Library Cache (armazena
+            SQL parseado e planos de execução) e Data Dictionary Cache (armazena
+            informações do dicionário de dados)
+          </li>
+          <li>
+            <strong>Large Pool:</strong> memória opcional para operações de
+            backup, processos de servidor compartilhados (shared server) e UGA
+          </li>
+          <li>
+            <strong>Java Pool:</strong> memória para execução de código Java
+            armazenado no banco
+          </li>
+          <li>
+            <strong>Streams Pool:</strong> memória para Oracle Streams
+            (replicação)
+          </li>
+        </ul>
+
+        <h3>PGA — Program Global Area</h3>
+        <p>
+          A <strong>PGA</strong> é uma região de memória privada de cada
+          processo servidor. Contém:
+        </p>
+        <ul>
+          <li>
+            <strong>Sort Area:</strong> usada para operações de ordenação (ORDER
+            BY, GROUP BY)
+          </li>
+          <li><strong>Hash Area:</strong> usada para hash joins</li>
+          <li>
+            <strong>Bitmap Merge Area:</strong> usada para operações de bitmap
+          </li>
+          <li>
+            <strong>Session Memory:</strong> informações de login e variáveis de
+            sessão
+          </li>
+        </ul>
+        <p>
+          O tamanho total da PGA é controlado pelo parâmetro
+          <code>PGA_AGGREGATE_TARGET</code>.
+        </p>
+
+        <h3>Processos Background</h3>
+        <p>
+          O Oracle mantém diversos processos em segundo plano essenciais para o
+          funcionamento do SGBD:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Processo</th>
+              <th>Sigla</th>
+              <th>Função</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Database Writer</td>
+              <td>DBWn</td>
+              <td>
+                Escreve blocos alterados (dirty buffers) do buffer cache para os
+                data files
+              </td>
+            </tr>
+            <tr>
+              <td>Log Writer</td>
+              <td>LGWR</td>
+              <td>
+                Escreve entradas do redo log buffer para os redo log files
+              </td>
+            </tr>
+            <tr>
+              <td>Checkpoint</td>
+              <td>CKPT</td>
+              <td>
+                Sinaliza os checkpoints, atualiza cabeçalhos dos data files e
+                control files
+              </td>
+            </tr>
+            <tr>
+              <td>System Monitor</td>
+              <td>SMON</td>
+              <td>
+                Recuperação de instância após crash, libera segmentos
+                temporários, coalesce espaço livre
+              </td>
+            </tr>
+            <tr>
+              <td>Process Monitor</td>
+              <td>PMON</td>
+              <td>
+                Limpa processos que falharam, libera locks, faz rollback de
+                transações não commitadas
+              </td>
+            </tr>
+            <tr>
+              <td>Archiver</td>
+              <td>ARCn</td>
+              <td>
+                Copia redo logs preenchidos para arquivos de archive log (modo
+                ARCHIVELOG)
+              </td>
+            </tr>
+            <tr>
+              <td>Recoverer</td>
+              <td>RECO</td>
+              <td>
+                Resolve transações distribuídas pendentes (two-phase commit)
+              </td>
+            </tr>
+            <tr>
+              <td>Listener Registration</td>
+              <td>LREG</td>
+              <td>Registra serviços no listener Oracle</td>
+            </tr>
+            <tr>
+              <td>Manageability Monitor</td>
+              <td>MMON</td>
+              <td>
+                Coleta estatísticas AWR (Automatic Workload Repository), dispara
+                alertas
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Estrutura Física do Banco de Dados</h3>
+        <ul>
+          <li>
+            <strong>Data Files:</strong> arquivos que armazenam os dados de
+            tabelas, índices, e todos os segmentos do banco. Extensão comum:
+            <code>.dbf</code>
+          </li>
+          <li>
+            <strong>Control Files:</strong> arquivos binários que contêm
+            metadados sobre a estrutura física do banco (nome do banco,
+            localização dos data files e redo logs, timestamp de criação, SCN
+            atual). Extensão comum: <code>.ctl</code>
+          </li>
+          <li>
+            <strong>Redo Log Files:</strong> registram todas as alterações
+            feitas nos dados. Essenciais para recuperação em caso de falha.
+            Extensão comum: <code>.log</code>
+          </li>
+          <li>
+            <strong>Archive Log Files:</strong> cópias offline dos redo logs
+            preenchidos, usados para recuperação completa (point-in-time
+            recovery)
+          </li>
+          <li>
+            <strong>Parameter File:</strong> arquivo de inicialização (SPFILE ou
+            PFILE) com parâmetros de configuração da instância
+          </li>
+          <li>
+            <strong>Password File:</strong> armazena senhas de usuários com
+            privilégios SYSDBA e SYSOPER
+          </li>
+        </ul>
+
+        <h3>Tablespaces — Estrutura Lógica</h3>
+        <p>
+          Um <strong>tablespace</strong> é um contêiner lógico que agrupa
+          segmentos (tabelas, índices). Cada tablespace é composto por um ou
+          mais data files. Principais tablespaces:
+        </p>
+        <ul>
+          <li>
+            <strong>SYSTEM:</strong> armazena o dicionário de dados (metadados
+            do banco)
+          </li>
+          <li>
+            <strong>SYSAUX:</strong> auxiliar do SYSTEM, armazena metadados de
+            ferramentas como AWR, EM, etc.
+          </li>
+          <li>
+            <strong>UNDO (UNDOTBS):</strong> armazena dados de desfazer
+            (rollback), consistência de leitura e recuperação
+          </li>
+          <li>
+            <strong>TEMP:</strong> armazena segmentos temporários para ordenação
+            e operações de hash
+          </li>
+          <li>
+            <strong>USERS:</strong> tablespace padrão para objetos de usuários
+            comuns
+          </li>
+        </ul>
+
+        <h3>Esquema Lógico Completo</h3>
+        <p>A hierarquia lógica de armazenamento do Oracle é:</p>
+        <ul>
+          <li>
+            <strong>Database</strong> → contém um ou mais
+            <strong>Tablespaces</strong>
+          </li>
+          <li>
+            <strong>Tablespace</strong> → composto por um ou mais
+            <strong>Data Files</strong>
+          </li>
+          <li>
+            <strong>Tablespace</strong> → contém
+            <strong>Segments</strong> (tabelas, índices, etc.)
+          </li>
+          <li>
+            <strong>Segment</strong> → composto por
+            <strong>Extents</strong> (unidade de alocação)
+          </li>
+          <li>
+            <strong>Extent</strong> → conjunto contíguo de
+            <strong>Oracle Blocks</strong>
+          </li>
+          <li>
+            <strong>Oracle Block</strong> → menor unidade de I/O (padrão 8 KB)
+          </li>
+        </ul>
+      </section>
+
+      <!-- VERSÕES DO ORACLE -->
+      <section>
+        <h2>Versões do Oracle e Suas Principais Características</h2>
+
+        <h3>Oracle 8i (1999)</h3>
+        <p>
+          O "i" significa <strong>Internet</strong>. Foi a primeira versão
+          orientada à web, com suporte nativo a Java (JVM integrada no banco) e
+          XML DB para armazenamento de documentos XML. Introduziu o Oracle
+          Internet File System (iFS).
+        </p>
+
+        <h3>Oracle 9i (2001)</h3>
+        <p>
+          Grande avanço em alta disponibilidade com o
+          <strong>Real Application Clusters (RAC)</strong>, permitindo múltiplas
+          instâncias acessarem o mesmo banco. Introduziu o
+          <strong>Flashback Query</strong> (consultar dados como estavam em um
+          momento passado) e o <strong>Oracle Data Guard</strong> para disaster
+          recovery.
+        </p>
+
+        <h3>Oracle 10g (2004)</h3>
+        <p>
+          O "g" significa <strong>Grid Computing</strong>. Foco em gerenciamento
+          automático: <strong>Automatic Storage Management (ASM)</strong>,
+          <strong>Automatic Database Diagnostic Monitor (ADDM)</strong>,
+          <strong>Automatic Workload Repository (AWR)</strong>. Introduziu o
+          <strong>Flashback Database</strong> completo e o Oracle Enterprise
+          Manager Database Control.
+        </p>
+
+        <h3>Oracle 11g (2007)</h3>
+        <p>
+          Versão madura com melhorias incrementais poderosas:
+          <strong>Real Application Testing</strong> (captura e replay de
+          workloads), <strong>Advanced Compression</strong> (economia de
+          espaço), <strong>Total Recall</strong> (Flashback Data Archive para
+          compliance), <strong>SecureFiles</strong> (evolução dos LOBs), e
+          <strong>Result Cache</strong> (cache de consultas e funções).
+        </p>
+
+        <h3>Oracle 12c (2013)</h3>
+        <p>
+          O "c" significa <strong>Cloud</strong>. Revolucionou a arquitetura com
+          o modelo <strong>Multitenant</strong>: um
+          <strong>Container Database (CDB)</strong> pode abrigar múltiplos
+          <strong>Pluggable Databases (PDB)</strong>. Isso permite consolidação
+          de bancos com isolamento e gerenciamento centralizado. Introduziu
+          também o <strong>In-Memory Column Store</strong> para analytics
+          acelerado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criando um Pluggable Database (PDB) no modelo Multitenant 12c+
+CREATE PLUGGABLE DATABASE pdb_treinamento
+  ADMIN USER pdb_admin IDENTIFIED BY senha_admin
+  ROLES = (DBA)
+  FILE_NAME_CONVERT = ('/pdbseed/', '/pdb_treinamento/');
+
+-- Abrindo o PDB
+ALTER PLUGGABLE DATABASE pdb_treinamento OPEN;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Oracle 18c e 19c (2018-2019)</h3>
+        <p>
+          A versão 18c introduziu o conceito de
+          <strong>Autonomous Database</strong> (banco autônomo que se
+          auto-gerencia, auto-protege e auto-repara usando machine learning). A
+          versão 19c é uma <strong>Long Term Support (LTS)</strong> — a mais
+          estável e recomendada para ambientes de produção. Inclui
+          <strong>JSON nativo</strong> com pesquisa por índices e
+          <strong>Active Data Guard DML</strong> (escrita em standby).
+        </p>
+
+        <h3>Oracle 21c (2021)</h3>
+        <p>
+          Introduziu <strong>Blockchain Tables</strong> (tabelas imutáveis,
+          resistentes a fraudes), <strong>SQL Macros</strong> (reutilização de
+          lógica SQL parametrizada),
+          <strong>Native JSON Binary</strong> (formato OSON para performance), e
+          <strong>AutoML</strong> integrado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplo de Blockchain Table no Oracle 21c+
+CREATE BLOCKCHAIN TABLE auditoria_transacoes (
+  id         NUMBER GENERATED BY DEFAULT AS IDENTITY,
+  transacao  VARCHAR2(200),
+  valor      NUMBER,
+  data_hora  DATE DEFAULT SYSDATE,
+  hash_prev  RAW(32)
+)
+NO DROP UNTIL 30 DAYS IDLE
+NO DELETE LOCKED
+HASHING USING "SHA2_512" VERSION "V1";
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Oracle 23ai (2023)</h3>
+        <p>
+          Versão mais recente com foco em
+          <strong>Inteligência Artificial</strong> embutida. Principais
+          novidades: <strong>AI Vector Search</strong> (busca semântica com
+          embeddings), <strong>JSON Relational Duality</strong> (acessar os
+          mesmos dados como JSON ou relacional),
+          <strong>Operational Property Graph</strong> (grafos nativos), e
+          melhorias no Autonomous Database.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Oracle 23ai: JSON Relational Duality
+-- Mesmos dados disponíveis como relacional E como JSON
+CREATE JSON RELATIONAL DUALITY VIEW v_cliente_duality AS
+  SELECT JSON {
+    'id'   : c.id,
+    'nome' : c.nome,
+    'pedidos' : [
+      SELECT JSON {
+        'id_pedido' : p.id,
+        'data'      : p.data_pedido,
+        'total'     : p.total
+      }
+      FROM pedidos p WITH INSERT UPDATE
+      WHERE p.cliente_id = c.id
+    ]
+  }
+  FROM clientes c WITH INSERT UPDATE DELETE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- UTILITÁRIOS ORACLE -->
+      <section>
+        <h2>Utilitários do Oracle</h2>
+        <p>
+          O Oracle oferece um conjunto de utilitários de linha de comando e
+          interfaces gráficas para administração e interação com o banco de
+          dados.
+        </p>
+
+        <h3>1. SQL*Plus</h3>
+        <p>
+          O <strong>SQL*Plus</strong> é o cliente de linha de comando
+          tradicional do Oracle. Ele permite conectar-se ao banco, executar
+          comandos SQL e PL/SQL, formatar saídas e executar scripts. Está
+          disponível em todas as plataformas e é a ferramenta essencial para
+          DBAs Oracle.
+        </p>
+        <p><strong>Comandos principais:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Conectar ao Oracle usando SQL*Plus
+sqlplus / as sysdba
+
+# Conectar com usuário específico
+sqlplus usuario/senha@host:porta/SID
+
+# Executar um arquivo de script SQL
+sqlplus usuario/senha @meuscript.sql
+
+# Spool (salvar saída em arquivo)
+SQL> spool resultado.txt
+SQL> SELECT * FROM funcionarios;
+SQL> spool off
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplos de comandos SQL*Plus úteis
+-- Mostrar a estrutura de uma tabela
+DESCRIBE funcionarios;
+
+-- Listar todas as tabelas do usuário atual
+SELECT table_name FROM user_tables;
+
+-- Mostrar o plano de execução de uma consulta
+EXPLAIN PLAN FOR
+  SELECT * FROM funcionarios WHERE departamento_id = 10;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+-- Configurar o formato de saída
+SET LINESIZE 200
+SET PAGESIZE 50
+COLUMN nome FORMAT A30
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2. Database Configuration Assistant (DBCA)</h3>
+        <p>
+          O <strong>DBCA</strong> é uma ferramenta gráfica (GUI) que auxilia na
+          criação, configuração e exclusão de bancos de dados Oracle. É a forma
+          mais amigável para criar um novo banco, especialmente para iniciantes.
+        </p>
+        <p><strong>Funcionalidades do DBCA:</strong></p>
+        <ul>
+          <li>Criar um banco de dados com assistente passo a passo</li>
+          <li>
+            Escolher entre templates pré-configurados (Data Warehouse, General
+            Purpose, Custom)
+          </li>
+          <li>Configurar o SID, memória, character set, tablespaces</li>
+          <li>Gerenciar templates existentes (criar, editar, excluir)</li>
+          <li>Remover bancos de dados</li>
+          <li>Criar Pluggable Databases (PDBs) no modelo Multitenant</li>
+        </ul>
+
+        <h3>3. Administration Assistant for Windows</h3>
+        <p>
+          Utilitário específico para ambientes Windows que permite gerenciar
+          serviços Oracle, usuários do sistema operacional, e configurações de
+          segurança integradas com o Windows (Windows Authentication). É
+          acessado via Painel de Controle ou Menu Iniciar do Oracle.
+        </p>
+        <p><strong>Principais tarefas:</strong></p>
+        <ul>
+          <li>
+            Gerenciar serviços Windows do Oracle (iniciar, parar, configurar
+            tipo de inicialização)
+          </li>
+          <li>
+            Adicionar usuários do Windows a grupos Oracle (ORA_DBA, ORA_OPER)
+          </li>
+          <li>Configurar permissões de diretórios Oracle Home</li>
+          <li>Gerenciar autenticação integrada Windows (NTS Authentication)</li>
+        </ul>
+
+        <h3>4. Network Configuration Assistant (NetCA)</h3>
+        <p>
+          O <strong>NetCA</strong> configura os componentes de rede do Oracle,
+          incluindo listeners e nomes de serviço (tnsnames.ora). Sem a
+          configuração de rede, o cliente não consegue se conectar ao banco.
+        </p>
+        <p><strong>Conceitos importantes:</strong></p>
+        <ul>
+          <li>
+            <strong>Listener:</strong> processo que escuta requisições de
+            conexão na porta configurada (padrão 1521)
+          </li>
+          <li>
+            <strong>tnsnames.ora:</strong> arquivo de configuração do cliente
+            que mapeia nomes de serviço (aliases) para endereços de conexão
+            (host, porta, SID/service name)
+          </li>
+          <li>
+            <strong>Service Name:</strong> identificador lógico do serviço de
+            banco de dados (não confundir com SID)
+          </li>
+        </ul>
+        <p>
+          <strong>Exemplo de configuração — Conteúdo do tnsnames.ora:</strong>
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+ORCL =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = orcl)
+    )
+  )
+
+TREINAMENTO =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.100)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = treinamento.local)
+    )
+  )
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p><strong>Comandos para gerenciar o Listener:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Verificar status do listener
+lsnrctl status
+
+# Iniciar o listener
+lsnrctl start
+
+# Parar o listener
+lsnrctl stop
+
+# Recarregar configuração do listener
+lsnrctl reload
+
+# Listar serviços registrados no listener
+lsnrctl services
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- INSTALAÇÃO DO ORACLE -->
+      <section>
+        <h2>Passo a passo: Instalando o Oracle DBMS (Oracle XE)</h2>
+        <p>
+          O <strong>Oracle Database XE (Express Edition)</strong> é a versão
+          gratuita do Oracle, ideal para aprendizado e desenvolvimento. Possui
+          limitações (até 12 GB de dados, 2 GB de RAM, 2 vCPUs), mas contém
+          todas as funcionalidades essenciais.
+        </p>
+
+        <h3>Passo 1 — Baixar o Oracle Database XE</h3>
+        <ul>
+          <li>
+            Acesse
+            <strong
+              >https://www.oracle.com/database/technologies/xe-downloads.html</strong
+            >
+          </li>
+          <li>Escolha a versão para Windows (arquivo .zip)</li>
+          <li>
+            Extraia o conteúdo do arquivo .zip para uma pasta (ex:
+            <code>C:\oracle_xe_install</code>)
+          </li>
+        </ul>
+
+        <h3>Passo 2 — Executar o instalador</h3>
+        <ul>
+          <li>
+            Navegue até a pasta extraída e execute
+            <strong>setup.exe</strong> como Administrador
+          </li>
+          <li>Na tela de boas-vindas, clique em <strong>Next</strong></li>
+          <li>Aceite os termos de licença</li>
+          <li>
+            Escolha o diretório de instalação (padrão:
+            <code>C:\app\oracle\product\21c</code>)
+          </li>
+        </ul>
+
+        <h3>Passo 3 — Configurar a senha do SYS e SYSTEM</h3>
+        <ul>
+          <li>
+            Defina uma senha forte para os usuários <strong>SYS</strong> e
+            <strong>SYSTEM</strong>
+          </li>
+          <li>
+            Anote essa senha — ela é essencial para administração do banco
+          </li>
+        </ul>
+
+        <h3>Passo 4 — Concluir a instalação</h3>
+        <ul>
+          <li>O instalador criará o banco de dados inicial automaticamente</li>
+          <li>O SID padrão é <strong>XE</strong></li>
+          <li>A porta padrão do listener é <strong>1521</strong></li>
+          <li>
+            O Oracle Enterprise Manager Express estará disponível em
+            <code>https://localhost:5500/em</code>
+          </li>
+        </ul>
+
+        <h3>Passo 5 — Verificar a instalação com SQL*Plus</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Abrir o SQL*Plus e conectar como SYSDBA
+sqlplus / as sysdba
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Verificar a versão do Oracle
+SELECT banner FROM v$version;
+
+-- Verificar o nome e status do banco
+SELECT name, open_mode, created FROM v$database;
+
+-- Verificar o tamanho da SGA
+SELECT component, current_size/1024/1024 AS tamanho_mb
+FROM v$sga_dynamic_components;
+
+-- Listar os tablespaces existentes
+SELECT tablespace_name, status, contents
+FROM dba_tablespaces;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar um usuário para desenvolvimento</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar usuário de desenvolvimento
+CREATE USER dev_user IDENTIFIED BY dev_senha123;
+
+-- Conceder privilégios básicos
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO dev_user;
+
+-- Verificar se foi criado
+SELECT username, account_status FROM dba_users WHERE username = 'DEV_USER';
+
+-- Conectar com o novo usuário
+CONNECT dev_user/dev_senha123@XE
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CRIANDO BANCO COM DBCA -->
+      <section>
+        <h2>Passo a passo: Criando banco com DBCA</h2>
+        <p>
+          O <strong>Database Configuration Assistant</strong> é a maneira mais
+          simples e visual de criar um banco de dados Oracle. Vamos criar um
+          banco chamado "treinamento".
+        </p>
+
+        <h3>Passo 1 — Iniciar o DBCA</h3>
+        <ul>
+          <li>
+            No menu Iniciar, procure por
+            <strong>"Database Configuration Assistant"</strong>
+          </li>
+          <li>Execute como Administrador</li>
+        </ul>
+
+        <h3>Passo 2 — Selecionar a operação</h3>
+        <ul>
+          <li>
+            Na tela inicial, selecione <strong>"Create a database"</strong>
+          </li>
+          <li>Clique em <strong>Next</strong></li>
+        </ul>
+
+        <h3>Passo 3 — Escolher o modo de criação</h3>
+        <ul>
+          <li>
+            <strong>Typical configuration:</strong> criação rápida com poucas
+            opções (recomendado para iniciantes)
+          </li>
+          <li>
+            <strong>Advanced configuration:</strong> controle total sobre cada
+            parâmetro (recomendado para produção)
+          </li>
+          <li>
+            Selecione <strong>Advanced configuration</strong> e clique em Next
+          </li>
+        </ul>
+
+        <h3>Passo 4 — Template do banco</h3>
+        <ul>
+          <li>
+            <strong>Data Warehouse:</strong> otimizado para consultas analíticas
+            e grandes volumes
+          </li>
+          <li>
+            <strong>General Purpose or Transaction Processing:</strong>
+            equilíbrio entre OLTP e analytics (recomendado)
+          </li>
+          <li><strong>Custom Database:</strong> começa com estrutura mínima</li>
+          <li>
+            Selecione <strong>General Purpose or Transaction Processing</strong>
+          </li>
+        </ul>
+
+        <h3>Passo 5 — Identificação do banco</h3>
+        <ul>
+          <li>
+            <strong>Global Database Name:</strong>
+            <code>treinamento.local</code>
+          </li>
+          <li>
+            <strong>SID:</strong> <code>TREIN</code> (identificador único do
+            banco, máximo 12 caracteres)
+          </li>
+          <li>
+            Marque a opção <strong>"Create as Container database"</strong> se
+            quiser usar Multitenant (recomendado 12c+)
+          </li>
+        </ul>
+
+        <h3>Passo 6 — Configuração de armazenamento</h3>
+        <ul>
+          <li>
+            Escolha o local dos data files (padrão via Oracle Flexible
+            Architecture — OFA)
+          </li>
+          <li>
+            Ative o <strong>ARCHIVELOG mode</strong> se precisar de recuperação
+            completa
+          </li>
+        </ul>
+
+        <h3>Passo 7 — Configuração de memória</h3>
+        <ul>
+          <li>
+            <strong>Automatic Memory Management (AMM):</strong> o Oracle
+            gerencia SGA e PGA automaticamente
+          </li>
+          <li>Defina o <strong>MEMORY_TARGET</strong> (ex: 1024 MB)</li>
+        </ul>
+
+        <h3>Passo 8 — Revisão e criação</h3>
+        <ul>
+          <li>Revise todas as configurações na tela de sumário</li>
+          <li>Clique em <strong>Finish</strong></li>
+          <li>
+            O DBCA gerará scripts SQL equivalentes — você pode salvá-los para
+            referência
+          </li>
+          <li>Clique em <strong>OK</strong> para iniciar a criação do banco</li>
+        </ul>
+      </section>
+
+      <!-- CRIANDO BANCO VIA ARQUIVO DE CONFIGURAÇÃO -->
+      <section>
+        <h2>
+          Passo a passo: Criando banco via arquivo de configuração (CREATE
+          DATABASE)
+        </h2>
+        <p>
+          O método manual usando <code>CREATE DATABASE</code> oferece controle
+          absoluto sobre cada aspecto da criação do banco. É essencial para DBAs
+          avançados.
+        </p>
+
+        <h3>Pré-requisitos</h3>
+        <ul>
+          <li>Instância Oracle iniciada em modo <strong>NOMOUNT</strong></li>
+          <li>PFILE ou SPFILE configurado com os parâmetros mínimos</li>
+          <li>Diretórios para os data files criados no sistema operacional</li>
+        </ul>
+
+        <h3>Passo 1 — Criar o arquivo de parâmetros (PFILE)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# initTREIN.ora — arquivo de parâmetros mínimo
+db_name='TREIN'
+memory_target=1024M
+control_files=('/u01/app/oracle/oradata/TREIN/control01.ctl',
+               '/u01/app/oracle/oradata/TREIN/control02.ctl')
+db_block_size=8192
+open_cursors=300
+processes=150
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Iniciar a instância em modo NOMOUNT</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Conectar como SYSDBA
+sqlplus / as sysdba
+
+# Definir o PFILE e iniciar em modo NOMOUNT
+SQL> STARTUP NOMOUNT PFILE='/u01/app/oracle/product/19c/dbs/initTREIN.ora';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o banco de dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE DATABASE meubanco
+  USER SYS IDENTIFIED BY senha_sys
+  USER SYSTEM IDENTIFIED BY senha_system
+  LOGFILE
+    GROUP 1 ('/u01/app/oracle/oradata/redo01.log') SIZE 100M,
+    GROUP 2 ('/u01/app/oracle/oradata/redo02.log') SIZE 100M,
+    GROUP 3 ('/u01/app/oracle/oradata/redo03.log') SIZE 100M
+  MAXLOGFILES 5
+  MAXLOGMEMBERS 5
+  MAXLOGHISTORY 1
+  MAXDATAFILES 100
+  CHARACTER SET AL32UTF8
+  NATIONAL CHARACTER SET AL16UTF16
+  DATAFILE '/u01/app/oracle/oradata/system01.dbf'
+    SIZE 500M
+    AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED
+  SYSAUX DATAFILE '/u01/app/oracle/oradata/sysaux01.dbf'
+    SIZE 200M
+    AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED
+  DEFAULT TABLESPACE users
+    DATAFILE '/u01/app/oracle/oradata/users01.dbf'
+    SIZE 100M
+    AUTOEXTEND ON NEXT 10M MAXSIZE UNLIMITED
+  DEFAULT TEMPORARY TABLESPACE temp
+    TEMPFILE '/u01/app/oracle/oradata/temp01.dbf'
+    SIZE 100M
+    AUTOEXTEND ON NEXT 25M MAXSIZE UNLIMITED
+  UNDO TABLESPACE undotbs
+    DATAFILE '/u01/app/oracle/oradata/undotbs01.dbf'
+    SIZE 100M
+    AUTOEXTEND ON NEXT 25M MAXSIZE UNLIMITED;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Executar scripts do dicionário de dados</h3>
+        <p>
+          Após o CREATE DATABASE, é necessário executar scripts que criam as
+          views do dicionário de dados e pacotes PL/SQL essenciais:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Executar os scripts do dicionário de dados (no SQL*Plus)
+SQL> @?/rdbms/admin/catalog.sql
+SQL> @?/rdbms/admin/catproc.sql
+SQL> @?/rdbms/admin/catblock.sql
+
+# Opcional: criar o tablespace EXAMPLE
+SQL> @?/demo/schema/mk_dir.sql
+SQL> @?/demo/schema/mk_schema.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Verificar o banco criado</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Verificar informações do banco
+SELECT name, open_mode, log_mode, created, db_unique_name
+FROM v$database;
+
+-- Listar tablespaces
+SELECT tablespace_name, status, contents, bigfile
+FROM dba_tablespaces;
+
+-- Listar data files
+SELECT file_name, tablespace_name, bytes/1024/1024 AS tamanho_mb, autoextensible
+FROM dba_data_files;
+
+-- Listar redo log groups
+SELECT group#, sequence#, bytes/1024/1024 AS tamanho_mb, members, status
+FROM v$log;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO ORACLE VS POSTGRESQL VS MYSQL -->
+      <section>
+        <h2>Comparação Oracle vs PostgreSQL vs MySQL</h2>
+        <p>
+          Embora todos sejam SGBDs relacionais com suporte a SQL, existem
+          diferenças significativas de arquitetura, licenciamento e recursos.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Oracle</th>
+              <th>PostgreSQL</th>
+              <th>MySQL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Licença</td>
+              <td>Proprietária (cara). XE é gratuito com limitações</td>
+              <td>Open Source (PostgreSQL License)</td>
+              <td>Open Source (GPL). Edição Enterprise paga</td>
+            </tr>
+            <tr>
+              <td>Arquitetura</td>
+              <td>
+                Instância + Banco de Dados. Multitenant CDB/PDB a partir do 12c
+              </td>
+              <td>Cluster de bancos (postmaster + backends)</td>
+              <td>Single process + thread pool</td>
+            </tr>
+            <tr>
+              <td>Plataformas</td>
+              <td>Windows, Linux, Unix (AIX, Solaris, HP-UX)</td>
+              <td>Windows, Linux, Unix, macOS</td>
+              <td>Windows, Linux, Unix, macOS</td>
+            </tr>
+            <tr>
+              <td>Linguagem Procedural</td>
+              <td>PL/SQL (com packages, procedures, functions, triggers)</td>
+              <td>PL/pgSQL, PL/Python, PL/Perl, PL/Tcl, PL/Java</td>
+              <td>Stored Procedures (SQL/PSM). Sem packages</td>
+            </tr>
+            <tr>
+              <td>Auto Increment</td>
+              <td>SEQUENCE + NEXTVAL (não tem SERIAL)</td>
+              <td>SERIAL / BIGSERIAL (cria sequence automaticamente)</td>
+              <td>AUTO_INCREMENT na coluna</td>
+            </tr>
+            <tr>
+              <td>Tabela temporária</td>
+              <td>Global Temporary Table (dados privados por sessão)</td>
+              <td>CREATE TEMP TABLE (dados privados por sessão)</td>
+              <td>CREATE TEMPORARY TABLE</td>
+            </tr>
+            <tr>
+              <td>Limite de resultados</td>
+              <td>ROWNUM ou FETCH FIRST (12c+)</td>
+              <td>LIMIT / OFFSET</td>
+              <td>LIMIT / OFFSET</td>
+            </tr>
+            <tr>
+              <td>Outer Join antigo</td>
+              <td>Operador (+)</td>
+              <td>Somente LEFT/RIGHT JOIN padrão</td>
+              <td>Somente LEFT/RIGHT JOIN padrão</td>
+            </tr>
+            <tr>
+              <td>DUAL table</td>
+              <td>Sim — SELECT SYSDATE FROM DUAL;</td>
+              <td>Opcional — SELECT CURRENT_DATE; (sem FROM)</td>
+              <td>Sim — SELECT NOW(); (sem FROM também funciona)</td>
+            </tr>
+            <tr>
+              <td>Rollback de transação</td>
+              <td>UNDO tablespace gerenciado automaticamente</td>
+              <td>MVCC (Multi-Version Concurrency Control)</td>
+              <td>InnoDB: UNDO logs (MVCC)</td>
+            </tr>
+            <tr>
+              <td>Backup</td>
+              <td>RMAN (Recovery Manager) + Data Pump</td>
+              <td>pg_dump / pg_restore + WAL archiving</td>
+              <td>mysqldump / mysqlpump + binlog</td>
+            </tr>
+            <tr>
+              <td>Extensibilidade</td>
+              <td>
+                Tipagem Oracle específica (objetos, varrays, nested tables)
+              </td>
+              <td>Extensões, tipos customizados, index methods</td>
+              <td>Plugins, storage engines</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ACESSANDO O ORACLE VIA LINHA DE COMANDO -->
+      <section>
+        <h2>Dicas importantes: Acessando o Oracle via linha de comando</h2>
+        <p>
+          Abaixo estão os comandos essenciais para navegação e operação via
+          SQL*Plus:
+        </p>
+
+        <h3>Conectar-se ao banco</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Conexão local como SYSDBA (autenticação via sistema operacional)
+sqlplus / as sysdba
+
+# Conexão remota com usuário e senha
+sqlplus usuario/senha@//host:1521/service_name
+
+# Conexão usando alias do tnsnames.ora
+sqlplus usuario/senha@ORCL
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Comandos úteis dentro do SQL*Plus</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conectar com outro usuário sem sair
+CONNECT system/senha_system@XE
+
+-- Ver tabelas do usuário atual
+SELECT table_name FROM user_tables;
+
+-- Ver todas as tabelas acessíveis
+SELECT owner, table_name FROM all_tables;
+
+-- Estrutura de uma tabela
+DESC nome_da_tabela
+
+-- Ver estatísticas da sessão
+SELECT * FROM v$mystat WHERE rownum <= 10;
+
+-- Sair do SQL*Plus
+EXIT
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Instalar o Oracle XE e conectar via SQL*Plus</h3>
+            <p>
+              Instale o Oracle Database XE em seu computador e conecte-se ao
+              banco usando SQL*Plus. Após conectar, execute uma consulta simples
+              para verificar a versão do Oracle.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <p><strong>Comandos de conexão:</strong></p>
+              <div class="code-container">
+                <pre><code class="language-bash">
+# Conexão como SYSDBA
+sqlplus / as sysdba
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Verificar versão do Oracle
+SELECT banner FROM v$version WHERE rownum = 1;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Criar um banco de dados usando DBCA com nome "treinamento"
+            </h3>
+            <p>
+              Utilize o Database Configuration Assistant para criar um banco de
+              dados chamado "treinamento" com SID "TREIN". Documente os passos
+              realizados.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito: Passos do wizard DBCA</b>
+              <ol>
+                <li>Abrir DBCA → "Create a database"</li>
+                <li>Modo: "Advanced configuration"</li>
+                <li>Template: "General Purpose or Transaction Processing"</li>
+                <li>Global Database Name: <code>treinamento.local</code></li>
+                <li>SID: <code>TREIN</code></li>
+                <li>Memory: "Automatic Memory Management" com 1024 MB</li>
+                <li>Manter storage locations padrão</li>
+                <li>Concluir criação</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Pesquisar e listar 5 processos background do Oracle e suas
+              funções
+            </h3>
+            <p>
+              Pesquise na documentação oficial ou em fontes confiáveis e
+              descreva a função de 5 processos background do Oracle.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <ol>
+                <li>
+                  <strong>DBWn (Database Writer):</strong> escreve blocos de
+                  dados alterados (dirty buffers) do buffer cache para os data
+                  files em disco. É acionado quando o buffer cache atinge um
+                  limite ou ocorre checkpoint.
+                </li>
+                <li>
+                  <strong>LGWR (Log Writer):</strong> escreve as entradas do
+                  redo log buffer (registros de alterações) para os redo log
+                  files online. É acionado a cada COMMIT, quando o buffer está
+                  1/3 cheio, ou a cada 3 segundos.
+                </li>
+                <li>
+                  <strong>CKPT (Checkpoint):</strong> sinaliza ao DBWn que todos
+                  os dirty buffers até um determinado SCN (System Change Number)
+                  devem ser gravados em disco. Atualiza os cabeçalhos dos data
+                  files e control files com informações de checkpoint.
+                </li>
+                <li>
+                  <strong>SMON (System Monitor):</strong> realiza recuperação de
+                  instância após crash (roll forward + roll back de transações
+                  não commitadas), libera segmentos temporários que não estão
+                  mais em uso, e coalesce (une) extents livres adjacentes em
+                  tablespaces gerenciados por dicionário.
+                </li>
+                <li>
+                  <strong>PMON (Process Monitor):</strong> limpa processos de
+                  servidor que falharam, libera locks mantidos por sessões
+                  mortas, faz rollback de transações não commitadas de processos
+                  que morreram, e restaura o estado da sessão.
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Verifique se o Oracle XE foi instalado, se você
+          conseguiu criar o banco de dados e se os comandos SQL executaram sem
+          erros.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

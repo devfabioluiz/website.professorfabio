@@ -1,0 +1,2115 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8 - Introdução ao PostgreSQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 8: Introdução ao PostgreSQL</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        História do PostgreSQL, Instalação e configuração do servidor, Criando
+        banco de dados, Dialeto SQL PostgreSQL (SELECT/INSERT/UPDATE/DELETE),
+        JOINs no PostgreSQL (INNER, LEFT, RIGHT, CROSS, FULL).
+      </div>
+    </header>
+    <main class="container">
+      <!-- HISTÓRIA DO POSTGRESQL -->
+      <section>
+        <h2>1. História do PostgreSQL</h2>
+        <p>
+          O <strong>PostgreSQL</strong> é um dos sistemas de banco de dados
+          relacionais de código aberto mais avançados do mundo. Sua história é
+          marcada por décadas de pesquisa acadêmica e desenvolvimento
+          comunitário:
+        </p>
+        <ul>
+          <li>
+            <strong>1986:</strong> O projeto POSTGRES nasce na Universidade da
+            Califórnia em Berkeley, liderado pelo professor
+            <strong>Michael Stonebraker</strong> (vencedor do Prêmio Turing
+            2014). O objetivo era superar as limitações do modelo relacional
+            tradicional, introduzindo suporte a tipos de dados complexos, regras
+            e herança de tabelas.
+          </li>
+          <li>
+            <strong>1994:</strong> Andrew Yu e Jolly Chen desenvolvem o
+            Postgres95, substituindo a linguagem de consulta original POSTQUEL
+            por SQL. O nome é alterado para refletir a compatibilidade SQL.
+          </li>
+          <li>
+            <strong>1996:</strong> O projeto é renomeado para
+            <strong>PostgreSQL</strong> (o "SQL" no final enfatiza o suporte
+            nativo ao padrão SQL). A primeira versão de código aberto (6.0) é
+            lançada, marcando o início da era comunitária.
+          </li>
+          <li>
+            <strong>1997-presente:</strong> O PostgreSQL Global Development
+            Group mantém e evolui o projeto, com lançamentos anuais de novas
+            versões principais. Cada release introduz funcionalidades de nível
+            empresarial: MVCC, WAL, PITR, replicação, particionamento nativo,
+            índices avançados (GIN, GiST, BRIN, SP-GiST), busca full-text,
+            JSONB, window functions, CTEs recursivas e muito mais.
+          </li>
+        </ul>
+        <p>
+          <strong>Filosofia:</strong> O PostgreSQL segue o padrão SQL mais
+          fielmente que qualquer outro SGBD, é extensível (tipos, funções,
+          operadores, linguagens procedurais customizados), é ACID-compliant e é
+          100% gratuito sob a licença PostgreSQL (similar à MIT).
+        </p>
+        <p>
+          Hoje o PostgreSQL é adotado por gigantes como Apple, Spotify,
+          Instagram, Reddit, Skype, Uber, Netflix e milhares de outras
+          organizações, sendo frequentemente citado como o DBMS que mais cresce
+          em popularidade segundo rankings como DB-Engines e StackOverflow
+          Developer Survey.
+        </p>
+      </section>
+
+      <!-- INSTALANDO O POSTGRESQL -->
+      <section>
+        <h2>2. Instalando o PostgreSQL</h2>
+        <p>
+          O PostgreSQL está disponível para Linux, Windows, macOS e outras
+          plataformas. Veremos a instalação no Windows usando o instalador
+          oficial da EDB (EnterpriseDB).
+        </p>
+
+        <h3>Passo a Passo no Windows</h3>
+        <ol>
+          <li>Acesse <strong>postgresql.org/download/windows</strong></li>
+          <li>
+            Clique em "Download the installer" — isso redireciona para o
+            instalador mantido pela EnterpriseDB (EDB)
+          </li>
+          <li>Selecione a versão mais recente estável (ex: PostgreSQL 16.x)</li>
+          <li>
+            Execute o instalador <code>postgresql-16.x-windows-x64.exe</code>
+          </li>
+          <li>
+            <strong>Diretório de instalação:</strong> Padrão
+            <code>C:\Program Files\PostgreSQL\16</code>
+          </li>
+          <li>
+            <strong>Componentes:</strong> Selecione PostgreSQL Server, pgAdmin
+            4, Command Line Tools (psql, pg_dump, etc.) e Stack Builder
+          </li>
+          <li>
+            <strong>Diretório de dados (data directory):</strong> Padrão
+            <code>C:\Program Files\PostgreSQL\16\data</code>
+          </li>
+          <li>
+            <strong>Senha do superusuário:</strong> Defina e
+            <strong>guarde com segurança</strong> — é a senha do usuário
+            <code>postgres</code>
+          </li>
+          <li><strong>Porta:</strong> Padrão <code>5432</code></li>
+          <li>
+            <strong>Locale:</strong> Selecione
+            <code>Portuguese, Brazil</code> (ou <code>pt_BR</code>)
+          </li>
+          <li>
+            Conclua a instalação e, opcionalmente, execute o Stack Builder para
+            instalar extensões adicionais
+          </li>
+        </ol>
+
+        <h3>Verificando a Instalação</h3>
+        <p>
+          Após a instalação, abra o Prompt de Comando ou PowerShell e execute:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Verificar versão do psql
+psql --version
+
+# Verificar se o servidor está respondendo
+pg_isready
+
+# Conectar ao banco padrão como superusuário
+psql -U postgres
+
+# Dentro do psql, verificar a versão do servidor
+SELECT version();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Instalação no Linux (Ubuntu/Debian)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Adicionar repositório oficial
+sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+# Atualizar e instalar
+sudo apt update
+sudo apt install postgresql-16 postgresql-client-16
+
+# Iniciar e habilitar o serviço
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Verificar status
+sudo systemctl status postgresql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Instalação no macOS (via Homebrew)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Instalar PostgreSQL
+brew install postgresql@16
+
+# Iniciar o serviço
+brew services start postgresql@16
+
+# Verificar
+pg_isready
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CONFIGURAÇÃO DO SERVIDOR -->
+      <section>
+        <h2>3. Configuração do Servidor</h2>
+        <p>
+          O PostgreSQL utiliza três arquivos principais de configuração,
+          localizados no diretório de dados (<code>PGDATA</code>) por padrão:
+        </p>
+
+        <h3>postgresql.conf — Configurações do Servidor</h3>
+        <p>
+          Arquivo principal de parâmetros de runtime. As configurações mais
+          importantes são:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro</th>
+              <th>Descrição</th>
+              <th>Valor Padrão</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>listen_addresses</code></td>
+              <td>
+                Endereços IP nos quais o servidor escuta (use
+                <code>'*'</code> para todas as interfaces)
+              </td>
+              <td><code>'localhost'</code></td>
+            </tr>
+            <tr>
+              <td><code>port</code></td>
+              <td>Porta TCP do servidor</td>
+              <td><code>5432</code></td>
+            </tr>
+            <tr>
+              <td><code>max_connections</code></td>
+              <td>Número máximo de conexões simultâneas</td>
+              <td><code>100</code></td>
+            </tr>
+            <tr>
+              <td><code>shared_buffers</code></td>
+              <td>
+                Memória compartilhada para cache de dados (recomendação: 25% da
+                RAM)
+              </td>
+              <td><code>128MB</code></td>
+            </tr>
+            <tr>
+              <td><code>effective_cache_size</code></td>
+              <td>
+                Estimativa da memória disponível para cache do SO (usada pelo
+                planner)
+              </td>
+              <td><code>4GB</code></td>
+            </tr>
+            <tr>
+              <td><code>work_mem</code></td>
+              <td>
+                Memória por operação (ordenamento, hash). Aumente para queries
+                complexas
+              </td>
+              <td><code>4MB</code></td>
+            </tr>
+            <tr>
+              <td><code>maintenance_work_mem</code></td>
+              <td>
+                Memória para operações de manutenção (VACUUM, CREATE INDEX)
+              </td>
+              <td><code>64MB</code></td>
+            </tr>
+            <tr>
+              <td><code>wal_level</code></td>
+              <td>Nível de detalhamento do WAL: minimal, replica ou logical</td>
+              <td><code>replica</code></td>
+            </tr>
+            <tr>
+              <td><code>wal_buffers</code></td>
+              <td>Memória para buffer do WAL</td>
+              <td><code>-1</code> (auto)</td>
+            </tr>
+            <tr>
+              <td><code>checkpoint_timeout</code></td>
+              <td>Intervalo máximo entre checkpoints</td>
+              <td><code>5min</code></td>
+            </tr>
+            <tr>
+              <td><code>log_statement</code></td>
+              <td>Quais statements logar: none, ddl, mod, all</td>
+              <td><code>'none'</code></td>
+            </tr>
+            <tr>
+              <td><code>log_destination</code></td>
+              <td>Destino dos logs: stderr, csvlog, syslog, eventlog</td>
+              <td><code>'stderr'</code></td>
+            </tr>
+            <tr>
+              <td><code>timezone</code></td>
+              <td>Fuso horário do servidor</td>
+              <td><code>'GMT'</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <strong>Dica prática:</strong> Use o site
+          <a href="https://pgtune.leopard.in.ua" target="_blank">PGTune</a> para
+          gerar configurações otimizadas baseadas no hardware disponível.
+        </p>
+
+        <h3>pg_hba.conf — Autenticação Baseada em Host</h3>
+        <p>
+          O arquivo <code>pg_hba.conf</code> controla <strong>quem</strong> pode
+          se conectar, de <strong>onde</strong> e com
+          <strong>qual método de autenticação</strong>. Cada linha segue o
+          formato:
+        </p>
+        <pre><code>TYPE  DATABASE  USER  ADDRESS  METHOD</code></pre>
+        <p><strong>Métodos de autenticação disponíveis:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>trust</code></td>
+              <td>
+                Sem senha — qualquer um conecta (apenas desenvolvimento local!)
+              </td>
+            </tr>
+            <tr>
+              <td><code>md5</code></td>
+              <td>Senha com hash MD5 (compatibilidade com versões antigas)</td>
+            </tr>
+            <tr>
+              <td><code>scram-sha-256</code></td>
+              <td>Senha com SCRAM-SHA-256 (recomendado, mais seguro)</td>
+            </tr>
+            <tr>
+              <td><code>peer</code></td>
+              <td>
+                Autentica pelo usuário do SO (apenas conexões locais Unix/Linux)
+              </td>
+            </tr>
+            <tr>
+              <td><code>cert</code></td>
+              <td>Autenticação via certificado SSL/TLS</td>
+            </tr>
+            <tr>
+              <td><code>reject</code></td>
+              <td>Rejeita conexão incondicionalmente</td>
+            </tr>
+            <tr>
+              <td><code>password</code></td>
+              <td>Senha em texto plano (evitar — inseguro)</td>
+            </tr>
+            <tr>
+              <td><code>ldap</code></td>
+              <td>Autenticação via servidor LDAP</td>
+            </tr>
+            <tr>
+              <td><code>gss</code></td>
+              <td>Autenticação via GSSAPI (Kerberos)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Exemplo de configuração <code>pg_hba.conf</code> típica:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# Conexões locais (Unix socket) — peer para usuário SO postgres
+local   all             postgres                                peer
+
+# Conexões locais para outros usuários — senha scram
+local   all             all                                     scram-sha-256
+
+# Conexões remotas IPv4 do mesmo host — senha scram
+host    all             all             127.0.0.1/32            scram-sha-256
+
+# Conexões remotas IPv6 do mesmo host — senha scram
+host    all             all             ::1/128                 scram-sha-256
+
+# Conexões da rede local (192.168.1.0/24) — senha scram
+host    all             all             192.168.1.0/24          scram-sha-256
+
+# Conexões de um IP específico para banco de produção
+host    producao        app_user        10.0.0.50/32            scram-sha-256
+
+# Bloquear tudo que não foi explicitamente permitido (opcional)
+host    all             all             all                     reject
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Após alterar o <code>pg_hba.conf</code>, recarregue a configuração sem
+          reiniciar o servidor:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Recarregar configuração (sem interromper conexões)
+pg_ctl reload
+
+# Ou via SQL
+SELECT pg_reload_conf();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>pg_ident.conf — Mapeamento de Nomes de Usuário</h3>
+        <p>
+          Permite mapear nomes de usuário do sistema operacional para nomes de
+          usuário do PostgreSQL quando o método de autenticação
+          <code>peer</code> é utilizado:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# MAPNAME       SYSTEM-USERNAME         PG-USERNAME
+mapa_dev        fabio                   postgres
+mapa_dev        dev1                    postgres
+mapa_app        apprunner               app_user
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Para usar o mapeamento, adicione a opção <code>map=mapa_dev</code> na
+          linha correspondente do <code>pg_hba.conf</code>.
+        </p>
+
+        <h3>Verificando Configurações Atuais</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ver todos os parâmetros de configuração
+SHOW ALL;
+
+-- Ver parâmetro específico
+SHOW shared_buffers;
+SHOW max_connections;
+SHOW wal_level;
+
+-- Ver parâmetros de um contexto
+SELECT name, setting, unit, context, boot_val, reset_val
+FROM pg_settings
+WHERE name LIKE '%wal%'
+ORDER BY name;
+
+-- Ver localização dos arquivos de configuração
+SELECT name, setting FROM pg_settings
+WHERE name IN ('config_file', 'hba_file', 'ident_file', 'data_directory');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CRIANDO UM BANCO DE DADOS -->
+      <section>
+        <h2>4. Criando um Banco de Dados</h2>
+        <p>
+          O PostgreSQL permite criar bancos de dados de várias formas: via SQL,
+          via linha de comando (<code>createdb</code>) ou via interface gráfica
+          (pgAdmin). Cada banco de dados é um container isolado com seu próprio
+          catálogo, schemas e configurações.
+        </p>
+
+        <h3>Via SQL (CREATE DATABASE)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criação básica
+CREATE DATABASE meubanco;
+
+-- Criação com owner, encoding, locale e outras opções
+CREATE DATABASE meubanco
+    OWNER joao
+    ENCODING 'UTF8'
+    LC_COLLATE 'pt_BR.UTF-8'
+    LC_CTYPE 'pt_BR.UTF-8'
+    TEMPLATE template0
+    CONNECTION LIMIT 50;
+
+-- Criação com tablespace customizado
+CREATE DATABASE meubanco
+    OWNER maria
+    TABLESPACE fast_disk
+    ENCODING 'UTF8';
+
+-- Criação permitindo conexões apenas do usuário dono
+CREATE DATABASE backup_db
+    OWNER postgres
+    ALLOW_CONNECTIONS false;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Via Linha de Comando (createdb)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Criação básica (conecta como usuário atual do SO)
+createdb meubanco
+
+# Especificando owner
+createdb -O joao meubanco
+
+# Com encoding e locale
+createdb -E UTF8 -l pt_BR.UTF-8 -O joao meubanco
+
+# Com descrição (comment)
+createdb meubanco -O joao --comment="Banco de dados de produção"
+
+# Com connection limit
+createdb meubanco -O joao -N 50
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Template Databases</h3>
+        <p>
+          O PostgreSQL cria bancos de dados sempre copiando um banco template.
+          Existem dois templates padrão:
+        </p>
+        <ul>
+          <li>
+            <strong>template0:</strong> Banco "limpo" — contém apenas os objetos
+            padrão do sistema, sem dados de usuário. Ideal para criar bancos com
+            encoding ou locale diferentes do template1.
+          </li>
+          <li>
+            <strong>template1:</strong> Banco "customizável" — você pode
+            adicionar objetos (tabelas, funções, extensões) que serão
+            automaticamente incluídos em todos os bancos criados posteriormente
+            a partir dele. É o template padrão se nenhum for especificado.
+          </li>
+        </ul>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar banco a partir do template0 (com encoding específico)
+CREATE DATABASE db_latin1
+    TEMPLATE template0
+    ENCODING 'LATIN1'
+    LC_COLLATE 'pt_BR.ISO-8859-1';
+
+-- Adicionar extensão ao template1 (todos os novos bancos a herdarão)
+\c template1
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Novo banco herda automaticamente as extensões do template1
+CREATE DATABASE novo_banco;
+-- Extensões uuid-ossp e pgcrypto já estarão disponíveis
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Gerenciando Schemas</h3>
+        <p>
+          Dentro de cada banco de dados, os objetos são organizados em schemas
+          (namespaces lógicos):
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar schema
+CREATE SCHEMA financeiro;
+CREATE SCHEMA rh AUTHORIZATION joao;
+
+-- Criar tabela em schema específico
+CREATE TABLE financeiro.contas (
+    id SERIAL PRIMARY KEY,
+    descricao VARCHAR(200),
+    valor NUMERIC(12,2)
+);
+
+-- Definir schema padrão para busca
+SET search_path TO financeiro, public;
+
+-- Ver schemas existentes
+SELECT schema_name FROM information_schema.schemata;
+
+-- Ver search_path atual
+SHOW search_path;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Listando e Gerenciando Bancos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar bancos de dados
+SELECT datname, datowner, encoding, datcollate, datctype, datconnlimit
+FROM pg_database
+WHERE datistemplate = false
+ORDER BY datname;
+
+-- Via terminal psql
+\l
+
+-- Renomear banco
+ALTER DATABASE meubanco RENAME TO novo_nome;
+
+-- Alterar owner
+ALTER DATABASE meubanco OWNER TO maria;
+
+-- Alterar connection limit
+ALTER DATABASE meubanco CONNECTION LIMIT 200;
+
+-- Excluir banco
+DROP DATABASE meubanco;
+-- Com IF EXISTS (evita erro se não existir)
+DROP DATABASE IF EXISTS meubanco;
+
+-- Excluir banco mesmo com conexões ativas
+DROP DATABASE meubanco WITH (FORCE);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DIALETO SQL POSTGRESQL -->
+      <section>
+        <h2>5. Dialeto SQL PostgreSQL (PL/pgSQL)</h2>
+        <p>
+          O PostgreSQL implementa uma das variantes mais completas do SQL
+          padrão. Embora compartilhe fundamentos com Oracle, MySQL e SQL Server,
+          existem diferenças importantes no dialeto. Abaixo, exploramos o DML
+          essencial com foco nas particularidades do PostgreSQL.
+        </p>
+
+        <h3>SELECT — Consultando Dados</h3>
+        <p>
+          O PostgreSQL estende o SELECT com várias funcionalidades avançadas:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- SELECT básico com filtro e ordenação
+SELECT nome, email FROM clientes
+WHERE ativo = true
+ORDER BY nome;
+
+-- SELECT com LIMIT e OFFSET (paginação)
+SELECT * FROM produtos
+ORDER BY preco DESC
+LIMIT 10 OFFSET 20;
+
+-- SELECT com DISTINCT ON (específico do PostgreSQL)
+SELECT DISTINCT ON (categoria) categoria, nome, preco
+FROM produtos
+ORDER BY categoria, preco DESC;
+
+-- SELECT com CASE
+SELECT
+    nome,
+    preco,
+    CASE
+        WHEN preco < 100 THEN 'Barato'
+        WHEN preco < 500 THEN 'Médio'
+        WHEN preco < 1000 THEN 'Caro'
+        ELSE 'Premium'
+    END AS faixa_preco
+FROM produtos;
+
+-- SELECT com funções de string
+SELECT
+    UPPER(nome) AS nome_maiusculo,
+    LOWER(email) AS email_minusculo,
+    LENGTH(nome) AS tamanho_nome,
+    SUBSTRING(nome FROM 1 FOR 10) AS nome_curto,
+    CONCAT(nome, ' <', email, '>') AS contato
+FROM clientes;
+
+-- SELECT com funções de data/hora
+SELECT
+    CURRENT_DATE AS hoje,
+    CURRENT_TIME AS agora_hora,
+    CURRENT_TIMESTAMP AS agora_completo,
+    NOW() AS timestamp_atual,
+    NOW() - INTERVAL '30 days' AS mes_passado,
+    DATE_TRUNC('month', NOW()) AS inicio_mes,
+    EXTRACT(YEAR FROM data_cadastro) AS ano_cadastro
+FROM clientes;
+
+-- SELECT com subqueries (subselects)
+SELECT nome, (
+    SELECT COUNT(*) FROM pedidos WHERE cliente_id = clientes.id
+) AS total_pedidos
+FROM clientes;
+
+-- SELECT com WITH (CTE - Common Table Expression)
+WITH vendas_mensais AS (
+    SELECT
+        DATE_TRUNC('month', data_pedido) AS mes,
+        SUM(valor_total) AS total_vendas
+    FROM pedidos
+    GROUP BY DATE_TRUNC('month', data_pedido)
+)
+SELECT mes, total_vendas,
+    LAG(total_vendas) OVER (ORDER BY mes) AS vendas_mes_anterior,
+    total_vendas - LAG(total_vendas) OVER (ORDER BY mes) AS diferenca
+FROM vendas_mensais
+ORDER BY mes DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INSERT — Inserindo Dados</h3>
+        <p>
+          O PostgreSQL oferece várias formas de inserir dados, incluindo
+          recursos avançados:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- INSERT básico com valores
+INSERT INTO produtos (nome, preco, estoque, categoria)
+VALUES ('Notebook Gamer', 3500.00, 10, 'Eletrônicos');
+
+-- INSERT múltiplo (várias linhas de uma vez)
+INSERT INTO produtos (nome, preco, estoque, categoria)
+VALUES
+    ('Mouse Wireless', 150.00, 50, 'Periféricos'),
+    ('Teclado Mecânico', 400.00, 30, 'Periféricos'),
+    ('Monitor 27"', 1800.00, 15, 'Eletrônicos'),
+    ('Webcam HD', 250.00, 40, 'Periféricos');
+
+-- INSERT com SELECT (copiar dados entre tabelas)
+INSERT INTO produtos_arquivados (id, nome, preco, data_arquivamento)
+SELECT id, nome, preco, CURRENT_DATE
+FROM produtos
+WHERE estoque = 0;
+
+-- INSERT com DEFAULT
+INSERT INTO clientes (nome, email, data_cadastro, ativo)
+VALUES ('João Silva', 'joao@email.com', DEFAULT, DEFAULT);
+
+-- INSERT com RETURNING (retorna valores gerados)
+INSERT INTO clientes (nome, email)
+VALUES ('Maria Souza', 'maria@email.com')
+RETURNING id, nome, data_cadastro;
+
+-- INSERT com RETURNING + INTO (armazena resultado em variável PL/pgSQL)
+DO $$
+DECLARE
+    novo_id INTEGER;
+BEGIN
+    INSERT INTO clientes (nome, email)
+    VALUES ('Pedro Alves', 'pedro@email.com')
+    RETURNING id INTO novo_id;
+
+    RAISE NOTICE 'Novo cliente cadastrado com ID: %', novo_id;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>UPSERT (INSERT ... ON CONFLICT)</h3>
+        <p>
+          O <strong>UPSERT</strong> (uma combinação de UPDATE + INSERT) é uma
+          das funcionalidades mais úteis do PostgreSQL. Ele insere uma linha e,
+          se houver conflito com uma constraint (como PRIMARY KEY ou UNIQUE),
+          executa uma ação alternativa (UPDATE ou DO NOTHING):
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- UPSERT com ON CONFLICT DO UPDATE
+-- Se já existir produto com id=1, atualiza o preço
+INSERT INTO produtos (id, nome, preco, estoque)
+VALUES (1, 'Mouse', 50.00, 100)
+ON CONFLICT (id)
+DO UPDATE SET
+    preco = EXCLUDED.preco,
+    estoque = EXCLUDED.estoque;
+
+-- ON CONFLICT DO NOTHING (ignora se já existir)
+INSERT INTO produtos (id, nome, preco)
+VALUES (1, 'Mouse', 50.00)
+ON CONFLICT (id) DO NOTHING;
+
+-- ON CONFLICT com constraint específica
+INSERT INTO clientes (email, nome)
+VALUES ('joao@email.com', 'João Atualizado')
+ON CONFLICT (email)
+DO UPDATE SET nome = EXCLUDED.nome;
+
+-- ON CONFLICT com condição WHERE
+INSERT INTO estoque (produto_id, quantidade)
+VALUES (10, 100)
+ON CONFLICT (produto_id)
+DO UPDATE SET quantidade = estoque.quantidade + EXCLUDED.quantidade
+WHERE estoque.produto_id = 10;
+
+-- UPSERT retornando o registro final (inserido ou atualizado)
+INSERT INTO produtos (id, nome, preco)
+VALUES (1, 'Mouse Pro', 89.90)
+ON CONFLICT (id)
+DO UPDATE SET preco = EXCLUDED.preco, nome = EXCLUDED.nome
+RETURNING id, nome, preco,
+    CASE WHEN xmax = 0 THEN 'Inserido' ELSE 'Atualizado' END AS acao;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>UPDATE — Atualizando Dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- UPDATE básico com condição
+UPDATE produtos
+SET preco = preco * 1.1
+WHERE categoria = 'Eletrônicos';
+
+-- UPDATE múltiplas colunas
+UPDATE clientes
+SET
+    email = 'joao.novo@email.com',
+    telefone = '(11) 99999-0000',
+    atualizado_em = NOW()
+WHERE id = 1;
+
+-- UPDATE com subquery
+UPDATE produtos
+SET preco = (
+    SELECT AVG(preco) FROM produtos WHERE categoria = 'Eletrônicos'
+)
+WHERE estoque = 0;
+
+-- UPDATE com FROM (atualizar usando JOIN)
+UPDATE produtos p
+SET preco = p.preco * 0.9
+FROM categorias c
+WHERE p.categoria_id = c.id
+AND c.nome = 'Eletrônicos'
+AND p.estoque > 50;
+
+-- UPDATE com RETURNING
+UPDATE produtos
+SET estoque = estoque - 5
+WHERE id = 10 AND estoque >= 5
+RETURNING id, nome, estoque;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DELETE — Removendo Dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- DELETE básico com condição
+DELETE FROM log_acesso
+WHERE data < CURRENT_DATE - INTERVAL '90 days';
+
+-- DELETE com subquery (remove clientes sem pedidos)
+DELETE FROM clientes
+WHERE id NOT IN (SELECT DISTINCT cliente_id FROM pedidos);
+
+-- DELETE com USING (delete baseado em JOIN)
+DELETE FROM itens_pedido i
+USING pedidos p
+WHERE i.pedido_id = p.id
+AND p.status = 'cancelado'
+AND p.data_pedido < CURRENT_DATE - INTERVAL '1 year';
+
+-- DELETE com RETURNING (útil para arquivar antes de deletar)
+DELETE FROM clientes
+WHERE id = 5
+RETURNING id, nome, email;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>TRUNCATE — Esvaziando Tabelas Rapidamente</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- TRUNCATE básico (mais rápido que DELETE sem WHERE)
+TRUNCATE TABLE log_acesso;
+
+-- TRUNCATE múltiplas tabelas
+TRUNCATE TABLE log_acesso, log_erros, cache_sessao;
+
+-- TRUNCATE com RESTART IDENTITY (reseta sequências)
+TRUNCATE TABLE produtos RESTART IDENTITY;
+
+-- TRUNCATE com CASCADE (trunca também tabelas dependentes)
+TRUNCATE TABLE clientes CASCADE;
+
+-- TRUNCATE dentro de transação (pode ser desfeito com ROLLBACK!)
+BEGIN;
+TRUNCATE TABLE log_acesso;
+-- Se algo der errado...
+ROLLBACK;
+-- Diferente de outros SGBDs, TRUNCATE é transacional no PostgreSQL
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Transações</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Transação explícita
+BEGIN;
+UPDATE contas SET saldo = saldo - 1000 WHERE id = 1;
+UPDATE contas SET saldo = saldo + 1000 WHERE id = 2;
+-- Se tudo OK:
+COMMIT;
+-- Se algo deu errado:
+-- ROLLBACK;
+
+-- Transação com SAVEPOINT
+BEGIN;
+INSERT INTO pedidos (cliente_id, valor_total) VALUES (1, 500);
+SAVEPOINT sp_pedido_criado;
+
+INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit)
+VALUES (currval('pedidos_id_seq'), 10, 2, 250);
+
+-- Se houver erro no item, volta ao savepoint sem perder o pedido
+ROLLBACK TO sp_pedido_criado;
+
+-- Tenta novamente com outro produto
+INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit)
+VALUES (currval('pedidos_id_seq'), 15, 1, 500);
+
+COMMIT;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- JOINS NO POSTGRESQL -->
+      <section>
+        <h2>6. JOINs no PostgreSQL</h2>
+        <p>
+          <strong>JOINs</strong> são a operação fundamental para combinar dados
+          de múltiplas tabelas em uma única consulta. O PostgreSQL suporta todos
+          os tipos de JOIN do SQL padrão, com desempenho otimizado por seu
+          sofisticado planejador de consultas.
+        </p>
+
+        <h3>Estrutura Base das Tabelas de Exemplo</h3>
+        <p>Para todos os exemplos a seguir, considere este esquema:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de clientes
+CREATE TABLE clientes (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    email       VARCHAR(150) UNIQUE,
+    cidade      VARCHAR(100),
+    data_cad    DATE DEFAULT CURRENT_DATE
+);
+
+-- Tabela de pedidos
+CREATE TABLE pedidos (
+    id          SERIAL PRIMARY KEY,
+    cliente_id  INTEGER REFERENCES clientes(id),
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    valor_total NUMERIC(10,2) NOT NULL,
+    status      VARCHAR(20) DEFAULT 'pendente'
+);
+
+-- Tabela de itens do pedido
+CREATE TABLE itens_pedido (
+    id          SERIAL PRIMARY KEY,
+    pedido_id   INTEGER REFERENCES pedidos(id),
+    produto_id  INTEGER REFERENCES produtos(id),
+    quantidade  INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unit  NUMERIC(10,2) NOT NULL
+);
+
+-- Tabela de produtos
+CREATE TABLE produtos (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    preco       NUMERIC(10,2) NOT NULL CHECK (preco > 0),
+    categoria   VARCHAR(50),
+    estoque     INTEGER DEFAULT 0
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Popular Dados de Exemplo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO clientes (nome, email, cidade) VALUES
+    ('Ana Costa', 'ana@email.com', 'São Paulo'),
+    ('Bruno Silva', 'bruno@email.com', 'Rio de Janeiro'),
+    ('Carla Dias', 'carla@email.com', 'Belo Horizonte'),
+    ('Daniel Reis', 'daniel@email.com', 'São Paulo'),
+    ('Eva Martins', NULL, 'Curitiba');
+
+INSERT INTO produtos (nome, preco, categoria, estoque) VALUES
+    ('Notebook', 3500.00, 'Eletrônicos', 15),
+    ('Mouse', 80.00, 'Informática', 100),
+    ('Teclado', 200.00, 'Informática', 60),
+    ('Monitor', 1200.00, 'Eletrônicos', 20),
+    ('Webcam', 300.00, 'Informática', 45);
+
+INSERT INTO pedidos (cliente_id, data_pedido, valor_total, status) VALUES
+    (1, '2025-06-01', 3500.00, 'entregue'),
+    (1, '2025-06-15', 280.00, 'entregue'),
+    (2, '2025-06-10', 1200.00, 'entregue'),
+    (3, '2025-06-18', 200.00, 'pendente'),
+    (4, '2025-06-20', 3800.00, 'pendente');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INNER JOIN</h3>
+        <p>
+          O <strong>INNER JOIN</strong> retorna apenas as linhas que possuem
+          correspondência em <strong>ambas</strong> as tabelas. É o tipo de JOIN
+          mais comum e o padrão quando se usa apenas <code>JOIN</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- INNER JOIN: clientes que possuem pedidos
+SELECT c.id, c.nome, p.id AS pedido_id, p.valor_total, p.status
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+ORDER BY c.nome, p.data_pedido;
+
+-- INNER JOIN com múltiplas tabelas (clientes -> pedidos -> itens -> produtos)
+SELECT
+    c.nome AS cliente,
+    p.id AS pedido,
+    prod.nome AS produto,
+    ip.quantidade,
+    ip.preco_unit,
+    (ip.quantidade * ip.preco_unit) AS subtotal
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+INNER JOIN itens_pedido ip ON p.id = ip.pedido_id
+INNER JOIN produtos prod ON ip.produto_id = prod.id
+ORDER BY c.nome, p.id;
+
+-- INNER JOIN com filtro adicional
+SELECT c.nome, COUNT(p.id) AS total_pedidos, SUM(p.valor_total) AS total_gasto
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+WHERE p.status = 'entregue'
+GROUP BY c.id, c.nome
+HAVING SUM(p.valor_total) > 500
+ORDER BY total_gasto DESC;
+
+-- INNER JOIN usando USING (quando a coluna de junção tem o mesmo nome)
+SELECT c.nome, p.valor_total
+FROM clientes c
+INNER JOIN pedidos p USING (cliente_id);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Resultado esperado: Ana (2 pedidos), Bruno (1 pedido), Carla (1
+          pedido), Daniel (1 pedido). <strong>Eva não aparece</strong> porque
+          não possui pedidos.
+        </p>
+
+        <h3>LEFT JOIN (LEFT OUTER JOIN)</h3>
+        <p>
+          O <strong>LEFT JOIN</strong> retorna <strong>todas</strong> as linhas
+          da tabela à esquerda (cláusula FROM), mesmo que não haja
+          correspondência na tabela à direita. As colunas da tabela direita sem
+          correspondência recebem <code>NULL</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- LEFT JOIN: todos os clientes, com ou sem pedidos
+SELECT c.id, c.nome, p.id AS pedido_id, p.valor_total, p.status
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+ORDER BY c.nome, p.data_pedido;
+
+-- LEFT JOIN para encontrar clientes SEM pedidos (anti-join)
+SELECT c.id, c.nome, c.email
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+WHERE p.id IS NULL
+ORDER BY c.nome;
+
+-- LEFT JOIN com agregação (total gasto, incluindo quem nunca comprou)
+SELECT
+    c.nome,
+    c.cidade,
+    COUNT(p.id) AS total_pedidos,
+    COALESCE(SUM(p.valor_total), 0) AS total_gasto
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome, c.cidade
+ORDER BY total_gasto DESC;
+
+-- LEFT JOIN em cadeia (clientes -> pedidos -> itens)
+SELECT
+    c.nome,
+    COALESCE(SUM(ip.quantidade * ip.preco_unit), 0) AS total_consumido
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+LEFT JOIN itens_pedido ip ON p.id = ip.pedido_id
+GROUP BY c.id, c.nome
+ORDER BY total_consumido DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          O <code>COALESCE</code> é essencial em LEFT JOINs com agregações: ele
+          converte <code>NULL</code> (cliente sem pedidos) em <code>0</code>,
+          evitando resultados inesperados.
+        </p>
+
+        <h3>RIGHT JOIN (RIGHT OUTER JOIN)</h3>
+        <p>
+          O <strong>RIGHT JOIN</strong> é o oposto do LEFT JOIN: retorna todas
+          as linhas da tabela à <strong>direita</strong>, com NULL nas colunas
+          da tabela esquerda quando não há correspondência. Na prática, muitos
+          desenvolvedores preferem reorganizar a consulta como LEFT JOIN para
+          maior legibilidade — mas é importante entender RIGHT JOIN.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- RIGHT JOIN: todos os pedidos, mesmo sem cliente (raro, mas possível)
+SELECT c.nome, p.id AS pedido_id, p.valor_total
+FROM clientes c
+RIGHT JOIN pedidos p ON c.id = p.cliente_id;
+
+-- RIGHT JOIN equivalente ao LEFT JOIN (trocando a ordem das tabelas)
+-- Estas duas consultas produzem o mesmo resultado:
+
+-- RIGHT JOIN
+SELECT c.nome, p.valor_total
+FROM pedidos p
+RIGHT JOIN clientes c ON c.id = p.cliente_id;
+
+-- LEFT JOIN equivalente (mais comum)
+SELECT c.nome, p.valor_total
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id;
+
+-- RIGHT JOIN para auditoria: pedidos órfãos (sem cliente)
+SELECT p.id, p.valor_total, p.data_pedido, c.nome
+FROM clientes c
+RIGHT JOIN pedidos p ON c.id = p.cliente_id
+WHERE c.id IS NULL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FULL OUTER JOIN</h3>
+        <p>
+          O <strong>FULL OUTER JOIN</strong> retorna <strong>todas</strong> as
+          linhas de ambas as tabelas. Quando há correspondência, as colunas são
+          combinadas. Quando não há, as colunas da tabela sem match recebem
+          <code>NULL</code>. É a união do LEFT JOIN com o RIGHT JOIN.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- FULL OUTER JOIN: todos os clientes e todos os pedidos
+SELECT c.nome AS cliente, p.id AS pedido_id, p.valor_total
+FROM clientes c
+FULL OUTER JOIN pedidos p ON c.id = p.cliente_id
+ORDER BY c.nome NULLS LAST, p.id;
+
+-- FULL OUTER JOIN para auditoria de integridade referencial
+-- (encontra clientes sem pedidos E pedidos sem cliente)
+SELECT
+    CASE WHEN c.id IS NULL THEN 'PEDIDO ÓRFÃO'
+         WHEN p.id IS NULL THEN 'CLIENTE SEM PEDIDO'
+         ELSE 'OK'
+    END AS status_ref,
+    COALESCE(c.nome, 'N/D') AS cliente,
+    COALESCE(p.id::TEXT, 'N/D') AS pedido,
+    COALESCE(p.valor_total::TEXT, 'N/D') AS valor
+FROM clientes c
+FULL OUTER JOIN pedidos p ON c.id = p.cliente_id
+WHERE c.id IS NULL OR p.id IS NULL
+ORDER BY status_ref;
+
+-- FULL OUTER JOIN com agregação (visão completa)
+SELECT
+    COALESCE(c.cidade, 'Sem Cidade') AS cidade,
+    COUNT(DISTINCT c.id) AS total_clientes,
+    COUNT(DISTINCT p.id) AS total_pedidos,
+    COALESCE(SUM(p.valor_total), 0) AS receita_total
+FROM clientes c
+FULL OUTER JOIN pedidos p ON c.id = p.cliente_id AND c.cidade IS NOT NULL
+GROUP BY c.cidade
+ORDER BY receita_total DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          O FULL OUTER JOIN é menos usado no dia a dia, mas é extremamente útil
+          em relatórios de conciliação e auditoria de dados.
+        </p>
+
+        <h3>CROSS JOIN</h3>
+        <p>
+          O <strong>CROSS JOIN</strong> produz o
+          <strong>produto cartesiano</strong> de duas tabelas: cada linha da
+          primeira tabela é combinada com cada linha da segunda. Para tabelas de
+          tamanho N e M, o resultado tem N × M linhas. Use com cautela — o
+          volume de dados cresce exponencialmente!
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- CROSS JOIN: todas as combinações de cliente e produto
+SELECT c.nome, p.nome AS produto
+FROM clientes c
+CROSS JOIN produtos p
+ORDER BY c.nome, p.nome;
+
+-- Geração de séries: combinar datas com categorias
+SELECT d.dia, c.nome AS categoria
+FROM generate_series('2025-06-01'::DATE, '2025-06-07'::DATE, '1 day') AS d(dia)
+CROSS JOIN (SELECT DISTINCT categoria FROM produtos) AS c(categoria)
+ORDER BY d.dia, c.nome;
+
+-- CROSS JOIN para criar matriz de comissões
+SELECT v.nome AS vendedor, f.mes, f.fator
+FROM (VALUES ('Ana'), ('Bruno'), ('Carla')) AS v(nome)
+CROSS JOIN (
+    VALUES
+        ('Jan', 1.0), ('Fev', 1.05), ('Mar', 1.1),
+        ('Abr', 1.15), ('Mai', 1.2), ('Jun', 1.25)
+) AS f(mes, fator)
+ORDER BY v.nome, f.mes;
+
+-- CROSS JOIN com filtro (se comporta como INNER JOIN, mas menos eficiente)
+SELECT c.nome, p.nome AS produto
+FROM clientes c
+CROSS JOIN produtos p
+WHERE c.cidade = 'São Paulo' AND p.categoria = 'Eletrônicos';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Cuidado:</strong> Um CROSS JOIN entre duas tabelas de 10.000
+          linhas cada gera 100.000.000 de resultados. Use apenas quando souber
+          exatamente o que está fazendo ou em tabelas muito pequenas (dimensões,
+          parâmetros).
+        </p>
+
+        <h3>NATURAL JOIN</h3>
+        <p>
+          O <strong>NATURAL JOIN</strong> automaticamente faz a junção usando
+          colunas com o <strong>mesmo nome</strong> em ambas as tabelas. É
+          conveniente, mas pode ser perigoso se as tabelas tiverem colunas com o
+          mesmo nome que não deveriam ser usadas na junção.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- NATURAL JOIN (equivale a INNER JOIN ... USING(colunas_comuns))
+SELECT * FROM pedidos
+NATURAL JOIN clientes;
+
+-- Natural LEFT JOIN
+SELECT nome, valor_total FROM clientes
+NATURAL LEFT JOIN pedidos;
+
+-- ATENÇÃO: se ambas as tabelas tiverem colunas 'id', 'nome', 'data_cad',
+-- o NATURAL JOIN usará TODAS elas — o que provavelmente não é o desejado.
+-- Por segurança, muitos DBAs desencorajam o uso de NATURAL JOIN.
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SELF JOIN</h3>
+        <p>
+          Um <strong>SELF JOIN</strong> ocorre quando uma tabela é unida a
+          <strong>ela mesma</strong>. É útil para comparar linhas dentro da
+          mesma tabela ou representar hierarquias (como funcionário → gerente).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de funcionários com hierarquia (gerente_id referencia funcionarios.id)
+CREATE TABLE funcionarios (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    cargo       VARCHAR(50),
+    gerente_id  INTEGER REFERENCES funcionarios(id)
+);
+
+INSERT INTO funcionarios (nome, cargo, gerente_id) VALUES
+    ('Carlos', 'CEO', NULL),
+    ('Ana', 'Diretora', 1),
+    ('Bruno', 'Gerente TI', 2),
+    ('Diana', 'Gerente RH', 2),
+    ('Eduardo', 'Analista', 3),
+    ('Fernanda', 'Analista', 3);
+
+-- SELF JOIN: listar cada funcionário com seu gerente
+SELECT
+    f.nome AS funcionario,
+    f.cargo AS cargo_funcionario,
+    g.nome AS gerente,
+    g.cargo AS cargo_gerente
+FROM funcionarios f
+LEFT JOIN funcionarios g ON f.gerente_id = g.id
+ORDER BY f.nome;
+
+-- SELF JOIN com recursão: árvore hierárquica completa (WITH RECURSIVE)
+WITH RECURSIVE hierarquia AS (
+    -- Caso base: CEO (sem gerente)
+    SELECT id, nome, cargo, gerente_id, 0 AS nivel,
+           nome::TEXT AS caminho
+    FROM funcionarios
+    WHERE gerente_id IS NULL
+
+    UNION ALL
+
+    -- Caso recursivo: subordinados
+    SELECT f.id, f.nome, f.cargo, f.gerente_id, h.nivel + 1,
+           h.caminho || ' -> ' || f.nome
+    FROM funcionarios f
+    INNER JOIN hierarquia h ON f.gerente_id = h.id
+)
+SELECT nivel, REPEAT('    ', nivel) || nome AS organograma, cargo, caminho
+FROM hierarquia
+ORDER BY caminho;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Resumo Visual dos Tipos de JOIN</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo de JOIN</th>
+              <th>Linhas da Tabela A (esquerda)</th>
+              <th>Linhas da Tabela B (direita)</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>INNER JOIN</code></td>
+              <td>Apenas com match</td>
+              <td>Apenas com match</td>
+              <td>Interseção (A ∩ B)</td>
+            </tr>
+            <tr>
+              <td><code>LEFT JOIN</code></td>
+              <td>Todas</td>
+              <td>Apenas com match</td>
+              <td>A inteira + matches de B</td>
+            </tr>
+            <tr>
+              <td><code>RIGHT JOIN</code></td>
+              <td>Apenas com match</td>
+              <td>Todas</td>
+              <td>B inteira + matches de A</td>
+            </tr>
+            <tr>
+              <td><code>FULL OUTER JOIN</code></td>
+              <td>Todas</td>
+              <td>Todas</td>
+              <td>União (A ∪ B)</td>
+            </tr>
+            <tr>
+              <td><code>CROSS JOIN</code></td>
+              <td>Todas</td>
+              <td>Todas</td>
+              <td>Produto cartesiano (A × B)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- COMPARAÇÃO POSTGRESQL vs ORACLE -->
+      <section>
+        <h2>7. Comparação PostgreSQL vs Oracle</h2>
+        <p>
+          Embora ambos sejam SGBDs relacionais robustos de nível empresarial,
+          PostgreSQL e Oracle diferem em aspectos importantes. Compreender essas
+          diferenças é essencial para quem transita entre as duas plataformas.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>PostgreSQL</th>
+              <th>Oracle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Licenciamento</strong></td>
+              <td>Open source (PostgreSQL License, tipo MIT)</td>
+              <td>Proprietário (licenças pagas: Standard, Enterprise, etc.)</td>
+            </tr>
+            <tr>
+              <td><strong>Custo</strong></td>
+              <td>Gratuito (sem custos de licenciamento)</td>
+              <td>Alto custo de licenciamento por core/usuário</td>
+            </tr>
+            <tr>
+              <td><strong>Arquitetura</strong></td>
+              <td>Processos (um processo por conexão)</td>
+              <td>Multithreaded (threads dentro de um processo)</td>
+            </tr>
+            <tr>
+              <td><strong>MVCC</strong></td>
+              <td>
+                Implementado como atributo da linha (xmin/xmax). Gera tuplas
+                mortas que requerem VACUUM
+              </td>
+              <td>
+                Implementado via UNDO tablespace. Não requer processo
+                equivalente ao VACUUM
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Linguagem Procedural</strong></td>
+              <td>
+                PL/pgSQL (similar a PL/SQL). Também suporta Python, Perl, Tcl,
+                JavaScript, R, Java, Lua
+              </td>
+              <td>
+                PL/SQL (integrada ao kernel). Suporte limitado a outras
+                linguagens (Java via JVM integrada)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Sequências/Auto-incremento</strong></td>
+              <td>
+                <code>SERIAL</code>, <code>BIGSERIAL</code>,
+                <code>GENERATED AS IDENTITY</code> (padrão SQL)
+              </td>
+              <td>
+                <code>SEQUENCE</code> + <code>TRIGGER</code> ou
+                <code>GENERATED AS IDENTITY</code> (a partir do 12c)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Tipos de Dados</strong></td>
+              <td>
+                Extensível. Tipos nativos: JSONB, JSON, XML, Arrays, hstore,
+                Range, Geometric, Network, UUID, JSONPath
+              </td>
+              <td>
+                Tipos built-in menos extensíveis. XMLType, JSON (a partir do
+                12c), Spatial, Text. Arrays não são nativos
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Índices</strong></td>
+              <td>
+                B-tree, Hash, GiST, SP-GiST, GIN, BRIN. Extensível (novos tipos
+                de índice podem ser criados)
+              </td>
+              <td>
+                B-tree, Bitmap, Function-based, Reverse Key, Domain, IOT. Não
+                extensível pelo usuário
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Partitioning</strong></td>
+              <td>
+                Range, List, Hash (nativo desde v10). Subpartitioning suportado
+              </td>
+              <td>
+                Range, List, Hash, Interval, Reference, Composite (mais maduro e
+                flexível)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Limite de Banco (tamanho)</strong></td>
+              <td>Ilimitado (32 TB por tabela, 1.6 TB por campo)</td>
+              <td>
+                Ilimitado (Bigfile tablespace de 128 TB, blocos de até 32K)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Replicação</strong></td>
+              <td>
+                Streaming replication (física), Logical replication (desde v10)
+              </td>
+              <td>
+                Data Guard (física e lógica), GoldenGate, Streams, Advanced
+                Replication
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Ferramentas de Administração</strong></td>
+              <td>pgAdmin, psql, DBeaver, pgBadger, pg_stat_statements</td>
+              <td>
+                Oracle Enterprise Manager (OEM), SQL*Plus, SQL Developer,
+                AWR/ASH reports
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Comunidade/Suporte</strong></td>
+              <td>
+                Comunidade ativa, listas de discussão, empresas de suporte
+                terceirizadas (EDB, Crunchy Data, etc.)
+              </td>
+              <td>
+                Suporte oficial Oracle (pago), My Oracle Support (MOS),
+                comunidade Oracle
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Schema vs Usuário</strong></td>
+              <td>
+                Conceitos separados: um usuário não tem um schema
+                automaticamente. Schemas são namespaces
+              </td>
+              <td>
+                Usuário = Schema (cada usuário tem seu schema próprio com o
+                mesmo nome)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Comentários (comments)</strong></td>
+              <td>
+                <code>COMMENT ON</code> com sintaxe <code>-- </code> para SQL
+                inline
+              </td>
+              <td>
+                <code>COMMENT ON</code> (similar). Comentários inline com
+                <code>-- </code> ou <code>/* */</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Principais Diferenças no Dialeto SQL</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Recurso</th>
+              <th>PostgreSQL</th>
+              <th>Oracle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pseudo-coluna de linha</td>
+              <td>
+                <code>ctid</code>, <code>oid</code>, <code>xmin</code>,
+                <code>xmax</code>
+              </td>
+              <td><code>ROWID</code>, <code>ROWNUM</code></td>
+            </tr>
+            <tr>
+              <td>Limitação de linhas</td>
+              <td><code>LIMIT n OFFSET m</code></td>
+              <td>
+                <code>FETCH FIRST n ROWS ONLY</code> (12c+) ou
+                <code>ROWNUM</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Concatenação</td>
+              <td><code>||</code> ou <code>CONCAT()</code></td>
+              <td>
+                <code>||</code> ou <code>CONCAT()</code> (apenas 2 argumentos)
+              </td>
+            </tr>
+            <tr>
+              <td>Data atual</td>
+              <td>
+                <code>CURRENT_DATE</code>, <code>CURRENT_TIMESTAMP</code>,
+                <code>NOW()</code>
+              </td>
+              <td>
+                <code>SYSDATE</code>, <code>CURRENT_DATE</code>,
+                <code>SYSTIMESTAMP</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Dual table</td>
+              <td>Não necessária. <code>SELECT 1+1;</code></td>
+              <td><code>SELECT 1+1 FROM DUAL;</code></td>
+            </tr>
+            <tr>
+              <td>Strings literais</td>
+              <td>Aspas simples. Aspas duplas para identificadores</td>
+              <td>Aspas simples. Aspas duplas para identificadores</td>
+            </tr>
+            <tr>
+              <td>UPPER case automático</td>
+              <td>NÃO. Identificadores mantêm case. Caixa baixa por padrão</td>
+              <td>
+                SIM. Identificadores sem aspas são convertidos para UPPERCASE
+              </td>
+            </tr>
+            <tr>
+              <td>IF NOT EXISTS</td>
+              <td>Suporta em CREATE/DROP de quase todos os objetos</td>
+              <td>
+                Suporte limitado (DDL sem IF NOT EXISTS na maioria dos objetos)
+              </td>
+            </tr>
+            <tr>
+              <td>RETURNING clause</td>
+              <td>Sim (INSERT, UPDATE, DELETE)</td>
+              <td>Sim (a partir do 23c, via RETURNING INTO em PL/SQL)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PASSOS: CRIANDO ESQUEMA DE VENDAS -->
+      <section>
+        <h2>8. Passo a passo: Criando um esquema de vendas no PostgreSQL</h2>
+        <p>
+          Vamos construir um esquema de vendas completo com tabelas,
+          constraints, dados de exemplo e executar consultas JOIN para análise.
+        </p>
+
+        <h3>Passo 1 — Criar o banco de dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE DATABASE loja
+    OWNER postgres
+    ENCODING 'UTF8'
+    LC_COLLATE 'pt_BR.UTF-8'
+    LC_CTYPE 'pt_BR.UTF-8';
+
+-- Conectar ao banco loja
+-- \c loja
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar schema e tabelas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE SCHEMA vendas;
+
+-- Tabela de categorias de produtos
+CREATE TABLE vendas.categorias (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(50) NOT NULL UNIQUE,
+    descricao   TEXT
+);
+
+-- Tabela de produtos
+CREATE TABLE vendas.produtos (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    descricao   TEXT,
+    preco       NUMERIC(10,2) NOT NULL CHECK (preco > 0),
+    categoria_id INTEGER REFERENCES vendas.categorias(id),
+    estoque     INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+    created_at  TIMESTAMP DEFAULT NOW(),
+    updated_at  TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de clientes
+CREATE TABLE vendas.clientes (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    email       VARCHAR(150) UNIQUE,
+    telefone    VARCHAR(20),
+    cpf         VARCHAR(14) UNIQUE,
+    cidade      VARCHAR(100),
+    estado      VARCHAR(2),
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+
+-- Tabela de pedidos
+CREATE TABLE vendas.pedidos (
+    id          SERIAL PRIMARY KEY,
+    cliente_id  INTEGER NOT NULL REFERENCES vendas.clientes(id),
+    data_pedido TIMESTAMP DEFAULT NOW(),
+    valor_total  NUMERIC(10,2) NOT NULL DEFAULT 0,
+    status      VARCHAR(20) DEFAULT 'pendente'
+        CHECK (status IN ('pendente', 'confirmado', 'enviado', 'entregue', 'cancelado')),
+    observacao  TEXT
+);
+
+-- Tabela de itens do pedido
+CREATE TABLE vendas.itens_pedido (
+    id          SERIAL PRIMARY KEY,
+    pedido_id   INTEGER NOT NULL REFERENCES vendas.pedidos(id) ON DELETE CASCADE,
+    produto_id  INTEGER NOT NULL REFERENCES vendas.produtos(id),
+    quantidade  INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unit  NUMERIC(10,2) NOT NULL CHECK (preco_unit > 0)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Inserir dados de exemplo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Categorias
+INSERT INTO vendas.categorias (nome, descricao) VALUES
+    ('Eletrônicos', 'Equipamentos eletrônicos e gadgets'),
+    ('Informática', 'Computadores e acessórios'),
+    ('Games', 'Consoles, jogos e acessórios gamer'),
+    ('Móveis', 'Móveis para escritório'),
+    ('Papelaria', 'Material de escritório e papelaria');
+
+-- Produtos
+INSERT INTO vendas.produtos (nome, preco, categoria_id, estoque) VALUES
+    ('Notebook Dell', 4200.00, 2, 15),
+    ('Mouse Logitech', 150.00, 2, 80),
+    ('Teclado Mecânico', 350.00, 2, 45),
+    ('Monitor 27" LG', 1800.00, 1, 12),
+    ('PlayStation 5', 4500.00, 3, 5),
+    ('Cadeira Gamer', 2200.00, 4, 8),
+    ('Mesa Escrivaninha', 800.00, 4, 20),
+    ('Caderno 10 Matérias', 35.00, 5, 200),
+    ('Headset Gamer', 400.00, 3, 30),
+    ('Webcam Full HD', 280.00, 1, 40);
+
+-- Clientes
+INSERT INTO vendas.clientes (nome, email, telefone, cpf, cidade, estado) VALUES
+    ('Ana Costa', 'ana@email.com', '(11) 98888-1111', '123.456.789-00', 'São Paulo', 'SP'),
+    ('Bruno Silva', 'bruno@email.com', '(21) 97777-2222', '987.654.321-00', 'Rio de Janeiro', 'RJ'),
+    ('Carla Dias', 'carla@email.com', '(31) 96666-3333', '456.789.123-00', 'Belo Horizonte', 'MG'),
+    ('Daniel Reis', 'daniel@email.com', '(11) 95555-4444', '789.123.456-00', 'São Paulo', 'SP'),
+    ('Eva Martins', 'eva@email.com', '(41) 94444-5555', '321.654.987-00', 'Curitiba', 'PR'),
+    ('Fabio Lima', 'fabio@email.com', '(51) 93333-6666', '654.321.987-00', 'Porto Alegre', 'RS');
+
+-- Pedidos
+INSERT INTO vendas.pedidos (cliente_id, data_pedido, valor_total, status) VALUES
+    (1, '2025-05-10 14:30:00', 4350.00, 'entregue'),
+    (1, '2025-06-01 09:15:00', 1800.00, 'entregue'),
+    (2, '2025-05-20 11:00:00', 4700.00, 'entregue'),
+    (3, '2025-06-15 16:45:00', 350.00, 'enviado'),
+    (4, '2025-06-18 10:30:00', 1800.00, 'confirmado'),
+    (4, '2025-06-20 14:00:00', 2200.00, 'pendente'),
+    (2, '2025-06-19 08:00:00', 150.00, 'pendente');
+
+-- Itens de pedido
+INSERT INTO vendas.itens_pedido (pedido_id, produto_id, quantidade, preco_unit) VALUES
+    (1, 1, 1, 4200.00),
+    (1, 2, 1, 150.00),
+    (2, 4, 1, 1800.00),
+    (3, 5, 1, 4500.00),
+    (3, 9, 1, 200.00),
+    (4, 3, 1, 350.00),
+    (5, 4, 1, 1800.00),
+    (6, 6, 1, 2200.00),
+    (7, 2, 1, 150.00);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Executar consultas JOIN de análise</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Consulta 1: Clientes e seus pedidos (INNER JOIN)
+SELECT
+    c.nome AS cliente,
+    c.cidade,
+    p.id AS pedido,
+    p.data_pedido,
+    p.valor_total,
+    p.status
+FROM vendas.clientes c
+INNER JOIN vendas.pedidos p ON c.id = p.cliente_id
+ORDER BY c.nome, p.data_pedido;
+
+-- Consulta 2: Ticket médio por cliente (incluindo quem não comprou)
+SELECT
+    c.nome,
+    c.cidade,
+    COUNT(p.id) AS total_pedidos,
+    COALESCE(SUM(p.valor_total), 0) AS total_gasto,
+    COALESCE(AVG(p.valor_total), 0) AS ticket_medio
+FROM vendas.clientes c
+LEFT JOIN vendas.pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome, c.cidade
+ORDER BY total_gasto DESC;
+
+-- Consulta 3: Produtos mais vendidos (INNER JOIN de 3 tabelas)
+SELECT
+    pr.nome AS produto,
+    cat.nome AS categoria,
+    SUM(ip.quantidade) AS total_vendido,
+    SUM(ip.quantidade * ip.preco_unit) AS receita_gerada
+FROM vendas.itens_pedido ip
+INNER JOIN vendas.produtos pr ON ip.produto_id = pr.id
+INNER JOIN vendas.categorias cat ON pr.categoria_id = cat.id
+GROUP BY pr.id, pr.nome, cat.nome
+ORDER BY receita_gerada DESC;
+
+-- Consulta 4: Clientes que nunca compraram (LEFT JOIN + IS NULL)
+SELECT
+    c.nome,
+    c.email,
+    c.cidade,
+    c.data_cadastro
+FROM vendas.clientes c
+LEFT JOIN vendas.pedidos p ON c.id = p.cliente_id
+WHERE p.id IS NULL
+ORDER BY c.data_cadastro;
+
+-- Consulta 5: Vendas por categoria (CROSS JOIN de categorias com meses)
+WITH meses AS (
+    SELECT generate_series(
+        '2025-05-01'::DATE,
+        '2025-06-01'::DATE,
+        '1 month'::INTERVAL
+    ) AS mes
+)
+SELECT
+    TO_CHAR(m.mes, 'YYYY-MM') AS mes,
+    cat.nome AS categoria,
+    COALESCE(SUM(ip.quantidade * ip.preco_unit), 0) AS vendas
+FROM meses m
+CROSS JOIN vendas.categorias cat
+LEFT JOIN vendas.produtos pr ON pr.categoria_id = cat.id
+LEFT JOIN vendas.itens_pedido ip ON ip.produto_id = pr.id
+LEFT JOIN vendas.pedidos p ON ip.pedido_id = p.id
+    AND DATE_TRUNC('month', p.data_pedido) = m.mes
+GROUP BY m.mes, cat.id, cat.nome
+ORDER BY m.mes, vendas DESC;
+
+-- Consulta 6: Status dos pedidos com itens detalhados (FULL OUTER JOIN simulado)
+SELECT
+    p.id AS pedido,
+    p.status,
+    c.nome AS cliente,
+    pr.nome AS produto,
+    ip.quantidade,
+    ip.preco_unit
+FROM vendas.pedidos p
+LEFT JOIN vendas.clientes c ON p.cliente_id = c.id
+LEFT JOIN vendas.itens_pedido ip ON p.id = ip.pedido_id
+LEFT JOIN vendas.produtos pr ON ip.produto_id = pr.id
+ORDER BY p.id, pr.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. Instale o PostgreSQL e crie um banco de dados chamado "loja"
+            </h3>
+            <p>
+              Execute a instalação do PostgreSQL na sua máquina (Windows, Linux
+              ou macOS) e crie um banco de dados chamado <code>loja</code> com
+              encoding UTF-8, locale pt_BR. Configure o acesso local via
+              <code>scram-sha-256</code>. Verifique a instalação conectando via
+              <code>psql</code>.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+# Verificar se PostgreSQL está instalado
+psql --version
+# Deve retornar: psql (PostgreSQL) 16.x
+
+# Verificar se o servidor está rodando
+pg_isready
+# Deve retornar: /var/run/postgresql:5432 - accepting connections
+
+# Conectar como superusuário
+psql -U postgres
+
+# Dentro do psql:
+-- Criar o banco de dados loja
+CREATE DATABASE loja
+    OWNER postgres
+    ENCODING 'UTF8'
+    LC_COLLATE 'pt_BR.UTF-8'
+    LC_CTYPE 'pt_BR.UTF-8';
+
+-- Verificar se foi criado
+\l loja
+
+-- Conectar ao banco loja
+\c loja
+
+-- Verificar conexão
+SELECT current_database(), current_user, version();
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>
+                <strong>Configurando pg_hba.conf para scram-sha-256:</strong> No
+                arquivo <code>pg_hba.conf</code> (localizado no diretório de
+                dados: <code>SHOW data_directory;</code>), altere as linhas para
+                usar <code>scram-sha-256</code> como método. Depois execute
+                <code>SELECT pg_reload_conf();</code> ou
+                <code>pg_ctl reload</code>.
+              </p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Crie 3 tabelas relacionadas (clientes, pedidos, itens) com
+              tipos apropriados
+            </h3>
+            <p>
+              No banco <code>loja</code>, crie as tabelas <code>clientes</code>,
+              <code>pedidos</code> e <code>itens_pedido</code> com constraints
+              adequadas: PRIMARY KEY (SERIAL), FOREIGN KEY, CHECK, NOT NULL,
+              UNIQUE e valores DEFAULT onde fizer sentido. Use tipos de dados
+              apropriados para cada coluna.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabela clientes
+CREATE TABLE clientes (
+    id              SERIAL PRIMARY KEY,
+    nome            VARCHAR(100) NOT NULL,
+    email           VARCHAR(150) UNIQUE NOT NULL,
+    telefone        VARCHAR(20),
+    cpf             VARCHAR(14) UNIQUE,
+    data_nascimento DATE,
+    cidade          VARCHAR(100),
+    estado          CHAR(2),
+    data_cadastro   DATE DEFAULT CURRENT_DATE,
+    ativo           BOOLEAN DEFAULT true
+);
+
+-- Tabela pedidos
+CREATE TABLE pedidos (
+    id              SERIAL PRIMARY KEY,
+    cliente_id      INTEGER NOT NULL REFERENCES clientes(id),
+    data_pedido     TIMESTAMP DEFAULT NOW(),
+    valor_total     NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK (valor_total >= 0),
+    status          VARCHAR(20) DEFAULT 'pendente'
+        CHECK (status IN ('pendente', 'confirmado', 'enviado', 'entregue', 'cancelado'))
+);
+
+-- Tabela itens_pedido
+CREATE TABLE itens_pedido (
+    id              SERIAL PRIMARY KEY,
+    pedido_id       INTEGER NOT NULL REFERENCES pedidos(id) ON DELETE CASCADE,
+    produto_nome    VARCHAR(100) NOT NULL,
+    quantidade      INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unitario  NUMERIC(10,2) NOT NULL CHECK (preco_unitario > 0),
+    CONSTRAINT uq_item_pedido UNIQUE (pedido_id, produto_nome)
+);
+
+-- Criar índices para melhor performance
+CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);
+CREATE INDEX idx_pedidos_status ON pedidos(status);
+CREATE INDEX idx_pedidos_data ON pedidos(data_pedido);
+CREATE INDEX idx_itens_pedido ON itens_pedido(pedido_id);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>
+                A chave estrangeira <code>ON DELETE CASCADE</code> em
+                <code>itens_pedido</code> garante que deletar um pedido
+                automaticamente remove seus itens. Os índices melhoram a
+                performance das consultas por cliente e por status.
+              </p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Faça uma consulta com LEFT JOIN listando clientes que nunca
+              compraram
+            </h3>
+            <p>
+              Usando as tabelas criadas no exercício anterior (populadas com
+              dados de exemplo), escreva uma consulta que liste nome, email e
+              data de cadastro de todos os clientes que
+              <strong>nunca</strong> realizaram um pedido. Ordene por data de
+              cadastro (mais antigos primeiro).
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    c.nome,
+    c.email,
+    c.cidade,
+    c.data_cadastro
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+WHERE p.id IS NULL
+ORDER BY c.data_cadastro ASC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>
+                <strong>Explicação:</strong> O <code>LEFT JOIN</code> garante
+                que todos os clientes apareçam. O
+                <code>WHERE p.id IS NULL</code> filtra apenas aqueles que não
+                têm correspondência na tabela pedidos — ou seja, nunca
+                compraram. Se o LEFT JOIN fosse substituído por INNER JOIN,
+                esses clientes simplesmente não apareceriam no resultado.
+              </p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              4. Implemente um UPSERT para cadastro de produtos com ON CONFLICT
+            </h3>
+            <p>
+              Crie a tabela <code>produtos</code> com chave primária em
+              <code>id</code> e constraint UNIQUE em <code>codigo_barras</code>.
+              Em seguida, escreva uma instrução UPSERT que: se o
+              <code>codigo_barras</code> já existir, atualize o preço e o
+              estoque; se não existir, insira o novo produto. Retorne o id,
+              nome, preço e se foi inserido ou atualizado.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Passo 1: Criar a tabela produtos
+CREATE TABLE produtos (
+    id              SERIAL PRIMARY KEY,
+    codigo_barras   VARCHAR(13) UNIQUE NOT NULL,
+    nome            VARCHAR(100) NOT NULL,
+    descricao       TEXT,
+    preco           NUMERIC(10,2) NOT NULL CHECK (preco > 0),
+    estoque         INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+    categoria       VARCHAR(50),
+    created_at      TIMESTAMP DEFAULT NOW(),
+    updated_at      TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_produtos_codigo_barras ON produtos(codigo_barras);
+CREATE INDEX idx_produtos_categoria ON produtos(categoria);
+
+-- Passo 2: UPSERT — Inserir ou atualizar por código de barras
+INSERT INTO produtos (codigo_barras, nome, preco, estoque, categoria)
+VALUES ('7891234567890', 'Notebook Dell Inspiron', 4200.00, 15, 'Informática')
+ON CONFLICT (codigo_barras)
+DO UPDATE SET
+    nome = EXCLUDED.nome,
+    preco = EXCLUDED.preco,
+    estoque = EXCLUDED.estoque,
+    categoria = EXCLUDED.categoria,
+    updated_at = NOW()
+RETURNING
+    id,
+    nome,
+    preco,
+    estoque,
+    CASE
+        WHEN xmax = 0 THEN 'Inserido'
+        ELSE 'Atualizado'
+    END AS acao_realizada;
+
+-- Passo 3: Testar inserindo um novo produto
+INSERT INTO produtos (codigo_barras, nome, preco, estoque, categoria)
+VALUES ('7899876543210', 'Mouse Logitech MX', 350.00, 100, 'Informática')
+ON CONFLICT (codigo_barras)
+DO UPDATE SET
+    preco = EXCLUDED.preco,
+    estoque = EXCLUDED.estoque,
+    updated_at = NOW()
+RETURNING id, nome, preco,
+    CASE WHEN xmax = 0 THEN 'Inserido' ELSE 'Atualizado' END AS acao_realizada;
+
+-- Passo 4: Testar atualizando um produto existente (mesmo código_barras)
+INSERT INTO produtos (codigo_barras, nome, preco, estoque, categoria)
+VALUES ('7899876543210', 'Mouse Logitech MX Master 3S', 450.00, 120, 'Informática')
+ON CONFLICT (codigo_barras)
+DO UPDATE SET
+    nome = EXCLUDED.nome,
+    preco = EXCLUDED.preco,
+    estoque = EXCLUDED.estoque,
+    updated_at = NOW()
+RETURNING id, nome, preco,
+    CASE WHEN xmax = 0 THEN 'Inserido' ELSE 'Atualizado' END AS acao_realizada;
+
+-- Verificar resultado final
+SELECT * FROM produtos ORDER BY id;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>
+                <strong>Observação:</strong> O
+                <code>ON CONFLICT (codigo_barras)</code> funciona porque há uma
+                constraint UNIQUE nessa coluna. Se a constraint fosse composta
+                (ex: UNIQUE(codigo_barras, fornecedor_id)), a cláusula seria
+                <code>ON CONFLICT (codigo_barras, fornecedor_id)</code>. O
+                <code>EXCLUDED</code> é uma pseudo-tabela que contém os valores
+                que <strong>estavam sendo inseridos</strong> — essencial para
+                referenciar os novos valores na cláusula UPDATE.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Verifique se o PostgreSQL foi instalado corretamente, se
+          o banco loja foi criado, se as tabelas foram populadas e se as
+          consultas JOIN retornam os resultados esperados.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula8</code></li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

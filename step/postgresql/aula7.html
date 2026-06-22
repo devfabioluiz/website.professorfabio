@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7 - Administração do Oracle DBMS - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 7: Administração do Oracle DBMS</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Modelo de segurança Oracle (usuários, roles, GRANT/REVOKE, perfis), Backup e restauração (RMAN, Data Pump - expdp/impdp, backups lógicos e físicos).</div>
+    </header>
+    <main class="container">
+
+      <!-- MODELO DE SEGURANÇA ORACLE -->
+      <section>
+        <h2>1. Modelo de Segurança Oracle</h2>
+        <p>
+          O Oracle DBMS implementa um dos modelos de segurança mais robustos entre os SGBDs corporativos. A segurança é baseada em quatro pilares fundamentais:
+        </p>
+        <ul>
+          <li><strong>Usuários (Users):</strong> contas individuais que se autenticam no banco de dados. Cada usuário possui um schema próprio com o mesmo nome (por padrão).</li>
+          <li><strong>Roles:</strong> agrupamentos nomeados de privilégios que podem ser concedidos a usuários ou a outras roles, simplificando a gestão de permissões.</li>
+          <li><strong>Privilégios (Privileges):</strong> permissões específicas para executar operações. Dividem-se em privilégios de sistema (ações globais) e privilégios de objeto (ações sobre objetos específicos).</li>
+          <li><strong>Perfis (Profiles):</strong> conjuntos de limites de recursos e políticas de senha aplicáveis a usuários, controlando consumo e segurança das contas.</li>
+        </ul>
+        <p>
+          <strong>Fluxo típico de configuração de segurança:</strong> DBA cria usuários → cria roles com privilégios adequados → concede roles aos usuários → aplica perfis para controle de recursos e senhas.
+        </p>
+      </section>
+
+      <!-- GERENCIANDO USUÁRIOS -->
+      <section>
+        <h2>2. Gerenciando Usuários</h2>
+        <p>
+          No Oracle, o gerenciamento de usuários é feito através de comandos DDL (Data Definition Language). O DBA (ou um usuário com privilégios administrativos) é responsável por criar, alterar e remover contas.
+        </p>
+
+        <h3>Criando um Usuário Básico</h3>
+        <p>O comando mais simples para criar um usuário exige apenas nome e senha:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE USER joao IDENTIFIED BY senha123;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>O usuário é criado, mas não pode fazer login porque não possui o privilégio <code>CREATE SESSION</code>. Para concedê-lo:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+GRANT CREATE SESSION TO joao;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Alterando Senha do Usuário</h3>
+        <p>Para modificar a senha de um usuário existente:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+ALTER USER joao IDENTIFIED BY nova_senha;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Desbloqueando Conta</h3>
+        <p>Contas podem ser bloqueadas após múltiplas tentativas de login falhas. Para desbloquear:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+ALTER USER joao ACCOUNT UNLOCK;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Para bloquear manualmente:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+ALTER USER joao ACCOUNT LOCK;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Gerenciando Quota (Espaço em Tablespace)</h3>
+        <p>Controla quanto espaço o usuário pode consumir em cada tablespace:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder 100 MB no tablespace USERS
+ALTER USER joao QUOTA 100M ON users;
+
+-- Conceder quota ilimitada
+ALTER USER joao QUOTA UNLIMITED ON users;
+
+-- Revogar quota (impede criação de objetos)
+ALTER USER joao QUOTA 0 ON users;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Criando Usuário Completo</h3>
+        <p>Um comando mais completo, definindo tablespace padrão, tablespace temporário e quotas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE USER maria
+IDENTIFIED BY senha456
+DEFAULT TABLESPACE users
+TEMPORARY TABLESPACE temp
+QUOTA UNLIMITED ON users
+QUOTA 50M ON tools;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Removendo Usuário</h3>
+        <p>Para excluir um usuário e todos os seus objetos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remove apenas o usuário (falha se houver objetos)
+DROP USER joao;
+
+-- Remove usuário e todos os seus objetos (tabelas, views, etc.)
+DROP USER joao CASCADE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Atenção:</strong> O <code>CASCADE</code> é irreversível — todas as tabelas, views, procedures e demais objetos do schema do usuário são permanentemente excluídos.
+        </p>
+
+        <h3>Consultando Usuários do Banco</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os usuários
+SELECT username, account_status, default_tablespace, created
+FROM dba_users
+ORDER BY username;
+
+-- Ver quotas de um usuário específico
+SELECT tablespace_name, username, max_bytes
+FROM dba_ts_quotas
+WHERE username = 'JOAO';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ROLES NO ORACLE -->
+      <section>
+        <h2>3. Roles no Oracle</h2>
+        <p>
+          Uma <strong>role</strong> é um conjunto nomeado de privilégios que pode ser concedido a usuários ou a outras roles. Roles simplificam drasticamente a administração de segurança em ambientes com muitos usuários.
+        </p>
+
+        <h3>Roles Predefinidas (Predefined Roles)</h3>
+        <p>O Oracle vem com várias roles padrão. As três mais importantes são:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Privilégios Incluídos</th>
+              <th>Uso Típico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>CONNECT</code></td>
+              <td>CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE SYNONYM, CREATE CLUSTER, CREATE DATABASE LINK, CREATE MATERIALIZED VIEW</td>
+              <td>Desenvolvedores que precisam criar objetos básicos</td>
+            </tr>
+            <tr>
+              <td><code>RESOURCE</code></td>
+              <td>CREATE PROCEDURE, CREATE TRIGGER, CREATE TYPE, CREATE OPERATOR, CREATE INDEXTYPE (além dos privilégios incluídos)</td>
+              <td>Desenvolvedores que trabalham com PL/SQL e objetos avançados</td>
+            </tr>
+            <tr>
+              <td><code>DBA</code></td>
+              <td>Praticamente todos os privilégios de sistema, incluindo ADMIN OPTION</td>
+              <td>Administradores do banco de dados</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder roles predefinidas a um usuário
+GRANT CONNECT, RESOURCE TO joao;
+GRANT DBA TO maria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Criando Roles Personalizadas</h3>
+        <p>Roles customizadas permitem agrupar exatamente os privilégios necessários para cada função na organização:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar uma role
+CREATE ROLE desenvolvedor;
+
+-- Conceder privilégios de sistema à role
+GRANT CREATE SESSION TO desenvolvedor;
+GRANT CREATE TABLE TO desenvolvedor;
+GRANT CREATE VIEW TO desenvolvedor;
+GRANT CREATE SEQUENCE TO desenvolvedor;
+GRANT CREATE PROCEDURE TO desenvolvedor;
+GRANT CREATE TRIGGER TO desenvolvedor;
+
+-- Conceder a role ao usuário
+GRANT desenvolvedor TO joao;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Ativando e Configurando Roles</h3>
+        <p>Um usuário pode ter múltiplas roles, mas nem todas ficam ativas por padrão:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ativar uma role específica na sessão
+SET ROLE desenvolvedor;
+
+-- Ativar todas as roles concedidas ao usuário
+SET ROLE ALL;
+
+-- Ativar todas exceto uma específica
+SET ROLE ALL EXCEPT dba;
+
+-- Definir role padrão (ativa automaticamente no login)
+ALTER USER joao DEFAULT ROLE desenvolvedor;
+
+-- Definir todas as roles como padrão
+ALTER USER joao DEFAULT ROLE ALL;
+
+-- Definir todas exceto uma
+ALTER USER joao DEFAULT ROLE ALL EXCEPT dba;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Hierarquia de Roles</h3>
+        <p>Roles podem ser concedidas a outras roles, criando uma hierarquia de permissões:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar hierarquia de roles
+CREATE ROLE estagiario;
+CREATE ROLE desenvolvedor;
+CREATE ROLE senior;
+CREATE ROLE tech_lead;
+
+-- Conceder hierarquia (cada nível herda o anterior)
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO estagiario;
+GRANT estagiario TO desenvolvedor;
+GRANT CREATE PROCEDURE, CREATE TRIGGER TO desenvolvedor;
+GRANT desenvolvedor TO senior;
+GRANT CREATE ANY TABLE, DROP ANY TABLE TO senior;
+GRANT senior TO tech_lead;
+GRANT ALTER DATABASE, CREATE USER TO tech_lead;
+
+-- tech_lead herda todos os privilégios abaixo na cadeia
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Removendo Roles</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Revogar role de um usuário
+REVOKE desenvolvedor FROM joao;
+
+-- Excluir a role do banco
+DROP ROLE estagiario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PRIVILÉGIOS DE SISTEMA E OBJETO -->
+      <section>
+        <h2>4. Privilégios de Sistema e Objeto</h2>
+        <p>
+          O Oracle divide os privilégios em duas categorias: <strong>privilégios de sistema</strong> (ações globais no banco) e <strong>privilégios de objeto</strong> (ações sobre objetos específicos como tabelas, views e procedures).
+        </p>
+
+        <h3>Privilégios de Sistema Mais Comuns</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Privilégio</th>
+              <th>Permite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>CREATE SESSION</code></td><td>Conectar ao banco de dados</td></tr>
+            <tr><td><code>CREATE TABLE</code></td><td>Criar tabelas no próprio schema</td></tr>
+            <tr><td><code>CREATE ANY TABLE</code></td><td>Criar tabelas em qualquer schema</td></tr>
+            <tr><td><code>CREATE VIEW</code></td><td>Criar views no próprio schema</td></tr>
+            <tr><td><code>CREATE PROCEDURE</code></td><td>Criar procedures e functions</td></tr>
+            <tr><td><code>CREATE TRIGGER</code></td><td>Criar triggers</td></tr>
+            <tr><td><code>CREATE SEQUENCE</code></td><td>Criar sequences</td></tr>
+            <tr><td><code>CREATE USER</code></td><td>Criar usuários (privilégio de DBA)</td></tr>
+            <tr><td><code>DROP USER</code></td><td>Remover usuários</td></tr>
+            <tr><td><code>ALTER DATABASE</code></td><td>Alterar configurações do banco</td></tr>
+            <tr><td><code>UNLIMITED TABLESPACE</code></td><td>Usar espaço ilimitado em qualquer tablespace</td></tr>
+            <tr><td><code>SELECT ANY TABLE</code></td><td>Consultar qualquer tabela do banco</td></tr>
+            <tr><td><code>BACKUP ANY TABLE</code></td><td>Fazer backup de qualquer tabela</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder privilégios de sistema
+GRANT CREATE SESSION TO desenvolvedor;
+GRANT CREATE TABLE TO desenvolvedor;
+GRANT UNLIMITED TABLESPACE TO desenvolvedor;
+GRANT SELECT ANY TABLE TO auditor;
+
+-- Com ADMIN OPTION (permite repassar o privilégio)
+GRANT CREATE SESSION TO rh_admin WITH ADMIN OPTION;
+
+-- Revogar privilégios de sistema
+REVOKE CREATE TABLE FROM desenvolvedor;
+REVOKE UNLIMITED TABLESPACE FROM desenvolvedor;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Privilégios de Objeto</h3>
+        <p>Controlam o acesso a objetos específicos dentro de schemas:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Privilégio</th>
+              <th>Permite em Tabelas</th>
+              <th>Permite em Views</th>
+              <th>Permite em Procedures</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SELECT</code></td><td>Consultar dados</td><td>Consultar a view</td><td>—</td></tr>
+            <tr><td><code>INSERT</code></td><td>Inserir linhas</td><td>Inserir via view</td><td>—</td></tr>
+            <tr><td><code>UPDATE</code></td><td>Atualizar linhas</td><td>Atualizar via view</td><td>—</td></tr>
+            <tr><td><code>DELETE</code></td><td>Excluir linhas</td><td>Excluir via view</td><td>—</td></tr>
+            <tr><td><code>REFERENCES</code></td><td>Criar FK referenciando</td><td>—</td><td>—</td></tr>
+            <tr><td><code>ALTER</code></td><td>Alterar estrutura</td><td>Alterar definição</td><td>—</td></tr>
+            <tr><td><code>INDEX</code></td><td>Criar índices</td><td>—</td><td>—</td></tr>
+            <tr><td><code>EXECUTE</code></td><td>—</td><td>—</td><td>Executar a procedure</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder privilégios de objeto (schema dono executa)
+GRANT SELECT ON funcionarios TO desenvolvedor;
+GRANT SELECT, INSERT, UPDATE ON funcionarios TO rh_admin;
+GRANT EXECUTE ON calcular_salario TO rh_admin;
+
+-- Conceder múltiplos privilégios de uma vez
+GRANT SELECT, INSERT, UPDATE, DELETE ON departamentos TO desenvolvedor;
+
+-- Conceder em todas as tabelas de um schema
+GRANT SELECT ON hr.departamentos TO desenvolvedor;
+GRANT SELECT ON hr.funcionarios TO desenvolvedor;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Privilégios em Nível de Coluna</h3>
+        <p>É possível restringir privilégios a colunas específicas de uma tabela:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permitir UPDATE apenas na coluna salario
+GRANT UPDATE (salario) ON funcionarios TO rh_admin;
+
+-- Permitir INSERT apenas em colunas específicas
+GRANT INSERT (nome, cargo, departamento_id) ON funcionarios TO rh_admin;
+
+-- Permitir REFERENCES em coluna específica
+GRANT REFERENCES (departamento_id) ON departamentos TO desenvolvedor;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WITH GRANT OPTION</h3>
+        <p>
+          Permite que o recebedor do privilégio o repasse para outros usuários. Equivalente ao <code>WITH ADMIN OPTION</code> dos privilégios de sistema, mas aplicável a privilégios de objeto:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Com WITH GRANT OPTION, o RH pode conceder SELECT a terceiros
+GRANT SELECT ON funcionarios TO rh_admin WITH GRANT OPTION;
+
+-- rh_admin agora pode repassar:
+-- rh_admin executa:
+GRANT SELECT ON hr.funcionarios TO estagiario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Revogando Privilégios de Objeto</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Revogar privilégios específicos
+REVOKE INSERT ON funcionarios FROM estagiario;
+
+-- Revogar todos os privilégios concedidos a um usuário
+REVOKE ALL ON funcionarios FROM estagiario;
+
+-- Revogar um privilégio que foi repassado via GRANT OPTION
+-- CASCADE remove também de quem recebeu indiretamente
+REVOKE SELECT ON funcionarios FROM rh_admin CASCADE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Verificando Privilégios Concedidos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Privilégios de sistema concedidos a um usuário
+SELECT * FROM dba_sys_privs
+WHERE grantee = 'JOAO';
+
+-- Privilégios de sistema concedidos a roles
+SELECT * FROM dba_sys_privs
+WHERE grantee = 'DESENVOLVEDOR';
+
+-- Privilégios de objeto concedidos
+SELECT grantee, owner, table_name, privilege
+FROM dba_tab_privs
+WHERE grantee IN ('JOAO', 'DESENVOLVEDOR');
+
+-- Roles concedidas a um usuário
+SELECT * FROM dba_role_privs
+WHERE grantee = 'JOAO';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PERFIS (PROFILES) -->
+      <section>
+        <h2>5. Perfis (Profiles)</h2>
+        <p>
+          Um <strong>profile</strong> é um conjunto nomeado de limites de recursos e políticas de senha que pode ser atribuído a usuários. Profiles permitem ao DBA controlar o consumo de recursos do banco e impor políticas de segurança nas senhas.
+        </p>
+
+        <h3>Parâmetros de Limite de Recursos (Kernel)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SESSIONS_PER_USER</code></td><td>Número máximo de sessões simultâneas por usuário</td></tr>
+            <tr><td><code>CPU_PER_SESSION</code></td><td>Tempo máximo de CPU por sessão (em centésimos de segundo)</td></tr>
+            <tr><td><code>CPU_PER_CALL</code></td><td>Tempo máximo de CPU por chamada SQL</td></tr>
+            <tr><td><code>CONNECT_TIME</code></td><td>Tempo máximo de conexão (em minutos)</td></tr>
+            <tr><td><code>IDLE_TIME</code></td><td>Tempo máximo de inatividade antes de desconectar (em minutos)</td></tr>
+            <tr><td><code>LOGICAL_READS_PER_SESSION</code></td><td>Máximo de blocos lidos por sessão</td></tr>
+            <tr><td><code>LOGICAL_READS_PER_CALL</code></td><td>Máximo de blocos lidos por chamada SQL</td></tr>
+            <tr><td><code>COMPOSITE_LIMIT</code></td><td>Limite composto baseado em custo total</td></tr>
+            <tr><td><code>PRIVATE_SGA</code></td><td>Memória privada máxima na SGA por sessão</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Parâmetros de Política de Senha</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>FAILED_LOGIN_ATTEMPTS</code></td><td>Tentativas de login falhas antes do bloqueio da conta</td></tr>
+            <tr><td><code>PASSWORD_LOCK_TIME</code></td><td>Dias que a conta fica bloqueada após atingir o limite de falhas</td></tr>
+            <tr><td><code>PASSWORD_LIFE_TIME</code></td><td>Dias de vida útil da senha antes de expirar</td></tr>
+            <tr><td><code>PASSWORD_GRACE_TIME</code></td><td>Dias de "período de graça" após expiração (ainda pode logar, mas recebe aviso)</td></tr>
+            <tr><td><code>PASSWORD_REUSE_TIME</code></td><td>Dias antes de poder reutilizar uma senha antiga</td></tr>
+            <tr><td><code>PASSWORD_REUSE_MAX</code></td><td>Número de alterações antes de poder reutilizar uma senha</td></tr>
+            <tr><td><code>PASSWORD_VERIFY_FUNCTION</code></td><td>Função PL/SQL para validação de complexidade da senha</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Criando e Aplicando Profiles</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar um profile com limites de recursos e políticas de senha
+CREATE PROFILE perfil_padrao LIMIT
+    SESSIONS_PER_USER       3
+    IDLE_TIME               30
+    FAILED_LOGIN_ATTEMPTS   5
+    PASSWORD_LOCK_TIME      1
+    PASSWORD_LIFE_TIME      90
+    PASSWORD_GRACE_TIME     7
+    PASSWORD_REUSE_TIME     365
+    PASSWORD_REUSE_MAX      10
+    CPU_PER_SESSION         UNLIMITED
+    CONNECT_TIME            120;
+
+-- Aplicar o profile a um usuário
+ALTER USER joao PROFILE perfil_padrao;
+
+-- Aplicar a múltiplos usuários
+ALTER USER maria PROFILE perfil_padrao;
+ALTER USER pedro PROFILE perfil_padrao;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Profile Específico para Aplicações</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE PROFILE perfil_app LIMIT
+    SESSIONS_PER_USER       10
+    IDLE_TIME               60
+    CONNECT_TIME            480
+    CPU_PER_SESSION         10000
+    FAILED_LOGIN_ATTEMPTS   3
+    PASSWORD_LOCK_TIME      1
+    PASSWORD_LIFE_TIME      60;
+
+-- Aplicar ao usuário da aplicação
+ALTER USER app_user PROFILE perfil_app;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Consultando Profiles</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os profiles e seus limites
+SELECT * FROM dba_profiles
+ORDER BY profile, resource_name;
+
+-- Ver qual profile um usuário está usando
+SELECT username, profile
+FROM dba_users
+WHERE username = 'JOAO';
+
+-- Ver usuários com um profile específico
+SELECT username, account_status, profile
+FROM dba_users
+WHERE profile = 'PERFIL_PADRAO';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Alterando e Removendo Profiles</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Alterar limites de um profile existente
+ALTER PROFILE perfil_padrao LIMIT
+    SESSIONS_PER_USER       5
+    PASSWORD_LIFE_TIME      120
+    IDLE_TIME               45;
+
+-- Remover um profile (usuários voltam ao DEFAULT)
+DROP PROFILE perfil_app;
+
+-- Remover com CASCADE (desassocia de todos os usuários)
+DROP PROFILE perfil_app CASCADE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Importante:</strong> Para que os limites de recursos (CPU, leituras lógicas, tempo de conexão) sejam efetivamente impostos, o parâmetro de inicialização <code>RESOURCE_LIMIT</code> deve estar configurado como <code>TRUE</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Verificar se RESOURCE_LIMIT está ativo
+SHOW PARAMETER resource_limit;
+
+-- Ativar (requer privilégios de DBA)
+ALTER SYSTEM SET resource_limit = TRUE SCOPE=BOTH;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- BACKUP E RESTAURAÇÃO - VISÃO GERAL -->
+      <section>
+        <h2>6. Backup e Restauração - Visão Geral</h2>
+        <p>
+          A proteção dos dados é uma das responsabilidades mais críticas de um DBA. O Oracle oferece múltiplas ferramentas e estratégias de backup, cada uma adequada a diferentes cenários. Os backups se classificam em duas grandes categorias:
+        </p>
+
+        <h3>Backup Físico</h3>
+        <ul>
+          <li>Cópia dos arquivos físicos do banco (datafiles, control files, redo logs, archive logs)</li>
+          <li>Pode ser feito com o banco online (hot backup) ou offline (cold backup)</li>
+          <li>Ferramenta principal: <strong>RMAN (Recovery Manager)</strong></li>
+          <li>Permite recuperação point-in-time (PITR)</li>
+          <li>Mais rápido para bancos grandes</li>
+          <li>Backup e restore em nível de bloco</li>
+        </ul>
+
+        <h3>Backup Lógico</h3>
+        <ul>
+          <li>Extrai a definição lógica e os dados dos objetos (tabelas, views, procedures, etc.)</li>
+          <li>Gera arquivos dump portáteis (podem ser importados em versões diferentes)</li>
+          <li>Ferramenta principal: <strong>Data Pump (expdp/impdp)</strong></li>
+          <li>Mais granular: permite exportar schemas, tabelas ou tablespaces específicos</li>
+          <li>Útil para migração entre versões, cópia seletiva de dados, refreshes de ambientes</li>
+          <li>Mais lento que RMAN para bancos grandes</li>
+        </ul>
+
+        <p>
+          <strong>Estratégia ideal:</strong> Combinar backups físicos regulares (RMAN) para recuperação completa com backups lógicos pontuais (Data Pump) para granularidade e portabilidade.
+        </p>
+      </section>
+
+      <!-- RMAN -->
+      <section>
+        <h2>7. RMAN (Recovery Manager)</h2>
+        <p>
+          O <strong>RMAN</strong> é a ferramenta nativa do Oracle para backup e recuperação física. Ele opera em nível de bloco e é integrado ao kernel do Oracle, permitindo backups online (com o banco em operação) e recuperação point-in-time.
+        </p>
+
+        <h3>Conectando ao RMAN</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Conectar como SYSDBA (autenticação OS)
+rman target /
+
+# Conectar com usuário e senha
+rman target system/senha
+
+# Conectar a um banco remoto (via TNS)
+rman target system/senha@ORCL
+
+# Conectar ao banco target e ao catálogo de recuperação
+rman target / catalog rman_cat_user/senha@catalog_db
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Verificando Configuração RMAN</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Mostrar todas as configurações do RMAN
+RMAN> SHOW ALL;
+
+# Configurar retenção de backup (7 dias)
+RMAN> CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
+
+# Configurar dispositivo padrão para disco
+RMAN> CONFIGURE DEFAULT DEVICE TYPE TO DISK;
+
+# Configurar paralelismo (usar 2 canais simultâneos)
+RMAN> CONFIGURE DEVICE TYPE DISK PARALLELISM 2;
+
+# Configurar local de backup
+RMAN> CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '/backup/%d_%T_%s_%p.bkp';
+
+# Configurar política de redundância (manter 2 cópias)
+RMAN> CONFIGURE RETENTION POLICY TO REDUNDANCY 2;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup Full Database</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup completo do banco (inclui todos os datafiles, controlfile e spfile)
+RMAN> BACKUP DATABASE;
+
+# Backup completo com tag para identificação
+RMAN> BACKUP DATABASE TAG 'backup_semanal';
+
+# Backup completo incluindo archive logs e deletando os já armazenados
+RMAN> BACKUP DATABASE PLUS ARCHIVELOG DELETE INPUT;
+
+# Backup completo com formato de arquivo customizado
+RMAN> BACKUP DATABASE FORMAT '/backup/full_%d_%T_%s.bkp';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup de Tablespace Específico</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup de um tablespace específico
+RMAN> BACKUP TABLESPACE users;
+
+# Backup de múltiplos tablespaces
+RMAN> BACKUP TABLESPACE users, tools, data_ts;
+
+# Backup de tablespace incluindo archive logs
+RMAN> BACKUP TABLESPACE users PLUS ARCHIVELOG;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup Incremental</h3>
+        <p>Backups incrementais economizam tempo e espaço, copiando apenas os blocos que mudaram desde o último backup:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup incremental nível 0 (base para incrementais futuros - cópia completa)
+RMAN> BACKUP INCREMENTAL LEVEL 0 DATABASE;
+
+# Backup incremental nível 1 (apenas blocos alterados desde o nível 0)
+RMAN> BACKUP INCREMENTAL LEVEL 1 DATABASE;
+
+# Backup incremental cumulativo nível 1 (desde o último nível 0)
+RMAN> BACKUP INCREMENTAL LEVEL 1 CUMULATIVE DATABASE;
+
+# Backup incremental de tablespace
+RMAN> BACKUP INCREMENTAL LEVEL 1 TABLESPACE users;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup de Archive Logs</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup de todos os archive logs
+RMAN> BACKUP ARCHIVELOG ALL;
+
+# Backup de archive logs e deletar os originais (libera espaço)
+RMAN> BACKUP ARCHIVELOG ALL DELETE INPUT;
+
+# Backup de archive logs a partir de uma data
+RMAN> BACKUP ARCHIVELOG FROM TIME "SYSDATE-7";
+
+# Backup de archive logs por sequência
+RMAN> BACKUP ARCHIVELOG FROM SEQUENCE 100 UNTIL SEQUENCE 150;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup de Control File e SPFile</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup do control file atual
+RMAN> BACKUP CURRENT CONTROLFILE;
+
+# Backup do spfile (server parameter file)
+RMAN> BACKUP SPFILE;
+
+# Configurar backup automático de controlfile e spfile
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP ON;
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/backup/cf_%d_%F.bkp';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Listando Backups</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Listar todos os backups
+RMAN> LIST BACKUP;
+
+# Listar backups do banco inteiro
+RMAN> LIST BACKUP OF DATABASE;
+
+# Listar backups de um tablespace
+RMAN> LIST BACKUP OF TABLESPACE users;
+
+# Listar backups por tag
+RMAN> LIST BACKUP TAG 'backup_semanal';
+
+# Listar resumo compacto dos backups
+RMAN> LIST BACKUP SUMMARY;
+
+# Listar backups que expiraram (de acordo com a política de retenção)
+RMAN> LIST EXPIRED BACKUP;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Validando Backups</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Verificar se um backup é válido (sem restaurar)
+RMAN> RESTORE DATABASE VALIDATE;
+
+# Validar um backup específico
+RMAN> RESTORE TABLESPACE users VALIDATE;
+
+# Verificar integridade física dos arquivos de backup
+RMAN> CROSSCHECK BACKUP;
+
+# Verificar backups obsoletos
+RMAN> REPORT OBSOLETE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Restauração e Recuperação (Restore & Recover)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Restaurar e recuperar o banco inteiro
+RMAN> RESTORE DATABASE;
+RMAN> RECOVER DATABASE;
+
+# Restaurar um tablespace específico
+RMAN> RESTORE TABLESPACE users;
+RMAN> RECOVER TABLESPACE users;
+
+# Restaurar um datafile específico
+RMAN> RESTORE DATAFILE '/u01/oradata/ORCL/users01.dbf';
+RMAN> RECOVER DATAFILE '/u01/oradata/ORCL/users01.dbf';
+
+# Restaurar control file do autobackup
+RMAN> RESTORE CONTROLFILE FROM AUTOBACKUP;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Recuperação Point-in-Time (PITR)</h3>
+        <p>A recuperação point-in-time permite restaurar o banco para um estado exato em uma data/hora específica no passado:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Recuperar até uma data/hora específica
+RMAN> RUN {
+    SET UNTIL TIME "TO_DATE('2025-06-20 10:00:00', 'YYYY-MM-DD HH24:MI:SS')";
+    RESTORE DATABASE;
+    RECOVER DATABASE;
+}
+
+# Recuperar até um SCN (System Change Number) específico
+RMAN> RUN {
+    SET UNTIL SCN 1234567;
+    RESTORE DATABASE;
+    RECOVER DATABASE;
+}
+
+# Recuperar até um sequence number de archive log
+RMAN> RUN {
+    SET UNTIL SEQUENCE 150;
+    RESTORE DATABASE;
+    RECOVER DATABASE;
+}
+
+# Abrir o banco com RESETLOGS após PITR
+SQL> ALTER DATABASE OPEN RESETLOGS;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Recuperação de Tablespace Específico (TSPITR)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Recuperar tablespace users para 2 dias atrás
+RMAN> RECOVER TABLESPACE users
+    UNTIL TIME "SYSDATE-2"
+    AUXILIARY DESTINATION '/tmp/aux';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Removendo Backups Antigos</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Deletar backups obsoletos (fora da política de retenção)
+RMAN> DELETE OBSOLETE;
+
+# Deletar backups expirados
+RMAN> DELETE EXPIRED BACKUP;
+
+# Deletar um backup específico
+RMAN> DELETE BACKUP TAG 'backup_semanal';
+
+# Deletar backups mais antigos que 30 dias
+RMAN> DELETE BACKUP COMPLETED BEFORE "SYSDATE-30";
+
+# Forçar deleção (ignorar erros de arquivo não encontrado)
+RMAN> DELETE EXPIRED BACKUP FORCE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DATA PUMP -->
+      <section>
+        <h2>8. Data Pump (expdp/impdp)</h2>
+        <p>
+          O <strong>Oracle Data Pump</strong> é a ferramenta de backup lógico do Oracle, sucessora do antigo <code>exp/imp</code>. Ela exporta e importa metadados e dados em formato proprietário (.dmp), oferecendo alta performance, paralelismo e filtros avançados.
+        </p>
+
+        <h3>Pré-requisito: Criando um Directory Object</h3>
+        <p>Antes de usar o Data Pump, é necessário criar um directory object que aponte para um diretório físico no servidor:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar diretório físico no sistema operacional (como usuário oracle)
+-- mkdir -p /backup/datapump
+
+-- Criar o directory object no Oracle
+CREATE OR REPLACE DIRECTORY dpump_dir AS '/backup/datapump';
+
+-- Conceder permissão de leitura/escrita no diretório
+GRANT READ, WRITE ON DIRECTORY dpump_dir TO system;
+GRANT READ, WRITE ON DIRECTORY dpump_dir TO joao;
+
+-- Listar todos os directory objects
+SELECT * FROM dba_directories;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Export de Schema (Usuário)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Exportar um schema completo
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh.dmp LOGFILE=export_rh.log SCHEMAS=rh
+
+# Exportar múltiplos schemas
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_schemas.dmp LOGFILE=export_schemas.log SCHEMAS=rh,financeiro,vendas
+
+# Exportar schema com paralelismo (2 workers)
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh_%U.dmp LOGFILE=export_rh.log SCHEMAS=rh PARALLEL=2
+
+# Exportar schema sem dados (apenas metadados - estrutura)
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=estrutura_rh.dmp SCHEMAS=rh CONTENT=METADATA_ONLY
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Export Full Database</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Export completo de todo o banco
+expdp system/senha FULL=Y DIRECTORY=dpump_dir DUMPFILE=full_backup.dmp LOGFILE=export_full.log
+
+# Export completo com paralelismo
+expdp system/senha FULL=Y DIRECTORY=dpump_dir DUMPFILE=full_%U.dmp PARALLEL=4
+
+# Export completo apenas metadados
+expdp system/senha FULL=Y DIRECTORY=dpump_dir DUMPFILE=full_metadata.dmp CONTENT=METADATA_ONLY
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Export de Tabelas Específicas</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Exportar tabelas específicas de um schema
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=tabelas_rh.dmp LOGFILE=export_tabelas.log TABLES=rh.funcionarios,rh.departamentos
+
+# Exportar com filtro WHERE (apenas linhas que atendem condição)
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=func_ativo.dmp TABLES=rh.funcionarios QUERY='WHERE status=''ATIVO'''
+
+# Exportar com filtro de partição
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=tab_part.dmp TABLES=rh.vendas PARTITION=p_2025
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Export de Tablespace</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Exportar todos os objetos de um tablespace
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=tbs_users.dmp TABLESPACES=users
+
+# Exportar múltiplos tablespaces
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=tbs_backup.dmp TABLESPACES=users,data_ts
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Opções de Conteúdo (CONTENT)</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Apenas metadados (DDL - estrutura sem dados)
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=metadata.dmp SCHEMAS=rh CONTENT=METADATA_ONLY
+
+# Apenas dados (sem estrutura - requer que tabelas já existam no destino)
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=dados.dmp SCHEMAS=rh CONTENT=DATA_ONLY
+
+# Ambos (padrão) - metadados + dados
+expdp system/senha DIRECTORY=dpump_dir DUMPFILE=completo.dmp SCHEMAS=rh CONTENT=ALL
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Import de Schema</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Importar schema completo (cria objetos e insere dados)
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh.dmp LOGFILE=import_rh.log SCHEMAS=rh
+
+# Importar schema com remapeamento (schema origem -> schema destino)
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh.dmp REMAP_SCHEMA=rh:rh_teste
+
+# Importar schema com remapeamento de tablespace
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh.dmp REMAP_TABLESPACE=users:tbs_novo
+
+# Importar schema com paralelismo
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=backup_rh_%U.dmp SCHEMAS=rh PARALLEL=2
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Import Full Database</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Import completo (restauração total)
+impdp system/senha FULL=Y DIRECTORY=dpump_dir DUMPFILE=full_backup.dmp LOGFILE=import_full.log
+
+# Import full com transformação (não importar storage clauses)
+impdp system/senha FULL=Y DIRECTORY=dpump_dir DUMPFILE=full_backup.dmp TRANSFORM=STORAGE:N
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Import de Tabelas Específicas</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Importar tabelas específicas de um dump
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=tabelas_rh.dmp TABLES=rh.funcionarios
+
+# Importar apenas dados (sem recriar a tabela - TABLE_EXISTS_ACTION=APPEND)
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=dados.dmp SCHEMAS=rh CONTENT=DATA_ONLY TABLE_EXISTS_ACTION=APPEND
+
+# Importar truncando a tabela antes (TABLE_EXISTS_ACTION=TRUNCATE)
+impdp system/senha DIRECTORY=dpump_dir DUMPFILE=tabelas_rh.dmp TABLES=rh.funcionarios TABLE_EXISTS_ACTION=TRUNCATE
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Opções TABLE_EXISTS_ACTION</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Valor</th>
+              <th>Comportamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>SKIP</code> (padrão)</td><td>Ignora a tabela se já existir (não importa)</td></tr>
+            <tr><td><code>APPEND</code></td><td>Adiciona dados à tabela existente</td></tr>
+            <tr><td><code>TRUNCATE</code></td><td>Trunca a tabela existente e insere os dados do dump</td></tr>
+            <tr><td><code>REPLACE</code></td><td>Drop e recria a tabela, depois insere os dados</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Modo Interativo do Data Pump</h3>
+        <p>Durante a execução de um job Data Pump, pressione <code>Ctrl+C</code> para entrar no modo interativo:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Comandos no modo interativo (Export> ou Import> prompt):
+Export> STATUS           # Ver progresso do job
+Export> STOP_JOB         # Parar o job (pode ser retomado depois)
+Export> START_JOB        # Retomar job parado
+Export> KILL_JOB         # Cancelar permanentemente o job
+Export> ADD_FILE=novo.dmp # Adicionar arquivo de dump
+Export> PARALLEL=3       # Aumentar paralelismo em tempo real
+Export> EXIT             # Sair do modo interativo (job continua em background)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Monitorando Jobs Data Pump</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ver jobs Data Pump em execução
+SELECT owner_name, job_name, operation, job_mode, state, degree
+FROM dba_datapump_jobs;
+
+-- Ver status detalhado com progresso
+SELECT * FROM dba_datapump_sessions;
+
+-- Anexar a um job existente (modo interativo)
+impdp system/senha ATTACH=JOB_NAME
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO RMAN vs DATA PUMP -->
+      <section>
+        <h2>9. Comparação RMAN vs Data Pump</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>RMAN</th>
+              <th>Data Pump</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tipo de Backup</strong></td>
+              <td>Físico (blocos de dados)</td>
+              <td>Lógico (DDL + dados)</td>
+            </tr>
+            <tr>
+              <td><strong>Velocidade</strong></td>
+              <td>Muito rápido (nível de bloco)</td>
+              <td>Moderado a rápido (depende de paralelismo)</td>
+            </tr>
+            <tr>
+              <td><strong>Granularidade</strong></td>
+              <td>Banco inteiro, tablespace, datafile, archive log</td>
+              <td>Banco inteiro, schema, tabela, partição</td>
+            </tr>
+            <tr>
+              <td><strong>Recuperação Point-in-Time</strong></td>
+              <td>Sim (completo, via archive logs)</td>
+              <td>Não (restaura o estado do momento da exportação)</td>
+            </tr>
+            <tr>
+              <td><strong>Backup Online</strong></td>
+              <td>Sim (requer ARCHIVELOG mode)</td>
+              <td>Sim (sempre online)</td>
+            </tr>
+            <tr>
+              <td><strong>Portabilidade entre versões</strong></td>
+              <td>Limitada (mesma plataforma e versão)</td>
+              <td>Alta (versões diferentes, plataformas diferentes)</td>
+            </tr>
+            <tr>
+              <td><strong>Incremental</strong></td>
+              <td>Sim (nível 0 e nível 1)</td>
+              <td>Não</td>
+            </tr>
+            <tr>
+              <td><strong>Compressão</strong></td>
+              <td>Sim (built-in, vários algoritmos)</td>
+              <td>Sim (COMPRESSION=ALL)</td>
+            </tr>
+            <tr>
+              <td><strong>Criptografia</strong></td>
+              <td>Sim (ENCRYPTION)</td>
+              <td>Sim (ENCRYPTION_PASSWORD)</td>
+            </tr>
+            <tr>
+              <td><strong>Paralelismo</strong></td>
+              <td>Sim (canais paralelos)</td>
+              <td>Sim (PARALLEL parameter, workers)</td>
+            </tr>
+            <tr>
+              <td><strong>Filtragem de dados</strong></td>
+              <td>Não</td>
+              <td>Sim (QUERY, SAMPLE, INCLUDE/EXCLUDE)</td>
+            </tr>
+            <tr>
+              <td><strong>Migração cross-platform</strong></td>
+              <td>Limitada (requer RMAN CONVERT)</td>
+              <td>Sim (total)</td>
+            </tr>
+            <tr>
+              <td><strong>Uso principal</strong></td>
+              <td>Recuperação de desastres, backup diário</td>
+              <td>Migração, cópia parcial, refreshes, exportação seletiva</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PASSOS: CONFIGURANDO BACKUP AUTOMATIZADO -->
+      <section>
+        <h2>10. Passo a passo: Configurando backup automatizado</h2>
+        <p>
+          Vamos configurar um sistema de backup automatizado que executa exports lógicos diários usando Data Pump, agendados via <code>DBMS_SCHEDULER</code>.
+        </p>
+
+        <h3>Passo 1 — Criar o diretório para os backups</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# No servidor (como usuário oracle)
+mkdir -p /backup/datapump/daily
+mkdir -p /backup/datapump/weekly
+mkdir -p /backup/rman
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar os directory objects no Oracle</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE DIRECTORY dpump_daily AS '/backup/datapump/daily';
+CREATE OR REPLACE DIRECTORY dpump_weekly AS '/backup/datapump/weekly';
+
+GRANT READ, WRITE ON DIRECTORY dpump_daily TO system;
+GRANT READ, WRITE ON DIRECTORY dpump_weekly TO system;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar uma procedure de backup</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE prc_backup_diario AS
+    v_job_name   VARCHAR2(200);
+    v_job_action VARCHAR2(4000);
+BEGIN
+    v_job_name := 'DATAPUMP_DAILY_' || TO_CHAR(SYSDATE, 'YYYYMMDD_HH24MISS');
+
+    v_job_action := 'expdp system/senha' ||
+        ' DIRECTORY=dpump_daily' ||
+        ' DUMPFILE=backup_diario_' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '.dmp' ||
+        ' LOGFILE=backup_diario_' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '.log' ||
+        ' SCHEMAS=rh,financeiro,vendas' ||
+        ' COMPRESSION=ALL' ||
+        ' PARALLEL=2';
+
+    DBMS_SCHEDULER.CREATE_JOB(
+        job_name   => v_job_name,
+        job_type   => 'EXECUTABLE',
+        job_action => '/bin/sh',
+        number_of_arguments => 2,
+        enabled    => FALSE
+    );
+
+    DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE(v_job_name, 1, '-c');
+    DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE(v_job_name, 2, v_job_action);
+    DBMS_SCHEDULER.ENABLE(v_job_name);
+
+    DBMS_OUTPUT.PUT_LINE('Job Data Pump criado: ' || v_job_name);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Agendar backup diário</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+    DBMS_SCHEDULER.CREATE_SCHEDULE(
+        schedule_name   => 'SCHED_BACKUP_DIARIO',
+        repeat_interval => 'FREQ=DAILY; BYHOUR=2; BYMINUTE=0',
+        comments        => 'Backup diário às 2:00 AM'
+    );
+
+    DBMS_SCHEDULER.CREATE_JOB(
+        job_name        => 'JOB_BACKUP_DIARIO',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN prc_backup_diario; END;',
+        schedule_name   => 'SCHED_BACKUP_DIARIO',
+        enabled         => TRUE,
+        comments        => 'Job de backup lógico diário'
+    );
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Agendar backup semanal com RMAN</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+    DBMS_SCHEDULER.CREATE_SCHEDULE(
+        schedule_name   => 'SCHED_BACKUP_SEMANAL',
+        repeat_interval => 'FREQ=WEEKLY; BYDAY=SUN; BYHOUR=1; BYMINUTE=0',
+        comments        => 'Backup RMAN semanal domingo às 1:00 AM'
+    );
+
+    DBMS_SCHEDULER.CREATE_JOB(
+        job_name   => 'JOB_RMAN_SEMANAL',
+        job_type   => 'EXECUTABLE',
+        job_action => '/bin/sh',
+        number_of_arguments => 2,
+        schedule_name => 'SCHED_BACKUP_SEMANAL',
+        enabled    => TRUE,
+        comments   => 'Backup RMAN level 0 semanal'
+    );
+
+    DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('JOB_RMAN_SEMANAL', 1, '-c');
+    DBMS_SCHEDULER.SET_JOB_ARGUMENT_VALUE('JOB_RMAN_SEMANAL', 2,
+        'rman target / <<EOF
+BACKUP INCREMENTAL LEVEL 0 DATABASE PLUS ARCHIVELOG DELETE INPUT;
+DELETE OBSOLETE;
+EOF');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Monitorar jobs agendados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os jobs agendados
+SELECT job_name, schedule_name, enabled, state, last_start_date, next_run_date
+FROM dba_scheduler_jobs
+WHERE job_name IN ('JOB_BACKUP_DIARIO', 'JOB_RMAN_SEMANAL');
+
+-- Ver histórico de execução
+SELECT job_name, actual_start_date, status, error#
+FROM dba_scheduler_job_run_details
+WHERE job_name IN ('JOB_BACKUP_DIARIO', 'JOB_RMAN_SEMANAL')
+ORDER BY actual_start_date DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie uma role "relatorios" com permissão SELECT em todas as tabelas e atribua a um usuário</h3>
+            <p>Crie a role <code>relatorios</code>, conceda o privilégio <code>SELECT ANY TABLE</code> a ela, crie um usuário <code>analista</code> com autenticação por senha, conceda a role ao usuário e configure a role como padrão. Além disso, conceda <code>CREATE SESSION</code> à role.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Passo 1: Criar a role
+CREATE ROLE relatorios;
+
+-- Passo 2: Conceder privilégios à role
+GRANT CREATE SESSION TO relatorios;
+GRANT SELECT ANY TABLE TO relatorios;
+
+-- Passo 3: Criar o usuário
+CREATE USER analista
+IDENTIFIED BY senha_segura
+DEFAULT TABLESPACE users
+TEMPORARY TABLESPACE temp
+QUOTA UNLIMITED ON users;
+
+-- Passo 4: Conceder a role ao usuário
+GRANT relatorios TO analista;
+
+-- Passo 5: Configurar role padrão
+ALTER USER analista DEFAULT ROLE relatorios;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p><strong>Observação:</strong> O privilégio <code>SELECT ANY TABLE</code> é muito poderoso — permite consultar qualquer tabela de qualquer schema, incluindo tabelas do SYS. Em ambientes de produção, prefira conceder SELECT em tabelas específicas.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie um backup full com RMAN e verifique com LIST BACKUP</h3>
+            <p>Conecte ao RMAN como target, execute um backup completo do banco com a tag 'aula7_backup', incluindo archive logs e deletando os logs já arquivados. Em seguida, liste os backups para confirmar que o backup foi criado com sucesso.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+# Passo 1: Conectar ao RMAN
+rman target /
+
+# Passo 2: Executar backup completo
+RMAN> BACKUP DATABASE PLUS ARCHIVELOG DELETE INPUT TAG 'aula7_backup';
+
+# Passo 3: Verificar o backup criado
+RMAN> LIST BACKUP TAG 'aula7_backup';
+
+# Passo 4: Ver resumo de todos os backups
+RMAN> LIST BACKUP SUMMARY;
+
+# Passo 5: Validar integridade do backup
+RMAN> RESTORE DATABASE VALIDATE;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>A saída do <code>LIST BACKUP</code> deve mostrar os datafiles, o control file, o spfile e os archive logs incluídos no backup. Verifique se não há erros na coluna <code>STATUS</code>.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Exporte um schema específico com Data Pump e depois faça a importação com remapeamento</h3>
+            <p>Exporte o schema <code>rh</code> usando Data Pump. Em seguida, faça a importação do mesmo dump para um novo schema chamado <code>rh_teste</code> usando a opção <code>REMAP_SCHEMA</code>. Use o directory object <code>dpump_dir</code>.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+# Passo 1: Criar o diretório (se não existir)
+mkdir -p /backup/datapump
+
+# Passo 2: Criar o directory object no Oracle
+sqlplus system/senha
+SQL> CREATE OR REPLACE DIRECTORY dpump_dir AS '/backup/datapump';
+SQL> GRANT READ, WRITE ON DIRECTORY dpump_dir TO system;
+
+# Passo 3: Exportar o schema rh
+expdp system/senha \
+    DIRECTORY=dpump_dir \
+    DUMPFILE=rh_backup.dmp \
+    LOGFILE=rh_export.log \
+    SCHEMAS=rh
+
+# Passo 4: Criar schema de destino (se não existir)
+sqlplus system/senha
+SQL> CREATE USER rh_teste IDENTIFIED BY senha123
+     DEFAULT TABLESPACE users TEMPORARY TABLESPACE temp
+     QUOTA UNLIMITED ON users;
+SQL> GRANT CONNECT, RESOURCE TO rh_teste;
+
+# Passo 5: Importar com remapeamento de schema
+impdp system/senha \
+    DIRECTORY=dpump_dir \
+    DUMPFILE=rh_backup.dmp \
+    LOGFILE=rh_import.log \
+    REMAP_SCHEMA=rh:rh_teste
+
+# Passo 6: Verificar objetos importados
+sqlplus system/senha
+SQL> SELECT object_type, COUNT(*) FROM dba_objects
+     WHERE owner = 'RH_TESTE'
+     GROUP BY object_type
+     ORDER BY object_type;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>A opção <code>REMAP_SCHEMA</code> é extremamente útil para clonar ambientes (ex: produzir uma cópia de produção em testes). Todos os objetos do schema origem são recriados no schema destino, preservando constraints, índices e grants.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se os usuários e roles foram criados corretamente, se os backups RMAN estão listados e se os exports Data Pump foram gerados com sucesso.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula7</code></li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

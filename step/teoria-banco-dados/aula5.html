@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 - Funções de Agregação, Subconsultas e Funções de Janela - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 5: Funções de Agregação, Subconsultas e Funções de Janela</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Função COUNT (com coluna e COUNT(*)), Função AVG (com ALL e DISTINCT), Funções SUM, MIN, MAX, GROUP BY, HAVING (comparação com WHERE), Funções de janela (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM OVER), Subconsultas (subconsultas escalares, de linha, de tabela).</div>
+    </header>
+    <main class="container">
+
+      <!-- FUNÇÕES DE AGREGAÇÃO -->
+      <section>
+        <h2>O que são Funções de Agregação?</h2>
+        <p>
+          As <strong>funções de agregação</strong> realizam cálculos sobre um conjunto de linhas e retornam um único valor como resultado. Elas são fundamentais para gerar relatórios, estatísticas e análises de dados. As principais funções de agregação do SQL são:
+        </p>
+        <ul>
+          <li><strong>COUNT:</strong> conta o número de linhas</li>
+          <li><strong>AVG:</strong> calcula a média aritmética</li>
+          <li><strong>SUM:</strong> soma os valores de uma coluna</li>
+          <li><strong>MIN:</strong> retorna o menor valor</li>
+          <li><strong>MAX:</strong> retorna o maior valor</li>
+        </ul>
+
+        <h3>Função COUNT</h3>
+        <p>
+          A função <code>COUNT</code> conta o número de linhas em um conjunto. Existem duas formas principais de uso:
+        </p>
+        <ul>
+          <li><strong>COUNT(coluna):</strong> conta apenas os valores não-nulos da coluna especificada</li>
+          <li><strong>COUNT(*):</strong> conta todas as linhas, independentemente de valores nulos</li>
+        </ul>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conta todos os pedidos da tabela
+SELECT COUNT(*) FROM pedidos;
+
+-- Conta apenas os produtos que possuem categoria (ignora NULLs)
+SELECT COUNT(categoria) FROM produtos;
+
+-- Conta categorias distintas (sem repetições)
+SELECT COUNT(DISTINCT categoria) FROM produtos;
+
+-- Exemplo prático: quantos clientes fizeram pedidos?
+SELECT COUNT(DISTINCT cliente_id) AS total_clientes_ativos
+FROM pedidos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Forma</th>
+              <th>Comportamento</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>COUNT(*)</code></td>
+              <td>Conta todas as linhas, incluindo NULLs</td>
+              <td><code>SELECT COUNT(*) FROM clientes;</code></td>
+            </tr>
+            <tr>
+              <td><code>COUNT(coluna)</code></td>
+              <td>Conta apenas valores não-nulos da coluna</td>
+              <td><code>SELECT COUNT(email) FROM clientes;</code></td>
+            </tr>
+            <tr>
+              <td><code>COUNT(DISTINCT coluna)</code></td>
+              <td>Conta valores distintos não-nulos</td>
+              <td><code>SELECT COUNT(DISTINCT cidade) FROM clientes;</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Função AVG</h3>
+        <p>
+          A função <code>AVG</code> calcula a média aritmética dos valores em uma coluna numérica. Por padrão, utiliza <code>ALL</code> (todos os valores), mas também pode ser usada com <code>DISTINCT</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Média de preço de todos os produtos
+SELECT AVG(preco) FROM produtos;
+
+-- Média de preços distintos (ignora preços repetidos)
+SELECT AVG(DISTINCT preco) FROM produtos;
+
+-- Média de valor dos pedidos concluídos
+SELECT AVG(valor_total) FROM pedidos WHERE status = 'concluido';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Função SUM</h3>
+        <p>
+          A função <code>SUM</code> soma todos os valores de uma coluna numérica. Muito utilizada para totais financeiros, quantidades em estoque, etc.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Soma do valor total de todos os pedidos concluídos
+SELECT SUM(valor_total) FROM pedidos WHERE status = 'concluido';
+
+-- Quantidade total de produtos em estoque
+SELECT SUM(estoque) AS estoque_total FROM produtos;
+
+-- Faturamento total por mês (supondo coluna mes)
+SELECT mes, SUM(valor_total) AS faturamento
+FROM vendas
+GROUP BY mes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Funções MIN e MAX</h3>
+        <p>
+          As funções <code>MIN</code> e <code>MAX</code> retornam, respectivamente, o menor e o maior valor de uma coluna. Funcionam com números, datas e até strings (ordem alfabética).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Primeiro e último pedido do histórico
+SELECT MIN(data_pedido) AS primeiro_pedido,
+       MAX(data_pedido) AS ultimo_pedido
+FROM pedidos;
+
+-- Produto mais caro e mais barato
+SELECT MIN(preco) AS mais_barato,
+       MAX(preco) AS mais_caro
+FROM produtos;
+
+-- Cliente com nome mais próximo do início e do fim do alfabeto
+SELECT MIN(nome) AS primeiro_alfabetico,
+       MAX(nome) AS ultimo_alfabetico
+FROM clientes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Combinando Funções de Agregação</h3>
+        <p>
+          É possível usar várias funções de agregação em uma única consulta, gerando um resumo completo dos dados.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Resumo estatístico da tabela de produtos
+SELECT
+    COUNT(*)        AS total_produtos,
+    COUNT(categoria) AS produtos_com_categoria,
+    AVG(preco)      AS preco_medio,
+    SUM(estoque)    AS estoque_total,
+    MIN(preco)      AS menor_preco,
+    MAX(preco)      AS maior_preco
+FROM produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- GROUP BY -->
+      <section>
+        <h2>Entendendo o GROUP BY</h2>
+        <p>
+          A cláusula <strong>GROUP BY</strong> agrupa linhas que possuem valores iguais em uma ou mais colunas, permitindo aplicar funções de agregação a cada grupo separadamente. Sem GROUP BY, as funções de agregação operam sobre todas as linhas da tabela; com GROUP BY, elas operam sobre cada grupo.
+        </p>
+
+        <h3>Agrupamento por uma coluna</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Quantos produtos existem em cada categoria?
+SELECT categoria, COUNT(*) AS quantidade
+FROM produtos
+GROUP BY categoria
+ORDER BY quantidade DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Agrupamento com ordenação</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Total gasto por cliente, do maior para o menor
+SELECT cliente_id, SUM(valor_total) AS total_gasto
+FROM pedidos
+GROUP BY cliente_id
+ORDER BY SUM(valor_total) DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Agrupamento por múltiplas colunas</h3>
+        <p>
+          Quando você agrupa por mais de uma coluna, o SQL cria um grupo para cada combinação única de valores.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Quantos produtos existem em cada combinação de categoria e status?
+SELECT categoria, status, COUNT(*) AS quantidade
+FROM produtos
+GROUP BY categoria, status
+ORDER BY categoria, status;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Regra importante do GROUP BY</h3>
+        <p>
+          <strong>Toda coluna no SELECT que não está dentro de uma função de agregação DEVE aparecer na cláusula GROUP BY.</strong> Caso contrário, o banco de dados retornará um erro, pois não saberá qual valor exibir para aquela coluna dentro do grupo.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- CORRETO: cidade está no GROUP BY
+SELECT cidade, COUNT(*) FROM clientes GROUP BY cidade;
+
+-- ERRADO: nome não está no GROUP BY nem em função de agregação
+-- SELECT nome, cidade, COUNT(*) FROM clientes GROUP BY cidade; -- Isso gera erro!
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- HAVING vs WHERE -->
+      <section>
+        <h2>HAVING vs WHERE — Qual a diferença?</h2>
+        <p>
+          Tanto <code>WHERE</code> quanto <code>HAVING</code> filtram dados, mas em momentos diferentes da execução da consulta:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Cláusula</th>
+              <th>Quando atua</th>
+              <th>Filtra</th>
+              <th>Pode usar funções de agregação?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>WHERE</strong></td>
+              <td>Antes do agrupamento</td>
+              <td>Linhas individuais</td>
+              <td>Não</td>
+            </tr>
+            <tr>
+              <td><strong>HAVING</strong></td>
+              <td>Depois do agrupamento</td>
+              <td>Grupos inteiros</td>
+              <td>Sim</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Pense no <strong>WHERE</strong> como um filtro de entrada: ele decide quais linhas entram na agregação. O <strong>HAVING</strong> é um filtro de saída: ele decide quais grupos aparecem no resultado final.
+        </p>
+
+        <h3>WHERE — filtra antes de agrupar</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Filtra pedidos com valor acima de 100 (antes de qualquer agrupamento)
+SELECT * FROM pedidos WHERE valor_total > 100;
+
+-- Média de preços apenas dos produtos da categoria 'Eletrônicos'
+SELECT AVG(preco) FROM produtos WHERE categoria = 'Eletrônicos';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>HAVING — filtra depois de agrupar</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que gastaram mais de 500 no total
+SELECT cliente_id, SUM(valor_total) AS total
+FROM pedidos
+GROUP BY cliente_id
+HAVING SUM(valor_total) > 500;
+
+-- Categorias com mais de 10 produtos
+SELECT categoria, COUNT(*) AS qtd
+FROM produtos
+GROUP BY categoria
+HAVING COUNT(*) > 10;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WHERE e HAVING juntos</h3>
+        <p>
+          É comum usar ambos na mesma consulta: WHERE para filtrar linhas antes da agregação e HAVING para filtrar os grupos resultantes.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que fizeram pelo menos 3 pedidos apenas em 2024
+SELECT cliente_id, COUNT(*) AS total_pedidos
+FROM pedidos
+WHERE data_pedido >= '2024-01-01'
+GROUP BY cliente_id
+HAVING COUNT(*) >= 3
+ORDER BY total_pedidos DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- FUNÇÕES DE JANELA -->
+      <section>
+        <h2>Funções de Janela (Window Functions)</h2>
+        <p>
+          As <strong>funções de janela</strong> realizam cálculos sobre um conjunto de linhas relacionadas à linha atual, sem reduzir o número de linhas no resultado. Diferente do GROUP BY, que colapsa os grupos em uma única linha, as window functions mantêm cada linha individual e adicionam o resultado do cálculo como uma nova coluna.
+        </p>
+        <p>
+          A sintaxe básica é: <code>FUNÇÃO() OVER (PARTITION BY coluna ORDER BY coluna)</code>
+        </p>
+        <ul>
+          <li><strong>OVER():</strong> define a janela (conjunto de linhas) sobre a qual a função opera</li>
+          <li><strong>PARTITION BY:</strong> divide os dados em partições (como um GROUP BY sem colapsar)</li>
+          <li><strong>ORDER BY:</strong> ordena as linhas dentro de cada partição</li>
+        </ul>
+
+        <h3>ROW_NUMBER — Numerando linhas</h3>
+        <p>
+          <code>ROW_NUMBER()</code> atribui um número sequencial único para cada linha dentro da sua partição, baseado na ordenação especificada.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ranking dos funcionários por salário (maior salário = 1)
+SELECT nome, salario,
+       ROW_NUMBER() OVER (ORDER BY salario DESC) AS ranking
+FROM funcionarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>PARTITION BY — Reiniciando a contagem por grupo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ranking de salário DENTRO de cada departamento
+SELECT departamento, nome, salario,
+       ROW_NUMBER() OVER (PARTITION BY departamento ORDER BY salario DESC) AS ranking_depto
+FROM funcionarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>RANK e DENSE_RANK — Lidando com empates</h3>
+        <p>
+          <code>RANK()</code> e <code>DENSE_RANK()</code> também ordenam as linhas, mas tratam empates (valores iguais) de forma diferente do ROW_NUMBER:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Função</th>
+              <th>Comportamento com empates</th>
+              <th>Exemplo (valores: 100, 100, 80)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ROW_NUMBER()</code></td>
+              <td>Números únicos, sem empates</td>
+              <td>1, 2, 3</td>
+            </tr>
+            <tr>
+              <td><code>RANK()</code></td>
+              <td>Empates recebem mesma posição; pula números</td>
+              <td>1, 1, 3</td>
+            </tr>
+            <tr>
+              <td><code>DENSE_RANK()</code></td>
+              <td>Empates recebem mesma posição; não pula números</td>
+              <td>1, 1, 2</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Comparação entre RANK e DENSE_RANK
+SELECT nome, salario,
+       RANK() OVER (ORDER BY salario DESC)       AS rank_normal,
+       DENSE_RANK() OVER (ORDER BY salario DESC) AS rank_denso
+FROM funcionarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LAG e LEAD — Acessando linhas vizinhas</h3>
+        <p>
+          <code>LAG()</code> acessa o valor de uma linha <strong>anterior</strong> dentro da janela. <code>LEAD()</code> acessa o valor da linha <strong>posterior</strong>. São ideais para comparações sequenciais, como calcular variação entre meses.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Salário atual, anterior e próximo (ordenado por salário)
+SELECT nome, salario,
+       LAG(salario) OVER (ORDER BY salario)  AS salario_anterior,
+       LEAD(salario) OVER (ORDER BY salario) AS salario_proximo
+FROM funcionarios;
+
+-- Exemplo prático: variação de vendas mês a mês
+SELECT mes, valor_vendas,
+       LAG(valor_vendas) OVER (ORDER BY mes) AS vendas_mes_anterior,
+       valor_vendas - LAG(valor_vendas) OVER (ORDER BY mes) AS variacao
+FROM vendas_mensais;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Funções de agregação como Window Functions</h3>
+        <p>
+          Funções como <code>SUM</code>, <code>AVG</code> e <code>COUNT</code> também podem ser usadas com OVER, produzindo somas acumuladas, médias móveis e contagens progressivas.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Soma acumulada de salários por departamento
+SELECT departamento, nome, salario,
+       SUM(salario) OVER (PARTITION BY departamento ORDER BY salario) AS soma_acumulada
+FROM funcionarios;
+
+-- Média móvel de 3 dias de vendas
+SELECT data_venda, valor,
+       AVG(valor) OVER (ORDER BY data_venda ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS media_movel_3dias
+FROM vendas;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- SUBCONSULTAS -->
+      <section>
+        <h2>Subconsultas (Subqueries)</h2>
+        <p>
+          Uma <strong>subconsulta</strong> é uma consulta SQL dentro de outra consulta SQL. Elas permitem resolver problemas complexos dividindo-os em etapas. Podem aparecer nas cláusulas SELECT, FROM, WHERE e HAVING.
+        </p>
+
+        <h3>Subconsulta Escalar — Retorna um único valor</h3>
+        <p>
+          A subconsulta escalar retorna exatamente uma linha e uma coluna. Pode ser usada em qualquer lugar onde um valor único é esperado.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Produto(s) com o maior preço
+SELECT nome, preco
+FROM produtos
+WHERE preco = (SELECT MAX(preco) FROM produtos);
+
+-- Funcionários que ganham acima da média
+SELECT nome, salario
+FROM funcionarios
+WHERE salario > (SELECT AVG(salario) FROM funcionarios);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Subconsulta com IN — Retorna uma lista de valores</h3>
+        <p>
+          Quando a subconsulta retorna múltiplos valores, usamos operadores como <code>IN</code>, <code>NOT IN</code>, <code>ANY</code> ou <code>ALL</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que já fizeram pelo menos um pedido
+SELECT nome FROM clientes
+WHERE id IN (SELECT DISTINCT cliente_id FROM pedidos);
+
+-- Produtos que nunca foram vendidos
+SELECT nome FROM produtos
+WHERE id NOT IN (SELECT DISTINCT produto_id FROM itens_pedido);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Subconsulta com EXISTS — Verifica existência</h3>
+        <p>
+          O operador <code>EXISTS</code> retorna TRUE se a subconsulta retornar pelo menos uma linha. É geralmente mais eficiente que <code>IN</code> para grandes volumes de dados, pois para a execução assim que encontra a primeira correspondência.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que fizeram pelo menos um pedido (usando EXISTS)
+SELECT nome FROM clientes c
+WHERE EXISTS (
+    SELECT 1 FROM pedidos p
+    WHERE p.cliente_id = c.id
+);
+
+-- Categorias que possuem produtos com estoque baixo
+SELECT nome FROM categorias cat
+WHERE EXISTS (
+    SELECT 1 FROM produtos p
+    WHERE p.categoria_id = cat.id AND p.estoque < 10
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Subconsulta no FROM — Tabela Derivada</h3>
+        <p>
+          Uma subconsulta na cláusula FROM atua como uma tabela temporária, permitindo consultas sobre o resultado de outra consulta. É obrigatório dar um alias para a subconsulta no FROM.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Categorias cuja média de preço é superior a 100
+SELECT *
+FROM (
+    SELECT categoria, AVG(preco) AS media_preco
+    FROM produtos
+    GROUP BY categoria
+) AS medias
+WHERE media_preco > 100;
+
+-- Top 3 clientes que mais gastaram
+SELECT nome, total_gasto
+FROM (
+    SELECT c.nome, SUM(p.valor_total) AS total_gasto
+    FROM clientes c
+    INNER JOIN pedidos p ON c.id = p.cliente_id
+    GROUP BY c.nome
+) AS ranking
+ORDER BY total_gasto DESC
+LIMIT 3;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Subconsulta Correlacionada</h3>
+        <p>
+          Uma subconsulta <strong>correlacionada</strong> referencia colunas da consulta externa. Ela é reexecutada para cada linha da consulta externa, o que a torna mais lenta, mas extremamente poderosa para certos problemas.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Funcionários que ganham mais que a média do seu próprio departamento
+SELECT nome, salario, departamento
+FROM funcionarios f1
+WHERE salario > (
+    SELECT AVG(salario)
+    FROM funcionarios f2
+    WHERE f2.departamento = f1.departamento
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Consulta com COUNT, AVG e SUM agrupada por categoria</h3>
+            <p>Escreva uma consulta que retorne: categoria, quantidade de produtos, preço médio e valor total em estoque (preco * estoque) para cada categoria, ordenado pelo valor total em estoque do maior para o menor.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    categoria,
+    COUNT(*) AS qtd_produtos,
+    AVG(preco) AS preco_medio,
+    SUM(preco * estoque) AS valor_total_estoque
+FROM produtos
+GROUP BY categoria
+ORDER BY valor_total_estoque DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. GROUP BY + HAVING filtrando grupos</h3>
+            <p>Escreva uma consulta que retorne as categorias que possuem mais de 5 produtos, mostrando o nome da categoria e a quantidade. Ordene da maior para a menor quantidade.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT categoria, COUNT(*) AS quantidade
+FROM produtos
+GROUP BY categoria
+HAVING COUNT(*) > 5
+ORDER BY quantidade DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. ROW_NUMBER particionado por departamento</h3>
+            <p>Escreva uma consulta que numere os funcionários de cada departamento por ordem de salário (do maior para o menor), mostrando departamento, nome, salário e a posição (ranking).</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    departamento,
+    nome,
+    salario,
+    ROW_NUMBER() OVER (PARTITION BY departamento ORDER BY salario DESC) AS posicao
+FROM funcionarios
+ORDER BY departamento, posicao;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Subconsulta para encontrar clientes que compraram mais que a média</h3>
+            <p>Escreva uma consulta que retorne o nome e o total gasto dos clientes cujo total de compras é maior que a média de gastos de todos os clientes.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT c.nome, SUM(p.valor_total) AS total_gasto
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.nome
+HAVING SUM(p.valor_total) > (
+    SELECT AVG(total_por_cliente)
+    FROM (
+        SELECT SUM(valor_total) AS total_por_cliente
+        FROM pedidos
+        GROUP BY cliente_id
+    ) AS medias
+)
+ORDER BY total_gasto DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Execute cada consulta no seu banco de dados PostgreSQL e verifique se os resultados estão de acordo com o esperado. Teste especialmente as funções de janela e subconsultas, pois são recursos avançados que exigem atenção aos detalhes.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li><code>aula4</code></li>
+          <li><code>aula5</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

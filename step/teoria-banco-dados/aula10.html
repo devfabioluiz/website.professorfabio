@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10 - Exame Final - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 9: Exame Final</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Revisão geral de todos os módulos, Tarefa prática integradora, Exame teórico.</div>
+    </header>
+    <main class="container">
+
+      <!-- REVISÃO GERAL -->
+      <section>
+        <h2>Revisão Geral do Curso</h2>
+        <p>
+          Ao longo deste curso, cobrimos desde os fundamentos teóricos até tópicos avançados de administração de bancos de dados com PostgreSQL. Antes do exame final, vamos revisar cada módulo.
+        </p>
+
+        <h3>Módulo 1: Fundamentos e PostgreSQL</h3>
+        <ul>
+          <li>História e evolução dos bancos de dados (arquivos, hierárquico, rede, relacional, OO, NoSQL)</li>
+          <li>Conceitos de banco de dados, SGBD e modelo relacional</li>
+          <li>As 12 Regras de Codd para SGBDs relacionais</li>
+          <li>Comparação PostgreSQL vs MySQL vs Oracle vs SQL Server</li>
+          <li>Instalação do PostgreSQL e criação do primeiro banco de dados</li>
+          <li>Comandos básicos: <code>CREATE DATABASE</code>, <code>\l</code>, <code>\c</code>, <code>\dt</code></li>
+        </ul>
+
+        <h3>Módulo 2: Tabelas, Tipos e DDL</h3>
+        <ul>
+          <li>Tipos de dados do PostgreSQL (INTEGER, SERIAL, VARCHAR, TEXT, NUMERIC, BOOLEAN, DATE, TIMESTAMP, JSON, UUID, ARRAY)</li>
+          <li>Criação de tabelas com <code>CREATE TABLE</code></li>
+          <li>Constraints: <code>PRIMARY KEY</code>, <code>FOREIGN KEY</code>, <code>UNIQUE</code>, <code>NOT NULL</code>, <code>CHECK</code>, <code>DEFAULT</code></li>
+          <li><code>ALTER TABLE</code> para modificar estrutura de tabelas existentes</li>
+          <li><code>DROP TABLE</code> e <code>TRUNCATE TABLE</code></li>
+          <li>Índices: <code>CREATE INDEX</code>, tipos de índice (B-tree, Hash, GIN, GiST)</li>
+        </ul>
+
+        <h3>Módulo 3: SELECT, INSERT, UPDATE, DELETE e Transações</h3>
+        <ul>
+          <li><code>SELECT</code> com <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>DISTINCT</code></li>
+          <li>Operadores lógicos: <code>AND</code>, <code>OR</code>, <code>NOT</code>, <code>IN</code>, <code>BETWEEN</code>, <code>LIKE</code>, <code>ILIKE</code></li>
+          <li><code>INSERT</code> (simples, múltiplas linhas, com SELECT)</li>
+          <li><code>UPDATE</code> e <code>DELETE</code> com <code>WHERE</code></li>
+          <li>Transações: <code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>, propriedades ACID</li>
+          <li>Níveis de isolamento: Read Uncommitted, Read Committed, Repeatable Read, Serializable</li>
+        </ul>
+
+        <h3>Módulo 4: Normalização e Multitabelas</h3>
+        <ul>
+          <li>Formas normais: 1FN, 2FN, 3FN, BCNF, 4FN</li>
+          <li>Dependências funcionais, dependências parciais e transitivas</li>
+          <li>Anomalias de inserção, atualização e exclusão</li>
+          <li>Chaves estrangeiras e integridade referencial</li>
+          <li><code>ON DELETE CASCADE</code>, <code>ON UPDATE CASCADE</code></li>
+          <li>Modelagem entidade-relacionamento (MER) e diagramas ER</li>
+        </ul>
+
+        <h3>Módulo 5: Agregação, Subconsultas e Window Functions</h3>
+        <ul>
+          <li>Funções de agregação: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code></li>
+          <li><code>GROUP BY</code> e <code>HAVING</code></li>
+          <li>Subconsultas: escalares, de linha, de tabela, correlacionadas</li>
+          <li><code>EXISTS</code>, <code>NOT EXISTS</code>, <code>ANY</code>, <code>ALL</code></li>
+          <li>Window Functions: <code>ROW_NUMBER()</code>, <code>RANK()</code>, <code>DENSE_RANK()</code>, <code>LAG()</code>, <code>LEAD()</code>, <code>SUM() OVER</code></li>
+          <li>Cláusula <code>OVER</code> com <code>PARTITION BY</code> e <code>ORDER BY</code></li>
+        </ul>
+
+        <h3>Módulo 6: JOINs</h3>
+        <ul>
+          <li><code>INNER JOIN</code></li>
+          <li><code>LEFT JOIN</code>, <code>RIGHT JOIN</code>, <code>FULL OUTER JOIN</code></li>
+          <li><code>CROSS JOIN</code></li>
+          <li><code>SELF JOIN</code></li>
+          <li><code>NATURAL JOIN</code></li>
+          <li>Junções com múltiplas tabelas</li>
+        </ul>
+
+        <h3>Módulo 7: Views, Triggers e Procedures</h3>
+        <ul>
+          <li>Views: <code>CREATE VIEW</code>, <code>CREATE MATERIALIZED VIEW</code></li>
+          <li>Triggers: <code>BEFORE</code>, <code>AFTER</code>, <code>INSTEAD OF</code> em <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></li>
+          <li>Trigger Functions com <code>PL/pgSQL</code>, variáveis <code>OLD</code> e <code>NEW</code></li>
+          <li>Procedures: <code>CREATE PROCEDURE</code> com <code>CALL</code></li>
+          <li>Functions: <code>CREATE FUNCTION</code> com retorno escalar e <code>RETURNS TABLE</code></li>
+          <li>Stored Procedures vs Functions: diferenças de uso e capacidades</li>
+        </ul>
+
+        <h3>Módulo 8: Segurança, Backup e Restauração</h3>
+        <ul>
+          <li>Modelo de segurança do PostgreSQL: Roles, Privilégios, Herança</li>
+          <li><code>CREATE ROLE</code>, <code>CREATE USER</code>, <code>ALTER ROLE</code>, <code>DROP ROLE</code></li>
+          <li><code>GRANT</code> e <code>REVOKE</code> em diferentes níveis</li>
+          <li>Tipos de backup: lógico (<code>pg_dump</code>), físico, contínuo (WAL)</li>
+          <li><code>pg_dump</code>, <code>pg_dumpall</code>, <code>pg_restore</code></li>
+          <li>Restauração: <code>psql</code> para SQL, <code>pg_restore</code> para formatos binários</li>
+        </ul>
+      </section>
+
+      <!-- TAREFA PRÁTICA FINAL -->
+      <section>
+        <h2>Tarefa Prática Final — Sistema de Biblioteca</h2>
+        <p>
+          Esta é a tarefa integradora do curso. Você deve projetar e implementar um sistema completo de gerenciamento de biblioteca, aplicando todos os conhecimentos adquiridos.
+        </p>
+
+        <h3>Requisitos do Projeto</h3>
+
+        <div class="info-box">
+          <strong>Objetivo:</strong> Criar um banco de dados completo para gerenciar uma biblioteca, incluindo tabelas normalizadas, dados de exemplo, consultas, views, triggers, procedures, functions, roles e backup.
+        </div>
+
+        <!-- PARTE 1 -->
+        <h3>Parte 1 — Criar Tabelas Normalizadas</h3>
+        <p>Crie as seguintes tabelas com PKs, FKs e constraints apropriadas:</p>
+        <ul>
+          <li><strong>autores:</strong> id (PK, SERIAL), nome (VARCHAR, NOT NULL), data_nascimento (DATE), nacionalidade (VARCHAR)</li>
+          <li><strong>livros:</strong> id (PK, SERIAL), titulo (VARCHAR, NOT NULL), autor_id (FK → autores), ano_publicacao (INTEGER, CHECK > 0), genero (VARCHAR), quantidade (INTEGER, DEFAULT 1, CHECK >= 0), isbn (VARCHAR, UNIQUE)</li>
+          <li><strong>membros:</strong> id (PK, SERIAL), nome (VARCHAR, NOT NULL), email (VARCHAR, UNIQUE), telefone (VARCHAR), data_cadastro (DATE, DEFAULT CURRENT_DATE)</li>
+          <li><strong>emprestimos:</strong> id (PK, SERIAL), livro_id (FK → livros), membro_id (FK → membros), data_emprestimo (DATE, DEFAULT CURRENT_DATE), data_devolucao_prevista (DATE, NOT NULL), data_devolucao_real (DATE), status (VARCHAR, DEFAULT 'ativo', CHECK status IN ('ativo', 'devolvido', 'atrasado'))</li>
+        </ul>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 1</button>
+        <div class="gabarito">
+          <b>Gabarito — Criação das Tabelas:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+CREATE TABLE autores (
+    id              SERIAL PRIMARY KEY,
+    nome            VARCHAR(150) NOT NULL,
+    data_nascimento DATE,
+    nacionalidade   VARCHAR(100)
+);
+
+CREATE TABLE livros (
+    id              SERIAL PRIMARY KEY,
+    titulo          VARCHAR(200) NOT NULL,
+    autor_id        INTEGER NOT NULL REFERENCES autores(id) ON DELETE CASCADE,
+    ano_publicacao  INTEGER CHECK (ano_publicacao > 0),
+    genero          VARCHAR(100),
+    quantidade      INTEGER DEFAULT 1 CHECK (quantidade >= 0),
+    isbn            VARCHAR(20) UNIQUE
+);
+
+CREATE TABLE membros (
+    id            SERIAL PRIMARY KEY,
+    nome          VARCHAR(150) NOT NULL,
+    email         VARCHAR(150) UNIQUE NOT NULL,
+    telefone      VARCHAR(20),
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE emprestimos (
+    id                        SERIAL PRIMARY KEY,
+    livro_id                  INTEGER NOT NULL REFERENCES livros(id),
+    membro_id                 INTEGER NOT NULL REFERENCES membros(id),
+    data_emprestimo           DATE DEFAULT CURRENT_DATE,
+    data_devolucao_prevista   DATE NOT NULL,
+    data_devolucao_real       DATE,
+    status                    VARCHAR(20) DEFAULT 'ativo'
+                              CHECK (status IN ('ativo', 'devolvido', 'atrasado'))
+);
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 2 -->
+        <h3>Parte 2 — Inserir Dados de Exemplo</h3>
+        <p>Insira pelo menos <strong>5 autores</strong>, <strong>10 livros</strong>, <strong>5 membros</strong> e <strong>8 empréstimos</strong>.</p>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 2</button>
+        <div class="gabarito">
+          <b>Gabarito — Inserção de Dados:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+-- Autores
+INSERT INTO autores (nome, data_nascimento, nacionalidade) VALUES
+('Machado de Assis', '1839-06-21', 'Brasileiro'),
+('Clarice Lispector', '1920-12-10', 'Brasileira'),
+('J.R.R. Tolkien', '1892-01-03', 'Britânico'),
+('George Orwell', '1903-06-25', 'Britânico'),
+('J.K. Rowling', '1965-07-31', 'Britânica');
+
+-- Livros
+INSERT INTO livros (titulo, autor_id, ano_publicacao, genero, quantidade, isbn) VALUES
+('Dom Casmurro', 1, 1899, 'Romance', 3, '978-85-359-0277-2'),
+('Memórias Póstumas de Brás Cubas', 1, 1881, 'Romance', 2, '978-85-359-0280-2'),
+('A Hora da Estrela', 2, 1977, 'Romance', 4, '978-85-325-0812-5'),
+('O Senhor dos Anéis', 3, 1954, 'Fantasia', 2, '978-85-950-8474-2'),
+('O Hobbit', 3, 1937, 'Fantasia', 5, '978-85-950-8475-9'),
+('1984', 4, 1949, 'Distopia', 3, '978-85-359-1484-1'),
+('A Revolução dos Bichos', 4, 1945, 'Fábula', 4, '978-85-359-0955-4'),
+('Harry Potter e a Pedra Filosofal', 5, 1997, 'Fantasia', 5, '978-85-325-4101-6'),
+('Harry Potter e a Câmara Secreta', 5, 1998, 'Fantasia', 3, '978-85-325-4102-3'),
+('Quincas Borba', 1, 1891, 'Romance', 2, '978-85-359-0279-6');
+
+-- Membros
+INSERT INTO membros (nome, email, telefone) VALUES
+('Ana Silva', 'ana.silva@email.com', '(11) 98765-4321'),
+('Bruno Costa', 'bruno.costa@email.com', '(21) 91234-5678'),
+('Carla Mendes', 'carla.mendes@email.com', '(31) 99876-5432'),
+('Diego Santos', 'diego.santos@email.com', '(41) 98712-3456'),
+('Elaine Oliveira', 'elaine.oliveira@email.com', '(51) 99321-6543');
+
+-- Empréstimos
+INSERT INTO emprestimos (livro_id, membro_id, data_emprestimo, data_devolucao_prevista, status) VALUES
+(1, 1, '2025-06-01', '2025-06-15', 'devolvido'),
+(3, 2, '2025-06-02', '2025-06-16', 'ativo'),
+(4, 3, '2025-06-03', '2025-06-17', 'ativo'),
+(6, 1, '2025-06-05', '2025-06-19', 'ativo'),
+(8, 4, '2025-06-07', '2025-06-21', 'devolvido'),
+(10, 5, '2025-06-10', '2025-06-24', 'ativo'),
+(2, 3, '2025-06-12', '2025-06-26', 'atrasado'),
+(7, 2, '2025-06-15', '2025-06-29', 'ativo');
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 3 -->
+        <h3>Parte 3 — Consultas com JOINs, GROUP BY e HAVING</h3>
+        <p>Crie as seguintes consultas:</p>
+        <ol>
+          <li>Listar todos os livros com nome do autor (INNER JOIN)</li>
+          <li>Listar todos os empréstimos ativos com nome do membro e título do livro</li>
+          <li>Contar quantos livros cada autor publicou (GROUP BY)</li>
+          <li>Mostrar autores com mais de 2 livros cadastrados (HAVING)</li>
+          <li>Listar membros com empréstimos atrasados</li>
+        </ol>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 3</button>
+        <div class="gabarito">
+          <b>Gabarito — Consultas:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+-- 1. Livros com nome do autor
+SELECT l.titulo, a.nome AS autor, l.genero, l.ano_publicacao
+FROM livros l
+INNER JOIN autores a ON l.autor_id = a.id
+ORDER BY a.nome, l.titulo;
+
+-- 2. Empréstimos ativos com membro e livro
+SELECT e.id, m.nome AS membro, l.titulo AS livro,
+       e.data_emprestimo, e.data_devolucao_prevista
+FROM emprestimos e
+INNER JOIN membros m ON e.membro_id = m.id
+INNER JOIN livros l ON e.livro_id = l.id
+WHERE e.status = 'ativo'
+ORDER BY e.data_devolucao_prevista;
+
+-- 3. Quantidade de livros por autor
+SELECT a.nome, COUNT(l.id) AS total_livros
+FROM autores a
+LEFT JOIN livros l ON a.id = l.autor_id
+GROUP BY a.id, a.nome
+ORDER BY total_livros DESC;
+
+-- 4. Autores com mais de 2 livros
+SELECT a.nome, COUNT(l.id) AS total_livros
+FROM autores a
+INNER JOIN livros l ON a.id = l.autor_id
+GROUP BY a.id, a.nome
+HAVING COUNT(l.id) > 2
+ORDER BY total_livros DESC;
+
+-- 5. Membros com empréstimos atrasados
+SELECT m.nome, m.email, l.titulo, e.data_devolucao_prevista,
+       CURRENT_DATE - e.data_devolucao_prevista AS dias_atraso
+FROM emprestimos e
+INNER JOIN membros m ON e.membro_id = m.id
+INNER JOIN livros l ON e.livro_id = l.id
+WHERE e.status = 'atrasado'
+ORDER BY dias_atraso DESC;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 4 -->
+        <h3>Parte 4 — Criar uma View "livros_disponiveis"</h3>
+        <p>A view deve mostrar todos os livros que possuem pelo menos 1 unidade disponível para empréstimo (quantidade > número de empréstimos ativos).</p>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 4</button>
+        <div class="gabarito">
+          <b>Gabarito — View:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+CREATE VIEW livros_disponiveis AS
+SELECT
+    l.id,
+    l.titulo,
+    a.nome AS autor,
+    l.genero,
+    l.quantidade AS total_exemplares,
+    COALESCE(emp.emprestados, 0) AS emprestados,
+    l.quantidade - COALESCE(emp.emprestados, 0) AS disponiveis
+FROM livros l
+INNER JOIN autores a ON l.autor_id = a.id
+LEFT JOIN (
+    SELECT livro_id, COUNT(*) AS emprestados
+    FROM emprestimos
+    WHERE status IN ('ativo', 'atrasado')
+    GROUP BY livro_id
+) emp ON l.id = emp.livro_id
+WHERE l.quantidade - COALESCE(emp.emprestados, 0) > 0
+ORDER BY disponiveis DESC;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 5 -->
+        <h3>Parte 5 — Criar um Trigger que Atualiza o Status do Livro</h3>
+        <p>
+          Crie um trigger que, ao atualizar a <code>data_devolucao_real</code> de um empréstimo, automaticamente:
+        </p>
+        <ul>
+          <li>Define o status como 'devolvido' se a devolução estiver dentro do prazo</li>
+          <li>Define o status como 'atrasado' se a devolução for após a data prevista</li>
+          <li>Incrementa a quantidade disponível do livro quando devolvido</li>
+        </ul>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 5</button>
+        <div class="gabarito">
+          <b>Gabarito — Trigger:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION atualizar_status_emprestimo()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Se a data_devolucao_real foi preenchida (devolução)
+    IF NEW.data_devolucao_real IS NOT NULL
+       AND (OLD.data_devolucao_real IS NULL OR OLD.data_devolucao_real <> NEW.data_devolucao_real) THEN
+
+        -- Define o status baseado na comparação de datas
+        IF NEW.data_devolucao_real <= NEW.data_devolucao_prevista THEN
+            NEW.status := 'devolvido';
+        ELSE
+            NEW.status := 'atrasado';
+        END IF;
+
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_atualizar_status
+    BEFORE UPDATE ON emprestimos
+    FOR EACH ROW
+    EXECUTE FUNCTION atualizar_status_emprestimo();
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 6 -->
+        <h3>Parte 6 — Criar uma Procedure "realizar_emprestimo"</h3>
+        <p>
+          A procedure deve receber <code>livro_id</code> e <code>membro_id</code>, verificar se o livro está disponível, reduzir a quantidade em 1 e registrar o empréstimo com data de devolução prevista para 14 dias depois.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 6</button>
+        <div class="gabarito">
+          <b>Gabarito — Procedure:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE realizar_emprestimo(
+    p_livro_id  INTEGER,
+    p_membro_id INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_disponivel INTEGER;
+BEGIN
+    -- Verifica se o livro está disponível usando a view
+    SELECT disponiveis INTO v_disponivel
+    FROM livros_disponiveis
+    WHERE id = p_livro_id;
+
+    IF v_disponivel IS NULL OR v_disponivel <= 0 THEN
+        RAISE EXCEPTION 'Livro não disponível para empréstimo (ID: %)', p_livro_id;
+    END IF;
+
+    -- Registra o empréstimo
+    INSERT INTO emprestimos (livro_id, membro_id, data_emprestimo, data_devolucao_prevista)
+    VALUES (p_livro_id, p_membro_id, CURRENT_DATE, CURRENT_DATE + INTERVAL '14 days');
+
+    RAISE NOTICE 'Empréstimo realizado com sucesso! Livro: %, Membro: %', p_livro_id, p_membro_id;
+END;
+$$;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 7 -->
+        <h3>Parte 7 — Criar uma Function que Calcula Multa por Atraso</h3>
+        <p>
+          Crie uma função <code>calcular_multa(emprestimo_id INTEGER)</code> que retorna o valor da multa. Considere R$ 2,00 por dia de atraso, contando a partir do dia seguinte à data de devolução prevista.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 7</button>
+        <div class="gabarito">
+          <b>Gabarito — Function:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION calcular_multa(p_emprestimo_id INTEGER)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_dias_atraso  INTEGER;
+    v_valor_multa  NUMERIC := 0;
+    v_status       VARCHAR;
+    v_data_prevista DATE;
+    v_data_real     DATE;
+BEGIN
+    SELECT status, data_devolucao_prevista, data_devolucao_real
+    INTO v_status, v_data_prevista, v_data_real
+    FROM emprestimos
+    WHERE id = p_emprestimo_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Empréstimo com ID % não encontrado', p_emprestimo_id;
+    END IF;
+
+    IF v_data_real IS NOT NULL THEN
+        -- Devolvido: calcula com base na data real
+        v_dias_atraso := v_data_real - v_data_prevista;
+    ELSE
+        -- Ainda não devolvido: calcula com base na data atual
+        v_dias_atraso := CURRENT_DATE - v_data_prevista;
+    END IF;
+
+    IF v_dias_atraso > 0 THEN
+        v_valor_multa := v_dias_atraso * 2.00;
+    END IF;
+
+    RETURN v_valor_multa;
+END;
+$$;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 8 -->
+        <h3>Parte 8 — Criar Roles e Permissões</h3>
+        <p>Crie duas roles e configure as permissões:</p>
+        <ul>
+          <li><strong>bibliotecario:</strong> acesso total (SELECT, INSERT, UPDATE, DELETE) em todas as tabelas. Pode executar a procedure <code>realizar_emprestimo</code>.</li>
+          <li><strong>membro:</strong> apenas SELECT nas views <code>livros_disponiveis</code> e na própria tabela <code>emprestimos</code> (apenas seus próprios registros, via view).</li>
+        </ul>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 8</button>
+        <div class="gabarito">
+          <b>Gabarito — Roles e Permissões:</b>
+          <div class="code-container">
+            <pre><code class="language-sql">
+-- Criar roles
+CREATE ROLE bibliotecario WITH LOGIN PASSWORD 'biblio123';
+CREATE ROLE membro WITH LOGIN PASSWORD 'membro123';
+
+-- Conceder acesso ao banco e schema
+GRANT CONNECT ON DATABASE biblioteca TO bibliotecario, membro;
+GRANT USAGE ON SCHEMA public TO bibliotecario, membro;
+
+-- bibliotecario: acesso total
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO bibliotecario;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO bibliotecario;
+GRANT EXECUTE ON PROCEDURE realizar_emprestimo(INTEGER, INTEGER) TO bibliotecario;
+
+-- membro: apenas consulta à view de livros disponíveis
+GRANT SELECT ON livros_disponiveis TO membro;
+
+-- Privilégios para objetos futuros (bibliotecario)
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT ALL PRIVILEGES ON TABLES TO bibliotecario;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE ON SEQUENCES TO bibliotecario;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+
+        <!-- PARTE 9 -->
+        <h3>Parte 9 — Criar Backup do Banco</h3>
+        <p>Gere um backup lógico completo do banco de dados da biblioteca.</p>
+
+        <button class="btn-gabarito">Ver gabarito da Parte 9</button>
+        <div class="gabarito">
+          <b>Gabarito — Backup:</b>
+          <div class="code-container">
+            <pre><code class="language-bash">
+# Backup em formato customizado (recomendado para restauração seletiva)
+pg_dump -U postgres -d biblioteca -Fc -f biblioteca_backup.dump
+
+# Backup em SQL puro (legível e editável)
+pg_dump -U postgres -d biblioteca -f biblioteca_backup.sql
+
+# Backup incluindo roles globais
+pg_dumpall -U postgres --roles-only -f roles_backup.sql
+pg_dump -U postgres -d biblioteca -Fc -f biblioteca_backup.dump
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXAME TEÓRICO -->
+      <section>
+        <h2>Exame Teórico</h2>
+        <p>
+          Responda às 10 questões a seguir. Cada questão vale 1,0 ponto. O exame cobre todos os módulos do curso.
+        </p>
+        <div id="question-container-exame">
+
+          <div class="question">
+            <h3>1. Qual forma normal elimina dependências parciais de uma chave primária composta?</h3>
+            <ul>
+              <li>a) Primeira Forma Normal (1FN)</li>
+              <li>b) Segunda Forma Normal (2FN)</li>
+              <li>c) Terceira Forma Normal (3FN)</li>
+              <li>d) Forma Normal Boyce-Codd (BCNF)</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: b) Segunda Forma Normal (2FN)</b>
+              <p>A 2FN elimina dependências parciais, ou seja, atributos não-chave que dependem de apenas parte da chave primária composta. Uma tabela está na 2FN se estiver na 1FN e todos os atributos não-chave dependerem da chave primária inteira.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Qual tipo de JOIN retorna todas as linhas da tabela à esquerda, mesmo quando não há correspondência na tabela à direita?</h3>
+            <ul>
+              <li>a) INNER JOIN</li>
+              <li>b) RIGHT JOIN</li>
+              <li>c) LEFT JOIN</li>
+              <li>d) CROSS JOIN</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: c) LEFT JOIN</b>
+              <p>O LEFT JOIN (ou LEFT OUTER JOIN) retorna todas as linhas da tabela à esquerda da cláusula JOIN e as linhas correspondentes da tabela à direita. Quando não há correspondência, as colunas da tabela direita são preenchidas com NULL.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Qual das alternativas abaixo NÃO é uma função de agregação em SQL?</h3>
+            <ul>
+              <li>a) COUNT</li>
+              <li>b) AVG</li>
+              <li>c) CONCAT</li>
+              <li>d) SUM</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: c) CONCAT</b>
+              <p>CONCAT é uma função de string que concatena dois ou mais valores, não sendo uma função de agregação. COUNT, AVG, SUM, MIN e MAX são funções de agregação que operam sobre um conjunto de linhas e retornam um único valor.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Qual a principal diferença entre uma TRIGGER e uma PROCEDURE no PostgreSQL?</h3>
+            <ul>
+              <li>a) Procedures podem retornar valores e triggers não</li>
+              <li>b) Triggers são executadas automaticamente em resposta a eventos (INSERT, UPDATE, DELETE), enquanto procedures são chamadas explicitamente com CALL</li>
+              <li>c) Procedures são mais rápidas que triggers</li>
+              <li>d) Não há diferença — são a mesma coisa</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: b) Triggers são executadas automaticamente em resposta a eventos, enquanto procedures são chamadas explicitamente com CALL</b>
+              <p>Triggers são gatilhos associados a tabelas que disparam automaticamente quando ocorre um evento (INSERT, UPDATE, DELETE). Procedures são blocos de código armazenados que precisam ser explicitamente invocados com o comando CALL.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>5. Qual comando SQL concede permissão de SELECT em uma tabela para uma role?</h3>
+            <ul>
+              <li>a) ALLOW SELECT ON tabela TO role</li>
+              <li>b) PERMIT SELECT ON tabela TO role</li>
+              <li>c) GRANT SELECT ON tabela TO role</li>
+              <li>d) GIVE SELECT ON tabela TO role</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: c) GRANT SELECT ON tabela TO role</b>
+              <p>O comando GRANT é o comando SQL padrão para conceder privilégios a roles/usuários. O comando para remover privilégios é REVOKE.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>6. Sobre tipos de backup no PostgreSQL, qual ferramenta é usada para backup lógico de um banco específico?</h3>
+            <ul>
+              <li>a) pg_basebackup</li>
+              <li>b) pg_restore</li>
+              <li>c) pg_dump</li>
+              <li>d) pg_start_backup</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: c) pg_dump</b>
+              <p>pg_dump é a ferramenta padrão para backup lógico de um banco de dados específico no PostgreSQL. pg_dumpall faz backup de todos os bancos + objetos globais. pg_basebackup é usado para backup físico. pg_restore é usado para restaurar backups em formato customizado.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>7. Qual função de janela (window function) retorna o valor da linha anterior dentro de uma partição ordenada?</h3>
+            <ul>
+              <li>a) LEAD</li>
+              <li>b) LAG</li>
+              <li>c) FIRST_VALUE</li>
+              <li>d) PREV</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: b) LAG</b>
+              <p>LAG acessa o valor de uma linha anterior dentro da partição, baseado no deslocamento especificado. LEAD acessa a linha seguinte. LAG e LEAD são fundamentais para comparações entre linhas consecutivas sem necessidade de self-join.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>8. Qual operador é usado para verificar se uma subconsulta retorna pelo menos uma linha?</h3>
+            <ul>
+              <li>a) ANY</li>
+              <li>b) IN</li>
+              <li>c) EXISTS</li>
+              <li>d) BETWEEN</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: c) EXISTS</b>
+              <p>EXISTS retorna TRUE se a subconsulta retornar pelo menos uma linha. É frequentemente usado em subconsultas correlacionadas para verificar a existência de registros relacionados. NOT EXISTS retorna TRUE se a subconsulta não retornar nenhuma linha.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>9. Qual propriedade ACID garante que uma transação seja executada completamente ou não seja executada de forma alguma?</h3>
+            <ul>
+              <li>a) Atomicidade</li>
+              <li>b) Consistência</li>
+              <li>c) Isolamento</li>
+              <li>d) Durabilidade</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: a) Atomicidade</b>
+              <p>Atomicidade (Atomicity) é a propriedade que garante o "tudo ou nada": todas as operações de uma transação são concluídas com sucesso (COMMIT) ou, se houver falha, todas são desfeitas (ROLLBACK). Consistência mantém a integridade do banco. Isolamento controla a concorrência. Durabilidade garante que dados commitados sobrevivam a falhas.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>10. Qual tipo de índice é o padrão no PostgreSQL e é otimizado para consultas de igualdade e intervalo?</h3>
+            <ul>
+              <li>a) Hash</li>
+              <li>b) GIN</li>
+              <li>c) GiST</li>
+              <li>d) B-tree</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Resposta: d) B-tree</b>
+              <p>B-tree (Balanced Tree) é o tipo de índice padrão no PostgreSQL. É eficiente para consultas de igualdade (=), intervalo (<, >, BETWEEN) e ordenação (ORDER BY). Hash é otimizado apenas para igualdade. GIN é para arrays e full-text search. GiST é para dados geoespaciais.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- GABARITO DO EXAME TEÓRICO -->
+      <section>
+        <h2>Gabarito do Exame Teórico</h2>
+        <p>Resumo das respostas corretas com justificativas resumidas:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Questão</th>
+              <th>Resposta</th>
+              <th>Tema</th>
+              <th>Justificativa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>b) 2FN</td>
+              <td>Normalização</td>
+              <td>Elimina dependências parciais da chave primária composta</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>c) LEFT JOIN</td>
+              <td>JOINs</td>
+              <td>Retorna todas as linhas da tabela esquerda, com NULLs onde não há match</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>c) CONCAT</td>
+              <td>Agregação</td>
+              <td>CONCAT é função de string, não de agregação</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>b) Trigger vs Procedure</td>
+              <td>Triggers/Procedures</td>
+              <td>Triggers são automáticas; procedures exigem CALL explícito</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>c) GRANT</td>
+              <td>Segurança</td>
+              <td>Comando padrão SQL para conceder privilégios</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>c) pg_dump</td>
+              <td>Backup</td>
+              <td>Ferramenta de backup lógico para um banco específico</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>b) LAG</td>
+              <td>Window Functions</td>
+              <td>Acessa o valor da linha anterior na partição ordenada</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>c) EXISTS</td>
+              <td>Subconsultas</td>
+              <td>Verifica se a subconsulta retorna pelo menos uma linha</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>a) Atomicidade</td>
+              <td>Transações</td>
+              <td>Garante "tudo ou nada" na execução da transação</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>d) B-tree</td>
+              <td>Índices</td>
+              <td>Índice padrão, otimizado para igualdade e intervalos</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Parabéns por concluir o curso de Teoria de Banco de Dados! O projeto do Sistema de Biblioteca é a síntese de tudo o que aprendemos.
+        </p>
+        <p>
+          Compare sua implementação com a solução completa disponível em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando:
+          <code>aula10</code>
+        </p>
+        <p>
+          Nesta branch você encontrará o código completo do Sistema de Biblioteca, incluindo todas as tabelas, dados de exemplo, views, triggers, procedures, functions, roles e scripts de backup.
+        </p>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

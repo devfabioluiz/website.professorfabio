@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6 - Junções (JOINs) - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 6</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 6: Junções</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Operadores EXISTS, ANY/SOME, ALL, UNION e UNION ALL, INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN.</div>
+    </header>
+    <main class="container">
+
+      <!-- OPERADORES PARA SUBCONSULTAS -->
+      <section>
+        <h2>Operadores para Subconsultas</h2>
+        <p>
+          Além do <code>IN</code> que vimos na aula anterior, o SQL oferece operadores poderosos para comparar um valor com o resultado de uma subconsulta. Vamos explorar <code>EXISTS</code>, <code>ANY</code>/<code>SOME</code> e <code>ALL</code>.
+        </p>
+
+        <h3>EXISTS — Verificando a existência de registros</h3>
+        <p>
+          O operador <code>EXISTS</code> retorna <strong>TRUE</strong> se a subconsulta retornar pelo menos uma linha. É um operador de teste de existência — ele não se importa com quantas linhas retornam, apenas se existe alguma. É muito eficiente para consultas correlacionadas, pois o banco de dados pode parar a busca assim que encontrar a primeira correspondência.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que fizeram pelo menos um pedido acima de 1000
+SELECT nome FROM clientes c
+WHERE EXISTS (
+    SELECT 1 FROM pedidos p
+    WHERE p.cliente_id = c.id
+      AND p.valor_total > 1000
+);
+
+-- Categorias que possuem produtos sem estoque
+SELECT nome FROM categorias cat
+WHERE EXISTS (
+    SELECT 1 FROM produtos p
+    WHERE p.categoria_id = cat.id
+      AND p.estoque = 0
+);
+
+-- NOT EXISTS: clientes que NUNCA fizeram pedido
+SELECT nome FROM clientes c
+WHERE NOT EXISTS (
+    SELECT 1 FROM pedidos p
+    WHERE p.cliente_id = c.id
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Dica:</strong> Use <code>SELECT 1</code> ou <code>SELECT *</code> dentro do EXISTS — o valor retornado não importa, apenas a existência de linhas.
+        </p>
+
+        <h3>ANY e SOME — Comparando com qualquer valor da lista</h3>
+        <p>
+          Os operadores <code>ANY</code> e <code>SOME</code> são sinônimos. Eles comparam um valor com <strong>qualquer</strong> valor retornado pela subconsulta. A condição é verdadeira se a comparação for verdadeira para <strong>pelo menos um</strong> dos valores.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Produtos com preço maior que QUALQUER produto da categoria 'Eletrônicos'
+-- (ou seja, maior que o menor preço de Eletrônicos)
+SELECT nome, preco FROM produtos
+WHERE preco > ANY (
+    SELECT preco FROM produtos WHERE categoria = 'Eletrônicos'
+);
+
+-- Funcionários que ganham mais que PELO MENOS UM gerente
+SELECT nome, salario FROM funcionarios
+WHERE salario > ANY (
+    SELECT salario FROM funcionarios WHERE cargo = 'Gerente'
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Entenda a semântica:</strong> <code>X > ANY (subconsulta)</code> significa "X é maior que pelo menos um dos valores". É equivalente a <code>X > MIN(subconsulta)</code>.
+        </p>
+
+        <h3>ALL — Comparando com todos os valores da lista</h3>
+        <p>
+          O operador <code>ALL</code> compara um valor com <strong>todos</strong> os valores retornados pela subconsulta. A condição só é verdadeira se a comparação for verdadeira para <strong>cada um</strong> dos valores.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Produto mais caro que TODOS os eletrônicos
+-- (ou seja, maior que o MAIOR preço dos eletrônicos)
+SELECT nome, preco FROM produtos
+WHERE preco > ALL (
+    SELECT preco FROM produtos WHERE categoria = 'Eletrônicos'
+);
+
+-- Funcionário que ganha mais que TODOS os gerentes
+SELECT nome, salario FROM funcionarios
+WHERE salario > ALL (
+    SELECT salario FROM funcionarios WHERE cargo = 'Gerente'
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Entenda a semântica:</strong> <code>X > ALL (subconsulta)</code> significa "X é maior que todos os valores". É equivalente a <code>X > MAX(subconsulta)</code>.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Operador</th>
+              <th>Significado</th>
+              <th>Equivalente com agregação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>X > ANY (...)</code></td>
+              <td>X é maior que pelo menos um</td>
+              <td><code>X > (SELECT MIN(...) ...)</code></td>
+            </tr>
+            <tr>
+              <td><code>X > ALL (...)</code></td>
+              <td>X é maior que todos</td>
+              <td><code>X > (SELECT MAX(...) ...)</code></td>
+            </tr>
+            <tr>
+              <td><code>X = ANY (...)</code></td>
+              <td>X é igual a pelo menos um</td>
+              <td><code>X IN (...)</code></td>
+            </tr>
+            <tr>
+              <td><code>X != ALL (...)</code></td>
+              <td>X é diferente de todos</td>
+              <td><code>X NOT IN (...)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- UNION E UNION ALL -->
+      <section>
+        <h2>UNION e UNION ALL — Combinando resultados de consultas</h2>
+        <p>
+          Os operadores <strong>UNION</strong> e <strong>UNION ALL</strong> combinam os resultados de duas ou mais consultas SELECT em um único conjunto de resultados. A diferença entre eles é crucial:
+        </p>
+        <ul>
+          <li><strong>UNION:</strong> combina os resultados e <strong>remove duplicatas</strong> (mais lento, pois precisa ordenar e comparar)</li>
+          <li><strong>UNION ALL:</strong> combina os resultados e <strong>mantém todas as linhas</strong>, inclusive duplicatas (mais rápido)</li>
+        </ul>
+
+        <h3>Regras para usar UNION</h3>
+        <ul>
+          <li>Todas as consultas devem retornar o <strong>mesmo número de colunas</strong></li>
+          <li>As colunas correspondentes devem ter <strong>tipos de dados compatíveis</strong></li>
+          <li>A ordenação (ORDER BY) só pode aparecer no final, após o último SELECT</li>
+          <li>Os nomes das colunas no resultado são definidos pela <strong>primeira consulta</strong></li>
+        </ul>
+
+        <h3>UNION — Removendo duplicatas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Lista única de e-mails de clientes e fornecedores (sem repetições)
+SELECT nome, email FROM clientes
+UNION
+SELECT nome, email FROM fornecedores
+ORDER BY nome;
+
+-- Cidades onde temos clientes OU fornecedores
+SELECT cidade FROM clientes
+UNION
+SELECT cidade FROM fornecedores;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>UNION ALL — Mantendo todas as linhas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Todos os contatos, mesmo que duplicados (ex: mesma pessoa é cliente e fornecedor)
+SELECT nome, email FROM clientes
+UNION ALL
+SELECT nome, email FROM fornecedores;
+
+-- Combinando vendas de diferentes regiões (tabelas separadas)
+SELECT data_venda, valor, 'Norte' AS regiao FROM vendas_norte
+UNION ALL
+SELECT data_venda, valor, 'Sul'   AS regiao FROM vendas_sul
+UNION ALL
+SELECT data_venda, valor, 'Leste' AS regiao FROM vendas_leste
+ORDER BY data_venda;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Quando usar UNION vs UNION ALL?</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Situação</th>
+              <th>Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Precisa eliminar duplicatas</td>
+              <td><strong>UNION</strong></td>
+            </tr>
+            <tr>
+              <td>Tem certeza que não há duplicatas</td>
+              <td><strong>UNION ALL</strong> (mais rápido)</td>
+            </tr>
+            <tr>
+              <td>Precisa contar todas as ocorrências</td>
+              <td><strong>UNION ALL</strong></td>
+            </tr>
+            <tr>
+              <td>Alta performance é crítica</td>
+              <td><strong>UNION ALL</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- INNER JOIN -->
+      <section>
+        <h2>INNER JOIN — Relacionando tabelas</h2>
+        <p>
+          O <strong>INNER JOIN</strong> é o tipo de junção mais comum. Ele retorna apenas as linhas que possuem correspondência em <strong>ambas</strong> as tabelas envolvidas, com base na condição especificada na cláusula <code>ON</code>.
+        </p>
+
+        <h3>Sintaxe básica do INNER JOIN</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT tabela1.coluna, tabela2.coluna
+FROM tabela1
+INNER JOIN tabela2 ON tabela1.chave = tabela2.chave_estrangeira;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo prático: Clientes e seus pedidos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Lista os pedidos com o nome do cliente
+SELECT c.nome AS cliente, p.data_pedido, p.valor_total
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+ORDER BY p.data_pedido DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INNER JOIN com múltiplas tabelas</h3>
+        <p>
+          É possível encadear vários JOINs para navegar por múltiplas tabelas relacionadas, construindo consultas complexas que abrangem todo o modelo de dados.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Detalhamento completo do pedido: cliente, produtos e quantidades
+SELECT
+    c.nome      AS cliente,
+    p.id        AS pedido,
+    p.data_pedido,
+    pr.nome     AS produto,
+    ip.quantidade,
+    pr.preco,
+    (ip.quantidade * pr.preco) AS subtotal
+FROM clientes c
+INNER JOIN pedidos p        ON c.id  = p.cliente_id
+INNER JOIN itens_pedido ip  ON p.id  = ip.pedido_id
+INNER JOIN produtos pr      ON ip.produto_id = pr.id
+ORDER BY p.data_pedido DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INNER JOIN com filtros adicionais</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Pedidos de clientes de São Paulo com valor acima de 500
+SELECT c.nome, p.data_pedido, p.valor_total
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+WHERE c.cidade = 'São Paulo'
+  AND p.valor_total > 500
+ORDER BY p.valor_total DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INNER JOIN com GROUP BY e agregações</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Total gasto por cliente (apenas clientes que fizeram pedidos)
+SELECT c.nome, COUNT(p.id) AS qtd_pedidos, SUM(p.valor_total) AS total_gasto
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome
+HAVING SUM(p.valor_total) > 1000
+ORDER BY total_gasto DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- LEFT JOIN -->
+      <section>
+        <h2>LEFT JOIN — Incluindo todos os registros da esquerda</h2>
+        <p>
+          O <strong>LEFT JOIN</strong> (ou LEFT OUTER JOIN) retorna <strong>todas</strong> as linhas da tabela à esquerda (a primeira tabela mencionada), mesmo que não haja correspondência na tabela à direita. Quando não há correspondência, as colunas da tabela direita são preenchidas com <code>NULL</code>.
+        </p>
+
+        <h3>Visualizando o LEFT JOIN</h3>
+        <p>
+          Imagine dois conjuntos: <strong>A</strong> (tabela esquerda) e <strong>B</strong> (tabela direita). O LEFT JOIN retorna: <strong>todo o conjunto A</strong> + as interseções com B. O que está em B mas não em A é ignorado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- TODOS os clientes, com ou sem pedidos
+SELECT c.nome, p.data_pedido, p.valor_total
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+ORDER BY c.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Encontrando registros SEM correspondência</h3>
+        <p>
+          Um padrão muito comum com LEFT JOIN é identificar registros da tabela esquerda que <strong>não possuem</strong> correspondência na tabela direita. Basta filtrar por <code>WHERE coluna_da_direita IS NULL</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes que NUNCA fizeram um pedido
+SELECT c.nome, c.email
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+WHERE p.id IS NULL;
+
+-- Produtos que nunca foram vendidos
+SELECT p.nome, p.categoria
+FROM produtos p
+LEFT JOIN itens_pedido ip ON p.id = ip.produto_id
+WHERE ip.produto_id IS NULL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LEFT JOIN com agregações</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Quantidade de pedidos por cliente (incluindo quem tem 0 pedidos)
+SELECT c.nome, COUNT(p.id) AS total_pedidos
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome
+ORDER BY total_pedidos DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- RIGHT JOIN -->
+      <section>
+        <h2>RIGHT JOIN — Incluindo todos os registros da direita</h2>
+        <p>
+          O <strong>RIGHT JOIN</strong> (ou RIGHT OUTER JOIN) é o oposto do LEFT JOIN: ele retorna <strong>todas</strong> as linhas da tabela à direita, mesmo sem correspondência na esquerda. Na prática, a maioria dos desenvolvedores prefere usar LEFT JOIN (apenas invertendo a ordem das tabelas) por ser mais legível, mas o RIGHT JOIN existe e é importante conhecê-lo.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Todos os pedidos, mesmo sem cliente associado (ex: pedidos órfãos)
+SELECT c.nome, p.id AS pedido_id, p.data_pedido
+FROM clientes c
+RIGHT JOIN pedidos p ON c.id = p.cliente_id;
+
+-- Equivalente usando LEFT JOIN (invertendo as tabelas)
+SELECT c.nome, p.id AS pedido_id, p.data_pedido
+FROM pedidos p
+LEFT JOIN clientes c ON c.id = p.cliente_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Dica:</strong> Na prática, prefira sempre LEFT JOIN e organize as tabelas de forma que a tabela "principal" (da qual você quer todos os registros) fique à esquerda. Isso torna o código mais legível e padronizado.
+        </p>
+      </section>
+
+      <!-- FULL JOIN -->
+      <section>
+        <h2>FULL JOIN — A união completa</h2>
+        <p>
+          O <strong>FULL JOIN</strong> (ou FULL OUTER JOIN) retorna <strong>todas</strong> as linhas de ambas as tabelas. Quando há correspondência, as colunas são combinadas. Quando não há, as colunas da tabela sem correspondência são preenchidas com <code>NULL</code>. É a união dos comportamentos do LEFT JOIN e do RIGHT JOIN.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Todos os clientes e todos os pedidos (combinados quando possível)
+SELECT c.nome, p.id AS pedido_id, p.data_pedido
+FROM clientes c
+FULL JOIN pedidos p ON c.id = p.cliente_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Encontrando registros que NÃO correspondem em nenhuma direção</h3>
+        <p>
+          Com o FULL JOIN, podemos encontrar registros órfãos em ambas as tabelas simultaneamente — algo impossível com apenas LEFT ou RIGHT JOIN.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Clientes sem pedidos E pedidos sem cliente (dados inconsistentes)
+SELECT c.nome, p.id AS pedido_id
+FROM clientes c
+FULL JOIN pedidos p ON c.id = p.cliente_id
+WHERE c.id IS NULL OR p.id IS NULL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO VISUAL -->
+      <section>
+        <h2>Comparação Visual de Todos os JOINs</h2>
+        <p>
+          A tabela a seguir resume o que cada tipo de JOIN retorna, comparando com a teoria dos conjuntos:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo de JOIN</th>
+              <th>O que retorna</th>
+              <th>Equivalente em conjuntos</th>
+              <th>Quando usar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>INNER JOIN</strong></td>
+              <td>Apenas linhas com correspondência em ambas as tabelas</td>
+              <td>Interseção (A ∩ B)</td>
+              <td>Quando você precisa apenas dos registros que existem nos dois lados</td>
+            </tr>
+            <tr>
+              <td><strong>LEFT JOIN</strong></td>
+              <td>Todas as linhas da tabela esquerda + correspondências da direita</td>
+              <td>A inteiro + interseção</td>
+              <td>Quando a tabela esquerda é a principal e você quer tudo dela</td>
+            </tr>
+            <tr>
+              <td><strong>RIGHT JOIN</strong></td>
+              <td>Todas as linhas da tabela direita + correspondências da esquerda</td>
+              <td>B inteiro + interseção</td>
+              <td>Similar ao LEFT JOIN, mas a tabela direita é a principal</td>
+            </tr>
+            <tr>
+              <td><strong>FULL JOIN</strong></td>
+              <td>Todas as linhas de ambas as tabelas, com ou sem correspondência</td>
+              <td>União (A ∪ B)</td>
+              <td>Quando você quer todos os registros de ambos os lados</td>
+            </tr>
+            <tr>
+              <td><strong>LEFT JOIN + WHERE IS NULL</strong></td>
+              <td>Apenas registros da esquerda sem correspondência na direita</td>
+              <td>A - B</td>
+              <td>Encontrar registros órfãos ou faltantes</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Diagrama prático com dados de exemplo</h3>
+        <p>Considere duas tabelas simples:</p>
+        <table>
+          <thead>
+            <tr>
+              <th colspan="2">Tabela A (clientes)</th>
+              <th colspan="2">Tabela B (pedidos)</th>
+            </tr>
+            <tr>
+              <th>id</th>
+              <th>nome</th>
+              <th>id</th>
+              <th>cliente_id</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Ana</td>
+              <td>101</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Bruno</td>
+              <td>102</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Carla</td>
+              <td>103</td>
+              <td>4</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Resultados de cada JOIN aplicado a essas tabelas:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>INNER JOIN</th>
+              <th>LEFT JOIN</th>
+              <th>RIGHT JOIN</th>
+              <th>FULL JOIN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ana — Pedido 101</td>
+              <td>Ana — Pedido 101</td>
+              <td>Ana — Pedido 101</td>
+              <td>Ana — Pedido 101</td>
+            </tr>
+            <tr>
+              <td>Ana — Pedido 102</td>
+              <td>Ana — Pedido 102</td>
+              <td>Ana — Pedido 102</td>
+              <td>Ana — Pedido 102</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Bruno — NULL</td>
+              <td></td>
+              <td>Bruno — NULL</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Carla — NULL</td>
+              <td></td>
+              <td>Carla — NULL</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>NULL — Pedido 103</td>
+              <td>NULL — Pedido 103</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. INNER JOIN entre 3 tabelas</h3>
+            <p>Escreva uma consulta que retorne o nome do cliente, a data do pedido, o nome do produto e a quantidade de cada item pedido. Use INNER JOIN entre as tabelas clientes, pedidos, itens_pedido e produtos.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    c.nome AS cliente,
+    p.data_pedido,
+    pr.nome AS produto,
+    ip.quantidade
+FROM clientes c
+INNER JOIN pedidos p       ON c.id = p.cliente_id
+INNER JOIN itens_pedido ip ON p.id = ip.pedido_id
+INNER JOIN produtos pr     ON ip.produto_id = pr.id
+ORDER BY p.data_pedido DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. LEFT JOIN listando clientes que nunca fizeram pedido</h3>
+            <p>Escreva uma consulta que retorne o nome e o e-mail de todos os clientes que nunca realizaram um pedido. Use LEFT JOIN e verificação de NULL.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT c.nome, c.email
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+WHERE p.id IS NULL
+ORDER BY c.nome;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. UNION combinando resultados de duas consultas diferentes</h3>
+            <p>Escreva uma consulta que retorne uma lista única de nomes e e-mails, combinando os clientes que são de "São Paulo" com os fornecedores que são de "São Paulo". Identifique a origem com uma coluna "tipo".</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT nome, email, 'Cliente' AS tipo
+FROM clientes
+WHERE cidade = 'São Paulo'
+UNION
+SELECT nome, email, 'Fornecedor' AS tipo
+FROM fornecedores
+WHERE cidade = 'São Paulo'
+ORDER BY nome;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Subconsulta com EXISTS para encontrar produtos que já foram pedidos</h3>
+            <p>Escreva uma consulta que retorne o nome e o preço de todos os produtos que já apareceram em pelo menos um pedido. Use EXISTS com subconsulta correlacionada.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT nome, preco
+FROM produtos p
+WHERE EXISTS (
+    SELECT 1 FROM itens_pedido ip
+    WHERE ip.produto_id = p.id
+)
+ORDER BY nome;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Execute cada consulta de JOIN no seu banco de dados PostgreSQL e verifique se os resultados fazem sentido. Teste especialmente as diferenças entre INNER, LEFT, RIGHT e FULL JOIN para fixar o entendimento.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li><code>aula4</code></li>
+          <li><code>aula5</code></li>
+          <li><code>aula6</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

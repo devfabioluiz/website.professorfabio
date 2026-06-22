@@ -1,0 +1,1798 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 - PL/SQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 4: PL/SQL</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Bloco PL/SQL (DECLARE, BEGIN, EXCEPTION, END), Estruturas de controle (IF/ELSIF/ELSE, CASE, LOOP, WHILE, FOR), Palavra-chave INTO, Tratamento de exceções (predefined, user-defined, PRAGMA EXCEPTION_INIT), Cursores (explícitos e implícitos, atributos %FOUND, %NOTFOUND, %ROWCOUNT, %ISOPEN), %ROWTYPE e %TYPE.</div>
+    </header>
+    <main class="container">
+
+      <!-- O QUE É PL/SQL -->
+      <section>
+        <h2>O que é PL/SQL?</h2>
+        <p>
+          <strong>PL/SQL</strong> (Procedural Language/Structured Query Language) é a linguagem de programação procedural proprietária da Oracle Corporation. Ela estende a linguagem SQL padrão com construções típicas de linguagens de programação como variáveis, condicionais, loops, exceções, procedimentos, funções, pacotes e triggers.
+        </p>
+        <p>
+          Enquanto o SQL puro é uma linguagem declarativa (você diz <em>o que</em> quer, não <em>como</em> obter), o PL/SQL adiciona a capacidade de escrever lógica procedural diretamente no banco de dados. Isso significa que você pode criar programas completos que executam dentro do servidor Oracle, reduzindo tráfego de rede e centralizando a lógica de negócio.
+        </p>
+
+        <h3>Características Fundamentais do PL/SQL</h3>
+        <ul>
+          <li><strong>Integração total com SQL:</strong> comandos SQL podem ser usados diretamente dentro de blocos PL/SQL, incluindo SELECT, INSERT, UPDATE, DELETE, MERGE</li>
+          <li><strong>Execução no servidor:</strong> todo o código PL/SQL é executado dentro do Oracle Database, eliminando round-trips entre aplicação e banco</li>
+          <li><strong>Desempenho:</strong> o Oracle compila e armazena o bytecode na SGA (System Global Area) para execução otimizada</li>
+          <li><strong>Portabilidade:</strong> código PL/SQL é portável entre diferentes sistemas operacionais onde o Oracle roda</li>
+          <li><strong>Tipagem forte:</strong> variáveis e parâmetros são fortemente tipados, reduzindo erros em tempo de execução</li>
+          <li><strong>Programação modular:</strong> suporta procedures, functions, packages e triggers para organização do código</li>
+        </ul>
+
+        <h3>Diferença entre SQL e PL/SQL</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>SQL</th>
+              <th>PL/SQL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Linguagem declarativa (diz O QUE fazer)</td>
+              <td>Linguagem procedural (diz COMO fazer)</td>
+            </tr>
+            <tr>
+              <td>Executa um comando por vez</td>
+              <td>Executa blocos inteiros de código</td>
+            </tr>
+            <tr>
+              <td>Não possui variáveis</td>
+              <td>Possui variáveis, constantes e tipos</td>
+            </tr>
+            <tr>
+              <td>Não possui controle de fluxo</td>
+              <td>Possui IF, CASE, LOOP, WHILE, FOR</td>
+            </tr>
+            <tr>
+              <td>Não possui tratamento de erros</td>
+              <td>Possui sistema completo de exceções</td>
+            </tr>
+            <tr>
+              <td>Retorna conjuntos de dados</td>
+              <td>Pode processar linha a linha com cursores</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ESTRUTURA DO BLOCO PL/SQL -->
+      <section>
+        <h2>Estrutura do Bloco PL/SQL</h2>
+        <p>
+          Todo programa PL/SQL é composto por blocos. A estrutura fundamental de um bloco é:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  -- Seção de declarações (opcional)
+  -- Variáveis, constantes, cursores, exceções
+BEGIN
+  -- Seção executável (obrigatória)
+  -- Código procedural e comandos SQL
+EXCEPTION
+  -- Seção de tratamento de exceções (opcional)
+  -- Captura e tratamento de erros
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Seção</th>
+              <th>Obrigatória?</th>
+              <th>Propósito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>DECLARE</code></td>
+              <td>Não</td>
+              <td>Declara variáveis, constantes, cursores, tipos e exceções</td>
+            </tr>
+            <tr>
+              <td><code>BEGIN</code></td>
+              <td><strong>Sim</strong></td>
+              <td>Contém o código a ser executado (comandos SQL, lógica procedural)</td>
+            </tr>
+            <tr>
+              <td><code>EXCEPTION</code></td>
+              <td>Não</td>
+              <td>Captura e trata erros que ocorrem na seção BEGIN</td>
+            </tr>
+            <tr>
+              <td><code>END;</code></td>
+              <td><strong>Sim</strong></td>
+              <td>Finaliza o bloco. O <code>/</code> é necessário para executar em SQL*Plus/SQL Developer</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>Exemplo — Primeiro Bloco PL/SQL:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nome VARCHAR2(100);
+BEGIN
+  SELECT nome INTO v_nome
+  FROM funcionarios
+  WHERE id = 1;
+
+  DBMS_OUTPUT.PUT_LINE('Nome do funcionário: ' || v_nome);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Funcionário não encontrado');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Antes de executar blocos PL/SQL, habilite a saída do <code>DBMS_OUTPUT</code> no SQL*Plus ou SQL Developer:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+-- No SQL*Plus ou SQL Developer:
+SET SERVEROUTPUT ON;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- VARIÁVEIS E CONSTANTES -->
+      <section>
+        <h2>Variáveis e Constantes</h2>
+
+        <h3>Declaração de Variáveis</h3>
+        <p>
+          As variáveis em PL/SQL devem ser declaradas na seção <code>DECLARE</code> antes de serem usadas:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nome         VARCHAR2(100);        -- String de até 100 caracteres
+  v_idade        NUMBER(3);            -- Número de até 3 dígitos
+  v_salario      NUMBER(10,2);         -- Número com 2 casas decimais
+  v_ativo        BOOLEAN;              -- TRUE, FALSE ou NULL
+  v_data_nasc    DATE;                 -- Data
+  v_data_hora    TIMESTAMP;            -- Data e hora com fração de segundos
+  v_observacao   CLOB;                 -- Texto longo (Character Large Object)
+BEGIN
+  v_nome := 'Maria Silva';
+  v_idade := 28;
+  v_salario := 5500.00;
+  v_ativo := TRUE;
+  v_data_nasc := DATE '1998-03-15';
+  v_data_hora := SYSTIMESTAMP;
+
+  DBMS_OUTPUT.PUT_LINE('Nome: ' || v_nome);
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' || TO_CHAR(v_salario, '999G990D00'));
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Constantes</h3>
+        <p>Use a palavra-chave <code>CONSTANT</code> para declarar valores imutáveis:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  c_limite_credito CONSTANT NUMBER(10,2) := 10000.00;
+  c_nome_empresa   CONSTANT VARCHAR2(50) := 'Oracle Corporation';
+  v_compra         NUMBER(10,2) := 7500.00;
+BEGIN
+  IF v_compra > c_limite_credito THEN
+    DBMS_OUTPUT.PUT_LINE('Compra excede o limite de crédito!');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Compra aprovada.');
+  END IF;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atributo %TYPE — Ancoragem de Tipo</h3>
+        <p>
+          O atributo <code>%TYPE</code> permite declarar uma variável com o mesmo tipo de dados de uma coluna de tabela ou de outra variável. Isso torna o código mais robusto: se a definição da coluna mudar, a variável acompanha automaticamente.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nome    funcionarios.nome%TYPE;      -- Mesmo tipo da coluna nome
+  v_salario funcionarios.salario%TYPE;    -- Mesmo tipo da coluna salario
+  v_id      funcionarios.id%TYPE := 5;    -- Com valor inicial
+  v_salario_novo v_salario%TYPE;          -- Mesmo tipo de outra variável
+BEGIN
+  SELECT nome, salario INTO v_nome, v_salario
+  FROM funcionarios
+  WHERE id = v_id;
+
+  DBMS_OUTPUT.PUT_LINE(v_nome || ' - Salário atual: R$ ' || v_salario);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Escopo e Atribuição com :=</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_global NUMBER := 100;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Valor externo: ' || v_global);
+
+  DECLARE
+    v_global NUMBER := 50;  -- Esta variável SOMBREIA a externa
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE('Valor interno: ' || v_global);  -- Mostra 50
+  END;
+
+  DBMS_OUTPUT.PUT_LINE('Valor externo novamente: ' || v_global);  -- Mostra 100
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ESTRUTURAS CONDICIONAIS -->
+      <section>
+        <h2>Estruturas Condicionais</h2>
+
+        <h3>IF / ELSIF / ELSE</h3>
+        <p>O PL/SQL suporta condicionais encadeadas com a sintaxe clássica:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nota NUMBER(3) := 85;
+  v_conceito VARCHAR2(20);
+BEGIN
+  IF v_nota >= 90 THEN
+    v_conceito := 'A - Excelente';
+  ELSIF v_nota >= 80 THEN
+    v_conceito := 'B - Bom';
+  ELSIF v_nota >= 70 THEN
+    v_conceito := 'C - Regular';
+  ELSIF v_nota >= 60 THEN
+    v_conceito := 'D - Insuficiente';
+  ELSE
+    v_conceito := 'F - Reprovado';
+  END IF;
+
+  DBMS_OUTPUT.PUT_LINE('Nota: ' || v_nota || ' - Conceito: ' || v_conceito);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo com validação de negócio:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_salario    NUMBER(10,2) := 3500.00;
+  v_bonus      NUMBER(10,2);
+  v_departamento VARCHAR2(30) := 'TI';
+BEGIN
+  IF v_salario > 10000 THEN
+    v_bonus := v_salario * 0.05;  -- 5%
+  ELSIF v_salario > 5000 AND v_departamento = 'TI' THEN
+    v_bonus := v_salario * 0.10;  -- 10% para TI com salário médio
+  ELSIF v_salario > 5000 THEN
+    v_bonus := v_salario * 0.07;  -- 7%
+  ELSE
+    v_bonus := v_salario * 0.12;  -- 12% para salários baixos
+  END IF;
+
+  DBMS_OUTPUT.PUT_LINE('Bônus calculado: R$ ' || TO_CHAR(v_bonus, '999G990D00'));
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE Expression (com retorno)</h3>
+        <p>A expressão CASE retorna um valor e pode ser usada dentro de uma atribuição:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_dia_semana VARCHAR2(20) := 'Monday';
+  v_traducao   VARCHAR2(20);
+BEGIN
+  v_traducao := CASE v_dia_semana
+    WHEN 'Monday'    THEN 'Segunda-feira'
+    WHEN 'Tuesday'   THEN 'Terça-feira'
+    WHEN 'Wednesday' THEN 'Quarta-feira'
+    WHEN 'Thursday'  THEN 'Quinta-feira'
+    WHEN 'Friday'    THEN 'Sexta-feira'
+    ELSE 'Fim de semana'
+  END;
+
+  DBMS_OUTPUT.PUT_LINE(v_dia_semana || ' = ' || v_traducao);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE Statement (com ações)</h3>
+        <p>O comando CASE permite executar blocos de código dentro de cada condição:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_opcao NUMBER := 2;
+  v_resultado VARCHAR2(100);
+BEGIN
+  CASE v_opcao
+    WHEN 1 THEN
+      v_resultado := 'Cadastrar novo usuário';
+      DBMS_OUTPUT.PUT_LINE('Executando rotina de cadastro...');
+    WHEN 2 THEN
+      v_resultado := 'Alterar dados do usuário';
+      DBMS_OUTPUT.PUT_LINE('Abrindo formulário de edição...');
+    WHEN 3 THEN
+      v_resultado := 'Excluir usuário';
+      DBMS_OUTPUT.PUT_LINE('Solicitando confirmação de exclusão...');
+    ELSE
+      v_resultado := 'Opção inválida';
+      DBMS_OUTPUT.PUT_LINE('Nenhuma ação correspondente.');
+  END CASE;
+
+  DBMS_OUTPUT.PUT_LINE('Ação selecionada: ' || v_resultado);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo — CASE com condição de busca (Searched CASE):</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_salario NUMBER(10,2) := 8200.00;
+  v_faixa   VARCHAR2(20);
+BEGIN
+  CASE
+    WHEN v_salario > 20000 THEN v_faixa := 'Executivo';
+    WHEN v_salario > 10000 THEN v_faixa := 'Sênior';
+    WHEN v_salario > 5000  THEN v_faixa := 'Pleno';
+    WHEN v_salario > 2000  THEN v_faixa := 'Júnior';
+    ELSE v_faixa := 'Estagiário';
+  END CASE;
+
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' || v_salario || ' — Faixa: ' || v_faixa);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ESTRUTURAS DE REPETIÇÃO -->
+      <section>
+        <h2>Estruturas de Repetição (Loops)</h2>
+
+        <h3>LOOP Básico (com EXIT WHEN)</h3>
+        <p>
+          O <code>LOOP</code> simples repete infinitamente até encontrar um <code>EXIT</code> ou <code>EXIT WHEN</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_contador NUMBER := 1;
+BEGIN
+  LOOP
+    DBMS_OUTPUT.PUT_LINE('Iteração: ' || v_contador);
+    v_contador := v_contador + 1;
+    EXIT WHEN v_contador > 5;
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Loop concluído. Contador final: ' || v_contador);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WHILE LOOP</h3>
+        <p>A condição é verificada <strong>antes</strong> de cada iteração. O loop pode executar zero vezes:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_numero NUMBER := 10;
+  v_soma   NUMBER := 0;
+BEGIN
+  WHILE v_numero > 0 LOOP
+    v_soma := v_soma + v_numero;
+    DBMS_OUTPUT.PUT_LINE('Número: ' || v_numero || ' — Soma parcial: ' || v_soma);
+    v_numero := v_numero - 2;
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Soma total: ' || v_soma);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FOR LOOP (Numérico)</h3>
+        <p>
+          O <code>FOR LOOP</code> itera automaticamente sobre um intervalo. A variável de controle é declarada implicitamente e é somente leitura dentro do loop:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_fatorial NUMBER := 1;
+BEGIN
+  FOR i IN 1..10 LOOP
+    v_fatorial := v_fatorial * i;
+    DBMS_OUTPUT.PUT_LINE(i || '! = ' || v_fatorial);
+  END LOOP;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>FOR LOOP com REVERSE:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+  FOR i IN REVERSE 10..1 LOOP
+    DBMS_OUTPUT.PUT_LINE('Contagem regressiva: ' || i);
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Lançamento!');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo prático — Loop com inserção em tabela:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE log_execucao (
+  id        NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  mensagem   VARCHAR2(200),
+  data_hora  TIMESTAMP DEFAULT SYSTIMESTAMP
+);
+
+DECLARE
+  v_inicio TIMESTAMP := SYSTIMESTAMP;
+BEGIN
+  FOR i IN 1..5 LOOP
+    INSERT INTO log_execucao (mensagem)
+    VALUES ('Registro ' || i || ' inserido às ' || TO_CHAR(SYSTIMESTAMP, 'HH24:MI:SS'));
+
+    DBMS_OUTPUT.PUT_LINE('Inserido registro ' || i);
+  END LOOP;
+
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Processo concluído. Duração: ' ||
+    TO_CHAR(EXTRACT(SECOND FROM (SYSTIMESTAMP - v_inicio)), '90D00') || ' segundos');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nested Loops e Labels</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_resultado VARCHAR2(200);
+BEGIN
+  <<laco_externo>>
+  FOR i IN 1..3 LOOP
+    <<laco_interno>>
+    FOR j IN 1..3 LOOP
+      IF i = 2 AND j = 2 THEN
+        EXIT laco_externo;  -- Sai de ambos os loops
+      END IF;
+      DBMS_OUTPUT.PUT_LINE('i=' || i || ', j=' || j);
+    END LOOP laco_interno;
+  END LOOP laco_externo;
+
+  DBMS_OUTPUT.PUT_LINE('Saiu dos loops em i=2, j=2');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PALAVRA-CHAVE INTO -->
+      <section>
+        <h2>Palavra-chave INTO — SELECT dentro de PL/SQL</h2>
+        <p>
+          Em PL/SQL, um comando <code>SELECT</code> deve obrigatoriamente usar a cláusula <code>INTO</code> para armazenar o resultado em variáveis. Diferente do SQL puro (que retorna um conjunto de resultados), o SELECT em PL/SQL deve retornar <strong>exatamente uma linha</strong>. Se retornar zero linhas, ocorre a exceção <code>NO_DATA_FOUND</code>; se retornar mais de uma, ocorre <code>TOO_MANY_ROWS</code>.
+        </p>
+
+        <h5>Sintaxe e Exemplos:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nome   VARCHAR2(100);
+  v_salario NUMBER(10,2);
+  v_id     NUMBER := 10;
+BEGIN
+  -- INTO simples
+  SELECT nome, salario
+  INTO v_nome, v_salario
+  FROM funcionarios
+  WHERE id = v_id;
+
+  DBMS_OUTPUT.PUT_LINE('Funcionário: ' || v_nome || ' — Salário: ' || v_salario);
+
+  -- INTO com função de agregação
+  SELECT COUNT(*), AVG(salario), MAX(salario)
+  INTO v_contador, v_media, v_maximo
+  FROM funcionarios;
+
+  DBMS_OUTPUT.PUT_LINE('Total: ' || v_contador ||
+                       ' | Média: ' || v_media ||
+                       ' | Máximo: ' || v_maximo);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Comparação: SQL Puro vs PL/SQL com INTO:</h5>
+        <table>
+          <thead>
+            <tr>
+              <th>SQL Puro</th>
+              <th>PL/SQL com INTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SELECT nome FROM funcionarios;</code></td>
+              <td><code>SELECT nome INTO v_nome FROM funcionarios WHERE id = 1;</code></td>
+            </tr>
+            <tr>
+              <td>Retorna conjunto de resultados (result set)</td>
+              <td>Armazena em variável(veis) PL/SQL</td>
+            </tr>
+            <tr>
+              <td>Pode retornar 0, 1 ou N linhas</td>
+              <td><strong>Deve retornar exatamente 1 linha</strong> (senão: exception)</td>
+            </tr>
+            <tr>
+              <td>Executado diretamente no cliente SQL</td>
+              <td>Dentro de um bloco BEGIN...END</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>SELECT INTO com registro completo (%ROWTYPE):</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_func funcionarios%ROWTYPE;
+BEGIN
+  SELECT * INTO v_func FROM funcionarios WHERE id = 1;
+
+  DBMS_OUTPUT.PUT_LINE('Nome: ' || v_func.nome);
+  DBMS_OUTPUT.PUT_LINE('Salário: ' || v_func.salario);
+  DBMS_OUTPUT.PUT_LINE('Departamento: ' || v_func.departamento);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRATAMENTO DE EXCEÇÕES -->
+      <section>
+        <h2>Tratamento de Exceções</h2>
+        <p>
+          O PL/SQL possui um sistema robusto de tratamento de erros. Exceções são eventos que interrompem o fluxo normal de execução. Elas podem ser <strong>predefinidas</strong> pela Oracle, <strong>definidas pelo usuário</strong> ou mapeadas via <strong>PRAGMA EXCEPTION_INIT</strong>.
+        </p>
+
+        <h3>Exceções Predefinidas (Predefined Exceptions)</h3>
+        <p>A Oracle fornece várias exceções nomeadas para os erros mais comuns:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Exceção</th>
+              <th>Código Oracle</th>
+              <th>Quando ocorre</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>NO_DATA_FOUND</code></td>
+              <td>ORA-01403</td>
+              <td>SELECT INTO não encontrou nenhuma linha</td>
+            </tr>
+            <tr>
+              <td><code>TOO_MANY_ROWS</code></td>
+              <td>ORA-01422</td>
+              <td>SELECT INTO retornou mais de uma linha</td>
+            </tr>
+            <tr>
+              <td><code>ZERO_DIVIDE</code></td>
+              <td>ORA-01476</td>
+              <td>Divisão por zero</td>
+            </tr>
+            <tr>
+              <td><code>DUP_VAL_ON_INDEX</code></td>
+              <td>ORA-00001</td>
+              <td>Tentativa de inserir valor duplicado em chave única</td>
+            </tr>
+            <tr>
+              <td><code>INVALID_NUMBER</code></td>
+              <td>ORA-01722</td>
+              <td>Falha na conversão de string para número</td>
+            </tr>
+            <tr>
+              <td><code>VALUE_ERROR</code></td>
+              <td>ORA-06502</td>
+              <td>Erro de truncamento, aritmético ou de conversão</td>
+            </tr>
+            <tr>
+              <td><code>LOGIN_DENIED</code></td>
+              <td>ORA-01017</td>
+              <td>Usuário ou senha inválidos ao conectar</td>
+            </tr>
+            <tr>
+              <td><code>PROGRAM_ERROR</code></td>
+              <td>ORA-06501</td>
+              <td>Erro interno PL/SQL</td>
+            </tr>
+            <tr>
+              <td><code>STORAGE_ERROR</code></td>
+              <td>ORA-06500</td>
+              <td>PL/SQL ficou sem memória</td>
+            </tr>
+            <tr>
+              <td><code>TIMEOUT_ON_RESOURCE</code></td>
+              <td>ORA-00051</td>
+              <td>Timeout ao aguardar recurso</td>
+            </tr>
+            <tr>
+              <td><code>CURSOR_ALREADY_OPEN</code></td>
+              <td>ORA-06511</td>
+              <td>Tentativa de abrir cursor que já está aberto</td>
+            </tr>
+            <tr>
+              <td><code>INVALID_CURSOR</code></td>
+              <td>ORA-01001</td>
+              <td>Operação em cursor que não está aberto</td>
+            </tr>
+            <tr>
+              <td><code>NOT_LOGGED_ON</code></td>
+              <td>ORA-01012</td>
+              <td>Tentativa de operar sem estar conectado</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>Exemplo — Tratamento de múltiplas exceções:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_nome     VARCHAR2(100);
+  v_salario  NUMBER(10,2);
+  v_id       NUMBER := &id_funcionario;  -- Solicita valor ao usuário
+BEGIN
+  SELECT nome, salario INTO v_nome, v_salario
+  FROM funcionarios
+  WHERE id = v_id;
+
+  DBMS_OUTPUT.PUT_LINE('Funcionário: ' || v_nome);
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' || v_salario);
+
+  -- Simular cálculo que pode gerar divisão por zero
+  DECLARE
+    v_resultado NUMBER;
+    v_divisor   NUMBER := 0;
+  BEGIN
+    v_resultado := 1000 / v_divisor;
+    DBMS_OUTPUT.PUT_LINE('Resultado: ' || v_resultado);
+  EXCEPTION
+    WHEN ZERO_DIVIDE THEN
+      DBMS_OUTPUT.PUT_LINE('Erro: Divisão por zero! Verifique o divisor.');
+  END;
+
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: Funcionário com ID ' || v_id || ' não encontrado.');
+  WHEN TOO_MANY_ROWS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: Múltiplos funcionários com o mesmo ID (isso não deveria acontecer).');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('Código do erro: ' || SQLCODE);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- EXCEÇÕES DEFINIDAS PELO USUÁRIO -->
+      <section>
+        <h2>Exceções Definidas pelo Usuário</h2>
+        <p>
+          Você pode criar suas próprias exceções para validar regras de negócio. O processo é: declarar a exceção, dispará-la com <code>RAISE</code> e capturá-la no bloco EXCEPTION.
+        </p>
+
+        <h5>Exemplo — Validação de salário:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  e_salario_invalido EXCEPTION;
+  v_salario NUMBER(10,2) := -500.00;
+BEGIN
+  IF v_salario < 0 THEN
+    RAISE e_salario_invalido;
+  END IF;
+
+  -- Só chega aqui se salário for >= 0
+  DBMS_OUTPUT.PUT_LINE('Salário válido: R$ ' || v_salario);
+
+EXCEPTION
+  WHEN e_salario_invalido THEN
+    DBMS_OUTPUT.PUT_LINE('Erro de negócio: Salário não pode ser negativo.');
+    DBMS_OUTPUT.PUT_LINE('Valor informado: R$ ' || v_salario);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Exemplo — RAISE_APPLICATION_ERROR:</h5>
+        <p>
+          Para propagar erros customizados para a aplicação cliente com código e mensagem específicos, use <code>RAISE_APPLICATION_ERROR</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_estoque   NUMBER := 5;
+  v_pedido    NUMBER := 10;
+BEGIN
+  IF v_pedido > v_estoque THEN
+    RAISE_APPLICATION_ERROR(
+      -20001,
+      'Estoque insuficiente. Disponível: ' || v_estoque ||
+      ', Solicitado: ' || v_pedido
+    );
+  END IF;
+
+  DBMS_OUTPUT.PUT_LINE('Pedido processado com sucesso!');
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro capturado: ' || SQLERRM);
+    ROLLBACK;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>PRAGMA EXCEPTION_INIT — Mapeando Códigos Oracle para Exceções Nomeadas</h3>
+        <p>
+          Quando você precisa tratar um erro específico da Oracle que não tem uma exceção predefinida, use <code>PRAGMA EXCEPTION_INIT</code> para associar um código de erro Oracle a um nome de exceção que você define:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  e_tabela_inexistente EXCEPTION;
+  PRAGMA EXCEPTION_INIT(e_tabela_inexistente, -942);
+
+  e_senha_expirada EXCEPTION;
+  PRAGMA EXCEPTION_INIT(e_senha_expirada, -28001);
+
+  v_contador NUMBER;
+BEGIN
+  -- Tentar consultar uma tabela que pode não existir
+  SELECT COUNT(*) INTO v_contador FROM tabela_temporaria;
+
+  DBMS_OUTPUT.PUT_LINE('Registros encontrados: ' || v_contador);
+
+EXCEPTION
+  WHEN e_tabela_inexistente THEN
+    DBMS_OUTPUT.PUT_LINE('Erro ORA-00942: Tabela ou view não existe.');
+    DBMS_OUTPUT.PUT_LINE('Execute o script de criação de tabelas primeiro.');
+
+  WHEN e_senha_expirada THEN
+    DBMS_OUTPUT.PUT_LINE('Erro ORA-28001: Sua senha expirou. Altere-a antes de continuar.');
+
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro não mapeado: Código ' || SQLCODE || ' — ' || SQLERRM);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SQLCODE e SQLERRM</h3>
+        <p>
+          <code>SQLCODE</code> retorna o número do erro Oracle (negativo para erros, 0 para sucesso, +100 para NO_DATA_FOUND). <code>SQLERRM</code> retorna a mensagem de erro associada. Ambos são especialmente úteis no handler <code>WHEN OTHERS</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_codigo  NUMBER;
+  v_mensagem VARCHAR2(500);
+BEGIN
+  -- Forçar um erro
+  EXECUTE IMMEDIATE 'SELECT * FROM tabela_que_nao_existe';
+
+EXCEPTION
+  WHEN OTHERS THEN
+    v_codigo := SQLCODE;
+    v_mensagem := SQLERRM;
+
+    DBMS_OUTPUT.PUT_LINE('=== LOG DE ERRO ===');
+    DBMS_OUTPUT.PUT_LINE('Código: ' || v_codigo);
+    DBMS_OUTPUT.PUT_LINE('Mensagem: ' || v_mensagem);
+
+    INSERT INTO log_erros (codigo_erro, mensagem, data_hora)
+    VALUES (v_codigo, v_mensagem, SYSTIMESTAMP);
+
+    COMMIT;
+
+    -- Re-lançar o erro para a aplicação
+    RAISE;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CURSORES -->
+      <section>
+        <h2>Cursores em PL/SQL</h2>
+        <p>
+          Um <strong>cursor</strong> é um ponteiro para a área de contexto privada (Private SQL Area) na memória PGA/SGA que contém informações sobre uma instrução SQL processada. Em PL/SQL, cursores permitem processar múltiplas linhas retornadas por uma consulta, linha por linha.
+        </p>
+
+        <h3>Tipos de Cursores</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cursor Implícito</strong></td>
+              <td>Criado automaticamente pelo Oracle para comandos SQL (SELECT INTO, INSERT, UPDATE, DELETE)</td>
+              <td>Operações que retornam 1 linha ou comandos DML</td>
+            </tr>
+            <tr>
+              <td><strong>Cursor Explícito</strong></td>
+              <td>Declarado e controlado pelo programador</td>
+              <td>Consultas que retornam múltiplas linhas</td>
+            </tr>
+            <tr>
+              <td><strong>Cursor FOR LOOP</strong></td>
+              <td>Sintaxe simplificada que gerencia automaticamente OPEN, FETCH e CLOSE</td>
+              <td>Iteração simples sobre resultados de consulta</td>
+            </tr>
+            <tr>
+              <td><strong>Cursor com Parâmetros</strong></td>
+              <td>Cursor explícito que aceita parâmetros de entrada</td>
+              <td>Consultas reutilizáveis com filtros dinâmicos</td>
+            </tr>
+            <tr>
+              <td><strong>REF CURSOR</strong></td>
+              <td>Ponteiro para cursor que pode ser passado entre programas</td>
+              <td>Retornar resultados para aplicações cliente</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Cursor Explícito — Passo a Passo</h3>
+        <p>O ciclo de vida completo de um cursor explícito envolve 4 etapas:</p>
+        <ol>
+          <li><strong>DECLARE:</strong> definir o cursor com sua consulta SQL</li>
+          <li><strong>OPEN:</strong> abrir o cursor (executar a consulta e preparar o conjunto de resultados)</li>
+          <li><strong>FETCH:</strong> buscar uma linha por vez para processamento</li>
+          <li><strong>CLOSE:</strong> fechar o cursor e liberar recursos</li>
+        </ol>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  -- 1. DECLARE: define o cursor
+  CURSOR cur_funcionarios IS
+    SELECT id, nome, salario, departamento
+    FROM funcionarios
+    WHERE status = 'A'
+    ORDER BY salario DESC;
+
+  -- Variáveis para armazenar cada linha
+  v_id           funcionarios.id%TYPE;
+  v_nome         funcionarios.nome%TYPE;
+  v_salario      funcionarios.salario%TYPE;
+  v_departamento funcionarios.departamento%TYPE;
+
+  v_contador NUMBER := 0;
+BEGIN
+  -- 2. OPEN: abre o cursor e executa a query
+  OPEN cur_funcionarios;
+
+  LOOP
+    -- 3. FETCH: busca a próxima linha
+    FETCH cur_funcionarios INTO v_id, v_nome, v_salario, v_departamento;
+
+    -- Verifica se ainda há linhas
+    EXIT WHEN cur_funcionarios%NOTFOUND;
+
+    v_contador := v_contador + 1;
+
+    DBMS_OUTPUT.PUT_LINE(
+      v_contador || '. ' || v_nome ||
+      ' | Dept: ' || v_departamento ||
+      ' | Salário: R$ ' || TO_CHAR(v_salario, '999G990D00')
+    );
+  END LOOP;
+
+  -- 4. CLOSE: fecha o cursor
+  CLOSE cur_funcionarios;
+
+  DBMS_OUTPUT.PUT_LINE('Total de funcionários ativos: ' || v_contador);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atributos de Cursores</h3>
+        <p>Cursores, tanto explícitos quanto implícitos, possuem atributos que fornecem informações sobre o estado da execução:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Atributo</th>
+              <th>Retorna</th>
+              <th>Quando usar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>%FOUND</code></td>
+              <td>TRUE se o último FETCH retornou uma linha</td>
+              <td>Antes de processar dados do FETCH, para saber se há algo</td>
+            </tr>
+            <tr>
+              <td><code>%NOTFOUND</code></td>
+              <td>TRUE se o último FETCH NÃO retornou uma linha</td>
+              <td>Condição de saída de loops (EXIT WHEN NOTFOUND)</td>
+            </tr>
+            <tr>
+              <td><code>%ROWCOUNT</code></td>
+              <td>Número de linhas processadas até o momento</td>
+              <td>Contagem de registros afetados, progresso, logging</td>
+            </tr>
+            <tr>
+              <td><code>%ISOPEN</code></td>
+              <td>TRUE se o cursor está aberto</td>
+              <td>Verificar antes de tentar FETCH ou CLOSE</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5>Exemplo demonstrando todos os atributos:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  CURSOR cur_produtos IS
+    SELECT id, nome, preco
+    FROM produtos
+    WHERE estoque > 0;
+
+  v_id    produtos.id%TYPE;
+  v_nome  produtos.nome%TYPE;
+  v_preco produtos.preco%TYPE;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Cursor aberto? ' ||
+    CASE WHEN cur_produtos%ISOPEN THEN 'Sim' ELSE 'Não' END);
+
+  OPEN cur_produtos;
+
+  DBMS_OUTPUT.PUT_LINE('Cursor aberto após OPEN? ' ||
+    CASE WHEN cur_produtos%ISOPEN THEN 'Sim' ELSE 'Não' END);
+
+  LOOP
+    FETCH cur_produtos INTO v_id, v_nome, v_preco;
+    EXIT WHEN cur_produtos%NOTFOUND;
+
+    DBMS_OUTPUT.PUT_LINE(
+      'Linha ' || cur_produtos%ROWCOUNT || ': ' ||
+      v_nome || ' — R$ ' || v_preco
+    );
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Total de produtos processados: ' || cur_produtos%ROWCOUNT);
+
+  CLOSE cur_produtos;
+  DBMS_OUTPUT.PUT_LINE('Cursor fechado.');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cursor FOR LOOP — Sintaxe Simplificada</h3>
+        <p>
+          O Cursor FOR LOOP é a forma mais prática e segura de iterar sobre cursores. O Oracle gerencia automaticamente OPEN, FETCH, CLOSE e a variável de registro é declarada implicitamente:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  v_total NUMBER := 0;
+BEGIN
+  FOR reg IN (
+    SELECT id, nome, salario, departamento
+    FROM funcionarios
+    WHERE status = 'A'
+    ORDER BY salario DESC
+  ) LOOP
+    v_total := v_total + reg.salario;
+
+    DBMS_OUTPUT.PUT_LINE(
+      reg.nome || ' (' || reg.departamento || ') — R$ ' || reg.salario
+    );
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Folha total: R$ ' || TO_CHAR(v_total, '999G999G990D00'));
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Cursor FOR LOOP com cursor nomeado:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  CURSOR cur_vendas_mes IS
+    SELECT produto, SUM(valor) AS total_vendas
+    FROM vendas
+    WHERE EXTRACT(MONTH FROM data_venda) = EXTRACT(MONTH FROM SYSDATE)
+    GROUP BY produto
+    ORDER BY total_vendas DESC;
+
+  v_ranking NUMBER := 0;
+BEGIN
+  FOR reg IN cur_vendas_mes LOOP
+    v_ranking := v_ranking + 1;
+
+    DBMS_OUTPUT.PUT_LINE(
+      v_ranking || 'º lugar: ' || reg.produto ||
+      ' — R$ ' || TO_CHAR(reg.total_vendas, '999G999G990D00')
+    );
+
+    EXIT WHEN v_ranking >= 5;  -- Mostrar apenas top 5
+  END LOOP;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cursor com Parâmetros</h3>
+        <p>Cursores podem aceitar parâmetros, tornando-os reutilizáveis com filtros diferentes:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  CURSOR cur_por_departamento(p_dept VARCHAR2, p_salario_min NUMBER) IS
+    SELECT id, nome, salario
+    FROM funcionarios
+    WHERE departamento = p_dept
+      AND salario >= p_salario_min
+    ORDER BY salario;
+
+  v_departamento VARCHAR2(30);
+BEGIN
+  FOR r IN (SELECT DISTINCT departamento FROM funcionarios) LOOP
+    v_departamento := r.departamento;
+
+    DBMS_OUTPUT.PUT_LINE('--- Dept: ' || v_departamento || ' ---');
+
+    FOR func IN cur_por_departamento(v_departamento, 3000) LOOP
+      DBMS_OUTPUT.PUT_LINE('  ' || func.nome || ' — R$ ' || func.salario);
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('');
+  END LOOP;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atributos de Cursores Implícitos (SQL%)</h3>
+        <p>Após comandos INSERT, UPDATE e DELETE, use o cursor implícito <code>SQL</code> para verificar o resultado:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN
+  UPDATE funcionarios
+  SET salario = salario * 1.10
+  WHERE departamento = 'TI';
+
+  DBMS_OUTPUT.PUT_LINE('Linhas atualizadas: ' || SQL%ROWCOUNT);
+
+  IF SQL%FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Pelo menos uma linha foi atualizada.');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Nenhuma linha encontrada para o departamento TI.');
+  END IF;
+
+  DELETE FROM log_execucao
+  WHERE data_hora < SYSDATE - 30;
+
+  DBMS_OUTPUT.PUT_LINE('Logs antigos removidos: ' || SQL%ROWCOUNT);
+
+  COMMIT;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- %ROWTYPE e %TYPE -->
+      <section>
+        <h2>%ROWTYPE e %TYPE — Ancoragem de Tipos</h2>
+
+        <h3>%ROWTYPE — Registro baseado em Tabela ou Cursor</h3>
+        <p>
+          <code>%ROWTYPE</code> declara uma variável do tipo registro que espelha exatamente a estrutura de uma linha de tabela, view ou cursor. Isso é extremamente útil para SELECT * INTO ou para iterar sobre cursores sem declarar múltiplas variáveis individuais.
+        </p>
+
+        <h5>%ROWTYPE baseado em Tabela:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  -- Declara uma variável com a mesma estrutura da tabela funcionarios
+  v_func   funcionarios%ROWTYPE;
+  v_func2  funcionarios%ROWTYPE;
+BEGIN
+  -- Preencher com SELECT *
+  SELECT * INTO v_func
+  FROM funcionarios
+  WHERE id = 1;
+
+  DBMS_OUTPUT.PUT_LINE('=== Funcionário 1 ===');
+  DBMS_OUTPUT.PUT_LINE('ID: ' || v_func.id);
+  DBMS_OUTPUT.PUT_LINE('Nome: ' || v_func.nome);
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' || v_func.salario);
+  DBMS_OUTPUT.PUT_LINE('Departamento: ' || v_func.departamento);
+  DBMS_OUTPUT.PUT_LINE('Data admissão: ' || TO_CHAR(v_func.data_admissao, 'DD/MM/YYYY'));
+
+  -- Copiar um registro para outro (atribuição completa)
+  v_func2 := v_func;
+  v_func2.salario := v_func2.salario * 1.15;  -- Aumento de 15%
+
+  DBMS_OUTPUT.PUT_LINE('=== Após aumento ===');
+  DBMS_OUTPUT.PUT_LINE('Novo salário: R$ ' || v_func2.salario);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>%ROWTYPE baseado em Cursor:</h5>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  CURSOR cur_resumo IS
+    SELECT d.nome AS departamento,
+           COUNT(f.id) AS qtd_funcionarios,
+           SUM(f.salario) AS folha_total,
+           AVG(f.salario) AS media_salarial
+    FROM departamentos d
+    LEFT JOIN funcionarios f ON f.departamento_id = d.id
+    GROUP BY d.nome
+    ORDER BY folha_total DESC;
+
+  -- %ROWTYPE baseado no cursor, não na tabela
+  v_registro cur_resumo%ROWTYPE;
+BEGIN
+  OPEN cur_resumo;
+  LOOP
+    FETCH cur_resumo INTO v_registro;
+    EXIT WHEN cur_resumo%NOTFOUND;
+
+    DBMS_OUTPUT.PUT_LINE(
+      v_registro.departamento || ' | ' ||
+      v_registro.qtd_funcionarios || ' funcs | ' ||
+      'Folha: R$ ' || TO_CHAR(v_registro.folha_total, '999G990D00') || ' | ' ||
+      'Média: R$ ' || TO_CHAR(v_registro.media_salarial, '999G990D00')
+    );
+  END LOOP;
+  CLOSE cur_resumo;
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>%TYPE — Ancoragem Individual de Coluna</h3>
+        <p>
+          <code>%TYPE</code> ancora uma variável ao tipo de uma coluna específica ou de outra variável. Já vimos exemplos anteriormente. Abaixo, uma demonstração mais completa:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DECLARE
+  -- Ancoragem a colunas de tabela
+  v_id            funcionarios.id%TYPE;
+  v_nome          funcionarios.nome%TYPE;
+  v_salario_base  funcionarios.salario%TYPE;
+
+  -- Ancoragem a outra variável
+  v_salario_novo  v_salario_base%TYPE;
+
+  -- Usando %TYPE em INSERT
+BEGIN
+  SELECT id, nome, salario
+  INTO v_id, v_nome, v_salario_base
+  FROM funcionarios
+  WHERE id = 5;
+
+  v_salario_novo := v_salario_base * 1.20;
+
+  DBMS_OUTPUT.PUT_LINE('Funcionário: ' || v_nome);
+  DBMS_OUTPUT.PUT_LINE('Salário base: R$ ' || v_salario_base);
+  DBMS_OUTPUT.PUT_LINE('Salário com aumento: R$ ' || v_salario_novo);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Comparação %ROWTYPE vs %TYPE</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>%ROWTYPE</th>
+              <th>%TYPE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>O que ancora</td>
+              <td>Linha inteira de tabela/view/cursor</td>
+              <td>Coluna ou variável individual</td>
+            </tr>
+            <tr>
+              <td>Sintaxe</td>
+              <td><code>var tabela%ROWTYPE;</code></td>
+              <td><code>var tabela.coluna%TYPE;</code></td>
+            </tr>
+            <tr>
+              <td>Acesso</td>
+              <td><code>var.coluna</code></td>
+              <td>Direto: <code>var</code></td>
+            </tr>
+            <tr>
+              <td>Quando usar</td>
+              <td>SELECT * INTO, Cursor FOR LOOP</td>
+              <td>Variáveis individuais, parâmetros</td>
+            </tr>
+            <tr>
+              <td>Atribuição entre registros</td>
+              <td>Sim: <code>reg1 := reg2;</code></td>
+              <td>N/A (uma variável por vez)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PROCEDURE PL/SQL COMPLETA -->
+      <section>
+        <h2>Passo a Passo: Procedure PL/SQL Completa</h2>
+        <p>
+          Vamos construir uma procedure completa que ilustra todos os conceitos aprendidos: variáveis, cursores, estruturas condicionais, loops, tratamento de exceções, %ROWTYPE e %TYPE. Esta procedure percorre funcionários, calcula bônus baseado no salário e departamento, atualiza a tabela e registra logs.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE bonus_log (
+  id             NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  funcionario_id NUMBER,
+  nome           VARCHAR2(100),
+  salario_antigo NUMBER(10,2),
+  bonus          NUMBER(10,2),
+  salario_novo   NUMBER(10,2),
+  data_processo  TIMESTAMP DEFAULT SYSTIMESTAMP,
+  status         VARCHAR2(20)
+);
+
+CREATE OR REPLACE PROCEDURE sp_calcular_bonus(
+  p_percentual_base IN NUMBER DEFAULT 10,
+  p_dept_foco       IN VARCHAR2 DEFAULT NULL
+) IS
+  CURSOR cur_func IS
+    SELECT * FROM funcionarios
+    WHERE status = 'A'
+      AND (p_dept_foco IS NULL OR departamento = p_dept_foco)
+    ORDER BY id;
+
+  v_func          funcionarios%ROWTYPE;
+  v_bonus_percent NUMBER(5,2);
+  v_bonus_valor   NUMBER(10,2);
+  v_salario_novo  NUMBER(10,2);
+  v_processados   NUMBER := 0;
+  v_erros         NUMBER := 0;
+
+  e_salario_zerado EXCEPTION;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('=== INICIANDO CÁLCULO DE BÔNUS ===');
+  DBMS_OUTPUT.PUT_LINE('Percentual base: ' || p_percentual_base || '%');
+
+  OPEN cur_func;
+  LOOP
+    FETCH cur_func INTO v_func;
+    EXIT WHEN cur_func%NOTFOUND;
+
+    BEGIN
+      -- Validar salário
+      IF v_func.salario IS NULL OR v_func.salario <= 0 THEN
+        RAISE e_salario_zerado;
+      END IF;
+
+      -- Calcular percentual de bônus baseado no departamento
+      v_bonus_percent := p_percentual_base;
+
+      IF v_func.departamento = 'TI' THEN
+        v_bonus_percent := v_bonus_percent + 5;  -- +5% para TI
+      ELSIF v_func.departamento = 'Vendas' THEN
+        v_bonus_percent := v_bonus_percent + 8;  -- +8% para Vendas
+      END IF;
+
+      -- Funcionários com salário baixo recebem percentual maior
+      IF v_func.salario < 3000 THEN
+        v_bonus_percent := v_bonus_percent + 3;
+      END IF;
+
+      -- Calcular valores
+      v_bonus_valor := v_func.salario * (v_bonus_percent / 100);
+      v_salario_novo := v_func.salario + v_bonus_valor;
+
+      -- Atualizar salário
+      UPDATE funcionarios
+      SET salario = v_salario_novo
+      WHERE id = v_func.id;
+
+      -- Registrar log de sucesso
+      INSERT INTO bonus_log
+        (funcionario_id, nome, salario_antigo, bonus, salario_novo, status)
+      VALUES
+        (v_func.id, v_func.nome, v_func.salario,
+         v_bonus_valor, v_salario_novo, 'SUCESSO');
+
+      v_processados := v_processados + 1;
+
+      DBMS_OUTPUT.PUT_LINE(
+        '✓ ' || v_func.nome ||
+        ' | Dept: ' || v_func.departamento ||
+        ' | Bônus: ' || v_bonus_percent || '%' ||
+        ' | R$ ' || TO_CHAR(v_bonus_valor, '999G990D00') ||
+        ' | Novo salário: R$ ' || TO_CHAR(v_salario_novo, '999G990D00')
+      );
+
+    EXCEPTION
+      WHEN e_salario_zerado THEN
+        v_erros := v_erros + 1;
+
+        INSERT INTO bonus_log
+          (funcionario_id, nome, salario_antigo, status)
+        VALUES
+          (v_func.id, v_func.nome, v_func.salario, 'ERRO: salário zerado');
+
+        DBMS_OUTPUT.PUT_LINE(
+          '✗ ' || v_func.nome || ' — ERRO: Salário inválido (R$ ' ||
+          NVL(v_func.salario, 0) || ')'
+        );
+
+      WHEN OTHERS THEN
+        v_erros := v_erros + 1;
+
+        INSERT INTO bonus_log
+          (funcionario_id, nome, salario_antigo, status)
+        VALUES
+          (v_func.id, v_func.nome, v_func.salario, 'ERRO: ' || SQLERRM);
+
+        DBMS_OUTPUT.PUT_LINE(
+          '✗ ' || v_func.nome || ' — ERRO: ' || SQLERRM
+        );
+    END;
+  END LOOP;
+
+  CLOSE cur_func;
+
+  COMMIT;
+
+  DBMS_OUTPUT.PUT_LINE('=== RESUMO ===');
+  DBMS_OUTPUT.PUT_LINE('Funcionários processados com sucesso: ' || v_processados);
+  DBMS_OUTPUT.PUT_LINE('Erros encontrados: ' || v_erros);
+  DBMS_OUTPUT.PUT_LINE('Total de registros no cursor: ' || cur_func%ROWCOUNT);
+
+EXCEPTION
+  WHEN OTHERS THEN
+    ROLLBACK;
+    DBMS_OUTPUT.PUT_LINE('ERRO FATAL: ' || SQLERRM);
+    RAISE;
+END sp_calcular_bonus;
+/
+
+-- Executar a procedure
+EXEC sp_calcular_bonus(p_percentual_base => 10, p_dept_foco => NULL);
+
+-- Executar apenas para TI com 15% base
+EXEC sp_calcular_bonus(15, 'TI');
+
+-- Verificar logs
+SELECT * FROM bonus_log ORDER BY data_processo DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Criar bloco PL/SQL que insere registro e trata DUP_VAL_ON_INDEX</h3>
+            <p>
+              Crie uma tabela <code>cursos</code> com as colunas: id (NUMBER PRIMARY KEY), nome (VARCHAR2(100) UNIQUE), carga_horaria (NUMBER). Escreva um bloco PL/SQL que tenta inserir um registro nessa tabela e, se o nome já existir (violação de UNIQUE), capture a exceção <code>DUP_VAL_ON_INDEX</code> e exiba uma mensagem amigável. Teste inserindo o mesmo nome duas vezes.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE cursos (
+  id            NUMBER PRIMARY KEY,
+  nome          VARCHAR2(100) UNIQUE,
+  carga_horaria NUMBER
+);
+
+DECLARE
+  v_id            NUMBER := 1;
+  v_nome          VARCHAR2(100) := 'Oracle PL/SQL Fundamentals';
+  v_carga_horaria NUMBER := 40;
+BEGIN
+  INSERT INTO cursos (id, nome, carga_horaria)
+  VALUES (v_id, v_nome, v_carga_horaria);
+
+  DBMS_OUTPUT.PUT_LINE('Curso inserido com sucesso: ' || v_nome);
+  COMMIT;
+
+EXCEPTION
+  WHEN DUP_VAL_ON_INDEX THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: O curso "' || v_nome ||
+      '" já existe na tabela. Escolha outro nome ou use UPDATE.');
+    DBMS_OUTPUT.PUT_LINE('Código Oracle: ' || SQLCODE);
+    ROLLBACK;
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+    ROLLBACK;
+END;
+/
+
+-- Execute uma segunda vez para ver o tratamento de DUP_VAL_ON_INDEX
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Criar cursor explícito que percorre produtos e atualiza preços com 10% de aumento</h3>
+            <p>
+              Crie uma tabela <code>produtos</code> com: id, nome, preco, estoque. Insira pelo menos 8 produtos. Escreva um bloco PL/SQL com cursor explícito (OPEN, FETCH, CLOSE) que percorre todos os produtos com estoque > 0 e aplica um aumento de 10% no preço. Ao final, exiba quantos produtos foram atualizados usando <code>%ROWCOUNT</code> no UPDATE. Mostre o preço antigo e o novo de cada produto.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE produtos (
+  id      NUMBER PRIMARY KEY,
+  nome    VARCHAR2(100),
+  preco   NUMBER(10,2),
+  estoque NUMBER
+);
+
+INSERT INTO produtos VALUES (1, 'Mouse', 80.00, 50);
+INSERT INTO produtos VALUES (2, 'Teclado', 150.00, 30);
+INSERT INTO produtos VALUES (3, 'Monitor', 1200.00, 15);
+INSERT INTO produtos VALUES (4, 'Webcam', 250.00, 0);
+INSERT INTO produtos VALUES (5, 'Headset', 350.00, 25);
+INSERT INTO produtos VALUES (6, 'Hub USB', 90.00, 40);
+INSERT INTO produtos VALUES (7, 'Cabo HDMI', 45.00, 100);
+INSERT INTO produtos VALUES (8, 'SSD 1TB', 500.00, 20);
+COMMIT;
+
+DECLARE
+  CURSOR cur_prod IS
+    SELECT id, nome, preco
+    FROM produtos
+    WHERE estoque > 0
+    ORDER BY id
+    FOR UPDATE;  -- Bloqueia linhas para UPDATE
+
+  v_id      produtos.id%TYPE;
+  v_nome    produtos.nome%TYPE;
+  v_preco   produtos.preco%TYPE;
+  v_cont    NUMBER := 0;
+BEGIN
+  OPEN cur_prod;
+  LOOP
+    FETCH cur_prod INTO v_id, v_nome, v_preco;
+    EXIT WHEN cur_prod%NOTFOUND;
+
+    UPDATE produtos
+    SET preco = preco * 1.10
+    WHERE CURRENT OF cur_prod;  -- Atualiza a linha atual do cursor
+
+    v_cont := v_cont + 1;
+
+    DBMS_OUTPUT.PUT_LINE(
+      v_cont || '. ' || v_nome ||
+      ' | Preço antigo: R$ ' || TO_CHAR(v_preco, '999G990D00') ||
+      ' | Novo preço: R$ ' || TO_CHAR(v_preco * 1.10, '999G990D00')
+    );
+  END LOOP;
+
+  CLOSE cur_prod;
+
+  DBMS_OUTPUT.PUT_LINE('Total de produtos atualizados: ' || v_cont);
+  COMMIT;
+END;
+/
+
+-- Verificar resultado
+SELECT * FROM produtos ORDER BY id;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Criar bloco com LOOP e EXIT WHEN calculando fatorial</h3>
+            <p>
+              Crie um bloco PL/SQL que solicita um número via variável de substituição (<code>&numero</code>) e calcula o fatorial desse número usando um LOOP básico com EXIT WHEN. O programa deve validar se o número é positivo e exibir o resultado. Teste com os valores 0, 1, 5, 10 e um número negativo.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+DECLARE
+  v_numero    NUMBER := &numero;
+  v_fatorial  NUMBER := 1;
+  v_contador  NUMBER := v_numero;
+
+  e_numero_invalido EXCEPTION;
+BEGIN
+  -- Validar entrada
+  IF v_numero < 0 THEN
+    RAISE e_numero_invalido;
+  END IF;
+
+  -- Caso especial: fatorial de 0 é 1 (já inicializado)
+  IF v_numero = 0 THEN
+    DBMS_OUTPUT.PUT_LINE('0! = 1');
+  ELSE
+    -- Calcular fatorial com LOOP + EXIT WHEN
+    LOOP
+      v_fatorial := v_fatorial * v_contador;
+      DBMS_OUTPUT.PUT_LINE('Multiplicando por ' || v_contador ||
+        ' → parcial: ' || v_fatorial);
+
+      v_contador := v_contador - 1;
+      EXIT WHEN v_contador = 0;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE(v_numero || '! = ' || v_fatorial);
+  END IF;
+
+EXCEPTION
+  WHEN e_numero_invalido THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: O número deve ser >= 0.');
+    DBMS_OUTPUT.PUT_LINE('Valor informado: ' || v_numero);
+  WHEN VALUE_ERROR THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: Valor inválido. Digite um número inteiro.');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro: ' || SQLERRM);
+END;
+/
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Usar %ROWTYPE para declarar variável baseada em tabela e exibir dados</h3>
+            <p>
+              Na tabela <code>funcionarios</code> criada em aulas anteriores (ou crie uma nova com: id, nome, cargo, salario, departamento, data_admissao), escreva um bloco PL/SQL que: (a) declare uma variável com <code>%ROWTYPE</code> baseada na tabela; (b) faça SELECT * INTO para obter o funcionário com maior salário; (c) exiba todos os campos do registro de forma formatada; (d) faça o mesmo para o funcionário mais antigo (menor data_admissao).
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Se a tabela não existir, crie:
+CREATE TABLE funcionarios (
+  id             NUMBER PRIMARY KEY,
+  nome           VARCHAR2(100),
+  cargo          VARCHAR2(50),
+  salario        NUMBER(10,2),
+  departamento   VARCHAR2(50),
+  data_admissao  DATE
+);
+
+-- Inserir dados de exemplo
+INSERT INTO funcionarios VALUES (1, 'Ana Costa', 'Analista', 6000, 'TI', DATE '2020-03-15');
+INSERT INTO funcionarios VALUES (2, 'Bruno Lima', 'Gerente', 12000, 'TI', DATE '2015-01-10');
+INSERT INTO funcionarios VALUES (3, 'Carla Mendes', 'Coordenadora', 8500, 'RH', DATE '2018-07-22');
+INSERT INTO funcionarios VALUES (4, 'Daniel Silva', 'Desenvolvedor', 7500, 'TI', DATE '2019-11-05');
+INSERT INTO funcionarios VALUES (5, 'Eduarda Santos', 'Analista RH', 5200, 'RH', DATE '2022-06-01');
+INSERT INTO funcionarios VALUES (6, 'Felipe Oliveira', 'Diretor', 25000, 'Diretoria', DATE '2010-05-20');
+COMMIT;
+
+DECLARE
+  -- %ROWTYPE baseado na tabela funcionarios
+  v_func_maior_salario  funcionarios%ROWTYPE;
+  v_func_mais_antigo    funcionarios%ROWTYPE;
+BEGIN
+  -- Funcionário com maior salário
+  SELECT * INTO v_func_maior_salario
+  FROM funcionarios
+  ORDER BY salario DESC
+  FETCH FIRST 1 ROW ONLY;
+
+  DBMS_OUTPUT.PUT_LINE('=== FUNCIONÁRIO COM MAIOR SALÁRIO ===');
+  DBMS_OUTPUT.PUT_LINE('ID: ' || v_func_maior_salario.id);
+  DBMS_OUTPUT.PUT_LINE('Nome: ' || v_func_maior_salario.nome);
+  DBMS_OUTPUT.PUT_LINE('Cargo: ' || v_func_maior_salario.cargo);
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' ||
+    TO_CHAR(v_func_maior_salario.salario, '999G999G990D00'));
+  DBMS_OUTPUT.PUT_LINE('Departamento: ' || v_func_maior_salario.departamento);
+  DBMS_OUTPUT.PUT_LINE('Data Admissão: ' ||
+    TO_CHAR(v_func_maior_salario.data_admissao, 'DD/MM/YYYY'));
+
+  DBMS_OUTPUT.PUT_LINE('');
+
+  -- Funcionário mais antigo
+  SELECT * INTO v_func_mais_antigo
+  FROM funcionarios
+  ORDER BY data_admissao ASC
+  FETCH FIRST 1 ROW ONLY;
+
+  DBMS_OUTPUT.PUT_LINE('=== FUNCIONÁRIO MAIS ANTIGO (data admissão) ===');
+  DBMS_OUTPUT.PUT_LINE('ID: ' || v_func_mais_antigo.id);
+  DBMS_OUTPUT.PUT_LINE('Nome: ' || v_func_mais_antigo.nome);
+  DBMS_OUTPUT.PUT_LINE('Cargo: ' || v_func_mais_antigo.cargo);
+  DBMS_OUTPUT.PUT_LINE('Salário: R$ ' ||
+    TO_CHAR(v_func_mais_antigo.salario, '999G999G990D00'));
+  DBMS_OUTPUT.PUT_LINE('Departamento: ' || v_func_mais_antigo.departamento);
+  DBMS_OUTPUT.PUT_LINE('Data Admissão: ' ||
+    TO_CHAR(v_func_mais_antigo.data_admissao, 'DD/MM/YYYY'));
+
+  DBMS_OUTPUT.PUT_LINE('');
+  DBMS_OUTPUT.PUT_LINE('Diferença salarial: R$ ' ||
+    TO_CHAR(v_func_maior_salario.salario - v_func_mais_antigo.salario,
+            '999G999G990D00'));
+  DBMS_OUTPUT.PUT_LINE('Diferença em dias de casa: ' ||
+    TRUNC(v_func_maior_salario.data_admissao -
+          v_func_mais_antigo.data_admissao) || ' dias');
+
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Tabela funcionarios está vazia. Execute os INSERTs primeiro.');
+  WHEN TOO_MANY_ROWS THEN
+    DBMS_OUTPUT.PUT_LINE('Erro inesperado: query retornou múltiplas linhas.');
+END;
+/
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se todos os blocos PL/SQL compilaram sem erros, se os cursores processam os dados corretamente e se as exceções são capturadas conforme esperado.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li><code>aula4</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

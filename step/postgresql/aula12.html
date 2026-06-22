@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 12 - Exame Final - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 12</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 12: Exame Final</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Revisão completa de Oracle e PostgreSQL, Projeto Final integrador, Exame
+        teórico.
+      </div>
+    </header>
+    <main class="container">
+      <!-- REVISÃO GERAL DO CURSO -->
+      <section>
+        <h2>1. Revisão Geral do Curso</h2>
+        <p>
+          Este curso de 24 horas foi estruturado em 12 módulos, abrangendo os
+          dois SGBDs relacionais mais importantes do mercado:
+          <strong>Oracle Database</strong> e <strong>PostgreSQL</strong>. A
+          seguir, uma síntese de tudo o que foi estudado.
+        </p>
+
+        <h3>Parte 1: Oracle (Módulos 1 a 7)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Módulo</th>
+              <th>Tema</th>
+              <th>Principais Tópicos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>M1</strong></td>
+              <td>Introdução ao Oracle</td>
+              <td>
+                História, arquitetura (SGA, PGA, processos background), versões
+                (8i a 23ai), utilitários (SQL*Plus, DBCA, NetCA, Administration
+                Assistant), instalação Oracle XE, criação de banco via DBCA e
+                CREATE DATABASE
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M2</strong></td>
+              <td>Tipos de Dados Oracle</td>
+              <td>
+                VARCHAR2, CHAR, NUMBER, DATE, TIMESTAMP, CLOB, BLOB, criação de
+                tabelas, consultas com JOINs, funções agregadas, ROLLUP, CUBE,
+                diferenças sintáticas Oracle SQL
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M3</strong></td>
+              <td>Views</td>
+              <td>
+                Criação e gerenciamento de views, views materializadas (CREATE
+                MATERIALIZED VIEW, REFRESH), COMPLETE/FAST/FORCE refresh,
+                materialized view logs
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M4</strong></td>
+              <td>PL/SQL</td>
+              <td>
+                Estrutura de blocos (DECLARE, BEGIN, EXCEPTION), variáveis,
+                constantes, %TYPE e %ROWTYPE, cursores (implícitos e
+                explícitos), atributos de cursor (%FOUND, %NOTFOUND, %ROWCOUNT,
+                %ISOPEN), tratamento de exceções
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M5</strong></td>
+              <td>Procedures e Functions em PL/SQL</td>
+              <td>
+                Stored procedures, funções, packages, parâmetros IN/OUT/IN OUT,
+                controle de transações (COMMIT, ROLLBACK, SAVEPOINT),
+                gerenciamento de packages
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M6</strong></td>
+              <td>Triggers</td>
+              <td>
+                Tipos de triggers (BEFORE, AFTER, INSTEAD OF), níveis
+                (statement-level, row-level), OLD e NEW, INSERT/UPDATE/DELETE,
+                triggers compostos
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M7</strong></td>
+              <td>Administração Oracle</td>
+              <td>
+                Modelo de segurança (usuários, roles, GRANT/REVOKE), perfis,
+                backup e recovery (RMAN, Data Pump exp/imp, ARCHIVELOG mode),
+                ponto de recuperação
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Parte 2: PostgreSQL (Módulos 8 a 11)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Módulo</th>
+              <th>Tema</th>
+              <th>Principais Tópicos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>M8</strong></td>
+              <td>Introdução ao PostgreSQL</td>
+              <td>
+                História, instalação, configuração do servidor, criação de
+                banco, dialecto SQL (PL/pgSQL), CRUD, JOINs (INNER, LEFT, RIGHT,
+                CROSS, FULL OUTER)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M9</strong></td>
+              <td>Regras e Views</td>
+              <td>
+                Rule system (CREATE RULE, DO INSTEAD, DO ALSO), views, views
+                materializadas (CREATE MATERIALIZED VIEW, REFRESH MATERIALIZED
+                VIEW CONCURRENTLY)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M10</strong></td>
+              <td>PL/pgSQL Avançado e Triggers</td>
+              <td>
+                Blocos, variáveis, constantes, condições (IF/ELSIF/ELSE), loops
+                (FOR, WHILE, LOOP), cursores, triggers (BEFORE/AFTER/INSTEAD OF,
+                ROW/STATEMENT level), TG_OP, OLD/NEW em PL/pgSQL
+              </td>
+            </tr>
+            <tr>
+              <td><strong>M11</strong></td>
+              <td>Procedures e Functions</td>
+              <td>
+                CREATE OR REPLACE PROCEDURE, CALL, IN/OUT/INOUT, controle
+                transacional em procedures, CREATE FUNCTION, RETURNS TABLE,
+                RETURNS SETOF, LANGUAGE SQL vs PL/pgSQL,
+                IMMUTABLE/STABLE/VOLATILE, SECURITY DEFINER, STRICT, sobrecarga
+                de funções
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PROJETO FINAL -->
+      <section>
+        <h2>2. Projeto Final: Sistema de Gestão Empresarial</h2>
+        <p>
+          O projeto final consiste em implementar um
+          <strong>Sistema de Gestão Empresarial</strong> em
+          <strong>dois SGBDs diferentes</strong> (Oracle e PostgreSQL),
+          documentando as diferenças encontradas. Este projeto integra todos os
+          conhecimentos adquiridos ao longo do curso.
+        </p>
+
+        <h3>2.1 Modelagem do Banco de Dados</h3>
+        <p>
+          O sistema gerencia empresas, seus departamentos, funcionários,
+          projetos e a alocação de funcionários em projetos. O DER deve ter no
+          mínimo 5 tabelas normalizadas (3FN):
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- DER Conceitual (notação textual simplificada):
+
+-- EMPRESAS (id, nome, cnpj, endereco, data_fundacao)
+--   |
+--   | 1:N
+--   |
+-- DEPARTAMENTOS (id, nome, empresa_id FK, gerente_id FK)
+--   |
+--   | 1:N
+--   |
+-- FUNCIONARIOS (id, nome, cpf, cargo, salario, data_admissao, departamento_id FK)
+--   |
+--   | N:M (via ALOCOES)
+--   |
+-- PROJETOS (id, nome, descricao, data_inicio, data_fim, status, departamento_id FK)
+--
+-- ALOCOES (id, funcionario_id FK, projeto_id FK, horas_semanais, data_inicio, data_fim)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2.2 Parte 1: Implementação no Oracle</h3>
+        <p><strong>Requisitos Oracle:</strong></p>
+        <ol>
+          <li>
+            Criar a estrutura completa com sequences e triggers de auditoria
+          </li>
+          <li>Criar um package com procedures para CRUD das 5 tabelas</li>
+          <li>Criar views materializadas para relatórios gerenciais</li>
+          <li>Configurar backup com RMAN</li>
+        </ol>
+
+        <h4>
+          2.2.1 Criação das Tabelas, Sequences e Triggers de Auditoria (Oracle)
+        </h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Oracle: Criação das tabelas
+CREATE TABLE empresas (
+    id             NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nome           VARCHAR2(200) NOT NULL,
+    cnpj           VARCHAR2(18) UNIQUE NOT NULL,
+    endereco       VARCHAR2(300),
+    data_fundacao  DATE,
+    criado_em      DATE DEFAULT SYSDATE,
+    atualizado_em  DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE departamentos (
+    id          NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nome        VARCHAR2(100) NOT NULL,
+    empresa_id  NUMBER NOT NULL REFERENCES empresas(id),
+    gerente_id  NUMBER,
+    criado_em   DATE DEFAULT SYSDATE,
+    atualizado_em DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE funcionarios (
+    id               NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nome             VARCHAR2(200) NOT NULL,
+    cpf              VARCHAR2(14) UNIQUE NOT NULL,
+    cargo            VARCHAR2(100),
+    salario          NUMBER(12,2) NOT NULL,
+    data_admissao    DATE NOT NULL,
+    departamento_id  NUMBER NOT NULL REFERENCES departamentos(id),
+    criado_em        DATE DEFAULT SYSDATE,
+    atualizado_em    DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE projetos (
+    id               NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    nome             VARCHAR2(200) NOT NULL,
+    descricao        VARCHAR2(1000),
+    data_inicio      DATE NOT NULL,
+    data_fim         DATE,
+    status           VARCHAR2(20) DEFAULT 'planejado',
+    departamento_id  NUMBER NOT NULL REFERENCES departamentos(id),
+    criado_em        DATE DEFAULT SYSDATE,
+    atualizado_em    DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE alocacoes (
+    id              NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    funcionario_id  NUMBER NOT NULL REFERENCES funcionarios(id),
+    projeto_id      NUMBER NOT NULL REFERENCES projetos(id),
+    horas_semanais  NUMBER(4,1) NOT NULL,
+    data_inicio     DATE NOT NULL,
+    data_fim        DATE,
+    criado_em       DATE DEFAULT SYSDATE,
+    atualizado_em   DATE DEFAULT SYSDATE,
+    CONSTRAINT uk_func_proj UNIQUE (funcionario_id, projeto_id, data_inicio)
+);
+
+-- Tabela de auditoria (Oracle)
+CREATE TABLE auditoria_log (
+    id           NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    tabela       VARCHAR2(50) NOT NULL,
+    operacao     VARCHAR2(10) NOT NULL,
+    registro_id  NUMBER,
+    usuario      VARCHAR2(100) DEFAULT USER,
+    data_hora    DATE DEFAULT SYSDATE,
+    dados_antigos VARCHAR2(4000),
+    dados_novos   VARCHAR2(4000)
+);
+
+-- Trigger de auditoria para EMPRESAS (Oracle)
+CREATE OR REPLACE TRIGGER trg_audit_empresas
+    AFTER INSERT OR UPDATE OR DELETE ON empresas
+    FOR EACH ROW
+DECLARE
+    v_operacao VARCHAR2(10);
+BEGIN
+    IF INSERTING THEN
+        v_operacao := 'INSERT';
+    ELSIF UPDATING THEN
+        v_operacao := 'UPDATE';
+    ELSIF DELETING THEN
+        v_operacao := 'DELETE';
+    END IF;
+
+    INSERT INTO auditoria_log (tabela, operacao, registro_id, dados_antigos, dados_novos)
+    VALUES (
+        'EMPRESAS',
+        v_operacao,
+        COALESCE(:NEW.id, :OLD.id),
+        CASE WHEN :OLD.id IS NOT NULL THEN 'id=' || :OLD.id || ',nome=' || :OLD.nome END,
+        CASE WHEN :NEW.id IS NOT NULL THEN 'id=' || :NEW.id || ',nome=' || :NEW.nome END
+    );
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.2.2 Package com Procedures CRUD (Oracle)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Oracle: Package specification
+CREATE OR REPLACE PACKAGE pkg_gestao_empresarial AS
+
+    -- CRUD Empresas
+    PROCEDURE sp_inserir_empresa(
+        p_nome          IN VARCHAR2,
+        p_cnpj          IN VARCHAR2,
+        p_endereco      IN VARCHAR2 DEFAULT NULL,
+        p_data_fundacao IN DATE DEFAULT NULL,
+        p_id            OUT NUMBER
+    );
+
+    PROCEDURE sp_atualizar_empresa(
+        p_id       IN NUMBER,
+        p_nome     IN VARCHAR2,
+        p_endereco IN VARCHAR2,
+        p_cnpj     IN VARCHAR2
+    );
+
+    PROCEDURE sp_excluir_empresa(p_id IN NUMBER);
+
+    -- CRUD Funcionarios
+    PROCEDURE sp_inserir_funcionario(
+        p_nome            IN VARCHAR2,
+        p_cpf             IN VARCHAR2,
+        p_cargo           IN VARCHAR2,
+        p_salario         IN NUMBER,
+        p_data_admissao   IN DATE,
+        p_departamento_id IN NUMBER,
+        p_id              OUT NUMBER
+    );
+
+    -- Relatórios
+    FUNCTION fn_total_folha_departamento(p_depto_id IN NUMBER)
+        RETURN NUMBER;
+
+    FUNCTION fn_funcionarios_por_projeto(p_projeto_id IN NUMBER)
+        RETURN SYS_REFCURSOR;
+
+END pkg_gestao_empresarial;
+/
+
+-- Oracle: Package body
+CREATE OR REPLACE PACKAGE BODY pkg_gestao_empresarial AS
+
+    PROCEDURE sp_inserir_empresa(
+        p_nome          IN VARCHAR2,
+        p_cnpj          IN VARCHAR2,
+        p_endereco      IN VARCHAR2 DEFAULT NULL,
+        p_data_fundacao IN DATE DEFAULT NULL,
+        p_id            OUT NUMBER
+    ) AS
+    BEGIN
+        INSERT INTO empresas (nome, cnpj, endereco, data_fundacao)
+        VALUES (p_nome, p_cnpj, p_endereco, p_data_fundacao)
+        RETURNING id INTO p_id;
+        COMMIT;
+    EXCEPTION
+        WHEN DUP_VAL_ON_INDEX THEN
+            RAISE_APPLICATION_ERROR(-20001, 'CNPJ já cadastrado');
+        WHEN OTHERS THEN
+            ROLLBACK;
+            RAISE;
+    END;
+
+    PROCEDURE sp_atualizar_empresa(
+        p_id       IN NUMBER,
+        p_nome     IN VARCHAR2,
+        p_endereco IN VARCHAR2,
+        p_cnpj     IN VARCHAR2
+    ) AS
+    BEGIN
+        UPDATE empresas
+        SET nome = p_nome,
+            endereco = p_endereco,
+            cnpj = p_cnpj,
+            atualizado_em = SYSDATE
+        WHERE id = p_id;
+
+        IF SQL%ROWCOUNT = 0 THEN
+            RAISE_APPLICATION_ERROR(-20002, 'Empresa não encontrada');
+        END IF;
+        COMMIT;
+    END;
+
+    PROCEDURE sp_excluir_empresa(p_id IN NUMBER) AS
+    BEGIN
+        DELETE FROM empresas WHERE id = p_id;
+        IF SQL%ROWCOUNT = 0 THEN
+            RAISE_APPLICATION_ERROR(-20003, 'Empresa não encontrada');
+        END IF;
+        COMMIT;
+    END;
+
+    PROCEDURE sp_inserir_funcionario(
+        p_nome            IN VARCHAR2,
+        p_cpf             IN VARCHAR2,
+        p_cargo           IN VARCHAR2,
+        p_salario         IN NUMBER,
+        p_data_admissao   IN DATE,
+        p_departamento_id IN NUMBER,
+        p_id              OUT NUMBER
+    ) AS
+    BEGIN
+        INSERT INTO funcionarios (nome, cpf, cargo, salario, data_admissao, departamento_id)
+        VALUES (p_nome, p_cpf, p_cargo, p_salario, p_data_admissao, p_departamento_id)
+        RETURNING id INTO p_id;
+        COMMIT;
+    END;
+
+    FUNCTION fn_total_folha_departamento(p_depto_id IN NUMBER)
+        RETURN NUMBER
+    AS
+        v_total NUMBER;
+    BEGIN
+        SELECT COALESCE(SUM(salario), 0) INTO v_total
+        FROM funcionarios
+        WHERE departamento_id = p_depto_id;
+        RETURN v_total;
+    END;
+
+    FUNCTION fn_funcionarios_por_projeto(p_projeto_id IN NUMBER)
+        RETURN SYS_REFCURSOR
+    AS
+        v_cursor SYS_REFCURSOR;
+    BEGIN
+        OPEN v_cursor FOR
+            SELECT f.nome, f.cargo, a.horas_semanais, a.data_inicio
+            FROM funcionarios f
+            JOIN alocacoes a ON f.id = a.funcionario_id
+            WHERE a.projeto_id = p_projeto_id;
+        RETURN v_cursor;
+    END;
+
+END pkg_gestao_empresarial;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.2.3 Views Materializadas para Relatórios (Oracle)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Oracle: View materializada - Resumo de alocações por projeto
+CREATE MATERIALIZED VIEW mv_resumo_projetos
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+    p.id          AS projeto_id,
+    p.nome        AS projeto_nome,
+    p.status,
+    COUNT(a.funcionario_id) AS total_alocados,
+    SUM(a.horas_semanais)   AS total_horas_semanais,
+    AVG(a.horas_semanais)   AS media_horas_alocado
+FROM projetos p
+LEFT JOIN alocacoes a ON p.id = a.projeto_id
+GROUP BY p.id, p.nome, p.status;
+
+-- Oracle: View materializada - Folha salarial por departamento/empresa
+CREATE MATERIALIZED VIEW mv_folha_empresarial
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+    e.nome    AS empresa,
+    d.nome    AS departamento,
+    COUNT(f.id)  AS total_funcionarios,
+    SUM(f.salario) AS total_folha,
+    AVG(f.salario) AS salario_medio,
+    MIN(f.salario) AS menor_salario,
+    MAX(f.salario) AS maior_salario
+FROM empresas e
+JOIN departamentos d ON e.id = d.empresa_id
+LEFT JOIN funcionarios f ON d.id = f.departamento_id
+GROUP BY e.nome, d.nome
+ORDER BY e.nome, d.nome;
+
+-- Oracle: View materializada com log para FAST REFRESH
+CREATE MATERIALIZED VIEW LOG ON funcionarios
+    WITH ROWID, SEQUENCE (id, nome, salario, departamento_id)
+    INCLUDING NEW VALUES;
+
+-- Forçar refresh manual
+EXEC DBMS_MVIEW.REFRESH('MV_FOLHA_EMPRESARIAL', 'C');
+EXEC DBMS_MVIEW.REFRESH('MV_RESUMO_PROJETOS', 'C');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.2.4 Configuração de Backup com RMAN (Oracle)</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Oracle: Configurar banco em modo ARCHIVELOG
+sqlplus / as sysdba
+SQL> SHUTDOWN IMMEDIATE;
+SQL> STARTUP MOUNT;
+SQL> ALTER DATABASE ARCHIVELOG;
+SQL> ALTER DATABASE OPEN;
+
+# Verificar modo de archive
+SQL> SELECT log_mode FROM v$database;
+
+# Configurar RMAN e criar backup completo
+rman target /
+
+RMAN> CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
+RMAN> CONFIGURE BACKUP OPTIMIZATION ON;
+RMAN> CONFIGURE DEFAULT DEVICE TYPE TO DISK;
+RMAN> CONFIGURE DEVICE TYPE DISK PARALLELISM 2;
+RMAN> CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '/backup/%d_%T_%s_%p.bkp';
+
+# Backup completo do banco
+RMAN> BACKUP DATABASE PLUS ARCHIVELOG DELETE INPUT;
+
+# Backup incremental nível 1 (diário)
+RMAN> BACKUP INCREMENTAL LEVEL 1 DATABASE;
+
+# Listar backups
+RMAN> LIST BACKUP SUMMARY;
+
+# Restaurar banco completo
+RMAN> SHUTDOWN IMMEDIATE;
+RMAN> STARTUP MOUNT;
+RMAN> RESTORE DATABASE;
+RMAN> RECOVER DATABASE;
+RMAN> ALTER DATABASE OPEN;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2.3 Parte 2: Implementação no PostgreSQL</h3>
+        <p><strong>Requisitos PostgreSQL:</strong></p>
+        <ol>
+          <li>
+            Criar a mesma estrutura usando SERIAL ao invés de sequences manuais
+          </li>
+          <li>Criar procedures e functions equivalentes ao package Oracle</li>
+          <li>Criar triggers de validação</li>
+          <li>Criar rules para logging</li>
+        </ol>
+
+        <h4>2.3.1 Criação das Tabelas (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PostgreSQL: Criação das tabelas (mesmo modelo)
+CREATE TABLE empresas (
+    id             SERIAL PRIMARY KEY,
+    nome           VARCHAR(200) NOT NULL,
+    cnpj           VARCHAR(18) UNIQUE NOT NULL,
+    endereco       VARCHAR(300),
+    data_fundacao  DATE,
+    criado_em      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE departamentos (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    empresa_id  INT NOT NULL REFERENCES empresas(id) ON DELETE CASCADE,
+    gerente_id  INT,
+    criado_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE funcionarios (
+    id               SERIAL PRIMARY KEY,
+    nome             VARCHAR(200) NOT NULL,
+    cpf              VARCHAR(14) UNIQUE NOT NULL,
+    cargo            VARCHAR(100),
+    salario          NUMERIC(12,2) NOT NULL,
+    data_admissao    DATE NOT NULL,
+    departamento_id  INT NOT NULL REFERENCES departamentos(id) ON DELETE CASCADE,
+    criado_em        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE projetos (
+    id               SERIAL PRIMARY KEY,
+    nome             VARCHAR(200) NOT NULL,
+    descricao        TEXT,
+    data_inicio      DATE NOT NULL,
+    data_fim         DATE,
+    status           VARCHAR(20) DEFAULT 'planejado',
+    departamento_id  INT NOT NULL REFERENCES departamentos(id) ON DELETE CASCADE,
+    criado_em        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE alocacoes (
+    id              SERIAL PRIMARY KEY,
+    funcionario_id  INT NOT NULL REFERENCES funcionarios(id) ON DELETE CASCADE,
+    projeto_id      INT NOT NULL REFERENCES projetos(id) ON DELETE CASCADE,
+    horas_semanais  NUMERIC(4,1) NOT NULL,
+    data_inicio     DATE NOT NULL,
+    data_fim        DATE,
+    criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_func_proj UNIQUE (funcionario_id, projeto_id, data_inicio)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.3.2 Procedures e Functions Equivalentes (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PostgreSQL: Procedures e functions (equivalente ao package Oracle)
+-- Como PostgreSQL não tem packages, usamos schema e naming convention
+
+-- Procedure: Inserir empresa
+CREATE OR REPLACE PROCEDURE sp_inserir_empresa(
+    IN  p_nome          VARCHAR,
+    IN  p_cnpj          VARCHAR,
+    IN  p_endereco      VARCHAR DEFAULT NULL,
+    IN  p_data_fundacao DATE DEFAULT NULL,
+    OUT p_id            INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO empresas (nome, cnpj, endereco, data_fundacao)
+    VALUES (p_nome, p_cnpj, p_endereco, p_data_fundacao)
+    RETURNING id INTO p_id;
+    COMMIT;
+EXCEPTION
+    WHEN unique_violation THEN
+        RAISE EXCEPTION 'CNPJ já cadastrado: %', p_cnpj;
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END;
+$$;
+
+-- Procedure: Atualizar empresa
+CREATE OR REPLACE PROCEDURE sp_atualizar_empresa(
+    p_id       INT,
+    p_nome     VARCHAR,
+    p_endereco VARCHAR,
+    p_cnpj     VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE empresas
+    SET nome = p_nome,
+        endereco = p_endereco,
+        cnpj = p_cnpj,
+        atualizado_em = CURRENT_TIMESTAMP
+    WHERE id = p_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Empresa ID % não encontrada', p_id;
+    END IF;
+    COMMIT;
+END;
+$$;
+
+-- Procedure: Excluir empresa
+CREATE OR REPLACE PROCEDURE sp_excluir_empresa(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM empresas WHERE id = p_id;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Empresa ID % não encontrada', p_id;
+    END IF;
+    COMMIT;
+END;
+$$;
+
+-- Procedure: Inserir funcionário
+CREATE OR REPLACE PROCEDURE sp_inserir_funcionario(
+    IN  p_nome            VARCHAR,
+    IN  p_cpf             VARCHAR,
+    IN  p_cargo           VARCHAR,
+    IN  p_salario         NUMERIC,
+    IN  p_data_admissao   DATE,
+    IN  p_departamento_id INT,
+    OUT p_id              INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO funcionarios (nome, cpf, cargo, salario, data_admissao, departamento_id)
+    VALUES (p_nome, p_cpf, p_cargo, p_salario, p_data_admissao, p_departamento_id)
+    RETURNING id INTO p_id;
+    COMMIT;
+END;
+$$;
+
+-- Function: Total folha do departamento
+CREATE OR REPLACE FUNCTION fn_total_folha_departamento(p_depto_id INT)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+    v_total NUMERIC;
+BEGIN
+    SELECT COALESCE(SUM(salario), 0) INTO v_total
+    FROM funcionarios
+    WHERE departamento_id = p_depto_id;
+    RETURN v_total;
+END;
+$$;
+
+-- Function: Funcionários por projeto (RETURNS TABLE)
+CREATE OR REPLACE FUNCTION fn_funcionarios_por_projeto(p_projeto_id INT)
+RETURNS TABLE(
+    nome           VARCHAR,
+    cargo          VARCHAR,
+    horas_semanais NUMERIC,
+    data_inicio    DATE
+)
+LANGUAGE plpgsql
+STABLE
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT f.nome, f.cargo, a.horas_semanais, a.data_inicio
+    FROM funcionarios f
+    JOIN alocacoes a ON f.id = a.funcionario_id
+    WHERE a.projeto_id = p_projeto_id;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.3.3 Triggers de Validação (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PostgreSQL: Trigger de validação - impedir alocação com horas > 44h semanais
+CREATE OR REPLACE FUNCTION trg_valida_horas_alocacao()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_total_horas NUMERIC;
+BEGIN
+    -- Soma todas as horas do funcionário em todas as alocações ativas
+    SELECT COALESCE(SUM(horas_semanais), 0)
+    INTO v_total_horas
+    FROM alocacoes
+    WHERE funcionario_id = NEW.funcionario_id
+      AND (data_fim IS NULL OR data_fim >= CURRENT_DATE);
+
+    IF (v_total_horas + NEW.horas_semanais) > 44 THEN
+        RAISE EXCEPTION 'Funcionário ID % excederia 44h semanais (total: %, nova: %)',
+            NEW.funcionario_id, v_total_horas, NEW.horas_semanais;
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_alocacao_horas
+    BEFORE INSERT OR UPDATE ON alocacoes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_valida_horas_alocacao();
+
+-- Trigger: atualizar atualizado_em automaticamente
+CREATE OR REPLACE FUNCTION trg_atualiza_timestamp()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.atualizado_em := CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_empresas_timestamp
+    BEFORE UPDATE ON empresas
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_atualiza_timestamp();
+
+CREATE TRIGGER trg_departamentos_timestamp
+    BEFORE UPDATE ON departamentos
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_atualiza_timestamp();
+
+CREATE TRIGGER trg_funcionarios_timestamp
+    BEFORE UPDATE ON funcionarios
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_atualiza_timestamp();
+
+-- Trigger: validar data de admissão não pode ser futura
+CREATE OR REPLACE FUNCTION trg_valida_data_admissao()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NEW.data_admissao > CURRENT_DATE THEN
+        RAISE EXCEPTION 'Data de admissão (%) não pode ser futura', NEW.data_admissao;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_func_data_admissao
+    BEFORE INSERT OR UPDATE ON funcionarios
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_valida_data_admissao();
+
+-- Trigger: auditoria de alterações (nível STATEMENT)
+CREATE TABLE auditoria_log (
+    id           SERIAL PRIMARY KEY,
+    tabela       VARCHAR(50) NOT NULL,
+    operacao     VARCHAR(10) NOT NULL,
+    registro_id  INT,
+    usuario      VARCHAR(100) DEFAULT CURRENT_USER,
+    data_hora    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dados_antigos TEXT,
+    dados_novos   TEXT
+);
+
+CREATE OR REPLACE FUNCTION trg_audit_empresas()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO auditoria_log (tabela, operacao, registro_id, dados_antigos, dados_novos)
+    VALUES (
+        'EMPRESAS',
+        TG_OP,
+        COALESCE(NEW.id, OLD.id),
+        CASE WHEN OLD.id IS NOT NULL THEN 'id=' || OLD.id || ',nome=' || OLD.nome END,
+        CASE WHEN NEW.id IS NOT NULL THEN 'id=' || NEW.id || ',nome=' || NEW.nome END
+    );
+    RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+CREATE TRIGGER trg_audit_empresas
+    AFTER INSERT OR UPDATE OR DELETE ON empresas
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_audit_empresas();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.3.4 Rules para Logging (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PostgreSQL: Rule system para logging de operações sensíveis
+
+-- Tabela de log
+CREATE TABLE log_operacoes (
+    id        SERIAL PRIMARY KEY,
+    operacao  VARCHAR(20) NOT NULL,
+    tabela    VARCHAR(50) NOT NULL,
+    dados     TEXT,
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Rule: log de INSERT em funcionários (DO ALSO - executa ação adicional)
+CREATE OR REPLACE RULE log_insert_funcionario AS
+    ON INSERT TO funcionarios
+    DO ALSO
+    INSERT INTO log_operacoes (operacao, tabela, dados)
+    VALUES ('INSERT', 'funcionarios',
+            'nome=' || NEW.nome || ',cargo=' || NEW.cargo || ',salario=' || NEW.salario);
+
+-- Rule: log de UPDATE em salário de funcionários (condicional)
+CREATE OR REPLACE RULE log_update_salario AS
+    ON UPDATE TO funcionarios
+    WHERE OLD.salario IS DISTINCT FROM NEW.salario
+    DO ALSO
+    INSERT INTO log_operacoes (operacao, tabela, dados)
+    VALUES ('UPDATE_SALARIO', 'funcionarios',
+            'id=' || NEW.id || ',de=' || OLD.salario || ',para=' || NEW.salario);
+
+-- Rule: log de DELETE em projetos (DO ALSO)
+CREATE OR REPLACE RULE log_delete_projeto AS
+    ON DELETE TO projetos
+    DO ALSO
+    INSERT INTO log_operacoes (operacao, tabela, dados)
+    VALUES ('DELETE', 'projetos', 'id=' || OLD.id || ',nome=' || OLD.nome);
+
+-- Rule: impedir INSERT em funcionários sem departamento (DO INSTEAD)
+CREATE OR REPLACE RULE bloqueia_funcionario_sem_depto AS
+    ON INSERT TO funcionarios
+    WHERE NEW.departamento_id IS NULL
+    DO INSTEAD NOTHING;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.3.5 Views Materializadas para Relatórios (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PostgreSQL: View materializada - Resumo de projetos
+CREATE MATERIALIZED VIEW mv_resumo_projetos AS
+SELECT
+    p.id                        AS projeto_id,
+    p.nome                      AS projeto_nome,
+    p.status,
+    COUNT(a.funcionario_id)     AS total_alocados,
+    COALESCE(SUM(a.horas_semanais), 0) AS total_horas_semanais,
+    ROUND(AVG(a.horas_semanais), 1)    AS media_horas_alocado
+FROM projetos p
+LEFT JOIN alocacoes a ON p.id = a.projeto_id
+GROUP BY p.id, p.nome, p.status;
+
+-- PostgreSQL: View materializada - Folha empresarial
+CREATE MATERIALIZED VIEW mv_folha_empresarial AS
+SELECT
+    e.nome    AS empresa,
+    d.nome    AS departamento,
+    COUNT(f.id)  AS total_funcionarios,
+    COALESCE(SUM(f.salario), 0) AS total_folha,
+    ROUND(AVG(f.salario), 2)    AS salario_medio,
+    MIN(f.salario) AS menor_salario,
+    MAX(f.salario) AS maior_salario
+FROM empresas e
+JOIN departamentos d ON e.id = d.empresa_id
+LEFT JOIN funcionarios f ON d.id = f.departamento_id
+GROUP BY e.nome, d.nome
+ORDER BY e.nome, d.nome;
+
+-- Refresh das views materializadas
+REFRESH MATERIALIZED VIEW mv_resumo_projetos;
+REFRESH MATERIALIZED VIEW mv_folha_empresarial;
+
+-- Criar índice na view materializada
+CREATE UNIQUE INDEX idx_mv_projetos_id ON mv_resumo_projetos (projeto_id);
+CREATE INDEX idx_mv_folha_empresa ON mv_folha_empresarial (empresa);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>2.3.6 Dados de Teste e Verificação (PostgreSQL)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir dados de teste no PostgreSQL
+DO $$
+DECLARE
+    v_empresa_id  INT;
+    v_depto_id    INT;
+    v_func_id     INT;
+    v_proj_id     INT;
+BEGIN
+    -- Empresa
+    CALL sp_inserir_empresa('Tech Solutions Ltda', '12.345.678/0001-90', 'Av. Paulista, 1000', '2015-03-15', v_empresa_id);
+
+    -- Departamentos
+    INSERT INTO departamentos (nome, empresa_id) VALUES
+        ('TI', v_empresa_id),
+        ('RH', v_empresa_id),
+        ('Financeiro', v_empresa_id);
+
+    -- Funcionários
+    INSERT INTO funcionarios (nome, cpf, cargo, salario, data_admissao, departamento_id) VALUES
+        ('Ana Souza', '111.222.333-44', 'Desenvolvedora', 8500.00, '2023-01-15', 1),
+        ('Carlos Lima', '222.333.444-55', 'Analista de RH', 5000.00, '2022-06-01', 2),
+        ('Beatriz Rocha', '333.444.555-66', 'Contadora', 7200.00, '2023-03-10', 3);
+
+    -- Projetos
+    INSERT INTO projetos (nome, descricao, data_inicio, status, departamento_id) VALUES
+        ('Sistema ERP', 'Desenvolvimento do ERP interno', '2025-01-10', 'em_andamento', 1),
+        ('Portal RH', 'Portal de autoatendimento RH', '2025-04-01', 'planejado', 2);
+
+    -- Alocações
+    INSERT INTO alocacoes (funcionario_id, projeto_id, horas_semanais, data_inicio) VALUES
+        (1, 1, 30, '2025-01-10');
+END;
+$$;
+
+-- Verificações
+SELECT * FROM mv_resumo_projetos;
+SELECT * FROM mv_folha_empresarial;
+SELECT * FROM fn_funcionarios_por_projeto(1);
+SELECT fn_total_folha_departamento(1) AS folha_ti;
+
+-- Verificar logs de operações
+SELECT * FROM log_operacoes ORDER BY data_hora DESC;
+SELECT * FROM auditoria_log ORDER BY data_hora DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DOCUMENTAÇÃO DE DIFERENÇAS -->
+      <section>
+        <h2>2.4 Documentação: Diferenças Oracle vs PostgreSQL</h2>
+        <p>
+          Parte essencial do projeto final é documentar as diferenças
+          encontradas entre as duas implementações. Abaixo, um modelo de
+          documentação comparativa:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>Oracle</th>
+              <th>PostgreSQL</th>
+              <th>Impacto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Auto-incremento</td>
+              <td>IDENTITY columns (12c+) ou SEQUENCE + trigger</td>
+              <td>SERIAL / BIGSERIAL (cria sequence implicitamente)</td>
+              <td>Sintaxe mais simples no PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Tipagem de strings</td>
+              <td>VARCHAR2 (recomendado pela Oracle)</td>
+              <td>VARCHAR (padrão SQL)</td>
+              <td>VARCHAR2 não existe no PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Packages</td>
+              <td>CREATE PACKAGE / PACKAGE BODY</td>
+              <td>Não possui. Usa-se schema + naming convention</td>
+              <td>Organização de código diferente</td>
+            </tr>
+            <tr>
+              <td>Procedures com COMMIT</td>
+              <td>Permitido naturalmente</td>
+              <td>Permitido apenas em PROCEDURE (PG 11+), não em FUNCTION</td>
+              <td>
+                Funções PostgreSQL são "puras" (sem efeitos colaterais
+                transacionais)
+              </td>
+            </tr>
+            <tr>
+              <td>RETURNS tipo</td>
+              <td><code>RETURN tipo</code> (after IS, before BEGIN)</td>
+              <td>
+                <code>RETURNS tipo</code> (after parameters, before LANGUAGE)
+              </td>
+              <td>Posição sintática diferente</td>
+            </tr>
+            <tr>
+              <td>Delimitador de corpo</td>
+              <td>Não usa delimitador especial</td>
+              <td>Usa <code>$$</code> (dollar quoting)</td>
+              <td>Código PostgreSQL mais verboso visualmente</td>
+            </tr>
+            <tr>
+              <td>Cursores de retorno</td>
+              <td>SYS_REFCURSOR</td>
+              <td>RETURNS TABLE com RETURN QUERY ou RETURNS SETOF refcursor</td>
+              <td>Mais simples e declarativo no PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Triggers</td>
+              <td>
+                Sintaxe:
+                <code>CREATE OR REPLACE TRIGGER ... FOR EACH ROW</code>. OLD/NEW
+                sem prefixo.
+              </td>
+              <td>
+                Sintaxe:
+                <code>CREATE TRIGGER ... FOR EACH ROW EXECUTE FUNCTION</code>.
+                OLD/NEW como variáveis.
+              </td>
+              <td>
+                PostgreSQL separa trigger da função; Oracle une em um só objeto
+              </td>
+            </tr>
+            <tr>
+              <td>Views materializadas</td>
+              <td>REFRESH FAST/COMPLETE/FORCE, materialized view logs</td>
+              <td>REFRESH MATERIALIZED VIEW [CONCURRENTLY]</td>
+              <td>Oracle tem mais opções de refresh incremental</td>
+            </tr>
+            <tr>
+              <td>Rules</td>
+              <td>Não possui rule system</td>
+              <td>CREATE RULE com DO INSTEAD / DO ALSO</td>
+              <td>Recurso exclusivo do PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Backup</td>
+              <td>RMAN (binário, incremental, block-level)</td>
+              <td>
+                pg_dump / pg_restore (lógico, SQL) + WAL archiving (físico)
+              </td>
+              <td>Filosofias diferentes de backup</td>
+            </tr>
+            <tr>
+              <td>Exceções</td>
+              <td>
+                Nomeadas no standard package ou
+                <code>RAISE_APPLICATION_ERROR</code>
+              </td>
+              <td>
+                <code>RAISE EXCEPTION</code> com mensagem customizada;
+                <code>EXCEPTION WHEN ...</code>
+              </td>
+              <td>Sintaxe mais flexível no PostgreSQL</td>
+            </tr>
+            <tr>
+              <td>Sobrecarga de funções</td>
+              <td>Apenas dentro de packages</td>
+              <td>Nativa no schema (mesmo nome, parâmetros diferentes)</td>
+              <td>Mais natural no PostgreSQL</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- EXAME TEÓRICO -->
+      <section>
+        <h2>3. Exame Teórico</h2>
+        <p>
+          Responda as 12 questões abaixo com base no conteúdo estudado ao longo
+          do curso (Oracle e PostgreSQL). Cada questão possui apenas
+          <strong>uma alternativa correta</strong>.
+        </p>
+
+        <div class="question">
+          <h4>Questão 1 — Arquitetura Oracle</h4>
+          <p>
+            Na arquitetura Oracle, a <strong>SGA (System Global Area)</strong> é
+            uma região de memória compartilhada que contém diversos componentes.
+            Qual dos seguintes <strong>NÃO</strong> faz parte da SGA?
+          </p>
+          <ol type="a">
+            <li>Database Buffer Cache</li>
+            <li>Shared Pool</li>
+            <li>Sort Area</li>
+            <li>Redo Log Buffer</li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 2 — Tipos de Dados Oracle vs PostgreSQL</h4>
+          <p>
+            Qual das seguintes afirmações sobre tipos de dados é
+            <strong>correta</strong>?
+          </p>
+          <ol type="a">
+            <li>
+              Oracle utiliza VARCHAR e PostgreSQL utiliza VARCHAR2 como tipo de
+              caractere variável
+            </li>
+            <li>
+              Tanto Oracle quanto PostgreSQL suportam o tipo SERIAL para colunas
+              auto-incremento
+            </li>
+            <li>
+              O tipo NUMBER no Oracle aceita precisão e escala (NUMBER(10,2));
+              no PostgreSQL o equivalente é NUMERIC(10,2)
+            </li>
+            <li>PostgreSQL não suporta o tipo DATE; apenas TIMESTAMP</li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 3 — Cursores PL/SQL</h4>
+          <p>
+            No Oracle PL/SQL, após executar um FETCH em um cursor explícito,
+            qual atributo indica se a última operação de fetch retornou uma
+            linha?
+          </p>
+          <ol type="a">
+            <li>%ISOPEN</li>
+            <li>%ROWCOUNT</li>
+            <li>%NOTFOUND</li>
+            <li>%FOUND</li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 4 — Sintaxe Oracle vs PostgreSQL</h4>
+          <p>
+            Qual comando SQL produz resultados equivalentes em ambos os bancos?
+          </p>
+          <ol type="a">
+            <li><code>SELECT * FROM tabela WHERE ROWNUM <= 10;</code></li>
+            <li><code>SELECT * FROM tabela LIMIT 10;</code></li>
+            <li><code>SELECT SYSDATE FROM DUAL;</code></li>
+            <li><code>SELECT * FROM tabela FETCH FIRST 10 ROWS ONLY;</code></li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 5 — Rules vs Triggers</h4>
+          <p>
+            Sobre o sistema de regras (Rule System) do PostgreSQL, é correto
+            afirmar:
+          </p>
+          <ol type="a">
+            <li>
+              Rules são equivalentes a triggers AFTER em todos os aspectos
+            </li>
+            <li>
+              Uma rule com DO INSTEAD pode reescrever completamente a operação
+              original
+            </li>
+            <li>
+              Rules podem conter lógica condicional complexa com IF/ELSE como em
+              triggers
+            </li>
+            <li>
+              O Oracle também possui um sistema de rules semelhante ao
+              PostgreSQL
+            </li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 6 — Views Materializadas</h4>
+          <p>
+            Qual a principal diferença entre views materializadas no Oracle e no
+            PostgreSQL?
+          </p>
+          <ol type="a">
+            <li>
+              Oracle suporta FAST REFRESH com materialized view logs; PostgreSQL
+              não possui equivalente
+            </li>
+            <li>PostgreSQL não suporta views materializadas</li>
+            <li>
+              No Oracle, views materializadas são sempre atualizadas
+              automaticamente; no PostgreSQL, exigem REFRESH manual
+            </li>
+            <li>
+              PostgreSQL suporta REFRESH CONCURRENTLY, que permite leitura
+              durante o refresh sem bloquear a view — Oracle não oferece esse
+              modo
+            </li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 7 — Backup</h4>
+          <p>
+            Qual ferramenta é utilizada para backup e restore no PostgreSQL?
+          </p>
+          <ol type="a">
+            <li>RMAN</li>
+            <li>Data Pump</li>
+            <li>pg_dump / pg_restore</li>
+            <li>mysqldump</li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 8 — Estrutura de Bloco PL/pgSQL</h4>
+          <p>Qual é a estrutura correta de um bloco PL/pgSQL no PostgreSQL?</p>
+          <ol type="a">
+            <li><code>DECLARE ... BEGIN ... EXCEPTION ... END;</code></li>
+            <li><code>BEGIN ... DECLARE ... EXCEPTION ... END;</code></li>
+            <li><code>DECLARE ... EXCEPTION ... BEGIN ... END;</code></li>
+            <li><code>CREATE ... DECLARE ... BEGIN ... END;</code></li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 9 — Triggers: OLD e NEW</h4>
+          <p>
+            Qual a diferença fundamental entre OLD/NEW em triggers Oracle vs
+            PostgreSQL?
+          </p>
+          <ol type="a">
+            <li>
+              No Oracle, OLD e NEW são prefixados com dois-pontos (:OLD, :NEW);
+              no PostgreSQL, são usados sem prefixo
+            </li>
+            <li>O PostgreSQL não suporta OLD e NEW em triggers</li>
+            <li>
+              No Oracle, OLD/NEW só existem em triggers BEFORE; no PostgreSQL,
+              só em triggers AFTER
+            </li>
+            <li>Ambos usam a mesma sintaxe: OLD e NEW sem qualquer prefixo</li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 10 — Sobrecarga de Funções</h4>
+          <p>Sobre sobrecarga de funções no PostgreSQL, é correto afirmar:</p>
+          <ol type="a">
+            <li>
+              PostgreSQL não suporta sobrecarga; cada função deve ter nome único
+            </li>
+            <li>
+              PostgreSQL suporta sobrecarga apenas para funções em linguagens
+              diferentes (ex: uma SQL e uma PL/pgSQL)
+            </li>
+            <li>
+              PostgreSQL suporta sobrecarga de funções com mesmo nome, desde que
+              tenham número ou tipo de parâmetros diferentes
+            </li>
+            <li>
+              A sobrecarga no PostgreSQL só funciona com funções IMMUTABLE
+            </li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 11 — Controle Transacional</h4>
+          <p>
+            Sobre controle de transações em procedures no PostgreSQL, qual
+            afirmação é verdadeira?
+          </p>
+          <ol type="a">
+            <li>
+              Funções PostgreSQL podem executar COMMIT e ROLLBACK livremente
+            </li>
+            <li>
+              Apenas procedures (CREATE PROCEDURE) podem executar COMMIT e
+              ROLLBACK; funções não podem
+            </li>
+            <li>
+              Nem procedures nem funções podem controlar transações no
+              PostgreSQL
+            </li>
+            <li>
+              O controle transacional no PostgreSQL é idêntico ao Oracle em
+              todos os aspectos
+            </li>
+          </ol>
+        </div>
+
+        <div class="question">
+          <h4>Questão 12 — Modelos de Segurança</h4>
+          <p>
+            Comparando os modelos de segurança do Oracle e PostgreSQL, qual
+            diferença é correta?
+          </p>
+          <ol type="a">
+            <li>
+              Oracle usa SECURITY DEFINER; PostgreSQL não possui esse conceito
+            </li>
+            <li>
+              Ambos suportam roles (funções/papéis) para agrupar privilégios,
+              mas apenas Oracle possui o conceito de privilégios de sistema
+              (SYSDBA, SYSOPER)
+            </li>
+            <li>PostgreSQL suporta row-level security (RLS); Oracle não</li>
+            <li>
+              Apenas Oracle suporta GRANT e REVOKE; PostgreSQL usa um sistema
+              diferente
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- GABARITO -->
+      <section>
+        <h2>4. Gabarito do Exame</h2>
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <div class="question">
+            <h4>Gabarito — Questão 1</h4>
+            <p><strong>Resposta: C — Sort Area</strong></p>
+            <p>
+              A Sort Area faz parte da
+              <strong>PGA (Program Global Area)</strong>, que é memória privada
+              de cada processo servidor, não da SGA (compartilhada). A SGA
+              contém: Database Buffer Cache, Redo Log Buffer, Shared Pool
+              (Library Cache + Data Dictionary Cache), Large Pool, Java Pool e
+              Streams Pool.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 2</h4>
+            <p><strong>Resposta: C</strong></p>
+            <p>
+              NUMBER(10,2) no Oracle e NUMERIC(10,2) no PostgreSQL são
+              equivalentes. A alternativa (a) está invertida (Oracle usa
+              VARCHAR2, PostgreSQL usa VARCHAR). A alternativa (b) é falsa
+              porque SERIAL é exclusivo do PostgreSQL (Oracle usa IDENTITY ou
+              SEQUENCE). A alternativa (d) é falsa pois PostgreSQL suporta DATE
+              plenamente.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 3</h4>
+            <p><strong>Resposta: D — %FOUND</strong></p>
+            <p>
+              %FOUND retorna TRUE se a última operação FETCH obteve uma linha
+              com sucesso. %NOTFOUND retorna TRUE se o FETCH não encontrou mais
+              linhas. %ROWCOUNT retorna o número de linhas fetchadas até o
+              momento. %ISOPEN indica se o cursor está aberto.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 4</h4>
+            <p><strong>Resposta: D</strong></p>
+            <p>
+              <code>FETCH FIRST 10 ROWS ONLY</code> é SQL padrão (SQL:2008) e
+              funciona em ambos os bancos (Oracle 12c+ e PostgreSQL). ROWNUM é
+              exclusivo Oracle. LIMIT é exclusivo PostgreSQL. SYSDATE FROM DUAL
+              é exclusivo Oracle (PostgreSQL usa CURRENT_DATE sem FROM).
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 5</h4>
+            <p><strong>Resposta: B</strong></p>
+            <p>
+              Uma rule com DO INSTEAD reescreve a operação original (ex: um
+              INSERT pode ser convertido em UPDATE). Rules são diferentes de
+              triggers: rules operam no nível de reescrita de query (antes da
+              execução), enquanto triggers operam durante a execução. Rules não
+              contêm lógica procedimental como IF/ELSE — para isso usa-se
+              triggers. Oracle não possui rule system.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 6</h4>
+            <p><strong>Resposta: D</strong></p>
+            <p>
+              O PostgreSQL suporta
+              <code>REFRESH MATERIALIZED VIEW CONCURRENTLY</code>, que permite
+              consultas simultâneas durante o refresh (requer índice único na
+              view). O Oracle também oferece refresh online em certas condições,
+              mas a diferença arquitetural mais marcante é que o Oracle tem
+              opções FAST/FORCE/COMPLETE com materialized view logs, enquanto o
+              PostgreSQL tem CONCURRENTLY (que evita bloqueios). A alternativa
+              (a) está parcialmente correta em dizer que o PostgreSQL não tem
+              FAST REFRESH com logs — isso é verdade, mas a alternativa (d)
+              descreve melhor a diferença prática.
+            </p>
+
+            <div class="warning-box">
+              <strong>Esclarecimento:</strong> Tanto a alternativa (a) quanto a
+              (d) contêm verdades. A resposta oficial é <strong>D</strong> por
+              destacar uma funcionalidade diferenciada do PostgreSQL
+              (CONCURRENTLY) que o Oracle não tem nessa forma exata. O Oracle
+              tem refresh online via <code>REFRESH ON COMMIT</code> e
+              <code>DBMS_MVIEW.REFRESH</code> com opção de atomicidade.
+            </div>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 7</h4>
+            <p><strong>Resposta: C — pg_dump / pg_restore</strong></p>
+            <p>
+              pg_dump gera backup lógico (arquivo SQL ou formato customizado) e
+              pg_restore restaura. RMAN e Data Pump são ferramentas Oracle.
+              mysqldump é do MySQL.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 8</h4>
+            <p><strong>Resposta: A</strong></p>
+            <p>
+              A estrutura correta de um bloco PL/pgSQL é
+              <code>[DECLARE ...] BEGIN ... [EXCEPTION ...] END;</code>. A seção
+              DECLARE é opcional (para declarar variáveis), BEGIN é obrigatório
+              (código executável), e EXCEPTION é opcional (tratamento de erros).
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 9</h4>
+            <p><strong>Resposta: A</strong></p>
+            <p>
+              No Oracle PL/SQL, os valores OLD e NEW em triggers de linha são
+              referenciados com dois-pontos: <code>:OLD.coluna</code> e
+              <code>:NEW.coluna</code>. No PostgreSQL PL/pgSQL, são
+              referenciados sem prefixo: <code>OLD.coluna</code> e
+              <code>NEW.coluna</code> (variáveis implícitas do tipo RECORD).
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 10</h4>
+            <p><strong>Resposta: C</strong></p>
+            <p>
+              PostgreSQL suporta sobrecarga de funções nativamente: múltiplas
+              funções com o mesmo nome podem coexistir no mesmo schema, desde
+              que difiram no número de parâmetros ou nos tipos de parâmetros. O
+              PostgreSQL resolve qual função chamar com base na melhor
+              correspondência de tipos dos argumentos. Oracle também suporta,
+              mas apenas dentro de packages.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 11</h4>
+            <p><strong>Resposta: B</strong></p>
+            <p>
+              No PostgreSQL, <strong>apenas procedures</strong> (CREATE
+              PROCEDURE, introduzido no PG 11) podem conter COMMIT e ROLLBACK.
+              Funções (CREATE FUNCTION) não podem executar controle transacional
+              — qualquer tentativa resulta em erro. Esta é uma diferença
+              importante em relação ao Oracle, onde tanto procedures quanto
+              funções podem controlar transações.
+            </p>
+          </div>
+
+          <div class="question">
+            <h4>Gabarito — Questão 12</h4>
+            <p><strong>Resposta: B</strong></p>
+            <p>
+              Tanto Oracle quanto PostgreSQL suportam roles para agrupar
+              privilégios, e ambos usam GRANT/REVOKE. A principal diferença é
+              que o Oracle possui privilégios de sistema administrativos
+              (SYSDBA, SYSOPER, SYSBACKUP) que não existem no PostgreSQL. Ambos
+              suportam row-level security (Oracle via VPD/FGAC, PostgreSQL via
+              RLS policies). Ambos suportam SECURITY DEFINER (PostgreSQL) /
+              DEFINER rights (Oracle).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Projeto Final e Encerramento</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Parabéns por concluir o curso de
+          <strong>Oracle e Postgre SQL</strong>! Esta aula final integrou todos
+          os conhecimentos adquiridos nos 12 módulos. Verifique se você
+          conseguiu implementar o projeto final em ambos os bancos (Oracle e
+          PostgreSQL) e se as diferenças documentadas refletem sua experiência
+          prática.
+        </p>
+        <p>
+          Compare sua implementação com a versão completa do projeto em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula12</code></li>
+        </ul>
+      </div>
+
+      <div class="success-box" style="margin-top: 30px; text-align: center">
+        <h3>🎓 Curso Concluído!</h3>
+        <p>
+          Você completou as 24 horas do curso de Oracle e PostgreSQL. Os
+          conhecimentos adquiridos — desde a arquitetura dos SGBDs, passando por
+          SQL avançado, PL/SQL, PL/pgSQL, procedures, functions, triggers,
+          rules, views materializadas, até administração e backup — formam uma
+          base sólida para sua carreira como desenvolvedor ou DBA de bancos de
+          dados relacionais.
+        </p>
+        <p><strong>Boa sorte nos seus próximos desafios!</strong></p>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

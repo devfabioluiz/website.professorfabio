@@ -1,0 +1,1539 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula 11 - Procedimentos Armazenados e Funções do Usuário - IT Step
+    </title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 11</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">
+        Módulo 11: Procedimentos Armazenados e Funções do Usuário
+      </h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Stored Procedures (CREATE OR REPLACE PROCEDURE, CALL, parâmetros
+        IN/OUT/INOUT), Funções definidas pelo usuário (CREATE FUNCTION, RETURNS,
+        RETURNS TABLE, LANGUAGE SQL vs PL/pgSQL), Passagem de parâmetros,
+        Sobrecarga de funções.
+      </div>
+    </header>
+    <main class="container">
+      <!-- INTRODUÇÃO -->
+      <section>
+        <h2>Procedimentos Armazenados e Funções do Usuário no PostgreSQL</h2>
+        <p>
+          O PostgreSQL oferece dois mecanismos principais para encapsular lógica
+          de negócio no lado do servidor:
+          <strong>procedimentos armazenados (stored procedures)</strong> e
+          <strong
+            >funções definidas pelo usuário (UDFs — User-Defined
+            Functions)</strong
+          >. Embora ambos permitam executar blocos de código no banco de dados,
+          eles possuem diferenças importantes em relação a controle
+          transacional, retorno de valores e formas de chamada.
+        </p>
+        <p>
+          Historicamente, antes do PostgreSQL 11 (lançado em 2018), o PostgreSQL
+          só oferecia funções (CREATE FUNCTION). Os procedimentos armazenados
+          (CREATE PROCEDURE) foram introduzidos na versão 11 para suprir a
+          necessidade de controle de transações dentro do código — algo que
+          funções nunca puderam fazer (COMMIT/ROLLBACK dentro de uma função é
+          proibido no PostgreSQL).
+        </p>
+      </section>
+
+      <!-- PROCEDIMENTOS ARMAZENADOS -->
+      <section>
+        <h2>1. Procedimentos Armazenados (Stored Procedures)</h2>
+
+        <h3>1.1 O que é um Procedimento Armazenado?</h3>
+        <p>
+          Um <strong>procedimento armazenado</strong> é um bloco nomeado de
+          código PL/pgSQL (ou outra linguagem suportada) armazenado no catálogo
+          do banco de dados. Ao contrário das funções, os procedimentos:
+        </p>
+        <ul>
+          <li>
+            <strong>Não retornam valor</strong> com RETURN (embora possam ter
+            parâmetros OUT que devolvem valores indiretamente)
+          </li>
+          <li>
+            <strong>Podem controlar transações</strong> — executar COMMIT,
+            ROLLBACK, iniciar subtransações com SAVEPOINT
+          </li>
+          <li>
+            <strong>São chamados com CALL</strong>, não podem ser usados dentro
+            de uma consulta SELECT
+          </li>
+          <li>
+            Foram introduzidos no <strong>PostgreSQL 11</strong> (antes disso,
+            apenas funções existiam)
+          </li>
+        </ul>
+
+        <h3>1.2 Sintaxe CREATE OR REPLACE PROCEDURE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE nome_procedimento(
+    parametro1 TIPO [IN | OUT | INOUT] [DEFAULT valor],
+    parametro2 TIPO [IN | OUT | INOUT] [DEFAULT valor],
+    ...
+)
+LANGUAGE plpgsql -- ou LANGUAGE sql
+AS $$
+DECLARE
+    -- declaração de variáveis locais (apenas para LANGUAGE plpgsql)
+BEGIN
+    -- corpo do procedimento
+    -- pode conter COMMIT, ROLLBACK, SAVEPOINT
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>1.3 Exemplo: Procedimento para Atualizar Estoque</h3>
+        <p>
+          Procedimento que recebe o ID do produto e a quantidade vendida, reduz
+          o estoque e confirma a transação:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de exemplo
+CREATE TABLE produtos (
+    id      SERIAL PRIMARY KEY,
+    nome    VARCHAR(100) NOT NULL,
+    estoque INTEGER NOT NULL DEFAULT 0,
+    preco   NUMERIC(10,2) NOT NULL
+);
+
+-- Inserir dados de exemplo
+INSERT INTO produtos (nome, estoque, preco) VALUES
+    ('Notebook', 50, 3500.00),
+    ('Mouse', 200, 89.90),
+    ('Teclado', 150, 199.90),
+    ('Monitor', 30, 1200.00);
+
+-- Procedimento que atualiza estoque com controle de transação
+CREATE OR REPLACE PROCEDURE atualizar_estoque(
+    p_prod_id INT,
+    p_qtd     INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Verifica se há estoque suficiente
+    IF (SELECT estoque FROM produtos WHERE id = p_prod_id) < p_qtd THEN
+        RAISE EXCEPTION 'Estoque insuficiente para o produto ID %', p_prod_id;
+    END IF;
+
+    -- Atualiza o estoque
+    UPDATE produtos
+    SET estoque = estoque - p_qtd
+    WHERE id = p_prod_id;
+
+    -- Confirma a transação (procedures podem fazer COMMIT!)
+    COMMIT;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>1.4 Chamando o Procedimento com CALL</h3>
+        <p>
+          Diferentemente das funções, procedimentos são chamados com o comando
+          <strong>CALL</strong> e <strong>não podem</strong> ser usados dentro
+          de SELECT, WHERE ou qualquer expressão SQL:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Chamar o procedimento para vender 5 unidades do produto ID 1
+CALL atualizar_estoque(1, 5);
+
+-- Verificar o estoque atualizado
+SELECT id, nome, estoque FROM produtos;
+
+-- Tentar vender mais do que há em estoque (vai disparar EXCEPTION)
+CALL atualizar_estoque(1, 500);
+
+-- Chamar dentro de um bloco DO (anônimo)
+DO $$
+BEGIN
+    CALL atualizar_estoque(2, 10);
+    RAISE NOTICE 'Estoque atualizado com sucesso!';
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="warning-box">
+          <strong>Importante:</strong> Procedimentos no PostgreSQL
+          <strong>só podem ser chamados com CALL</strong>. Tentar usar
+          <code>SELECT atualizar_estoque(1, 5);</code> resultará em erro. Esta é
+          uma diferença fundamental em relação a funções.
+        </div>
+      </section>
+
+      <!-- PARÂMETROS -->
+      <section>
+        <h2>2. Parâmetros IN, OUT e INOUT</h2>
+        <p>
+          Os procedimentos e funções no PostgreSQL suportam três modos de
+          parâmetros que controlam a direção do fluxo de dados:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Modo</th>
+              <th>Descrição</th>
+              <th>Comportamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>IN</strong></td>
+              <td>Entrada (padrão)</td>
+              <td>
+                Recebe valor do chamador. O valor dentro do procedimento é uma
+                cópia; alterações não afetam o chamador.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>OUT</strong></td>
+              <td>Saída</td>
+              <td>
+                Retorna valor ao chamador. O valor inicial é NULL. O
+                procedimento/função deve atribuir um valor a este parâmetro
+                antes de terminar.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>INOUT</strong></td>
+              <td>Entrada e Saída</td>
+              <td>
+                Recebe valor do chamador e também retorna valor modificado ao
+                chamador. Combina os comportamentos de IN e OUT.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>2.1 Exemplo: Procedimento com Parâmetro OUT</h3>
+        <p>
+          Procedimento que calcula o total de vendas de um período e retorna
+          pelo parâmetro OUT:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de vendas para o exemplo
+CREATE TABLE vendas (
+    id          SERIAL PRIMARY KEY,
+    produto_id  INT NOT NULL,
+    quantidade  INT NOT NULL,
+    valor_total NUMERIC(10,2) NOT NULL,
+    data_venda  DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+-- Inserir dados de exemplo
+INSERT INTO vendas (produto_id, quantidade, valor_total, data_venda) VALUES
+    (1, 2, 7000.00, '2025-06-01'),
+    (2, 5, 449.50, '2025-06-05'),
+    (3, 3, 599.70, '2025-06-10'),
+    (1, 1, 3500.00, '2025-06-15'),
+    (4, 2, 2400.00, '2025-06-15');
+
+-- Procedimento com parâmetro OUT
+CREATE OR REPLACE PROCEDURE total_vendas_periodo(
+    IN  p_data_inicio DATE,
+    IN  p_data_fim    DATE,
+    OUT p_total       NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    SELECT COALESCE(SUM(valor_total), 0)
+    INTO p_total
+    FROM vendas
+    WHERE data_venda BETWEEN p_data_inicio AND p_data_fim;
+END;
+$$;
+
+-- Chamando o procedimento com parâmetro OUT
+CALL total_vendas_periodo('2025-06-01', '2025-06-30', NULL);
+
+-- No psql, o valor é exibido automaticamente.
+-- Em outras interfaces, pode ser necessário capturar:
+DO $$
+DECLARE
+    v_total NUMERIC := 0;
+BEGIN
+    CALL total_vendas_periodo('2025-06-01', '2025-06-30', v_total);
+    RAISE NOTICE 'Total de vendas: R$ %', v_total;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2.2 Exemplo: Procedimento com INOUT</h3>
+        <p>
+          Procedimento que aplica um percentual de desconto a um valor e retorna
+          o resultado pelo mesmo parâmetro:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE aplicar_desconto(
+    INOUT p_valor     NUMERIC,
+    IN    p_percentual NUMERIC DEFAULT 10
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    p_valor := p_valor * (1 - p_percentual / 100.0);
+END;
+$$;
+
+-- Chamando o procedimento com INOUT
+DO $$
+DECLARE
+    v_preco NUMERIC := 1500.00;
+BEGIN
+    CALL aplicar_desconto(v_preco, 15);
+    RAISE NOTICE 'Preço com 15%% de desconto: R$ %', v_preco;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="info-box">
+          <strong>Nota sobre CALL:</strong> Ao chamar um procedimento com
+          parâmetros OUT/INOUT via CALL, você deve passar uma variável (não um
+          literal) para receber o valor de saída. Em psql, se passar NULL, o
+          resultado será exibido automaticamente. Em código PL/pgSQL, declare
+          uma variável e passe-a.
+        </div>
+      </section>
+
+      <!-- FUNÇÕES DEFINIDAS PELO USUÁRIO -->
+      <section>
+        <h2>3. Funções Definidas pelo Usuário (UDFs)</h2>
+
+        <h3>3.1 O que é uma Função Definida pelo Usuário?</h3>
+        <p>
+          Uma <strong>UDF (User-Defined Function)</strong> é um bloco de código
+          armazenado que <strong>sempre retorna um valor</strong> (escalar,
+          conjunto de linhas, ou tabela). Funções podem ser usadas em consultas
+          SQL como se fossem funções nativas do banco.
+        </p>
+        <p>Características principais das funções no PostgreSQL:</p>
+        <ul>
+          <li>
+            <strong>Sempre retornam um valor</strong> (RETURNS é obrigatório)
+          </li>
+          <li>
+            <strong>Não podem controlar transações</strong> (COMMIT/ROLLBACK são
+            proibidos dentro de funções)
+          </li>
+          <li>
+            <strong>Podem ser usadas em SELECT, WHERE, ORDER BY, etc.</strong>
+          </li>
+          <li>
+            Suportam múltiplas linguagens: SQL, PL/pgSQL, C, Python, Perl, etc.
+          </li>
+        </ul>
+
+        <h3>3.2 Função Escalar (Retorna um Único Valor)</h3>
+        <p>Função que calcula o preço com desconto aplicado:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função escalar que retorna NUMERIC
+CREATE OR REPLACE FUNCTION calcular_desconto(
+    preco      NUMERIC,
+    percentual NUMERIC DEFAULT 10
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN preco * (1 - percentual / 100.0);
+END;
+$$;
+
+-- Usando a função em uma consulta SELECT
+SELECT
+    nome,
+    preco,
+    calcular_desconto(preco)        AS com_desconto_10,
+    calcular_desconto(preco, 20)    AS com_desconto_20,
+    preco - calcular_desconto(preco, 20) AS economia
+FROM produtos;
+
+-- Usando com WHERE
+SELECT nome, preco
+FROM produtos
+WHERE calcular_desconto(preco, 25) < 2000;
+
+-- Usando em ORDER BY
+SELECT nome, preco, calcular_desconto(preco, 15) AS preco_final
+FROM produtos
+ORDER BY calcular_desconto(preco, 15) ASC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3.3 Função com RETURNS TABLE (Retorna Múltiplas Linhas)</h3>
+        <p>
+          O <strong>RETURNS TABLE</strong> permite que uma função retorne um
+          conjunto de linhas como se fosse uma tabela. É ideal para consultas
+          parametrizadas reutilizáveis.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Adicionar categoria aos produtos
+ALTER TABLE produtos ADD COLUMN categoria VARCHAR(50);
+UPDATE produtos SET categoria = 'Eletrônicos' WHERE id IN (1, 4);
+UPDATE produtos SET categoria = 'Periféricos' WHERE id IN (2, 3);
+
+-- Função que retorna tabela: lista produtos por categoria
+CREATE OR REPLACE FUNCTION listar_por_categoria(cat VARCHAR)
+RETURNS TABLE(
+    id       INT,
+    nome     VARCHAR,
+    preco    NUMERIC,
+    estoque  INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT p.id, p.nome, p.preco, p.estoque
+    FROM produtos p
+    WHERE p.categoria = cat
+    ORDER BY p.nome;
+END;
+$$;
+
+-- Usando a função como se fosse uma tabela
+SELECT * FROM listar_por_categoria('Eletrônicos');
+
+-- Pode ser usada em JOIN também
+SELECT f.nome, f.preco, COALESCE(v.total_vendido, 0) AS total_vendido
+FROM listar_por_categoria('Eletrônicos') f
+LEFT JOIN (
+    SELECT produto_id, SUM(quantidade) AS total_vendido
+    FROM vendas
+    GROUP BY produto_id
+) v ON f.id = v.produto_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3.4 RETURNS SETOF (Retornando Conjunto de Linhas)</h3>
+        <p>
+          <strong>RETURNS SETOF</strong> é uma alternativa ao RETURNS TABLE. Em
+          vez de definir a estrutura na própria função, usa-se o tipo de uma
+          tabela ou composite type existente:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função que retorna todas as linhas de uma tabela (SETOF)
+CREATE OR REPLACE FUNCTION produtos_em_promocao(
+    p_preco_max NUMERIC
+)
+RETURNS SETOF produtos
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM produtos
+    WHERE preco < p_preco_max
+    ORDER BY preco ASC;
+END;
+$$;
+
+-- Usando a função
+SELECT nome, preco, categoria
+FROM produtos_em_promocao(2000);
+
+-- Outro exemplo: RETURNS SETOF com RECORD
+CREATE OR REPLACE FUNCTION relatorio_vendas(
+    p_data DATE
+)
+RETURNS SETOF RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    rec RECORD;
+BEGIN
+    FOR rec IN
+        SELECT p.nome, SUM(v.quantidade) AS qtd, SUM(v.valor_total) AS total
+        FROM vendas v
+        JOIN produtos p ON v.produto_id = p.id
+        WHERE v.data_venda = p_data
+        GROUP BY p.nome
+    LOOP
+        RETURN NEXT rec;
+    END LOOP;
+    RETURN;
+END;
+$$;
+
+-- Ao usar RETURNS SETOF RECORD, é necessário especificar a estrutura na chamada:
+SELECT * FROM relatorio_vendas('2025-06-15')
+AS (nome VARCHAR, quantidade BIGINT, total NUMERIC);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3.5 Função com Múltiplos Parâmetros OUT</h3>
+        <p>
+          Uma função pode retornar múltiplos valores escalares usando parâmetros
+          OUT ao invés de RETURNS TABLE:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION estatisticas_produto(
+    IN  p_prod_id   INT,
+    OUT p_nome      VARCHAR,
+    OUT p_estoque   INT,
+    OUT p_total_vendas NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    SELECT nome, estoque INTO p_nome, p_estoque
+    FROM produtos WHERE id = p_prod_id;
+
+    SELECT COALESCE(SUM(valor_total), 0) INTO p_total_vendas
+    FROM vendas WHERE produto_id = p_prod_id;
+END;
+$$;
+
+-- Chamando a função
+SELECT * FROM estatisticas_produto(1);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- LANGUAGE OPTIONS -->
+      <section>
+        <h2>4. Opções de LANGUAGE: SQL vs PL/pgSQL vs C</h2>
+        <p>
+          O PostgreSQL permite escrever funções em diversas linguagens. A
+          escolha da linguagem afeta performance, capacidades e onde a função
+          pode ser usada.
+        </p>
+
+        <h3>4.1 LANGUAGE SQL</h3>
+        <p>
+          Funções escritas em <strong>LANGUAGE SQL</strong> são as mais simples:
+          consistem em uma ou mais instruções SQL. O otimizador do PostgreSQL
+          pode <strong>inlinar</strong> (incorporar) essas funções diretamente
+          na consulta, eliminando o custo de chamada.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função SQL pura (pode ser inlinada pelo otimizador)
+CREATE OR REPLACE FUNCTION preco_com_imposto(preco NUMERIC)
+RETURNS NUMERIC
+LANGUAGE SQL
+IMMUTABLE  -- dica para o otimizador
+AS $$
+    SELECT preco * 1.17;  -- 17% de imposto
+$$;
+
+-- Função SQL que retorna tabela
+CREATE OR REPLACE FUNCTION produtos_caros(limite NUMERIC)
+RETURNS TABLE(nome VARCHAR, preco NUMERIC)
+LANGUAGE SQL
+STABLE
+AS $$
+    SELECT nome, preco
+    FROM produtos
+    WHERE preco > limite
+    ORDER BY preco DESC;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>4.2 LANGUAGE plpgsql</h3>
+        <p>
+          PL/pgSQL é a linguagem procedural nativa do PostgreSQL. Oferece
+          controle de fluxo (IF, LOOP, WHILE, FOR), cursores, tratamento de
+          exceções, e variáveis. É a escolha padrão para lógica complexa.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION classificar_preco(preco NUMERIC)
+RETURNS VARCHAR
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF preco < 100 THEN
+        RETURN 'Barato';
+    ELSIF preco < 1000 THEN
+        RETURN 'Médio';
+    ELSIF preco < 5000 THEN
+        RETURN 'Caro';
+    ELSE
+        RETURN 'Premium';
+    END IF;
+END;
+$$;
+
+SELECT nome, preco, classificar_preco(preco) AS classificacao
+FROM produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>4.3 Atributos do Otimizador: IMMUTABLE / STABLE / VOLATILE</h3>
+        <p>
+          Esses atributos informam ao planejador de consultas sobre o
+          comportamento da função, permitindo otimizações importantes:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Atributo</th>
+              <th>Significado</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>IMMUTABLE</strong></td>
+              <td>
+                Para os mesmos argumentos, sempre retorna o mesmo valor. Não
+                modifica o banco. Não consulta tabelas.
+              </td>
+              <td>Função matemática pura: <code>preco * 1.17</code></td>
+            </tr>
+            <tr>
+              <td><strong>STABLE</strong></td>
+              <td>
+                Dentro de uma mesma consulta, retorna o mesmo valor para os
+                mesmos argumentos. Pode ler tabelas, mas não as modifica.
+              </td>
+              <td>
+                Função que consulta uma tabela de configuração:
+                <code>SELECT taxa FROM config</code>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>VOLATILE</strong> (padrão)</td>
+              <td>
+                Pode retornar valores diferentes a cada chamada. Pode modificar
+                o banco.
+              </td>
+              <td>Função que gera UUID: <code>gen_random_uuid()</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Marcar uma função como IMMUTABLE ou STABLE quando aplicável permite
+          que o PostgreSQL a otimize em índices, consultas repetidas e
+          paralelização.
+        </p>
+
+        <h3>4.4 Outros Atributos Importantes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Atributo</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>STRICT</strong> (RETURNS NULL ON NULL INPUT)</td>
+              <td>
+                Se qualquer argumento for NULL, a função não é executada e
+                retorna NULL automaticamente. Economiza processamento.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>SECURITY DEFINER</strong></td>
+              <td>
+                A função executa com os privilégios do
+                <strong>dono da função</strong>, não do usuário que a chamou.
+                Útil para permitir acesso controlado a dados sensíveis.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>SECURITY INVOKER</strong> (padrão)</td>
+              <td>
+                A função executa com os privilégios do
+                <strong>usuário que a chamou</strong>.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>PARALLEL SAFE</strong></td>
+              <td>
+                Indica se a função pode ser executada em paralelo pelo worker de
+                consulta paralela (SAFE, RESTRICTED, UNSAFE).
+              </td>
+            </tr>
+            <tr>
+              <td><strong>COST</strong></td>
+              <td>
+                Custo estimado de execução (em unidades arbitrárias). Padrão:
+                100 para PL/pgSQL, 1 para SQL. Afeta a ordem de avaliação em
+                WHERE.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função com múltiplos atributos
+CREATE OR REPLACE FUNCTION formata_moeda(valor NUMERIC)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+STRICT
+PARALLEL SAFE
+COST 1
+AS $$
+    SELECT 'R$ ' || TO_CHAR(valor, 'FM999G990D00');
+$$;
+
+-- Função SECURITY DEFINER: permite acesso controlado a tabela sensível
+CREATE OR REPLACE FUNCTION consultar_salario(
+    p_func_id INT
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    v_salario NUMERIC;
+BEGIN
+    -- Executa com privilégios do dono, mesmo que o chamador
+    -- não tenha permissão direta na tabela
+    SELECT salario INTO v_salario
+    FROM folha_pagamento
+    WHERE funcionario_id = p_func_id;
+    RETURN v_salario;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- SOBRECARGA -->
+      <section>
+        <h2>5. Sobrecarga de Funções (Function Overloading)</h2>
+        <p>
+          O PostgreSQL suporta <strong>sobrecarga de funções</strong> — você
+          pode criar múltiplas funções com o <strong>mesmo nome</strong>, desde
+          que tenham <strong>assinaturas diferentes</strong> (número de
+          parâmetros ou tipos de parâmetros diferentes). O PostgreSQL decide
+          qual função chamar com base nos tipos dos argumentos fornecidos.
+        </p>
+
+        <h3>5.1 Exemplo: Funções formatar() Sobrecarregadas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função 1: formata um número inteiro
+CREATE OR REPLACE FUNCTION formatar(valor INTEGER)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT TO_CHAR(valor, 'FM999G990');
+$$;
+
+-- Função 2: formata um número decimal (sobrecarregada)
+CREATE OR REPLACE FUNCTION formatar(valor NUMERIC)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT 'R$ ' || TO_CHAR(valor, 'FM999G990D00');
+$$;
+
+-- Função 3: formata uma data (sobrecarregada)
+CREATE OR REPLACE FUNCTION formatar(data_val DATE)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT TO_CHAR(data_val, 'DD/MM/YYYY');
+$$;
+
+-- Função 4: formata data com hora (sobrecarregada)
+CREATE OR REPLACE FUNCTION formatar(data_hora TIMESTAMP)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT TO_CHAR(data_hora, 'DD/MM/YYYY HH24:MI:SS');
+$$;
+
+-- Testando a sobrecarga — o PostgreSQL escolhe a função correta
+SELECT formatar(1500);             -- chama formatar(INTEGER)    → "1.500"
+SELECT formatar(1500.50);          -- chama formatar(NUMERIC)    → "R$ 1.500,50"
+SELECT formatar(CURRENT_DATE);     -- chama formatar(DATE)       → "DD/MM/YYYY"
+SELECT formatar(NOW());            -- chama formatar(TIMESTAMP)  → "DD/MM/YYYY HH24:MI:SS"
+
+-- Listar todas as funções com o mesmo nome
+SELECT proname, proargtypes::regtype[]
+FROM pg_proc
+WHERE proname = 'formatar';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5.2 Resolução de Ambiguidade</h3>
+        <p>
+          Quando há múltiplas funções sobrecarregadas, o PostgreSQL escolhe a
+          que melhor corresponde aos tipos dos argumentos. Se houver ambiguidade
+          (ex: INTEGER pode ser convertido implicitamente para NUMERIC), é
+          necessário fazer um <strong>cast explícito</strong>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Se houver ambiguidade, use cast explícito:
+SELECT formatar(10::INTEGER);    -- força a versão INTEGER
+SELECT formatar(10::NUMERIC);    -- força a versão NUMERIC
+
+-- Sobrecarga com número diferente de parâmetros
+CREATE OR REPLACE FUNCTION formatar(
+    valor NUMERIC,
+    simbolo VARCHAR DEFAULT 'R$'
+)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT simbolo || ' ' || TO_CHAR(valor, 'FM999G990D00');
+$$;
+
+SELECT formatar(1500.50);          -- usa DEFAULT → "R$ 1.500,50"
+SELECT formatar(1500.50, 'US$');   -- "US$ 1.500,50"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="info-box">
+          <strong>Sobrecarga de procedimentos:</strong> Procedures (CREATE
+          PROCEDURE) também suportam sobrecarga no PostgreSQL. Você pode ter
+          múltiplos procedimentos com o mesmo nome, diferenciados pelos tipos e
+          quantidade de parâmetros, exatamente como funções.
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SISTEMA DE PEDIDOS -->
+      <section>
+        <h2>6. Passo a Passo: Sistema de Pedidos Completo</h2>
+        <p>
+          Vamos construir um mini sistema de pedidos usando procedures e
+          functions, demonstrando todos os conceitos aprendidos: procedures com
+          controle transacional, functions escalares e de tabela, sobrecarga e
+          atributos do otimizador.
+        </p>
+
+        <h3>6.1 Criar a Estrutura de Tabelas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de clientes
+CREATE TABLE clientes (
+    id     SERIAL PRIMARY KEY,
+    nome   VARCHAR(100) NOT NULL,
+    email  VARCHAR(150) UNIQUE NOT NULL,
+    saldo  NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+-- Tabela de pedidos
+CREATE TABLE pedidos (
+    id          SERIAL PRIMARY KEY,
+    cliente_id  INT NOT NULL REFERENCES clientes(id),
+    data_pedido DATE NOT NULL DEFAULT CURRENT_DATE,
+    status      VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    total       NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+-- Tabela de itens do pedido
+CREATE TABLE itens_pedido (
+    id          SERIAL PRIMARY KEY,
+    pedido_id   INT NOT NULL REFERENCES pedidos(id) ON DELETE CASCADE,
+    produto_id  INT NOT NULL REFERENCES produtos(id),
+    quantidade  INT NOT NULL,
+    preco_unit  NUMERIC(10,2) NOT NULL
+);
+
+-- Inserir clientes de exemplo
+INSERT INTO clientes (nome, email, saldo) VALUES
+    ('João Silva', 'joao@email.com', 10000.00),
+    ('Maria Santos', 'maria@email.com', 5000.00);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>6.2 Procedure: Criar Pedido com Controle Transacional</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE criar_pedido(
+    IN  p_cliente_id INT,
+    OUT p_pedido_id  INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_saldo NUMERIC;
+BEGIN
+    -- Verifica se cliente existe e tem saldo
+    SELECT saldo INTO v_saldo
+    FROM clientes
+    WHERE id = p_cliente_id
+    FOR UPDATE;  -- bloqueia a linha para evitar concorrência
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cliente ID % não encontrado', p_cliente_id;
+    END IF;
+
+    IF v_saldo <= 0 THEN
+        RAISE EXCEPTION 'Cliente ID % não possui saldo suficiente', p_cliente_id;
+    END IF;
+
+    -- Cria o pedido
+    INSERT INTO pedidos (cliente_id)
+    VALUES (p_cliente_id)
+    RETURNING id INTO p_pedido_id;
+
+    -- Confirma a transação
+    COMMIT;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>6.3 Procedure: Adicionar Item ao Pedido e Atualizar Estoque</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE adicionar_item_pedido(
+    p_pedido_id  INT,
+    p_produto_id INT,
+    p_quantidade INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_preco     NUMERIC;
+    v_estoque   INT;
+    v_status    VARCHAR;
+BEGIN
+    -- Verifica se o pedido existe e está pendente
+    SELECT status INTO v_status
+    FROM pedidos
+    WHERE id = p_pedido_id
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Pedido ID % não encontrado', p_pedido_id;
+    END IF;
+
+    IF v_status != 'pendente' THEN
+        RAISE EXCEPTION 'Pedido ID % não está pendente (status: %)', p_pedido_id, v_status;
+    END IF;
+
+    -- Verifica estoque e obtém preço
+    SELECT preco, estoque INTO v_preco, v_estoque
+    FROM produtos
+    WHERE id = p_produto_id
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Produto ID % não encontrado', p_produto_id;
+    END IF;
+
+    IF v_estoque < p_quantidade THEN
+        RAISE EXCEPTION 'Estoque insuficiente do produto ID % (disponível: %, solicitado: %)',
+            p_produto_id, v_estoque, p_quantidade;
+    END IF;
+
+    -- Insere o item
+    INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit)
+    VALUES (p_pedido_id, p_produto_id, p_quantidade, v_preco);
+
+    -- Atualiza o estoque
+    UPDATE produtos
+    SET estoque = estoque - p_quantidade
+    WHERE id = p_produto_id;
+
+    -- Atualiza o total do pedido
+    UPDATE pedidos
+    SET total = (
+        SELECT SUM(quantidade * preco_unit)
+        FROM itens_pedido
+        WHERE pedido_id = p_pedido_id
+    )
+    WHERE id = p_pedido_id;
+
+    COMMIT;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>6.4 Function: Calcular Total do Pedido com Desconto</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função escalar: calcula o total com desconto baseado no valor
+CREATE OR REPLACE FUNCTION calcular_total_com_desconto(
+    p_pedido_id INT
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+    v_total     NUMERIC;
+    v_desconto  NUMERIC := 0;
+BEGIN
+    SELECT total INTO v_total
+    FROM pedidos
+    WHERE id = p_pedido_id;
+
+    -- Regra de desconto progressivo
+    IF v_total > 5000 THEN
+        v_desconto := 0.10;  -- 10% para pedidos acima de R$ 5000
+    ELSIF v_total > 2000 THEN
+        v_desconto := 0.05;  -- 5% para pedidos acima de R$ 2000
+    END IF;
+
+    RETURN v_total * (1 - v_desconto);
+END;
+$$;
+
+-- Função de tabela: listar pedidos de um cliente
+CREATE OR REPLACE FUNCTION listar_pedidos_cliente(p_cliente_id INT)
+RETURNS TABLE(
+    pedido_id   INT,
+    data        DATE,
+    status      VARCHAR,
+    total       NUMERIC,
+    total_desc  NUMERIC
+)
+LANGUAGE plpgsql
+STABLE
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.id,
+        p.data_pedido,
+        p.status,
+        p.total,
+        calcular_total_com_desconto(p.id)
+    FROM pedidos p
+    WHERE p.cliente_id = p_cliente_id
+    ORDER BY p.data_pedido DESC;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>6.5 Procedure: Finalizar Pedido</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE finalizar_pedido(
+    p_pedido_id INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_total      NUMERIC;
+    v_cliente_id INT;
+    v_saldo      NUMERIC;
+BEGIN
+    -- Obtém dados do pedido
+    SELECT cliente_id, total INTO v_cliente_id, v_total
+    FROM pedidos
+    WHERE id = p_pedido_id AND status = 'pendente'
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Pedido ID % não encontrado ou já finalizado', p_pedido_id;
+    END IF;
+
+    IF v_total <= 0 THEN
+        RAISE EXCEPTION 'Pedido ID % não possui itens', p_pedido_id;
+    END IF;
+
+    -- Verifica saldo do cliente
+    SELECT saldo INTO v_saldo
+    FROM clientes
+    WHERE id = v_cliente_id
+    FOR UPDATE;
+
+    IF v_saldo < v_total THEN
+        RAISE EXCEPTION 'Saldo insuficiente (saldo: R$ %, pedido: R$ %)',
+            v_saldo, v_total;
+    END IF;
+
+    -- Debita do saldo
+    UPDATE clientes
+    SET saldo = saldo - v_total
+    WHERE id = v_cliente_id;
+
+    -- Atualiza status do pedido
+    UPDATE pedidos
+    SET status = 'finalizado'
+    WHERE id = p_pedido_id;
+
+    COMMIT;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>6.6 Testando o Sistema Completo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar um pedido
+DO $$
+DECLARE
+    v_pedido_id INT;
+BEGIN
+    CALL criar_pedido(1, v_pedido_id);
+    RAISE NOTICE 'Pedido criado: ID %', v_pedido_id;
+
+    -- Adicionar itens
+    CALL adicionar_item_pedido(v_pedido_id, 1, 2);  -- 2 notebooks
+    CALL adicionar_item_pedido(v_pedido_id, 2, 3);  -- 3 mouses
+
+    -- Verificar total
+    RAISE NOTICE 'Total do pedido: R$ %',
+        (SELECT total FROM pedidos WHERE id = v_pedido_id);
+    RAISE NOTICE 'Total com desconto: R$ %',
+        calcular_total_com_desconto(v_pedido_id);
+
+    -- Finalizar pedido
+    CALL finalizar_pedido(v_pedido_id);
+    RAISE NOTICE 'Pedido ID % finalizado com sucesso!', v_pedido_id;
+END;
+$$;
+
+-- Consultar pedidos do cliente
+SELECT * FROM listar_pedidos_cliente(1);
+
+-- Verificar saldo atualizado
+SELECT nome, saldo FROM clientes WHERE id = 1;
+
+-- Verificar estoque atualizado
+SELECT nome, estoque FROM produtos ORDER BY id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO ORACLE VS POSTGRESQL -->
+      <section>
+        <h2>7. Comparação: Procedures e Functions no Oracle vs PostgreSQL</h2>
+        <p>
+          Para quem tem experiência com Oracle PL/SQL, aqui estão as principais
+          diferenças na criação de procedures e functions:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Oracle (PL/SQL)</th>
+              <th>PostgreSQL (PL/pgSQL)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Criar procedure</td>
+              <td><code>CREATE OR REPLACE PROCEDURE nome AS ...</code></td>
+              <td>
+                <code
+                  >CREATE OR REPLACE PROCEDURE nome() LANGUAGE plpgsql AS $$ ...
+                  $$</code
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>Chamar procedure</td>
+              <td><code>EXECUTE nome();</code> ou dentro de bloco PL/SQL</td>
+              <td><code>CALL nome();</code> (não pode usar em SELECT)</td>
+            </tr>
+            <tr>
+              <td>Controle de transação</td>
+              <td>
+                COMMIT/ROLLBACK permitido (Oracle trata procedures como
+                transações independentes)
+              </td>
+              <td>
+                COMMIT/ROLLBACK permitido apenas em procedures (não em
+                functions)
+              </td>
+            </tr>
+            <tr>
+              <td>Criar function</td>
+              <td>
+                <code>CREATE OR REPLACE FUNCTION nome RETURN tipo AS ...</code>
+              </td>
+              <td>
+                <code
+                  >CREATE OR REPLACE FUNCTION nome() RETURNS tipo AS $$ ...
+                  $$</code
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>Delimitador de corpo</td>
+              <td>Não usa delimitador especial</td>
+              <td>Usa <code>$$</code> (dollar quoting)</td>
+            </tr>
+            <tr>
+              <td>Package (pacotes)</td>
+              <td>Suporta (CREATE PACKAGE)</td>
+              <td>Não possui packages (usa schemas e naming conventions)</td>
+            </tr>
+            <tr>
+              <td>Sobrecarga</td>
+              <td>Suporta dentro de packages</td>
+              <td>Suporta nativamente (mesmo schema)</td>
+            </tr>
+            <tr>
+              <td>RETURNS TABLE</td>
+              <td>Usa PIPELINED ou retorna SYS_REFCURSOR</td>
+              <td>
+                <code>RETURNS TABLE(col tipo, ...)</code> com RETURN QUERY
+              </td>
+            </tr>
+            <tr>
+              <td>Parâmetros DEFAULT</td>
+              <td>Suporta via DEFAULT</td>
+              <td>Suporta via DEFAULT ou :=</td>
+            </tr>
+            <tr>
+              <td>RAISE / Exceções</td>
+              <td><code>RAISE_APPLICATION_ERROR(-20001, 'msg');</code></td>
+              <td><code>RAISE EXCEPTION 'msg';</code></td>
+            </tr>
+            <tr>
+              <td>Atribuição</td>
+              <td><code>variavel := valor;</code></td>
+              <td>
+                <code>variavel := valor;</code> ou
+                <code>SELECT ... INTO variavel;</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Procedure com INOUT: Transferência entre Contas</h3>
+            <p>
+              Crie um procedimento <code>transferir_valor</code> com parâmetro
+              <code>INOUT p_saldo_origem NUMERIC</code> que transfere um valor
+              de uma conta para outra. O procedimento deve verificar se há saldo
+              suficiente, debitar da origem e creditar no destino. Se o saldo
+              for insuficiente, deve lançar uma exceção. Use COMMIT ao final.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE contas (
+    id     SERIAL PRIMARY KEY,
+    titular VARCHAR(100) NOT NULL,
+    saldo  NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+INSERT INTO contas (titular, saldo) VALUES
+    ('João', 5000.00),
+    ('Maria', 2000.00);
+
+CREATE OR REPLACE PROCEDURE transferir_valor(
+    IN    p_conta_origem  INT,
+    IN    p_conta_destino INT,
+    IN    p_valor         NUMERIC,
+    INOUT p_saldo_origem  NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_saldo_destino NUMERIC;
+BEGIN
+    -- Bloqueia as duas contas para evitar concorrência
+    SELECT saldo INTO p_saldo_origem
+    FROM contas WHERE id = p_conta_origem FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta origem ID % não encontrada', p_conta_origem;
+    END IF;
+
+    IF p_saldo_origem < p_valor THEN
+        RAISE EXCEPTION 'Saldo insuficiente (saldo: R$ %, transferência: R$ %)',
+            p_saldo_origem, p_valor;
+    END IF;
+
+    SELECT saldo INTO v_saldo_destino
+    FROM contas WHERE id = p_conta_destino FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta destino ID % não encontrada', p_conta_destino;
+    END IF;
+
+    -- Realiza a transferência
+    UPDATE contas SET saldo = saldo - p_valor WHERE id = p_conta_origem;
+    UPDATE contas SET saldo = saldo + p_valor WHERE id = p_conta_destino;
+
+    -- Atualiza o saldo de saída
+    SELECT saldo INTO p_saldo_origem FROM contas WHERE id = p_conta_origem;
+
+    COMMIT;
+END;
+$$;
+
+-- Teste
+DO $$
+DECLARE
+    v_saldo NUMERIC;
+BEGIN
+    CALL transferir_valor(1, 2, 500.00, v_saldo);
+    RAISE NOTICE 'Novo saldo da conta origem: R$ %', v_saldo;
+END;
+$$;
+
+SELECT * FROM contas;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Function: Total de Vendas por Período</h3>
+            <p>
+              Crie uma função
+              <code
+                >total_vendas_por_periodo(data_inicio DATE, data_fim DATE)</code
+              >
+              que retorna o total de vendas (NUMERIC) no período especificado.
+              Se não houver vendas, deve retornar 0. A função deve ser STABLE.
+              Teste com diferentes intervalos de data.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION total_vendas_por_periodo(
+    data_inicio DATE,
+    data_fim    DATE
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+STABLE
+STRICT
+AS $$
+DECLARE
+    v_total NUMERIC;
+BEGIN
+    SELECT COALESCE(SUM(valor_total), 0)
+    INTO v_total
+    FROM vendas
+    WHERE data_venda BETWEEN data_inicio AND data_fim;
+
+    RETURN v_total;
+END;
+$$;
+
+-- Testes
+SELECT total_vendas_por_periodo('2025-06-01', '2025-06-10');
+SELECT total_vendas_por_periodo('2025-06-01', '2025-06-30');
+
+-- Usando em uma consulta
+SELECT
+    '2025-06-01'::DATE AS inicio,
+    '2025-06-15'::DATE AS fim,
+    total_vendas_por_periodo('2025-06-01', '2025-06-15') AS total;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Function com RETURNS TABLE: Produtos com Estoque Baixo</h3>
+            <p>
+              Crie uma função
+              <code>produtos_estoque_baixo(limite INT DEFAULT 10)</code> que
+              retorna uma tabela com (id, nome, estoque, categoria) dos produtos
+              cujo estoque está abaixo do limite informado. Ordene por estoque
+              ASC. Use RETURNS TABLE.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION produtos_estoque_baixo(
+    limite INT DEFAULT 10
+)
+RETURNS TABLE(
+    id        INT,
+    nome      VARCHAR,
+    estoque   INT,
+    categoria VARCHAR
+)
+LANGUAGE plpgsql
+STABLE
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT p.id, p.nome, p.estoque, p.categoria
+    FROM produtos p
+    WHERE p.estoque < limite
+    ORDER BY p.estoque ASC;
+END;
+$$;
+
+-- Testes
+SELECT * FROM produtos_estoque_baixo();
+SELECT * FROM produtos_estoque_baixo(50);
+
+-- Usando com JOIN
+SELECT peb.nome, peb.estoque, peb.categoria,
+       COALESCE(SUM(v.quantidade), 0) AS total_vendido
+FROM produtos_estoque_baixo(50) peb
+LEFT JOIN vendas v ON peb.id = v.produto_id
+GROUP BY peb.nome, peb.estoque, peb.categoria;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Sobrecarga: Duas Funções formatar_valor()</h3>
+            <p>
+              Crie duas funções sobrecarregadas com o nome
+              <code>formatar_valor</code>. A primeira deve receber um
+              <code>DATE</code> e retornar VARCHAR no formato 'DD de Mon de
+              YYYY'. A segunda deve receber um <code>NUMERIC</code> e um
+              parâmetro opcional <code>simbolo VARCHAR DEFAULT 'R$'</code> e
+              retornar VARCHAR formatado como moeda (ex: 'R$ 1.500,00').
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Função 1: formata data
+CREATE OR REPLACE FUNCTION formatar_valor(data_val DATE)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+STRICT
+AS $$
+    SELECT TO_CHAR(data_val, 'DD "de" Mon "de" YYYY');
+$$;
+
+-- Função 2: formata número como moeda (sobrecarregada)
+CREATE OR REPLACE FUNCTION formatar_valor(
+    valor   NUMERIC,
+    simbolo VARCHAR DEFAULT 'R$'
+)
+RETURNS VARCHAR
+LANGUAGE SQL
+IMMUTABLE
+STRICT
+AS $$
+    SELECT simbolo || ' ' || TO_CHAR(valor, 'FM999G990D00');
+$$;
+
+-- Testes da sobrecarga
+SELECT formatar_valor(CURRENT_DATE) AS data_formatada;
+SELECT formatar_valor(1500.50) AS moeda_real;
+SELECT formatar_valor(1500.50, 'US$') AS moeda_dolar;
+SELECT formatar_valor(999999.99, '€') AS moeda_euro;
+
+-- Usando em consulta
+SELECT
+    nome,
+    formatar_valor(preco) AS preco_formatado,
+    formatar_valor(preco, 'US$') AS preco_usd
+FROM produtos;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Teste cada procedure e function criada nesta aula.
+          Verifique se os procedimentos de pedido executam corretamente, se a
+          sobrecarga de funções resolve os tipos adequadamente e se os testes do
+          Dever de Casa funcionam sem erros.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula11</code></li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

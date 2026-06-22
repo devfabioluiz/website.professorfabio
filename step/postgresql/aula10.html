@@ -1,0 +1,2083 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 10 - Sintaxe Avançada de PL/pgSQL e Triggers - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 10</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">Módulo 10: Sintaxe Avançada de PL/pgSQL e Triggers</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Blocos PL/pgSQL, Variáveis e constantes, Estruturas condicionais (IF/ELSIF/ELSE, CASE), Estruturas de repetição (LOOP, WHILE, FOR), Cursores, Triggers (CREATE TRIGGER, tipos BEFORE/AFTER/INSTEAD OF, FOR EACH ROW/STATEMENT, TG_OP, OLD/NEW), Comparação PL/pgSQL vs PL/SQL (Oracle).</div>
+    </header>
+    <main class="container">
+
+      <!-- PL/PGSQL: CONCEITO DE BLOCO -->
+      <section>
+        <h2>PL/pgSQL — Conceito de Bloco</h2>
+        <p>
+          <strong>PL/pgSQL</strong> (Procedural Language/PostgreSQL) é a linguagem procedural nativa do PostgreSQL. Ela estende o SQL puro com construções de programação como variáveis, condicionais, loops, cursores e tratamento de exceções. Todo código PL/pgSQL é estruturado em <strong>blocos</strong>.
+        </p>
+
+        <h3>Estrutura de um Bloco PL/pgSQL</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Estrutura básica de um bloco PL/pgSQL
+[ <<rótulo>> ]
+[ DECLARE
+    -- declaração de variáveis (opcional)
+]
+BEGIN
+    -- código SQL e PL/pgSQL (obrigatório)
+[ EXCEPTION
+    -- tratamento de exceções (opcional)
+]
+END [ rótulo ];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>Blocos podem ser aninhados:</strong> é possível declarar sub-blocos dentro de um bloco principal. Cada sub-bloco tem seu próprio escopo de variáveis e seu próprio EXCEPTION.</p>
+
+        <h3>Primeiro Exemplo: Bloco Anônimo (DO)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Bloco anônimo PL/pgSQL (executado uma única vez, sem ser armazenado)
+DO $$
+DECLARE
+    v_nome VARCHAR(100);
+    v_idade INTEGER;
+BEGIN
+    v_nome := 'João Silva';
+    v_idade := 30;
+
+    RAISE NOTICE 'Cliente: %, Idade: % anos', v_nome, v_idade;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Função Armazenada: Estrutura Completa</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função armazenada com parâmetros e retorno
+CREATE OR REPLACE FUNCTION calcular_desconto(
+    p_preco NUMERIC,
+    p_percentual NUMERIC DEFAULT 10
+)
+RETURNS NUMERIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_valor_desconto NUMERIC;
+    v_preco_final NUMERIC;
+BEGIN
+    v_valor_desconto := p_preco * (p_percentual / 100.0);
+    v_preco_final := p_preco - v_valor_desconto;
+
+    RAISE NOTICE 'Preço original: %, Desconto: %%, Valor final: %',
+        p_preco, p_percentual, v_preco_final;
+
+    RETURN v_preco_final;
+END;
+$$;
+
+-- Chamar a função
+SELECT calcular_desconto(1000, 15);
+SELECT calcular_desconto(500);  -- usa DEFAULT 10%
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Blocos Aninhados com Escopo de Variáveis</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_externa VARCHAR := 'Variável do bloco externo';
+BEGIN
+    RAISE NOTICE 'Bloco externo: %', v_externa;
+
+    DECLARE
+        v_interna VARCHAR := 'Variável do bloco interno';
+    BEGIN
+        RAISE NOTICE 'Bloco interno: %', v_interna;
+        RAISE NOTICE 'Ainda acessível: %', v_externa;  -- variáveis externas são visíveis
+    END;
+
+    -- RAISE NOTICE '%', v_interna;  -- ERRO! v_interna não existe no escopo externo
+    RAISE NOTICE 'De volta ao bloco externo: %', v_externa;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- VARIÁVEIS E CONSTANTES -->
+      <section>
+        <h2>Variáveis e Constantes</h2>
+
+        <h3>Declaração Básica de Variáveis</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    -- Tipos básicos com valor inicial
+    v_nome VARCHAR(100) := 'Maria';
+    v_idade INTEGER DEFAULT 25;
+    v_salario NUMERIC(12,2) := 5000.00;
+    v_ativo BOOLEAN := TRUE;
+    v_data_cadastro DATE := CURRENT_DATE;
+    v_hora TIMESTAMP := now();
+
+    -- Sem valor inicial (assume NULL)
+    v_descricao TEXT;
+    v_contador INTEGER;
+BEGIN
+    RAISE NOTICE 'Nome: %, Salário: R$ %, Ativo: %', v_nome, v_salario, v_ativo;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>%TYPE — Tipo baseado em coluna de tabela</h3>
+        <p>O atributo <strong>%TYPE</strong> declara uma variável com o mesmo tipo de uma coluna de tabela. Isso torna o código mais robusto: se o tipo da coluna mudar, a variável acompanha automaticamente.</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar tabela de exemplo
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    saldo NUMERIC(12,2) DEFAULT 0,
+    data_nascimento DATE
+);
+
+DO $$
+DECLARE
+    -- %TYPE: tipo igual à coluna da tabela
+    v_nome clientes.nome%TYPE;
+    v_email clientes.email%TYPE;
+    v_saldo clientes.saldo%TYPE;
+BEGIN
+    -- SELECT INTO: atribui resultado da query à variável
+    SELECT nome, email, saldo
+    INTO v_nome, v_email, v_saldo
+    FROM clientes
+    WHERE id = 1;
+
+    IF FOUND THEN
+        RAISE NOTICE 'Cliente: %, Email: %, Saldo: R$ %', v_nome, v_email, v_saldo;
+    ELSE
+        RAISE NOTICE 'Nenhum cliente encontrado com id = 1';
+    END IF;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>%ROWTYPE — Linha inteira da tabela</h3>
+        <p>O atributo <strong>%ROWTYPE</strong> declara uma variável do tipo <strong>record</strong> que corresponde a uma linha completa da tabela. Cada coluna pode ser acessada como <code>variavel.nome_coluna</code>.</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    -- %ROWTYPE: variável tipo "linha completa"
+    v_cliente clientes%ROWTYPE;
+BEGIN
+    -- SELECT INTO com %ROWTYPE
+    SELECT * INTO v_cliente FROM clientes WHERE id = 1;
+
+    RAISE NOTICE 'ID: %, Nome: %, Email: %, Saldo: R$ %',
+        v_cliente.id, v_cliente.nome, v_cliente.email, v_cliente.saldo;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CONSTANT — Variáveis Imutáveis</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    c_taxa_juros CONSTANT NUMERIC := 0.05;
+    c_limite_credito CONSTANT NUMERIC(12,2) := 10000.00;
+    c_nome_empresa CONSTANT VARCHAR(50) := 'IT Step';
+
+    v_valor NUMERIC := 5000;
+    v_juros NUMERIC;
+BEGIN
+    v_juros := v_valor * c_taxa_juros;
+
+    RAISE NOTICE 'Empresa: %, Valor: R$ %, Juros (5%%): R$ %',
+        c_nome_empresa, v_valor, v_juros;
+
+    -- c_taxa_juros := 0.10;  -- ERRO! Não pode alterar CONSTANT
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SELECT INTO — Atribuindo resultados a variáveis</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_count INTEGER;
+    v_total_saldo NUMERIC(12,2);
+    v_media NUMERIC(12,2);
+BEGIN
+    -- Atribuir resultado de agregação
+    SELECT COUNT(*), COALESCE(SUM(saldo), 0), COALESCE(AVG(saldo), 0)
+    INTO v_count, v_total_saldo, v_media
+    FROM clientes;
+
+    RAISE NOTICE 'Total de clientes: %, Saldo total: R$ %, Média: R$ %',
+        v_count, v_total_saldo, v_media;
+
+    -- STRICT: gera erro se zero ou mais de uma linha retornar
+    -- SELECT nome INTO STRICT v_nome FROM clientes WHERE id = 999;
+    -- Isso geraria NO_DATA_FOUND
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FOUND — Variável booleana especial</h3>
+        <p>Após um SELECT INTO, INSERT, UPDATE ou DELETE, a variável implícita <code>FOUND</code> indica se a última operação afetou alguma linha.</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_nome clientes.nome%TYPE;
+BEGIN
+    SELECT nome INTO v_nome FROM clientes WHERE id = 999;
+
+    IF NOT FOUND THEN
+        RAISE NOTICE 'Cliente ID 999 não encontrado!';
+    END IF;
+
+    UPDATE clientes SET saldo = 0 WHERE id = 999;
+
+    IF NOT FOUND THEN
+        RAISE NOTICE 'Nenhuma linha foi atualizada!';
+    END IF;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ESTRUTURAS CONDICIONAIS -->
+      <section>
+        <h2>Estruturas Condicionais</h2>
+
+        <h3>IF / THEN / ELSIF / ELSE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_nota NUMERIC := 7.5;
+    v_conceito VARCHAR(20);
+BEGIN
+    IF v_nota >= 9.0 THEN
+        v_conceito := 'Excelente';
+    ELSIF v_nota >= 8.0 THEN
+        v_conceito := 'Ótimo';
+    ELSIF v_nota >= 7.0 THEN
+        v_conceito := 'Bom';
+    ELSIF v_nota >= 6.0 THEN
+        v_conceito := 'Regular';
+    ELSIF v_nota >= 5.0 THEN
+        v_conceito := 'Suficiente';
+    ELSE
+        v_conceito := 'Insuficiente';
+    END IF;
+
+    RAISE NOTICE 'Nota: % → Conceito: %', v_nota, v_conceito;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo: IF com múltiplas condições e operadores lógicos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION classificar_cliente(p_id INTEGER)
+RETURNS VARCHAR
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_saldo clientes.saldo%TYPE;
+    v_status clientes.status%TYPE;
+    v_classificacao VARCHAR(50);
+BEGIN
+    SELECT saldo, status INTO v_saldo, v_status
+    FROM clientes WHERE id = p_id;
+
+    IF NOT FOUND THEN
+        RETURN 'Cliente não encontrado';
+    END IF;
+
+    IF v_status = 'inativo' THEN
+        v_classificacao := 'Inativo';
+    ELSIF v_saldo >= 5000 AND v_status = 'ativo' THEN
+        v_classificacao := 'VIP';
+    ELSIF v_saldo >= 2000 AND v_status = 'ativo' THEN
+        v_classificacao := 'Premium';
+    ELSIF v_saldo >= 0 AND v_status = 'ativo' THEN
+        v_classificacao := 'Regular';
+    ELSE
+        v_classificacao := 'Não classificado';
+    END IF;
+
+    RETURN v_classificacao;
+END;
+$$;
+
+-- Testar
+SELECT id, nome, classificar_cliente(id) AS classificacao FROM clientes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE — Duas formas</h3>
+
+        <h4>Forma 1: CASE simples (compara um valor)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_dia_semana INTEGER := EXTRACT(DOW FROM CURRENT_DATE);
+    v_nome_dia VARCHAR(20);
+BEGIN
+    CASE v_dia_semana
+        WHEN 0 THEN v_nome_dia := 'Domingo';
+        WHEN 1 THEN v_nome_dia := 'Segunda-feira';
+        WHEN 2 THEN v_nome_dia := 'Terça-feira';
+        WHEN 3 THEN v_nome_dia := 'Quarta-feira';
+        WHEN 4 THEN v_nome_dia := 'Quinta-feira';
+        WHEN 5 THEN v_nome_dia := 'Sexta-feira';
+        WHEN 6 THEN v_nome_dia := 'Sábado';
+    END CASE;
+
+    RAISE NOTICE 'Hoje é %', v_nome_dia;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Forma 2: CASE pesquisado (avalia condições)</h4>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_hora INTEGER := EXTRACT(HOUR FROM now());
+    v_periodo VARCHAR(20);
+BEGIN
+    CASE
+        WHEN v_hora >= 5 AND v_hora < 12 THEN
+            v_periodo := 'Manhã';
+        WHEN v_hora >= 12 AND v_hora < 18 THEN
+            v_periodo := 'Tarde';
+        WHEN v_hora >= 18 AND v_hora < 23 THEN
+            v_periodo := 'Noite';
+        ELSE
+            v_periodo := 'Madrugada';
+    END CASE;
+
+    RAISE NOTICE 'Hora: % → Período: %', v_hora, v_periodo;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE como expressão (dentro de SQL e atribuições)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_saldo NUMERIC := 3500;
+    v_faixa VARCHAR(30);
+BEGIN
+    -- CASE como expressão em atribuição
+    v_faixa := CASE
+        WHEN v_saldo >= 5000 THEN 'Alto'
+        WHEN v_saldo >= 2000 THEN 'Médio'
+        WHEN v_saldo >= 0 THEN 'Baixo'
+        ELSE 'Negativo'
+    END;
+
+    RAISE NOTICE 'Saldo: R$ % → Faixa: %', v_saldo, v_faixa;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ESTRUTURAS DE REPETIÇÃO -->
+      <section>
+        <h2>Estruturas de Repetição</h2>
+
+        <h3>LOOP com EXIT</h3>
+        <p>O LOOP básico executa indefinidamente até encontrar um <strong>EXIT</strong>.</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_contador INTEGER := 1;
+    v_soma INTEGER := 0;
+BEGIN
+    LOOP
+        v_soma := v_soma + v_contador;
+        v_contador := v_contador + 1;
+
+        EXIT WHEN v_contador > 10;
+    END LOOP;
+
+    RAISE NOTICE 'Soma de 1 a 10: %', v_soma;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LOOP com EXIT aninhado (rótulos)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_i INTEGER;
+    v_j INTEGER;
+BEGIN
+    <<loop_externo>>
+    FOR v_i IN 1..5 LOOP
+        <<loop_interno>>
+        FOR v_j IN 1..5 LOOP
+            IF v_i * v_j > 10 THEN
+                RAISE NOTICE 'Saindo do loop externo: i=%, j=%, produto=%', v_i, v_j, v_i*v_j;
+                EXIT loop_externo;  -- sai de ambos os loops
+            END IF;
+            RAISE NOTICE 'i=%, j=%, produto=%', v_i, v_j, v_i*v_j;
+        END LOOP;
+    END LOOP;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WHILE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_numero INTEGER := 100;
+    v_passos INTEGER := 0;
+BEGIN
+    WHILE v_numero > 1 LOOP
+        IF v_numero % 2 = 0 THEN
+            v_numero := v_numero / 2;
+        ELSE
+            v_numero := v_numero * 3 + 1;
+        END IF;
+
+        v_passos := v_passos + 1;
+        RAISE NOTICE 'Passo %: número = %', v_passos, v_numero;
+    END LOOP;
+
+    RAISE NOTICE 'Conjectura de Collatz: % passos para chegar a 1', v_passos;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FOR Numérico (com range)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_fatorial BIGINT := 1;
+BEGIN
+    FOR i IN 1..10 LOOP
+        v_fatorial := v_fatorial * i;
+        RAISE NOTICE '%! = %', i, v_fatorial;
+    END LOOP;
+END;
+$$;
+
+-- FOR reverso (REVERSE)
+DO $$
+BEGIN
+    RAISE NOTICE 'Contagem regressiva:';
+    FOR i IN REVERSE 10..1 LOOP
+        RAISE NOTICE '%...', i;
+    END LOOP;
+    RAISE NOTICE 'Feliz Ano Novo!';
+END;
+$$;
+
+-- FOR com step (BY)
+DO $$
+BEGIN
+    RAISE NOTICE 'Números pares de 2 a 20:';
+    FOR i IN 2..20 BY 2 LOOP
+        RAISE NOTICE '%', i;
+    END LOOP;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FOR com Query (Cursor Loop implícito)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_registro RECORD;
+BEGIN
+    -- Itera sobre cada linha retornada pela query
+    FOR v_registro IN
+        SELECT nome, email, saldo
+        FROM clientes
+        WHERE status = 'ativo'
+        ORDER BY saldo DESC
+    LOOP
+        RAISE NOTICE 'Cliente: %, Email: %, Saldo: R$ %',
+            v_registro.nome, v_registro.email, v_registro.saldo;
+    END LOOP;
+
+    -- Verifica se o loop iterou sobre pelo menos uma linha
+    IF NOT FOUND THEN
+        RAISE NOTICE 'Nenhum cliente ativo encontrado.';
+    END IF;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CONTINUE — Pular iteração</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+BEGIN
+    RAISE NOTICE 'Números ímpares de 1 a 20:';
+    FOR i IN 1..20 LOOP
+        -- Pula números pares
+        CONTINUE WHEN i % 2 = 0;
+
+        RAISE NOTICE '%', i;
+    END LOOP;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Todos os tipos de loop — Resumo prático</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION demonstrar_loops()
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_resultado TEXT := '';
+BEGIN
+    -- LOOP com EXIT
+    v_resultado := v_resultado || 'LOOP: ';
+    DECLARE
+        c INTEGER := 0;
+    BEGIN
+        LOOP
+            c := c + 1;
+            EXIT WHEN c > 3;
+            v_resultado := v_resultado || c || ' ';
+        END LOOP;
+    END;
+
+    -- WHILE
+    v_resultado := v_resultado || E'\nWHILE: ';
+    DECLARE
+        c INTEGER := 1;
+    BEGIN
+        WHILE c <= 3 LOOP
+            v_resultado := v_resultado || c || ' ';
+            c := c + 1;
+        END LOOP;
+    END;
+
+    -- FOR numérico
+    v_resultado := v_resultado || E'\nFOR: ';
+    FOR i IN 1..3 LOOP
+        v_resultado := v_resultado || i || ' ';
+    END LOOP;
+
+    -- FOR reverso
+    v_resultado := v_resultado || E'\nFOR REVERSE: ';
+    FOR i IN REVERSE 3..1 LOOP
+        v_resultado := v_resultado || i || ' ';
+    END LOOP;
+
+    RETURN v_resultado;
+END;
+$$;
+
+SELECT demonstrar_loops();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CURSORES -->
+      <section>
+        <h2>Cursores em PL/pgSQL</h2>
+        <p>
+          Um <strong>cursor</strong> permite percorrer linha a linha o resultado de uma query, mantendo controle sobre a posição atual. Cursores são essenciais quando você precisa processar grandes volumes de dados de forma controlada, sem carregar tudo em memória de uma vez.
+        </p>
+
+        <h3>Declarar, Abrir, Fetch e Fechar — Passo a passo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    -- 1. Declarar o cursor
+    cur_clientes CURSOR FOR
+        SELECT id, nome, email, saldo
+        FROM clientes
+        WHERE status = 'ativo'
+        ORDER BY saldo DESC;
+
+    -- Variáveis para receber os dados
+    v_id clientes.id%TYPE;
+    v_nome clientes.nome%TYPE;
+    v_email clientes.email%TYPE;
+    v_saldo clientes.saldo%TYPE;
+BEGIN
+    -- 2. Abrir o cursor
+    OPEN cur_clientes;
+
+    LOOP
+        -- 3. Buscar próxima linha (FETCH)
+        FETCH cur_clientes INTO v_id, v_nome, v_email, v_saldo;
+
+        -- Sair quando não houver mais linhas
+        EXIT WHEN NOT FOUND;
+
+        RAISE NOTICE 'ID: %, Nome: %, Email: %, Saldo: R$ %',
+            v_id, v_nome, v_email, v_saldo;
+    END LOOP;
+
+    -- 4. Fechar o cursor
+    CLOSE cur_clientes;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cursor com parâmetros</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    -- Cursor que aceita parâmetros
+    cur_por_saldo CURSOR (p_saldo_min NUMERIC, p_status VARCHAR) FOR
+        SELECT id, nome, saldo
+        FROM clientes
+        WHERE saldo >= p_saldo_min
+          AND status = p_status
+        ORDER BY saldo DESC;
+
+    v_registro RECORD;
+BEGIN
+    -- Abrir com parâmetros específicos
+    OPEN cur_por_saldo(2000, 'ativo');
+
+    LOOP
+        FETCH cur_por_saldo INTO v_registro;
+        EXIT WHEN NOT FOUND;
+
+        RAISE NOTICE '% — Saldo: R$ %', v_registro.nome, v_registro.saldo;
+    END LOOP;
+
+    CLOSE cur_por_saldo;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cursor FOR Loop (forma simplificada)</h3>
+        <p>O <strong>Cursor FOR Loop</strong> é a maneira mais simples e segura de iterar sobre um cursor — ele automaticamente abre, faz fetch e fecha o cursor.</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    v_registro RECORD;
+    v_contador INTEGER := 0;
+    v_soma_saldo NUMERIC := 0;
+BEGIN
+    -- FOR loop com cursor implícito (abre e fecha automaticamente)
+    FOR v_registro IN
+        SELECT nome, saldo
+        FROM clientes
+        WHERE status = 'ativo'
+        ORDER BY saldo DESC
+    LOOP
+        v_contador := v_contador + 1;
+        v_soma_saldo := v_soma_saldo + v_registro.saldo;
+
+        RAISE NOTICE '%° — %: R$ %',
+            v_contador, v_registro.nome, v_registro.saldo;
+    END LOOP;
+
+    RAISE NOTICE 'Total: % clientes, Saldo total: R$ %', v_contador, v_soma_saldo;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo completo: Processamento com cursor e atualização condicional</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION atualizar_classificacao_clientes()
+RETURNS TABLE(nome VARCHAR, saldo NUMERIC, classificacao VARCHAR)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    cur CURSOR FOR
+        SELECT id, nome, saldo, status
+        FROM clientes
+        WHERE status = 'ativo'
+        FOR UPDATE;  -- bloqueia linhas para atualização
+
+    v_registro RECORD;
+    v_nova_classificacao VARCHAR(20);
+BEGIN
+    OPEN cur;
+
+    LOOP
+        FETCH cur INTO v_registro;
+        EXIT WHEN NOT FOUND;
+
+        -- Classificar com base no saldo
+        v_nova_classificacao := CASE
+            WHEN v_registro.saldo >= 5000 THEN 'VIP'
+            WHEN v_registro.saldo >= 2000 THEN 'Premium'
+            ELSE 'Regular'
+        END;
+
+        -- Atualizar a linha atual do cursor
+        UPDATE clientes
+        SET status = v_nova_classificacao
+        WHERE CURRENT OF cur;
+
+        -- Retornar a linha processada
+        nome := v_registro.nome;
+        saldo := v_registro.saldo;
+        classificacao := v_nova_classificacao;
+        RETURN NEXT;
+    END LOOP;
+
+    CLOSE cur;
+END;
+$$;
+
+-- Executar
+SELECT * FROM atualizar_classificacao_clientes();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SCROLL CURSOR — Navegação bidimensional</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DO $$
+DECLARE
+    -- SCROLL permite navegar para frente e para trás
+    cur SCROLL CURSOR FOR
+        SELECT nome, saldo FROM clientes ORDER BY id;
+
+    v_registro RECORD;
+BEGIN
+    OPEN cur;
+
+    -- Última linha
+    FETCH LAST FROM cur INTO v_registro;
+    RAISE NOTICE 'Último: % — R$ %', v_registro.nome, v_registro.saldo;
+
+    -- Primeira linha
+    FETCH FIRST FROM cur INTO v_registro;
+    RAISE NOTICE 'Primeiro: % — R$ %', v_registro.nome, v_registro.saldo;
+
+    -- Linha anterior (ABSOLUTE -1 relativo à posição atual)
+    FETCH ABSOLUTE 2 FROM cur INTO v_registro;
+    RAISE NOTICE 'Posição 2: % — R$ %', v_registro.nome, v_registro.saldo;
+
+    -- Voltar uma posição
+    FETCH PRIOR FROM cur INTO v_registro;
+    RAISE NOTICE 'Anterior: % — R$ %', v_registro.nome, v_registro.saldo;
+
+    CLOSE cur;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRIGGERS -->
+      <section>
+        <h2>Triggers no PostgreSQL</h2>
+        <p>
+          <strong>Triggers</strong> (gatilhos) são funções especiais que o PostgreSQL executa automaticamente em resposta a eventos DML (INSERT, UPDATE, DELETE, TRUNCATE) em uma tabela. Diferente das Regras (que reescrevem a query), triggers são disparados durante a execução.
+        </p>
+
+        <h3>Anatomia de um Trigger: Função + Definição</h3>
+        <p>
+          Um trigger no PostgreSQL é sempre composto por <strong>duas partes</strong>:
+        </p>
+        <ol>
+          <li><strong>Trigger Function:</strong> uma função que retorna <code>TRIGGER</code> (escrita em PL/pgSQL ou outra linguagem procedural)</li>
+          <li><strong>CREATE TRIGGER:</strong> comando que associa a função a uma tabela e define quando/quem dispara</li>
+        </ol>
+
+        <h3>Estrutura básica de uma Trigger Function</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION nome_funcao_trigger()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- variáveis (opcional)
+BEGIN
+    -- Lógica do trigger
+
+    RETURN NEW;  -- para BEFORE INSERT/UPDATE (ou OLD para DELETE)
+    -- ou RETURN NULL para cancelar a operação (BEFORE trigger apenas)
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CREATE TRIGGER — Sintaxe</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [ OR REPLACE ] [ CONSTRAINT ] TRIGGER nome_trigger
+    { BEFORE | AFTER | INSTEAD OF }
+    { INSERT | UPDATE | DELETE | TRUNCATE }
+    [ OR INSERT OR UPDATE OR DELETE OR TRUNCATE ]
+    ON tabela_ou_view
+    [ FROM referenced_table_name ]
+    [ NOT DEFERRABLE | [ DEFERRABLE ] [ INITIALLY IMMEDIATE | INITIALLY DEFERRED ] ]
+    [ REFERENCING { { OLD | NEW } TABLE [ AS ] transition_table_name } ]
+    [ FOR [ EACH ] { ROW | STATEMENT } ]
+    [ WHEN ( condicao ) ]
+    EXECUTE { FUNCTION | PROCEDURE } nome_funcao_trigger( argumentos )
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Tipos de Trigger: BEFORE, AFTER, INSTEAD OF</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Momento do disparo</th>
+              <th>Usos comuns</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BEFORE</strong></td>
+              <td>Antes da operação ser executada</td>
+              <td>Validação de dados, modificação de NEW, prevenção de operação (RETURN NULL)</td>
+            </tr>
+            <tr>
+              <td><strong>AFTER</strong></td>
+              <td>Depois da operação ser concluída</td>
+              <td>Auditoria, logging, replicação, atualização de tabelas relacionadas</td>
+            </tr>
+            <tr>
+              <td><strong>INSTEAD OF</strong></td>
+              <td>No lugar da operação (apenas em views)</td>
+              <td>Tornar views complexas atualizáveis (alternativa às regras)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Níveis: FOR EACH ROW vs FOR EACH STATEMENT</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Nível</th>
+              <th>Quantas vezes dispara</th>
+              <th>OLD/NEW disponíveis?</th>
+              <th>Casos de uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>FOR EACH ROW</strong></td>
+              <td>Uma vez por linha afetada</td>
+              <td>Sim</td>
+              <td>Validação linha a linha, modificação de dados, cálculo por registro</td>
+            </tr>
+            <tr>
+              <td><strong>FOR EACH STATEMENT</strong></td>
+              <td>Uma vez por comando SQL</td>
+              <td>Não</td>
+              <td>Logging de operação, notificações pós-operação, manutenção geral</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- VARIÁVEIS ESPECIAIS DE TRIGGER -->
+        <h3>Variáveis Especiais em Triggers (TG_*)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION debug_trigger_info()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RAISE NOTICE '===== Informações do Trigger =====';
+    RAISE NOTICE 'TG_NAME: %', TG_NAME;
+    RAISE NOTICE 'TG_WHEN: %', TG_WHEN;
+    RAISE NOTICE 'TG_OP: %', TG_OP;
+    RAISE NOTICE 'TG_LEVEL: %', TG_LEVEL;
+    RAISE NOTICE 'TG_RELID: %', TG_RELID;
+    RAISE NOTICE 'TG_TABLE_NAME: %', TG_TABLE_NAME;
+    RAISE NOTICE 'TG_TABLE_SCHEMA: %', TG_TABLE_SCHEMA;
+    RAISE NOTICE 'TG_NARGS: %', TG_NARGS;
+    RAISE NOTICE 'TG_ARGV: %', TG_ARGV;
+
+    IF TG_OP = 'INSERT' THEN
+        RAISE NOTICE 'NEW: id=%, nome=%', NEW.id, NEW.nome;
+    ELSIF TG_OP = 'UPDATE' THEN
+        RAISE NOTICE 'OLD: nome=%, NEW: nome=%', OLD.nome, NEW.nome;
+    ELSIF TG_OP = 'DELETE' THEN
+        RAISE NOTICE 'OLD: id=%, nome=%', OLD.id, OLD.nome;
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Variável</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>TG_NAME</strong></td><td>name</td><td>Nome do trigger que está sendo executado</td></tr>
+            <tr><td><strong>TG_WHEN</strong></td><td>text</td><td>'BEFORE', 'AFTER' ou 'INSTEAD OF'</td></tr>
+            <tr><td><strong>TG_OP</strong></td><td>text</td><td>'INSERT', 'UPDATE', 'DELETE' ou 'TRUNCATE'</td></tr>
+            <tr><td><strong>TG_LEVEL</strong></td><td>text</td><td>'ROW' ou 'STATEMENT'</td></tr>
+            <tr><td><strong>TG_RELID</strong></td><td>oid</td><td>OID da tabela que disparou o trigger</td></tr>
+            <tr><td><strong>TG_TABLE_NAME</strong></td><td>name</td><td>Nome da tabela que disparou o trigger</td></tr>
+            <tr><td><strong>TG_TABLE_SCHEMA</strong></td><td>name</td><td>Schema da tabela que disparou o trigger</td></tr>
+            <tr><td><strong>TG_NARGS</strong></td><td>integer</td><td>Número de argumentos passados ao trigger</td></tr>
+            <tr><td><strong>TG_ARGV[]</strong></td><td>text[]</td><td>Array com os argumentos passados ao trigger</td></tr>
+          </tbody>
+        </table>
+
+        <h3>OLD e NEW nos Triggers</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Operação</th>
+              <th>OLD</th>
+              <th>NEW</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>INSERT</strong></td><td>NULL</td><td>Registro que será inserido</td></tr>
+            <tr><td><strong>UPDATE</strong></td><td>Registro antes da alteração</td><td>Registro após a alteração</td></tr>
+            <tr><td><strong>DELETE</strong></td><td>Registro que será deletado</td><td>NULL</td></tr>
+            <tr><td><strong>TRUNCATE</strong></td><td>NULL</td><td>NULL</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo 1: BEFORE INSERT — Validação e modificação de dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION trg_validar_cliente()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Validação: nome não pode ser vazio
+    IF NEW.nome IS NULL OR TRIM(NEW.nome) = '' THEN
+        RAISE EXCEPTION 'O nome do cliente não pode ser vazio!';
+    END IF;
+
+    -- Validação: saldo não pode ser negativo
+    IF NEW.saldo < 0 THEN
+        RAISE EXCEPTION 'O saldo inicial não pode ser negativo!';
+    END IF;
+
+    -- Modificação automática: normalizar nome (primeira letra maiúscula)
+    NEW.nome := INITCAP(TRIM(NEW.nome));
+
+    -- Modificação automática: forçar email minúsculo
+    IF NEW.email IS NOT NULL THEN
+        NEW.email := LOWER(TRIM(NEW.email));
+    END IF;
+
+    -- Definir data de criação automaticamente
+    NEW.criado_em := COALESCE(NEW.criado_em, now());
+    NEW.atualizado_em := now();
+
+    RETURN NEW;  -- permite a inserção com os dados modificados
+END;
+$$;
+
+CREATE TRIGGER trigger_validar_cliente
+    BEFORE INSERT ON clientes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_validar_cliente();
+
+-- Testar validação
+INSERT INTO clientes (nome, email, saldo) VALUES
+    ('  João da SILVA  ', 'JOAO@EMAIL.COM', 500);
+-- Será normalizado para: 'João Da Silva', 'joao@email.com', 500
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 2: AFTER INSERT/UPDATE/DELETE — Log de auditoria</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log
+CREATE TABLE log_alteracoes (
+    id SERIAL PRIMARY KEY,
+    tabela VARCHAR(50),
+    operacao VARCHAR(10),
+    registro_id INTEGER,
+    dados_antigos JSONB,
+    dados_novos JSONB,
+    usuario VARCHAR(100) DEFAULT current_user,
+    data_hora TIMESTAMP DEFAULT now()
+);
+
+-- Função trigger genérica de auditoria
+CREATE OR REPLACE FUNCTION trg_auditar_clientes()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO log_alteracoes (tabela, operacao, registro_id, dados_novos)
+        VALUES (TG_TABLE_NAME, 'INSERT', NEW.id,
+                to_jsonb(NEW));
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO log_alteracoes (tabela, operacao, registro_id, dados_antigos, dados_novos)
+        VALUES (TG_TABLE_NAME, 'UPDATE', NEW.id,
+                to_jsonb(OLD), to_jsonb(NEW));
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO log_alteracoes (tabela, operacao, registro_id, dados_antigos)
+        VALUES (TG_TABLE_NAME, 'DELETE', OLD.id,
+                to_jsonb(OLD));
+
+    END IF;
+
+    RETURN NULL;  -- AFTER trigger: valor de retorno é ignorado
+END;
+$$;
+
+-- Criar triggers para INSERT, UPDATE e DELETE
+CREATE TRIGGER trg_audit_clientes_insert
+    AFTER INSERT ON clientes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_auditar_clientes();
+
+CREATE TRIGGER trg_audit_clientes_update
+    AFTER UPDATE ON clientes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_auditar_clientes();
+
+CREATE TRIGGER trg_audit_clientes_delete
+    AFTER DELETE ON clientes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_auditar_clientes();
+
+-- Testar
+INSERT INTO clientes (nome, email) VALUES ('Teste Auditoria', 'teste@email.com');
+UPDATE clientes SET saldo = 1000 WHERE nome = 'Teste Auditoria';
+DELETE FROM clientes WHERE nome = 'Teste Auditoria';
+
+SELECT * FROM log_alteracoes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 3: BEFORE UPDATE — Atualizar coluna updated_at automaticamente</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION trg_atualizar_timestamp()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.atualizado_em := now();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trigger_update_timestamp
+    BEFORE UPDATE ON clientes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_atualizar_timestamp();
+
+-- Testar
+UPDATE clientes SET saldo = 9999 WHERE id = 1;
+SELECT id, nome, atualizado_em FROM clientes WHERE id = 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 4: BEFORE DELETE — Impedir remoção de registros críticos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de configuração que não deve ser apagada
+CREATE TABLE configuracoes (
+    id SERIAL PRIMARY KEY,
+    chave VARCHAR(100) UNIQUE NOT NULL,
+    valor TEXT NOT NULL,
+    protegido BOOLEAN DEFAULT FALSE
+);
+
+-- Função trigger que impede DELETE de registros protegidos
+CREATE OR REPLACE FUNCTION trg_proteger_configuracoes()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF OLD.protegido THEN
+        RAISE EXCEPTION 'Não é permitido excluir a configuração protegida: %', OLD.chave;
+    END IF;
+
+    RETURN OLD;  -- BEFORE DELETE: retornar OLD para permitir
+END;
+$$;
+
+CREATE TRIGGER trigger_proteger_config
+    BEFORE DELETE ON configuracoes
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_proteger_configuracoes();
+
+-- Inserir dados
+INSERT INTO configuracoes (chave, valor, protegido) VALUES
+    ('versao_sistema', '3.2.1', TRUE),
+    ('tema_padrao', 'dark', FALSE);
+
+-- Tentar deletar configuração protegida (FALHA!)
+-- DELETE FROM configuracoes WHERE chave = 'versao_sistema';
+-- ERRO: Não é permitido excluir a configuração protegida: versao_sistema
+
+-- Deletar configuração não protegida (OK)
+DELETE FROM configuracoes WHERE chave = 'tema_padrao';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 5: INSTEAD OF — Trigger em views</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View com JOIN
+CREATE VIEW v_produtos_categoria AS
+    SELECT p.id, p.nome AS produto, p.preco, c.nome AS categoria
+    FROM produtos p
+    JOIN categorias c ON p.categoria_id = c.id;
+
+-- Trigger Function INSTEAD OF para INSERT
+CREATE OR REPLACE FUNCTION trg_insert_v_produtos()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_categoria_id INTEGER;
+BEGIN
+    -- Busca o ID da categoria (ou insere se não existir)
+    SELECT id INTO v_categoria_id
+    FROM categorias
+    WHERE nome = NEW.categoria;
+
+    IF NOT FOUND THEN
+        INSERT INTO categorias (nome) VALUES (NEW.categoria)
+        RETURNING id INTO v_categoria_id;
+    END IF;
+
+    -- Insere o produto na tabela base
+    INSERT INTO produtos (nome, preco, categoria_id)
+    VALUES (NEW.produto, NEW.preco, v_categoria_id)
+    RETURNING id INTO NEW.id;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trigger_insert_v_produtos
+    INSTEAD OF INSERT ON v_produtos_categoria
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_insert_v_produtos();
+
+-- Testar inserção via view
+INSERT INTO v_produtos_categoria (produto, preco, categoria)
+VALUES ('Monitor Curvo', 3500, 'Informática');
+
+SELECT * FROM v_produtos_categoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 6: FOR EACH STATEMENT — Trigger de statement</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log de operações em massa
+CREATE TABLE log_operacoes_massa (
+    id SERIAL PRIMARY KEY,
+    tabela VARCHAR(50),
+    operacao VARCHAR(10),
+    total_linhas_afetadas INTEGER,
+    data_hora TIMESTAMP DEFAULT now()
+);
+
+-- Função trigger para STATEMENT
+CREATE OR REPLACE FUNCTION trg_log_statement()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_total INTEGER;
+BEGIN
+    -- Conta quantas linhas foram afetadas pelo statement
+    GET DIAGNOSTICS v_total = ROW_COUNT;
+
+    INSERT INTO log_operacoes_massa (tabela, operacao, total_linhas_afetadas)
+    VALUES (TG_TABLE_NAME, TG_OP, v_total);
+
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER trigger_log_update_massa
+    AFTER UPDATE ON clientes
+    FOR EACH STATEMENT
+    EXECUTE FUNCTION trg_log_statement();
+
+-- Testar: atualizar múltiplas linhas de uma vez
+UPDATE clientes SET saldo = saldo * 1.1 WHERE status = 'ativo';
+
+SELECT * FROM log_operacoes_massa;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo 7: Trigger com WHEN — Condição de disparo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Trigger que só dispara quando o novo salário é maior que 10000
+CREATE TRIGGER trigger_salario_alto
+    BEFORE INSERT OR UPDATE ON clientes
+    FOR EACH ROW
+    WHEN (NEW.saldo > 10000)
+    EXECUTE FUNCTION trg_notificar_saldo_alto();
+
+-- A condição WHEN é avaliada ANTES de executar a função trigger.
+-- Se a condição for falsa, a função nem é chamada — isso economiza recursos.
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Listar e gerenciar triggers existentes</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os triggers do banco
+SELECT
+    event_object_schema AS schema_tabela,
+    event_object_table AS tabela,
+    trigger_name,
+    event_manipulation AS evento,
+    action_timing AS momento,
+    action_orientation AS nivel,
+    action_statement AS funcao
+FROM information_schema.triggers
+WHERE trigger_schema NOT IN ('pg_catalog', 'information_schema')
+ORDER BY event_object_table, action_timing, event_manipulation;
+
+-- Remover trigger
+DROP TRIGGER IF EXISTS trigger_validar_cliente ON clientes;
+
+-- Desabilitar trigger temporariamente
+ALTER TABLE clientes DISABLE TRIGGER trigger_validar_cliente;
+
+-- Habilitar trigger novamente
+ALTER TABLE clientes ENABLE TRIGGER trigger_validar_cliente;
+
+-- Desabilitar TODOS os triggers da tabela
+ALTER TABLE clientes DISABLE TRIGGER ALL;
+
+-- Habilitar TODOS os triggers
+ALTER TABLE clientes ENABLE TRIGGER ALL;
+
+-- Renomear trigger
+ALTER TRIGGER trigger_validar_cliente ON clientes RENAME TO trg_validar_cliente;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SISTEMA DE VALIDAÇÃO COM TRIGGERS -->
+      <section>
+        <h2>Passo a passo: Sistema de validação com trigger</h2>
+        <p>
+          Vamos construir um sistema completo de validação de pedidos usando triggers. O sistema impede pedidos com valor negativo, atualiza o estoque automaticamente e registra um log de todas as alterações.
+        </p>
+
+        <h3>Passo 1 — Criar tabelas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de produtos com controle de estoque
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco_unitario NUMERIC(10,2) NOT NULL CHECK (preco_unitario > 0),
+    estoque INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT now(),
+    atualizado_em TIMESTAMP DEFAULT now()
+);
+
+-- Tabela de pedidos
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER NOT NULL,
+    data_pedido TIMESTAMP DEFAULT now(),
+    valor_total NUMERIC(12,2) DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'pendente',
+    atualizado_em TIMESTAMP DEFAULT now()
+);
+
+-- Tabela de itens do pedido
+CREATE TABLE itens_pedido (
+    id SERIAL PRIMARY KEY,
+    pedido_id INTEGER REFERENCES pedidos(id) ON DELETE CASCADE,
+    produto_id INTEGER REFERENCES produtos(id),
+    quantidade INTEGER NOT NULL CHECK (quantidade > 0),
+    preco_unitario NUMERIC(10,2) NOT NULL,
+    subtotal NUMERIC(12,2) GENERATED ALWAYS AS (quantidade * preco_unitario) STORED
+);
+
+-- Tabela de log de operações
+CREATE TABLE log_estoque (
+    id SERIAL PRIMARY KEY,
+    produto_id INTEGER,
+    operacao VARCHAR(10),
+    quantidade_anterior INTEGER,
+    quantidade_nova INTEGER,
+    pedido_id INTEGER,
+    data_hora TIMESTAMP DEFAULT now()
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Trigger de validação de itens do pedido</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION trg_validar_item_pedido()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_estoque_atual INTEGER;
+    v_preco_produto NUMERIC(10,2);
+    v_produto_ativo BOOLEAN;
+    v_nome_produto VARCHAR(100);
+BEGIN
+    -- Busca informações do produto
+    SELECT estoque, preco_unitario, ativo, nome
+    INTO v_estoque_atual, v_preco_produto, v_produto_ativo, v_nome_produto
+    FROM produtos
+    WHERE id = NEW.produto_id;
+
+    -- Verifica se o produto existe
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Produto ID % não encontrado!', NEW.produto_id;
+    END IF;
+
+    -- Verifica se o produto está ativo
+    IF NOT v_produto_ativo THEN
+        RAISE EXCEPTION 'Produto "%" está desativado!', v_nome_produto;
+    END IF;
+
+    -- Verifica se há estoque suficiente
+    IF TG_OP = 'INSERT' THEN
+        IF v_estoque_atual < NEW.quantidade THEN
+            RAISE EXCEPTION 'Estoque insuficiente para "%": solicitado %, disponível %',
+                v_nome_produto, NEW.quantidade, v_estoque_atual;
+        END IF;
+    END IF;
+
+    -- Preenche o preço unitário automaticamente
+    NEW.preco_unitario := v_preco_produto;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trigger_validar_item
+    BEFORE INSERT ON itens_pedido
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_validar_item_pedido();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Trigger de atualização de estoque e log</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION trg_baixar_estoque()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_estoque_anterior INTEGER;
+BEGIN
+    -- Registrar estoque antes
+    SELECT estoque INTO v_estoque_anterior
+    FROM produtos WHERE id = NEW.produto_id;
+
+    -- Baixar estoque
+    UPDATE produtos
+    SET estoque = estoque - NEW.quantidade,
+        atualizado_em = now()
+    WHERE id = NEW.produto_id;
+
+    -- Atualizar valor total do pedido
+    UPDATE pedidos
+    SET valor_total = valor_total + (NEW.quantidade * NEW.preco_unitario),
+        atualizado_em = now()
+    WHERE id = NEW.pedido_id;
+
+    -- Registrar no log
+    INSERT INTO log_estoque (produto_id, operacao, quantidade_anterior,
+                              quantidade_nova, pedido_id)
+    VALUES (NEW.produto_id, 'SAIDA', v_estoque_anterior,
+            v_estoque_anterior - NEW.quantidade, NEW.pedido_id);
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trigger_baixar_estoque
+    AFTER INSERT ON itens_pedido
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_baixar_estoque();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Trigger de timestamp automático</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Função genérica para atualizar updated_at
+CREATE OR REPLACE FUNCTION trg_update_timestamp()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.atualizado_em := now();
+    RETURN NEW;
+END;
+$$;
+
+-- Aplicar em várias tabelas
+CREATE TRIGGER trg_produtos_timestamp
+    BEFORE UPDATE ON produtos
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_update_timestamp();
+
+CREATE TRIGGER trg_pedidos_timestamp
+    BEFORE UPDATE ON pedidos
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_update_timestamp();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Testar o sistema completo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir produtos
+INSERT INTO produtos (nome, preco_unitario, estoque) VALUES
+    ('Teclado', 150.00, 50),
+    ('Mouse', 80.00, 100),
+    ('Monitor', 1200.00, 20);
+
+-- Criar pedido
+INSERT INTO pedidos (cliente_id) VALUES (1);  -- pedido_id = 1
+
+-- Adicionar itens (trigger faz validação, baixa estoque e soma ao total)
+INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES
+    (1, 1, 2),   -- 2 teclados
+    (1, 2, 3);   -- 3 mouses
+
+-- Verificar se estoque foi atualizado
+SELECT id, nome, estoque FROM produtos;
+
+-- Verificar valor total do pedido
+SELECT id, cliente_id, valor_total, status FROM pedidos;
+
+-- Verificar log de estoque
+SELECT * FROM log_estoque;
+
+-- Tentar inserir item com estoque insuficiente (DEVE FALHAR!)
+-- INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES (1, 1, 100);
+-- ERRO: Estoque insuficiente para "Teclado": solicitado 100, disponível 48
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMPARAÇÃO PL/PGSQL VS PL/SQL -->
+      <section>
+        <h2>Comparação PL/pgSQL (PostgreSQL) vs PL/SQL (Oracle)</h2>
+        <p>
+          Embora ambas sejam linguagens procedurais para bancos de dados, existem diferenças significativas na sintaxe e nos recursos disponíveis.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>PL/pgSQL (PostgreSQL)</th>
+              <th>PL/SQL (Oracle)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Estrutura do bloco</strong></td>
+              <td><code>DECLARE ... BEGIN ... END;</code></td>
+              <td><code>DECLARE ... BEGIN ... EXCEPTION ... END;</code></td>
+            </tr>
+            <tr>
+              <td><strong>Packages</strong></td>
+              <td>Não tem packages nativos (usa schemas para agrupar)</td>
+              <td>Packages (spec + body) — agrupam procedures, funções, variáveis e tipos</td>
+            </tr>
+            <tr>
+              <td><strong>Assinatura de função</strong></td>
+              <td><code>RETURNS tipo AS $$ ... $$ LANGUAGE plpgsql;</code></td>
+              <td><code>RETURN tipo IS ... BEGIN ... END;</code></td>
+            </tr>
+            <tr>
+              <td><strong>Atribuição</strong></td>
+              <td><code>variavel := valor;</code></td>
+              <td><code>variavel := valor;</code></td>
+            </tr>
+            <tr>
+              <td><strong>SELECT INTO</strong></td>
+              <td>Atribui resultado a variáveis: <code>SELECT col INTO var FROM...</code></td>
+              <td>Atribui resultado a variáveis: <code>SELECT col INTO var FROM...</code></td>
+            </tr>
+            <tr>
+              <td><strong>%TYPE e %ROWTYPE</strong></td>
+              <td>Suportado</td>
+              <td>Suportado</td>
+            </tr>
+            <tr>
+              <td><strong>Cursores</strong></td>
+              <td>Declara, OPEN, FETCH, CLOSE; Cursor FOR loop</td>
+              <td>Declara, OPEN, FETCH, CLOSE; Cursor FOR loop; cursores parametrizados</td>
+            </tr>
+            <tr>
+              <td><strong>Exceções</strong></td>
+              <td><code>EXCEPTION WHEN condicao THEN ...</code> (limitado)</td>
+              <td>Sistema completo: PRAGMA EXCEPTION_INIT, RAISE_APPLICATION_ERROR, WHEN OTHERS, SQLERRM, SQLCODE</td>
+            </tr>
+            <tr>
+              <td><strong>Triggers</strong></td>
+              <td>Função separada + CREATE TRIGGER; BEFORE/AFTER/INSTEAD OF</td>
+              <td>Função inline ou separada; BEFORE/AFTER/INSTEAD OF; COMPOUND triggers (11g+)</td>
+            </tr>
+            <tr>
+              <td><strong>Autonomous Transaction</strong></td>
+              <td>Não suporta nativamente (usa extensão dblink ou pg_background)</td>
+              <td>PRAGMA AUTONOMOUS_TRANSACTION (transação independente dentro de outra)</td>
+            </tr>
+            <tr>
+              <td><strong>Bulk Operations (FORALL, BULK COLLECT)</strong></td>
+              <td>Não tem equivalente direto (usa INSERT INTO ... SELECT para bulk)</td>
+              <td>FORALL, BULK COLLECT INTO — operações em massa com performance otimizada</td>
+            </tr>
+            <tr>
+              <td><strong>Collections (Arrays)</strong></td>
+              <td>ARRAY, array_agg(), unnest(). Arrays nativos simples</td>
+              <td>VARRAY, NESTED TABLE, Associative Arrays (INDEX BY). Sistema rico de coleções</td>
+            </tr>
+            <tr>
+              <td><strong>Overloading de funções</strong></td>
+              <td>Sim: mesmo nome, parâmetros diferentes</td>
+              <td>Sim: mesmo nome, parâmetros diferentes (dentro de packages)</td>
+            </tr>
+            <tr>
+              <td><strong>Execução dinâmica</strong></td>
+              <td><code>EXECUTE 'string_sql';</code> ou <code>EXECUTE format(...) USING ...</code></td>
+              <td><code>EXECUTE IMMEDIATE 'string_sql' USING ...;</code></td>
+            </tr>
+            <tr>
+              <td><strong>Bloco anônimo</strong></td>
+              <td><code>DO $$ ... END; $$;</code></td>
+              <td><code>BEGIN ... END;</code></td>
+            </tr>
+            <tr>
+              <td><strong>Retorno de conjunto (SETOF)</strong></td>
+              <td><code>RETURNS SETOF tipo</code> + <code>RETURN NEXT</code> ou <code>RETURN QUERY</code></td>
+              <td><code>RETURN SYS_REFCURSOR</code> (aberto e retornado) ou PIPELINED</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplo lado a lado: Função que retorna total de pedidos por cliente</h3>
+        <p><strong>PL/pgSQL (PostgreSQL):</strong></p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION total_pedidos_cliente(p_cliente_id INTEGER)
+RETURNS TABLE(
+    cliente_nome VARCHAR,
+    total_pedidos BIGINT,
+    valor_total NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+        SELECT c.nome, COUNT(p.id)::BIGINT, COALESCE(SUM(p.valor_total), 0)
+        FROM clientes c
+        LEFT JOIN pedidos p ON c.id = p.cliente_id
+        WHERE c.id = p_cliente_id
+        GROUP BY c.nome;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p><strong>PL/SQL (Oracle) — equivalente:</strong></p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION total_pedidos_cliente(p_cliente_id NUMBER)
+RETURN SYS_REFCURSOR
+IS
+    v_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN v_cursor FOR
+        SELECT c.nome, COUNT(p.id), NVL(SUM(p.valor_total), 0)
+        FROM clientes c
+        LEFT JOIN pedidos p ON c.id = p.cliente_id
+        WHERE c.id = p_cliente_id
+        GROUP BY c.nome;
+
+    RETURN v_cursor;
+END;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Criar função trigger que impede DELETE em tabela de configuração</h3>
+            <p>Crie uma tabela <code>parametros_sistema</code> com colunas <code>id</code>, <code>nome</code>, <code>valor</code> e <code>critico BOOLEAN</code>. Crie uma trigger function e um trigger BEFORE DELETE que impeça a exclusão de parâmetros marcados como <code>critico = TRUE</code>, lançando uma exceção com mensagem descritiva.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabela
+CREATE TABLE parametros_sistema (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) UNIQUE NOT NULL,
+    valor TEXT NOT NULL,
+    critico BOOLEAN DEFAULT FALSE,
+    descricao TEXT,
+    criado_em TIMESTAMP DEFAULT now()
+);
+
+-- Inserir dados de exemplo
+INSERT INTO parametros_sistema (nome, valor, critico, descricao) VALUES
+    ('url_api', 'https://api.exemplo.com/v2', TRUE, 'URL base da API principal'),
+    ('timeout_segundos', '30', TRUE, 'Timeout padrão para requisições'),
+    ('tema_padrao', 'dark', FALSE, 'Tema visual padrão da interface'),
+    ('emails_notificacao', 'admin@exemplo.com', FALSE, 'Lista de emails para notificações');
+
+-- Trigger function
+CREATE OR REPLACE FUNCTION trg_proteger_parametros()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF OLD.critico THEN
+        RAISE EXCEPTION 'Não é permitido excluir o parâmetro crítico "%" (ID: %). Desmarque a flag "critico" antes de excluir.',
+            OLD.nome, OLD.id;
+    END IF;
+
+    RETURN OLD;
+END;
+$$;
+
+-- Criar trigger
+CREATE TRIGGER trigger_proteger_parametros
+    BEFORE DELETE ON parametros_sistema
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_proteger_parametros();
+
+-- Testar
+-- DELETE FROM parametros_sistema WHERE nome = 'url_api';         -- DEVE FALHAR
+-- DELETE FROM parametros_sistema WHERE nome = 'tema_padrao';    -- OK
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Criar trigger que atualiza automaticamente coluna updated_at</h3>
+            <p>Crie uma tabela <code>artigos</code> com uma coluna <code>atualizado_em</code>. Crie uma trigger function genérica e um trigger BEFORE UPDATE que atualize essa coluna automaticamente com <code>now()</code> sempre que um registro for modificado.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabela
+CREATE TABLE artigos (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    conteudo TEXT,
+    autor VARCHAR(100),
+    publicado BOOLEAN DEFAULT FALSE,
+    criado_em TIMESTAMP DEFAULT now(),
+    atualizado_em TIMESTAMP DEFAULT now()
+);
+
+-- Trigger function genérica (pode ser reutilizada em outras tabelas)
+CREATE OR REPLACE FUNCTION trg_auto_update_timestamp()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.atualizado_em := now();
+    RETURN NEW;
+END;
+$$;
+
+-- Criar trigger
+CREATE TRIGGER trigger_artigos_timestamp
+    BEFORE UPDATE ON artigos
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_auto_update_timestamp();
+
+-- Testar
+INSERT INTO artigos (titulo, conteudo, autor) VALUES
+    ('PostgreSQL Triggers', 'Guia completo de triggers...', 'Prof. Fábio'),
+    ('PL/pgSQL Avançado', 'Técnicas avançadas...', 'Prof. Fábio');
+
+-- Esperar alguns segundos e atualizar
+UPDATE artigos SET conteudo = 'Guia atualizado de triggers...' WHERE id = 1;
+
+-- Verificar que atualizado_em foi alterado
+SELECT id, titulo, criado_em, atualizado_em
+FROM artigos
+WHERE id = 1;
+-- criado_em e atualizado_em serão diferentes!
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Criar bloco PL/pgSQL com cursor que calcula estatísticas por departamento</h3>
+            <p>Crie tabelas <code>departamentos</code> e <code>funcionarios</code>. Escreva uma função PL/pgSQL que use um cursor para percorrer departamentos e calcular: total de funcionários, salário médio, maior salário, menor salário. A função deve retornar uma tabela com essas estatísticas por departamento.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabelas
+CREATE TABLE departamentos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE funcionarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50),
+    salario NUMERIC(10,2) NOT NULL CHECK (salario > 0),
+    departamento_id INTEGER REFERENCES departamentos(id),
+    data_admissao DATE DEFAULT CURRENT_DATE
+);
+
+-- Inserir dados
+INSERT INTO departamentos (nome) VALUES ('TI'), ('RH'), ('Financeiro'), ('Marketing');
+
+INSERT INTO funcionarios (nome, cargo, salario, departamento_id) VALUES
+    ('Ana Costa', 'Desenvolvedora', 7500, 1),
+    ('Bruno Lima', 'Analista de Sistemas', 6200, 1),
+    ('Carla Souza', 'Tech Lead', 12000, 1),
+    ('Daniel Silva', 'Estagiário', 2000, 1),
+    ('Erica Santos', 'Gerente de RH', 8500, 2),
+    ('Fábio Oliveira', 'Analista de RH', 5000, 2),
+    ('Gabriela Mendes', 'Contadora', 7000, 3),
+    ('Henrique Alves', 'Analista Financeiro', 5500, 3),
+    ('Ingrid Costa', 'CFO', 15000, 3),
+    ('João Pereira', 'Designer', 4500, 4),
+    ('Karla Martins', 'Social Media', 3800, 4);
+
+-- Função com cursor para calcular estatísticas por departamento
+CREATE OR REPLACE FUNCTION estatisticas_por_departamento()
+RETURNS TABLE(
+    departamento VARCHAR,
+    total_funcionarios BIGINT,
+    salario_medio NUMERIC,
+    maior_salario NUMERIC,
+    menor_salario NUMERIC,
+    folha_total NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    cur_dep CURSOR FOR
+        SELECT id, nome FROM departamentos ORDER BY nome;
+
+    v_dep_id INTEGER;
+    v_dep_nome VARCHAR(100);
+
+    v_total BIGINT;
+    v_media NUMERIC;
+    v_max NUMERIC;
+    v_min NUMERIC;
+    v_folha NUMERIC;
+BEGIN
+    OPEN cur_dep;
+
+    LOOP
+        FETCH cur_dep INTO v_dep_id, v_dep_nome;
+        EXIT WHEN NOT FOUND;
+
+        -- Calcular estatísticas para este departamento
+        SELECT
+            COUNT(*),
+            ROUND(AVG(salario), 2),
+            MAX(salario),
+            MIN(salario),
+            SUM(salario)
+        INTO v_total, v_media, v_max, v_min, v_folha
+        FROM funcionarios
+        WHERE departamento_id = v_dep_id;
+
+        -- Se o departamento tem funcionários, retorna a linha
+        IF v_total > 0 THEN
+            departamento := v_dep_nome;
+            total_funcionarios := v_total;
+            salario_medio := v_media;
+            maior_salario := v_max;
+            menor_salario := v_min;
+            folha_total := v_folha;
+            RETURN NEXT;
+        ELSE
+            -- Departamento sem funcionários
+            departamento := v_dep_nome;
+            total_funcionarios := 0;
+            salario_medio := NULL;
+            maior_salario := NULL;
+            menor_salario := NULL;
+            folha_total := 0;
+            RETURN NEXT;
+        END IF;
+    END LOOP;
+
+    CLOSE cur_dep;
+END;
+$$;
+
+-- Executar
+SELECT * FROM estatisticas_por_departamento();
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Criar trigger que impede INSERT de produto com preço negativo</h3>
+            <p>Crie uma tabela <code>produtos</code> com uma constraint CHECK de preço positivo. Adicionalmente, crie uma trigger function e um trigger BEFORE INSERT/UPDATE que valide se o preço é maior que zero. Se for menor ou igual a zero, lance uma exceção personalizada. A trigger também deve garantir que o nome do produto não seja vazio e normalizar o nome para maiúsculas.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar tabela
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco NUMERIC(10,2) NOT NULL CHECK (preco > 0),
+    estoque INTEGER DEFAULT 0 CHECK (estoque >= 0),
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT now(),
+    atualizado_em TIMESTAMP DEFAULT now()
+);
+
+-- Trigger function
+CREATE OR REPLACE FUNCTION trg_validar_produto()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Validar nome não vazio
+    IF NEW.nome IS NULL OR TRIM(NEW.nome) = '' THEN
+        RAISE EXCEPTION 'O nome do produto não pode ser vazio!';
+    END IF;
+
+    -- Validar preço positivo
+    IF NEW.preco IS NULL OR NEW.preco <= 0 THEN
+        RAISE EXCEPTION 'O preço do produto "%" deve ser maior que zero. Valor informado: %',
+            NEW.nome, NEW.preco;
+    END IF;
+
+    -- Validar estoque não negativo
+    IF NEW.estoque < 0 THEN
+        RAISE EXCEPTION 'O estoque do produto "%" não pode ser negativo. Valor informado: %',
+            NEW.nome, NEW.estoque;
+    END IF;
+
+    -- Normalizar nome para maiúsculas
+    NEW.nome := UPPER(TRIM(NEW.nome));
+
+    -- Atualizar timestamp
+    NEW.atualizado_em := now();
+
+    -- Se for INSERT, definir criado_em
+    IF TG_OP = 'INSERT' THEN
+        NEW.criado_em := COALESCE(NEW.criado_em, now());
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+-- Criar trigger
+CREATE TRIGGER trigger_validar_produto
+    BEFORE INSERT OR UPDATE ON produtos
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_validar_produto();
+
+-- Testar: inserções válidas
+INSERT INTO produtos (nome, preco, estoque) VALUES
+    ('  notebook dell  ', 4500.00, 10),
+    ('mouse logitech', 150.00, 50);
+
+-- Verificar normalização
+SELECT nome FROM produtos;  -- 'NOTEBOOK DELL', 'MOUSE LOGITECH'
+
+-- Testar: inserções inválidas (DESCOMENTAR para ver os erros)
+-- INSERT INTO produtos (nome, preco, estoque) VALUES ('', 100, 5);
+-- ERRO: O nome do produto não pode ser vazio!
+
+-- INSERT INTO produtos (nome, preco, estoque) VALUES ('Teclado', -50, 10);
+-- ERRO: O preço do produto "Teclado" deve ser maior que zero. Valor informado: -50
+
+-- INSERT INTO produtos (nome, preco, estoque) VALUES ('Headset', 200, -5);
+-- ERRO: O estoque do produto "Headset" não pode ser negativo. Valor informado: -5
+
+-- Testar: UPDATE com preço negativo
+-- UPDATE produtos SET preco = -100 WHERE id = 1;
+-- ERRO: O preço do produto "NOTEBOOK DELL" deve ser maior que zero. Valor informado: -100
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se os triggers estão disparando corretamente, se as validações estão impedindo operações inválidas e se os cursores estão processando os dados como esperado.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula10</code></li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

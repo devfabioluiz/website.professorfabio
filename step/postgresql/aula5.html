@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 5 - Procedures e Funções Armazenados em PL/SQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 5</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">
+        Módulo 5: Procedures e Funções Armazenados em PL/SQL
+      </h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Procedures armazenadas (CREATE OR REPLACE PROCEDURE, parâmetros
+        IN/OUT/IN OUT), Funções (CREATE OR REPLACE FUNCTION, RETURN),
+        Gerenciamento de transações no Oracle (COMMIT, ROLLBACK, SAVEPOINT),
+        Pacotes (CREATE PACKAGE, CREATE PACKAGE BODY).
+      </div>
+    </header>
+    <main class="container">
+      <!-- INTRODUÇÃO -->
+      <section>
+        <h2>Procedures Armazenadas</h2>
+        <p>
+          Procedures armazenadas (Stored Procedures) são blocos de código PL/SQL
+          nomeados e armazenados no banco de dados Oracle. Diferente de blocos
+          anônimos, procedures são compiladas e armazenadas permanentemente,
+          podendo ser chamadas diversas vezes com parâmetros diferentes.
+        </p>
+
+        <h3>Benefícios das Procedures</h3>
+        <ul>
+          <li>
+            <strong>Reusabilidade:</strong> escreva uma vez, execute quantas
+            vezes quiser com parâmetros diferentes
+          </li>
+          <li>
+            <strong>Performance:</strong> compiladas uma única vez e executadas
+            em tempo de execução otimizado
+          </li>
+          <li>
+            <strong>Segurança:</strong> podem ser executadas com privilégios do
+            criador (definer's rights) ou do chamador (invoker's rights)
+          </li>
+          <li>
+            <strong>Encapsulamento:</strong> lógica de negócio fica centralizada
+            no banco, facilitando manutenção
+          </li>
+          <li>
+            <strong>Redução de tráfego:</strong> uma única chamada substitui
+            múltiplos comandos SQL enviados pelo cliente
+          </li>
+        </ul>
+
+        <div class="info-box">
+          <strong>Importante:</strong> No Oracle, procedures NÃO retornam valor
+          diretamente como funções. Elas podem retornar valores através de
+          parâmetros OUT. Para retornar um valor, use funções (FUNCTION).
+        </div>
+      </section>
+
+      <!-- CRIANDO PROCEDURES -->
+      <section>
+        <h2>Criando Procedures — Sintaxe e Exemplos</h2>
+        <p>A sintaxe básica de uma procedure no Oracle PL/SQL:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [OR REPLACE] PROCEDURE nome_procedure
+    (parametro1 [IN | OUT | IN OUT] tipo_dado,
+     parametro2 [IN | OUT | IN OUT] tipo_dado)
+IS | AS
+    -- seção declarativa (variáveis, cursores, exceções)
+BEGIN
+    -- seção executável (código PL/SQL)
+    COMMIT;
+EXCEPTION
+    -- seção de tratamento de exceções (opcional)
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END nome_procedure;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Vamos começar com uma procedure simples que atualiza o salário de um
+          funcionário:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de exemplo
+CREATE TABLE funcionarios (
+    id        NUMBER PRIMARY KEY,
+    nome      VARCHAR2(100) NOT NULL,
+    salario   NUMBER(10,2) NOT NULL CHECK (salario > 0),
+    cargo     VARCHAR2(50)
+);
+
+-- Procedure simples: atualizar salário com percentual
+CREATE OR REPLACE PROCEDURE atualizar_salario(
+    p_id          NUMBER,
+    p_percentual  NUMBER
+)
+IS
+BEGIN
+    UPDATE funcionarios
+    SET salario = salario * (1 + p_percentual / 100)
+    WHERE id = p_id;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Salário do funcionário ' || p_id || ' atualizado em ' || p_percentual || '%');
+END atualizar_salario;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Executando Procedures</h3>
+        <p>Existem três formas de executar uma procedure no Oracle:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Método 1: Comando EXEC (SQL*Plus / SQL Developer)
+EXEC atualizar_salario(1, 10);
+
+-- Método 2: Comando EXECUTE
+EXECUTE atualizar_salario(1, 10);
+
+-- Método 3: Dentro de um bloco PL/SQL anônimo
+BEGIN
+    atualizar_salario(1, 10);
+END;
+/
+
+-- Método 4: Dentro de outra procedure/function
+CREATE OR REPLACE PROCEDURE reajuste_geral(p_percentual NUMBER)
+IS
+BEGIN
+    FOR r IN (SELECT id FROM funcionarios) LOOP
+        atualizar_salario(r.id, p_percentual);
+    END LOOP;
+END reajuste_geral;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PARÂMETROS IN, OUT, IN OUT -->
+      <section>
+        <h2>Parâmetros IN, OUT e IN OUT</h2>
+        <p>
+          O Oracle PL/SQL suporta três modos de parâmetros em procedures e
+          funções:
+        </p>
+
+        <div class="info-box">
+          <strong>Resumo dos Modos:</strong>
+          <ul>
+            <li>
+              <strong>IN (padrão):</strong> valor é passado para a procedure,
+              não pode ser modificado dentro dela
+            </li>
+            <li>
+              <strong>OUT:</strong> procedure retorna um valor através do
+              parâmetro, valor inicial é ignorado
+            </li>
+            <li>
+              <strong>IN OUT:</strong> valor é passado e pode ser modificado,
+              retornando o novo valor
+            </li>
+          </ul>
+        </div>
+
+        <h3>Parâmetros IN (padrão)</h3>
+        <p>
+          O modo padrão. O valor é passado para a procedure e é tratado como
+          somente leitura:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE inserir_funcionario(
+    p_nome    IN VARCHAR2,
+    p_salario IN NUMBER,
+    p_cargo   IN VARCHAR2
+)
+IS
+BEGIN
+    INSERT INTO funcionarios (id, nome, salario, cargo)
+    VALUES (seq_funcionarios.NEXTVAL, p_nome, p_salario, p_cargo);
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Funcionário ' || p_nome || ' inserido com sucesso.');
+END inserir_funcionario;
+/
+
+-- Chamando
+EXEC inserir_funcionario('João Silva', 5500.00, 'Analista');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Parâmetros OUT</h3>
+        <p>Permitem que a procedure retorne valores para o chamador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE obter_dados_funcionario(
+    p_id     IN  NUMBER,
+    p_nome   OUT VARCHAR2,
+    p_salario OUT NUMBER
+)
+IS
+BEGIN
+    SELECT nome, salario
+    INTO p_nome, p_salario
+    FROM funcionarios
+    WHERE id = p_id;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        p_nome := NULL;
+        p_salario := NULL;
+        DBMS_OUTPUT.PUT_LINE('Funcionário ' || p_id || ' não encontrado.');
+END obter_dados_funcionario;
+/
+
+-- Para chamar com parâmetros OUT, é necessário um bloco PL/SQL
+DECLARE
+    v_nome   VARCHAR2(100);
+    v_salario NUMBER;
+BEGIN
+    obter_dados_funcionario(1, v_nome, v_salario);
+    DBMS_OUTPUT.PUT_LINE('Nome: ' || v_nome || ' | Salário: R$ ' || TO_CHAR(v_salario, 'FM999G990D00'));
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Parâmetros IN OUT</h3>
+        <p>Recebem um valor, processam e retornam o resultado modificado:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE formatar_nome(
+    p_nome IN OUT VARCHAR2
+)
+IS
+BEGIN
+    -- Converte para maiúsculo e remove espaços extras
+    p_nome := TRIM(UPPER(p_nome));
+END formatar_nome;
+/
+
+-- Chamando com IN OUT
+DECLARE
+    v_nome VARCHAR2(100) := '  joão da silva  ';
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Antes: [' || v_nome || ']');
+    formatar_nome(v_nome);
+    DBMS_OUTPUT.PUT_LINE('Depois: [' || v_nome || ']');
+END;
+/
+-- Resultado:
+-- Antes: [  joão da silva  ]
+-- Depois: [JOÃO DA SILVA]
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Comparação entre IN, OUT e IN OUT</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Procedure que demonstra os três modos simultaneamente
+CREATE OR REPLACE PROCEDURE demo_parametros(
+    p_entrada      IN     NUMBER,   -- Recebe valor (somente leitura)
+    p_resultado    OUT    NUMBER,   -- Retorna valor
+    p_acumulador   IN OUT NUMBER    -- Recebe e retorna valor
+)
+IS
+BEGIN
+    -- IN: pode ser lido mas não modificado
+    p_resultado := p_entrada * 2;
+
+    -- IN OUT: pode ser lido e modificado
+    p_acumulador := p_acumulador + p_entrada;
+
+    DBMS_OUTPUT.PUT_LINE('Entrada dobrada: ' || p_resultado);
+    DBMS_OUTPUT.PUT_LINE('Acumulador atualizado: ' || p_acumulador);
+END demo_parametros;
+/
+
+-- Testando
+DECLARE
+    v_saida      NUMBER;
+    v_acumulador NUMBER := 100;
+BEGIN
+    demo_parametros(5, v_saida, v_acumulador);
+    DBMS_OUTPUT.PUT_LINE('Resultado retornado: ' || v_saida);
+    DBMS_OUTPUT.PUT_LINE('Acumulador final: ' || v_acumulador);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- FUNÇÕES -->
+      <section>
+        <h2>Funções (Functions) — CREATE OR REPLACE FUNCTION</h2>
+        <p>
+          Funções são subprogramas que
+          <strong>sempre retornam um valor</strong>. Diferente de procedures,
+          funções podem ser usadas diretamente em comandos SQL (SELECT, WHERE,
+          etc.).
+        </p>
+
+        <h3>Diferenças entre Procedure e Function</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Procedure</th>
+              <th>Function</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Retorno de valor</td>
+              <td>Opcional (via OUT)</td>
+              <td>Obrigatório (RETURN)</td>
+            </tr>
+            <tr>
+              <td>Uso em SQL</td>
+              <td>Não permitido</td>
+              <td>Permitido (com restrições)</td>
+            </tr>
+            <tr>
+              <td>Chamada</td>
+              <td>EXEC / bloco PL/SQL</td>
+              <td>Expressão / SELECT / bloco PL/SQL</td>
+            </tr>
+            <tr>
+              <td>Transações (COMMIT/ROLLBACK)</td>
+              <td>Permitido</td>
+              <td>Não permitido (em funções chamadas por SQL)</td>
+            </tr>
+            <tr>
+              <td>Parâmetros</td>
+              <td>IN, OUT, IN OUT</td>
+              <td>Apenas IN (convenção)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Sintaxe de Function</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE [OR REPLACE] FUNCTION nome_funcao
+    (parametro1 tipo_dado, parametro2 tipo_dado)
+RETURN tipo_retorno
+IS
+    -- seção declarativa
+BEGIN
+    -- seção executável
+    RETURN valor;
+EXCEPTION
+    -- tratamento de erros (opcional)
+END nome_funcao;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo: Função para Calcular Imposto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION calcular_imposto(
+    p_salario NUMBER
+)
+RETURN NUMBER
+IS
+    v_imposto NUMBER := 0;
+BEGIN
+    -- Faixas progressivas
+    IF p_salario <= 2259.20 THEN
+        v_imposto := 0;
+    ELSIF p_salario <= 2826.65 THEN
+        v_imposto := p_salario * 0.075;
+    ELSIF p_salario <= 3751.05 THEN
+        v_imposto := p_salario * 0.15;
+    ELSIF p_salario <= 4664.68 THEN
+        v_imposto := p_salario * 0.225;
+    ELSE
+        v_imposto := p_salario * 0.275;
+    END IF;
+
+    RETURN ROUND(v_imposto, 2);
+END calcular_imposto;
+/
+
+-- Testando a função
+SELECT calcular_imposto(5000) AS imposto FROM DUAL;
+-- Resultado: 1375
+
+-- Usando diretamente em consultas SQL
+SELECT nome, salario, calcular_imposto(salario) AS imposto_devido
+FROM funcionarios
+ORDER BY salario DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Funções Determinísticas</h3>
+        <p>
+          Uma função é determinística quando sempre retorna o mesmo resultado
+          para os mesmos parâmetros de entrada. Marcar uma função como
+          <code>DETERMINISTIC</code> permite que o Oracle a utilize em
+          function-based indexes e otimize chamadas repetidas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION bonus_por_cargo(
+    p_cargo VARCHAR2
+)
+RETURN NUMBER
+DETERMINISTIC
+IS
+BEGIN
+    CASE p_cargo
+        WHEN 'Gerente'   THEN RETURN 0.20;
+        WHEN 'Analista'  THEN RETURN 0.10;
+        WHEN 'Assistente' THEN RETURN 0.05;
+        ELSE RETURN 0.02;
+    END CASE;
+END bonus_por_cargo;
+/
+
+-- Function-based index usando função determinística
+CREATE INDEX idx_bonus_cargo ON funcionarios(bonus_por_cargo(cargo));
+
+-- Exemplo: function que retorna tempo de empresa
+CREATE OR REPLACE FUNCTION tempo_empresa_anos(
+    p_data_admissao DATE
+)
+RETURN NUMBER
+DETERMINISTIC
+IS
+BEGIN
+    RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, p_data_admissao) / 12, 2);
+END tempo_empresa_anos;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Função com Retorno Complexo (Retornando uma Tabela)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criando um tipo registro e uma coleção (table type)
+CREATE TYPE funcionario_record AS OBJECT (
+    nome    VARCHAR2(100),
+    salario NUMBER(10,2),
+    cargo   VARCHAR2(50)
+);
+/
+
+CREATE TYPE funcionario_table AS TABLE OF funcionario_record;
+/
+
+CREATE OR REPLACE FUNCTION listar_por_cargo(
+    p_cargo VARCHAR2
+)
+RETURN funcionario_table
+PIPELINED
+IS
+BEGIN
+    FOR r IN (
+        SELECT nome, salario, cargo
+        FROM funcionarios
+        WHERE UPPER(cargo) = UPPER(p_cargo)
+        ORDER BY salario DESC
+    ) LOOP
+        PIPE ROW (funcionario_record(r.nome, r.salario, r.cargo));
+    END LOOP;
+
+    RETURN;
+END listar_por_cargo;
+/
+
+-- Consultando a função
+SELECT * FROM TABLE(listar_por_cargo('Analista'));
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- GERENCIAMENTO DE TRANSAÇÕES -->
+      <section>
+        <h2>Gerenciamento de Transações no Oracle</h2>
+        <p>
+          Transações são unidades lógicas de trabalho que contêm uma ou mais
+          operações SQL. O Oracle gerencia transações automaticamente, mas o
+          desenvolvedor pode controlá-las explicitamente com os comandos TCL
+          (Transaction Control Language).
+        </p>
+
+        <h3>COMMIT</h3>
+        <p>
+          Torna permanentes todas as alterações feitas desde o último COMMIT ou
+          desde o início da sessão:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Demonstração de COMMIT
+BEGIN
+    INSERT INTO funcionarios (id, nome, salario, cargo)
+    VALUES (100, 'Teste Commit', 3000, 'Analista');
+
+    UPDATE funcionarios SET salario = salario * 1.1 WHERE cargo = 'Analista';
+
+    -- As alterações agora são permanentes
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Transação confirmada com sucesso.');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>ROLLBACK</h3>
+        <p>Desfaz todas as alterações pendentes (não commitadas):</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Demonstração de ROLLBACK
+BEGIN
+    INSERT INTO funcionarios (id, nome, salario, cargo)
+    VALUES (200, 'Teste Rollback', 3000, 'Assistente');
+
+    UPDATE funcionarios SET salario = 99999 WHERE id = 1;
+
+    DBMS_OUTPUT.PUT_LINE('Operações realizadas... mas serão desfeitas.');
+
+    -- Desfaz tudo desde o último COMMIT
+    ROLLBACK;
+
+    DBMS_OUTPUT.PUT_LINE('Rollback executado. Nada foi salvo.');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SAVEPOINT — Pontos de Salvamento Parciais</h3>
+        <p>
+          SAVEPOINT permite marcar pontos intermediários em uma transação,
+          possibilitando rollback parcial:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Demonstração prática de SAVEPOINT
+BEGIN
+    -- Insere um novo departamento
+    INSERT INTO departamentos (id, nome) VALUES (10, 'P&D');
+
+    SAVEPOINT depois_depto;
+
+    -- Insere funcionários no novo departamento
+    INSERT INTO funcionarios (id, nome, salario, cargo, depto_id)
+    VALUES (300, 'Ana Pesquisadora', 7000, 'Pesquisador', 10);
+
+    INSERT INTO funcionarios (id, nome, salario, cargo, depto_id)
+    VALUES (301, 'Bruno Pesquisador', 6500, 'Pesquisador', 10);
+
+    SAVEPOINT depois_funcionarios;
+
+    -- Atualiza salários (ops, erro nos valores!)
+    UPDATE funcionarios SET salario = salario * 0.5 WHERE depto_id = 10;
+
+    -- Rollback parcial: desfaz apenas o UPDATE incorreto
+    ROLLBACK TO depois_funcionarios;
+
+    -- Confirma o resto (departamento criado e funcionários inseridos)
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Transação concluída — departamento e funcionários salvos, update desfeito.');
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Transferência entre Contas com SAVEPOINT + Validação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE transferir_valor(
+    p_conta_origem  NUMBER,
+    p_conta_destino NUMBER,
+    p_valor         NUMBER
+)
+IS
+    v_saldo NUMBER;
+BEGIN
+    -- Verifica saldo da conta origem
+    SELECT saldo INTO v_saldo FROM contas WHERE id = p_conta_origem;
+
+    IF v_saldo < p_valor THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Saldo insuficiente na conta origem.');
+    END IF;
+
+    SAVEPOINT antes_debito;
+
+    -- Debita da origem
+    UPDATE contas SET saldo = saldo - p_valor WHERE id = p_conta_origem;
+
+    -- Credita no destino
+    UPDATE contas SET saldo = saldo + p_valor WHERE id = p_conta_destino;
+
+    -- Se o destino ficou negativo (por alguma regra), desfaz
+    SELECT saldo INTO v_saldo FROM contas WHERE id = p_conta_destino;
+
+    IF v_saldo < 0 THEN
+        ROLLBACK TO antes_debito;
+        RAISE_APPLICATION_ERROR(-20002, 'Erro: destino não pode ficar negativo.');
+    END IF;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Transferência de R$ ' || p_valor || ' realizada com sucesso.');
+END transferir_valor;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Transações Autônomas (PRAGMA AUTONOMOUS_TRANSACTION)</h3>
+        <p>
+          Transações autônomas são transações independentes que executam dentro
+          de outra transação. Úteis para logging e auditoria — registram o que
+          aconteceu mesmo que a transação principal sofra ROLLBACK.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de log para auditoria
+CREATE TABLE log_auditoria (
+    id          NUMBER GENERATED ALWAYS AS IDENTITY,
+    operacao    VARCHAR2(50),
+    tabela      VARCHAR2(50),
+    data_hora   TIMESTAMP DEFAULT SYSTIMESTAMP,
+    usuario     VARCHAR2(50) DEFAULT USER,
+    descricao   VARCHAR2(4000)
+);
+
+-- Procedure de log com transação autônoma
+CREATE OR REPLACE PROCEDURE registrar_log(
+    p_operacao  VARCHAR2,
+    p_tabela    VARCHAR2,
+    p_descricao VARCHAR2
+)
+IS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+    INSERT INTO log_auditoria (operacao, tabela, descricao)
+    VALUES (p_operacao, p_tabela, p_descricao);
+
+    -- Commit apenas da transação autônoma (log)
+    COMMIT;
+END registrar_log;
+/
+
+-- Aplicando em uma procedure principal
+CREATE OR REPLACE PROCEDURE excluir_funcionario(
+    p_id NUMBER
+)
+IS
+    v_nome VARCHAR2(100);
+BEGIN
+    SELECT nome INTO v_nome FROM funcionarios WHERE id = p_id;
+
+    DELETE FROM funcionarios WHERE id = p_id;
+
+    -- Registra no log (será salvo mesmo se a principal sofrer ROLLBACK)
+    registrar_log('DELETE', 'FUNCIONARIOS', 'Funcionário excluído: ' || v_nome || ' (ID=' || p_id || ')');
+
+    -- Se algo der errado...
+    -- ROLLBACK; -- afeta apenas a transação principal, o log permanece!
+
+    COMMIT;
+END excluir_funcionario;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PACOTES -->
+      <section>
+        <h2>Pacotes (Packages) — Organização de Código PL/SQL</h2>
+        <p>
+          Pacotes são coleções de procedures, funções, variáveis, constantes,
+          cursores e tipos relacionados logicamente. Um pacote é composto por
+          duas partes: especificação (interface pública) e corpo
+          (implementação).
+        </p>
+
+        <h3>Benefícios dos Pacotes</h3>
+        <ul>
+          <li>
+            <strong>Encapsulamento:</strong> separa interface pública da
+            implementação privada
+          </li>
+          <li>
+            <strong>Persistência de estado:</strong> variáveis do pacote mantêm
+            seu valor durante a sessão
+          </li>
+          <li>
+            <strong>Sobrecarga (Overloading):</strong> múltiplas
+            procedures/functions com mesmo nome e parâmetros diferentes
+          </li>
+          <li>
+            <strong>Performance:</strong> todo o pacote é carregado na memória
+            na primeira chamada
+          </li>
+          <li>
+            <strong>Organização:</strong> agrupa código relacionado, facilitando
+            manutenção
+          </li>
+        </ul>
+
+        <h3>Criando um Pacote — Especificação (Package Specification)</h3>
+        <p>A especificação contém as assinaturas (declarações) públicas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PACKAGE pkg_rh AS
+
+    -- Constante do pacote
+    c_salario_minimo CONSTANT NUMBER := 1518.00;
+
+    -- Tipo personalizado
+    TYPE t_funcionario IS RECORD (
+        id      NUMBER,
+        nome    VARCHAR2(100),
+        salario NUMBER,
+        cargo   VARCHAR2(50)
+    );
+
+    -- Procedure 1: Contratar funcionário
+    PROCEDURE contratar(
+        p_nome    VARCHAR2,
+        p_salario NUMBER,
+        p_cargo   VARCHAR2,
+        p_depto_id NUMBER DEFAULT NULL
+    );
+
+    -- Procedure 2: Demitir funcionário
+    PROCEDURE demitir(
+        p_id     NUMBER,
+        p_motivo VARCHAR2 DEFAULT 'Demissão sem justa causa'
+    );
+
+    -- Procedure 3: Promover funcionário
+    PROCEDURE promover(
+        p_id           NUMBER,
+        p_novo_cargo   VARCHAR2,
+        p_aumento_pct  NUMBER
+    );
+
+    -- Function 1: Calcular férias proporcionais
+    FUNCTION calcular_ferias(
+        p_salario        NUMBER,
+        p_meses_trabalho NUMBER
+    ) RETURN NUMBER;
+
+    -- Function 2: Verificar se salário é compatível com o cargo
+    FUNCTION validar_salario_cargo(
+        p_cargo   VARCHAR2,
+        p_salario NUMBER
+    ) RETURN BOOLEAN;
+
+    -- Function 3: Total de funcionários por departamento
+    FUNCTION total_por_depto(
+        p_depto_id NUMBER
+    ) RETURN NUMBER;
+
+END pkg_rh;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Criando o Corpo do Pacote (Package Body)</h3>
+        <p>
+          O corpo contém a implementação de todas as sub-rotinas declaradas na
+          especificação, além de membros privados:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PACKAGE BODY pkg_rh AS
+
+    -- ============ VARIÁVEL PRIVADA DO PACOTE ============
+    v_ultima_contratacao VARCHAR2(100);
+
+    -- ============ IMPLEMENTAÇÃO DAS PROCEDURES ============
+
+    PROCEDURE contratar(
+        p_nome    VARCHAR2,
+        p_salario NUMBER,
+        p_cargo   VARCHAR2,
+        p_depto_id NUMBER DEFAULT NULL
+    )
+    IS
+        v_id NUMBER;
+    BEGIN
+        -- Validações
+        IF p_salario < c_salario_minimo THEN
+            RAISE_APPLICATION_ERROR(-20010,
+                'Salário de ' || TO_CHAR(p_salario, 'FM999G999D00') ||
+                ' é menor que o salário mínimo de R$ ' ||
+                TO_CHAR(c_salario_minimo, 'FM999G999D00'));
+        END IF;
+
+        IF NOT validar_salario_cargo(p_cargo, p_salario) THEN
+            RAISE_APPLICATION_ERROR(-20011,
+                'Salário incompatível com o cargo ' || p_cargo);
+        END IF;
+
+        -- Insere o funcionário
+        INSERT INTO funcionarios (id, nome, salario, cargo, depto_id)
+        VALUES (seq_funcionarios.NEXTVAL, p_nome, p_salario, p_cargo, p_depto_id)
+        RETURNING id INTO v_id;
+
+        -- Atualiza variável do pacote (persiste na sessão!)
+        v_ultima_contratacao := p_nome;
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE('✓ Funcionário contratado: ' || p_nome || ' (ID=' || v_id || ')');
+    END contratar;
+
+    PROCEDURE demitir(
+        p_id     NUMBER,
+        p_motivo VARCHAR2 DEFAULT 'Demissão sem justa causa'
+    )
+    IS
+        v_nome VARCHAR2(100);
+    BEGIN
+        SELECT nome INTO v_nome FROM funcionarios WHERE id = p_id;
+
+        -- Move para histórico antes de excluir
+        INSERT INTO historico_funcionarios (func_id, nome, data_saida, motivo)
+        VALUES (p_id, v_nome, SYSDATE, p_motivo);
+
+        DELETE FROM funcionarios WHERE id = p_id;
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE('✓ Funcionário ' || v_nome || ' desligado. Motivo: ' || p_motivo);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('✗ Funcionário com ID ' || p_id || ' não encontrado.');
+    END demitir;
+
+    PROCEDURE promover(
+        p_id           NUMBER,
+        p_novo_cargo   VARCHAR2,
+        p_aumento_pct  NUMBER
+    )
+    IS
+        v_nome    VARCHAR2(100);
+        v_cargo_antigo VARCHAR2(50);
+    BEGIN
+        SELECT nome, cargo INTO v_nome, v_cargo_antigo
+        FROM funcionarios WHERE id = p_id;
+
+        UPDATE funcionarios
+        SET cargo = p_novo_cargo,
+            salario = salario * (1 + p_aumento_pct / 100)
+        WHERE id = p_id;
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE('✓ ' || v_nome || ' promovido de ' ||
+            v_cargo_antigo || ' para ' || p_novo_cargo || ' com ' ||
+            p_aumento_pct || '% de aumento.');
+    END promover;
+
+    -- ============ IMPLEMENTAÇÃO DAS FUNCTIONS ============
+
+    FUNCTION calcular_ferias(
+        p_salario        NUMBER,
+        p_meses_trabalho NUMBER
+    ) RETURN NUMBER
+    IS
+        v_valor_ferias NUMBER;
+        v_meses        NUMBER;
+    BEGIN
+        v_meses := LEAST(p_meses_trabalho, 12);
+        v_valor_ferias := (p_salario / 12) * v_meses;
+
+        -- Adiciona 1/3 constitucional
+        v_valor_ferias := v_valor_ferias + (v_valor_ferias / 3);
+
+        RETURN ROUND(v_valor_ferias, 2);
+    END calcular_ferias;
+
+    FUNCTION validar_salario_cargo(
+        p_cargo   VARCHAR2,
+        p_salario NUMBER
+    ) RETURN BOOLEAN
+    IS
+    BEGIN
+        CASE UPPER(p_cargo)
+            WHEN 'ESTAGIÁRIO'  THEN RETURN p_salario BETWEEN 800  AND 2000;
+            WHEN 'ASSISTENTE'  THEN RETURN p_salario BETWEEN 1518 AND 3500;
+            WHEN 'ANALISTA'    THEN RETURN p_salario BETWEEN 3000 AND 8000;
+            WHEN 'GERENTE'     THEN RETURN p_salario BETWEEN 7000 AND 20000;
+            WHEN 'DIRETOR'     THEN RETURN p_salario >= 15000;
+            ELSE RETURN TRUE; -- cargo desconhecido, aceita qualquer valor
+        END CASE;
+    END validar_salario_cargo;
+
+    FUNCTION total_por_depto(
+        p_depto_id NUMBER
+    ) RETURN NUMBER
+    IS
+        v_total NUMBER := 0;
+    BEGIN
+        SELECT COUNT(*) INTO v_total
+        FROM funcionarios
+        WHERE depto_id = p_depto_id;
+
+        RETURN v_total;
+    END total_por_depto;
+
+END pkg_rh;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Chamando Procedures e Functions do Pacote</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Chamando procedures
+EXEC pkg_rh.contratar('Carlos Oliveira', 5200.00, 'Analista', 10);
+EXEC pkg_rh.contratar('Marina Souza', 9000.00, 'Gerente', 10);
+EXEC pkg_rh.promover(1, 'Coordenador', 15);
+EXEC pkg_rh.demitir(5, 'Pedido de demissão');
+
+-- Chamando functions
+SELECT nome, salario, pkg_rh.calcular_ferias(salario, 12) AS ferias
+FROM funcionarios;
+
+-- Functions em condições
+SELECT * FROM funcionarios
+WHERE pkg_rh.total_por_depto(depto_id) > 3;
+
+-- Acessando constante do pacote
+SELECT pkg_rh.c_salario_minimo FROM DUAL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Sobrecarga de Subprogramas (Overloading)</h3>
+        <p>
+          O Oracle permite que um pacote tenha múltiplas procedures ou functions
+          com o mesmo nome, desde que tenham assinaturas diferentes (número ou
+          tipo de parâmetros):
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Especificação com sobrecarga
+CREATE OR REPLACE PACKAGE pkg_util AS
+
+    -- Versão 1: aceita NUMBER
+    FUNCTION formatar_moeda(p_valor NUMBER) RETURN VARCHAR2;
+
+    -- Versão 2: aceita VARCHAR2 (string numérica)
+    FUNCTION formatar_moeda(p_valor VARCHAR2) RETURN VARCHAR2;
+
+END pkg_util;
+/
+
+-- Corpo com implementações distintas
+CREATE OR REPLACE PACKAGE BODY pkg_util AS
+
+    FUNCTION formatar_moeda(p_valor NUMBER) RETURN VARCHAR2
+    IS
+    BEGIN
+        RETURN 'R$ ' || TO_CHAR(p_valor, 'FM999G999G990D00');
+    END formatar_moeda;
+
+    FUNCTION formatar_moeda(p_valor VARCHAR2) RETURN VARCHAR2
+    IS
+    BEGIN
+        RETURN 'R$ ' || TO_CHAR(TO_NUMBER(p_valor), 'FM999G999G990D00');
+    END formatar_moeda;
+
+END pkg_util;
+/
+
+-- Oracle escolhe a versão correta automaticamente
+SELECT pkg_util.formatar_moeda(1500.50) FROM DUAL;  -- NUMBER
+SELECT pkg_util.formatar_moeda('2750.75') FROM DUAL; -- VARCHAR2
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SISTEMA RH COMPLETO -->
+      <section>
+        <h2>Passo a Passo: Sistema de RH com Pacote Completo</h2>
+        <p>
+          Vamos construir um sistema completo de RH passo a passo, integrando
+          tudo o que aprendemos: procedures, functions, transações e pacotes.
+        </p>
+
+        <h3>Passo 1 — Criar as Tabelas Base</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Departamentos
+CREATE TABLE departamentos (
+    id   NUMBER PRIMARY KEY,
+    nome VARCHAR2(100) NOT NULL UNIQUE
+);
+
+-- Funcionários
+CREATE TABLE funcionarios (
+    id       NUMBER PRIMARY KEY,
+    nome     VARCHAR2(100) NOT NULL,
+    salario  NUMBER(10,2) NOT NULL CHECK (salario > 0),
+    cargo    VARCHAR2(50) NOT NULL,
+    depto_id NUMBER REFERENCES departamentos(id),
+    data_admissao DATE DEFAULT SYSDATE
+);
+
+-- Histórico de funcionários desligados
+CREATE TABLE historico_funcionarios (
+    id         NUMBER GENERATED ALWAYS AS IDENTITY,
+    func_id    NUMBER NOT NULL,
+    nome       VARCHAR2(100),
+    data_saida DATE DEFAULT SYSDATE,
+    motivo     VARCHAR2(200)
+);
+
+-- Sequence para IDs
+CREATE SEQUENCE seq_funcionarios START WITH 1 INCREMENT BY 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o Pacote pkg_rh (Especificação + Corpo)</h3>
+        <p>Use o código completo mostrado na seção anterior de Pacotes.</p>
+
+        <h3>Passo 3 — Inserir Dados de Teste</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO departamentos (id, nome) VALUES (10, 'Tecnologia');
+INSERT INTO departamentos (id, nome) VALUES (20, 'Financeiro');
+INSERT INTO departamentos (id, nome) VALUES (30, 'RH');
+
+BEGIN
+    pkg_rh.contratar('João Silva', 5500, 'Analista', 10);
+    pkg_rh.contratar('Maria Santos', 12000, 'Gerente', 10);
+    pkg_rh.contratar('Pedro Costa', 3500, 'Assistente', 20);
+    pkg_rh.contratar('Ana Oliveira', 18000, 'Diretor', NULL);
+    pkg_rh.contratar('Lucas Lima', 2500, 'Assistente', 30);
+    pkg_rh.contratar('Carla Mendes', 7000, 'Analista', 20);
+END;
+/
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Testar o Sistema</h3>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os funcionários com férias calculadas
+SELECT
+    f.id,
+    f.nome,
+    f.cargo,
+    f.salario,
+    pkg_rh.calcular_ferias(f.salario, 12) AS ferias_anuais,
+    d.nome AS departamento
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.depto_id = d.id
+ORDER BY f.salario DESC;
+
+-- Promover um funcionário
+EXEC pkg_rh.promover(1, 'Coordenador', 20);
+
+-- Contar funcionários por departamento
+SELECT
+    d.nome,
+    pkg_rh.total_por_depto(d.id) AS total_funcionarios
+FROM departamentos d
+ORDER BY total_funcionarios DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. Crie uma procedure com parâmetros IN e OUT que calcula a média
+              salarial por departamento
+            </h3>
+            <p>
+              A procedure deve receber o <code>p_depto_id</code> (IN) e retornar
+              <code>p_media</code> (OUT NUMBER) e <code>p_contagem</code> (OUT
+              NUMBER) com a média salarial e quantidade de funcionários do
+              departamento.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE media_salarial_depto(
+    p_depto_id  IN  NUMBER,
+    p_media     OUT NUMBER,
+    p_contagem  OUT NUMBER
+)
+IS
+BEGIN
+    SELECT AVG(salario), COUNT(*)
+    INTO p_media, p_contagem
+    FROM funcionarios
+    WHERE depto_id = p_depto_id;
+
+    IF p_contagem = 0 THEN
+        p_media := 0;
+        DBMS_OUTPUT.PUT_LINE('Departamento vazio ou inexistente.');
+    END IF;
+END media_salarial_depto;
+/
+
+-- Testando
+DECLARE
+    v_media    NUMBER;
+    v_qtde     NUMBER;
+BEGIN
+    media_salarial_depto(10, v_media, v_qtde);
+    DBMS_OUTPUT.PUT_LINE('Média: R$ ' || TO_CHAR(v_media, 'FM999G990D00'));
+    DBMS_OUTPUT.PUT_LINE('Total de funcionários: ' || v_qtde);
+END;
+/
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Crie uma function que retorna o tempo de empresa em anos
+              (usando SYSDATE - data_admissao)
+            </h3>
+            <p>
+              A função deve receber <code>p_id</code> do funcionário e retornar
+              o tempo de empresa em anos com precisão de 2 casas decimais.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION tempo_empresa_func(
+    p_id NUMBER
+)
+RETURN NUMBER
+IS
+    v_data_admissao DATE;
+    v_anos          NUMBER;
+BEGIN
+    SELECT data_admissao INTO v_data_admissao
+    FROM funcionarios
+    WHERE id = p_id;
+
+    v_anos := TRUNC(MONTHS_BETWEEN(SYSDATE, v_data_admissao) / 12, 2);
+
+    RETURN v_anos;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN -1; -- Indica que o funcionário não existe
+END tempo_empresa_func;
+/
+
+-- Testando
+SELECT nome, tempo_empresa_func(id) AS anos_de_empresa
+FROM funcionarios
+ORDER BY anos_de_empresa DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Crie uma procedure com SAVEPOINT que faz transferência entre
+              contas com validação
+            </h3>
+            <p>
+              Considere uma tabela <code>contas(id, titular, saldo)</code>. A
+              procedure deve debitar de uma conta, creditar em outra, usar
+              SAVEPOINT para garantir que nenhuma conta fique com saldo
+              negativo, e validar que o valor da transferência é maior que zero.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabela de contas
+CREATE TABLE contas (
+    id      NUMBER PRIMARY KEY,
+    titular VARCHAR2(100) NOT NULL,
+    saldo   NUMBER(12,2) DEFAULT 0 CHECK (saldo >= 0)
+);
+
+INSERT INTO contas VALUES (1, 'João Silva', 10000);
+INSERT INTO contas VALUES (2, 'Maria Santos', 5000);
+INSERT INTO contas VALUES (3, 'Pedro Costa', 2000);
+
+CREATE OR REPLACE PROCEDURE transferencia_bancaria(
+    p_conta_origem  NUMBER,
+    p_conta_destino NUMBER,
+    p_valor         NUMBER
+)
+IS
+    v_saldo_origem  NUMBER;
+    v_saldo_destino NUMBER;
+    v_titular_origem VARCHAR2(100);
+    v_titular_destino VARCHAR2(100);
+BEGIN
+    -- Validação: valor deve ser positivo
+    IF p_valor <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20101, 'Valor da transferência deve ser maior que zero.');
+    END IF;
+
+    -- Validação: contas diferentes
+    IF p_conta_origem = p_conta_destino THEN
+        RAISE_APPLICATION_ERROR(-20102, 'Origem e destino não podem ser a mesma conta.');
+    END IF;
+
+    -- Obtém dados da conta origem
+    SELECT titular, saldo INTO v_titular_origem, v_saldo_origem
+    FROM contas WHERE id = p_conta_origem FOR UPDATE;
+
+    -- Verifica saldo
+    IF v_saldo_origem < p_valor THEN
+        RAISE_APPLICATION_ERROR(-20103,
+            'Saldo insuficiente. Saldo atual: R$ ' ||
+            TO_CHAR(v_saldo_origem, 'FM999G990D00'));
+    END IF;
+
+    -- Obtém dados da conta destino
+    SELECT titular, saldo INTO v_titular_destino, v_saldo_destino
+    FROM contas WHERE id = p_conta_destino FOR UPDATE;
+
+    -- Salva ponto de controle
+    SAVEPOINT antes_operacao;
+
+    -- Debita origem
+    UPDATE contas SET saldo = saldo - p_valor WHERE id = p_conta_origem;
+
+    -- Verifica se origem ficou negativa
+    SELECT saldo INTO v_saldo_origem FROM contas WHERE id = p_conta_origem;
+
+    IF v_saldo_origem < 0 THEN
+        ROLLBACK TO antes_operacao;
+        RAISE_APPLICATION_ERROR(-20104, 'Erro: conta origem ficaria negativa.');
+    END IF;
+
+    -- Credita destino
+    UPDATE contas SET saldo = saldo + p_valor WHERE id = p_conta_destino;
+
+    -- Verifica se destino está ok (limite de depósito, por exemplo)
+    SELECT saldo INTO v_saldo_destino FROM contas WHERE id = p_conta_destino;
+
+    IF v_saldo_destino > 1000000 THEN
+        ROLLBACK TO antes_operacao;
+        RAISE_APPLICATION_ERROR(-20105,
+            'Erro: conta destino excederia o limite de R$ 1.000.000,00.');
+    END IF;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('✓ Transferência de R$ ' ||
+        TO_CHAR(p_valor, 'FM999G990D00') || ' realizada:');
+    DBMS_OUTPUT.PUT_LINE('  De: ' || v_titular_origem || ' (saldo: R$ ' ||
+        TO_CHAR(v_saldo_origem, 'FM999G990D00') || ')');
+    DBMS_OUTPUT.PUT_LINE('  Para: ' || v_titular_destino || ' (saldo: R$ ' ||
+        TO_CHAR(v_saldo_destino, 'FM999G990D00') || ')');
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('✗ Conta de origem ou destino não encontrada.');
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('✗ Erro na transferência: ' || SQLERRM);
+        RAISE;
+END transferencia_bancaria;
+/
+
+-- Testando
+EXEC transferencia_bancaria(1, 2, 1500.00);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              4. Crie um package com 2 procedures e 1 function relacionadas à
+              folha de pagamento
+            </h3>
+            <p>Crie o package <code>pkg_folha</code> contendo:</p>
+            <ul>
+              <li>
+                <code>calcular_salario_liquido(p_id NUMBER) RETURN NUMBER</code>
+                — function que desconta INSS e IR do salário bruto
+              </li>
+              <li>
+                <code>gerar_holerite(p_id NUMBER)</code> — procedure que exibe
+                (DBMS_OUTPUT) o holerite completo do funcionário
+              </li>
+              <li>
+                <code
+                  >reajustar_por_cargo(p_cargo VARCHAR2, p_percentual
+                  NUMBER)</code
+                >
+                — procedure que reajusta todos os funcionários de um cargo
+              </li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE PACKAGE pkg_folha AS
+
+    FUNCTION calcular_salario_liquido(p_id NUMBER) RETURN NUMBER;
+
+    PROCEDURE gerar_holerite(p_id NUMBER);
+
+    PROCEDURE reajustar_por_cargo(p_cargo VARCHAR2, p_percentual NUMBER);
+
+END pkg_folha;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_folha AS
+
+    -- Função privada para calcular INSS
+    FUNCTION calc_inss(p_salario NUMBER) RETURN NUMBER
+    IS
+    BEGIN
+        IF p_salario <= 1518.00 THEN
+            RETURN p_salario * 0.075;
+        ELSIF p_salario <= 2793.88 THEN
+            RETURN p_salario * 0.09;
+        ELSIF p_salario <= 4190.83 THEN
+            RETURN p_salario * 0.12;
+        ELSE
+            RETURN p_salario * 0.14;
+        END IF;
+    END calc_inss;
+
+    -- Função privada para calcular IR
+    FUNCTION calc_ir(p_salario_base NUMBER) RETURN NUMBER
+    IS
+        v_base NUMBER := p_salario_base;
+    BEGIN
+        IF v_base <= 2259.20 THEN
+            RETURN 0;
+        ELSIF v_base <= 2826.65 THEN
+            RETURN v_base * 0.075;
+        ELSIF v_base <= 3751.05 THEN
+            RETURN v_base * 0.15;
+        ELSIF v_base <= 4664.68 THEN
+            RETURN v_base * 0.225;
+        ELSE
+            RETURN v_base * 0.275;
+        END IF;
+    END calc_ir;
+
+    FUNCTION calcular_salario_liquido(p_id NUMBER) RETURN NUMBER
+    IS
+        v_salario_bruto NUMBER;
+        v_inss          NUMBER;
+        v_ir            NUMBER;
+        v_liquido       NUMBER;
+    BEGIN
+        SELECT salario INTO v_salario_bruto
+        FROM funcionarios WHERE id = p_id;
+
+        v_inss    := calc_inss(v_salario_bruto);
+        v_ir      := calc_ir(v_salario_bruto - v_inss);
+        v_liquido := v_salario_bruto - v_inss - v_ir;
+
+        RETURN ROUND(v_liquido, 2);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN NULL;
+    END calcular_salario_liquido;
+
+    PROCEDURE gerar_holerite(p_id NUMBER)
+    IS
+        v_nome          VARCHAR2(100);
+        v_cargo         VARCHAR2(50);
+        v_salario_bruto NUMBER;
+        v_inss          NUMBER;
+        v_ir            NUMBER;
+        v_liquido       NUMBER;
+    BEGIN
+        SELECT nome, cargo, salario INTO v_nome, v_cargo, v_salario_bruto
+        FROM funcionarios WHERE id = p_id;
+
+        v_inss    := ROUND(calc_inss(v_salario_bruto), 2);
+        v_ir      := ROUND(calc_ir(v_salario_bruto - v_inss), 2);
+        v_liquido := v_salario_bruto - v_inss - v_ir;
+
+        DBMS_OUTPUT.PUT_LINE('============================================');
+        DBMS_OUTPUT.PUT_LINE('          HOLERITE DE PAGAMENTO');
+        DBMS_OUTPUT.PUT_LINE('============================================');
+        DBMS_OUTPUT.PUT_LINE('Funcionário : ' || v_nome);
+        DBMS_OUTPUT.PUT_LINE('Cargo       : ' || v_cargo);
+        DBMS_OUTPUT.PUT_LINE('--------------------------------------------');
+        DBMS_OUTPUT.PUT_LINE('Salário Bruto : R$ ' || TO_CHAR(v_salario_bruto, 'FM999G990D00'));
+        DBMS_OUTPUT.PUT_LINE('INSS (-)      : R$ ' || TO_CHAR(v_inss, 'FM999G990D00'));
+        DBMS_OUTPUT.PUT_LINE('IR (-)        : R$ ' || TO_CHAR(v_ir, 'FM999G990D00'));
+        DBMS_OUTPUT.PUT_LINE('--------------------------------------------');
+        DBMS_OUTPUT.PUT_LINE('Salário Líquido: R$ ' || TO_CHAR(v_liquido, 'FM999G990D00'));
+        DBMS_OUTPUT.PUT_LINE('============================================');
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Funcionário não encontrado.');
+    END gerar_holerite;
+
+    PROCEDURE reajustar_por_cargo(p_cargo VARCHAR2, p_percentual NUMBER)
+    IS
+        v_contagem NUMBER;
+    BEGIN
+        UPDATE funcionarios
+        SET salario = salario * (1 + p_percentual / 100)
+        WHERE UPPER(cargo) = UPPER(p_cargo);
+
+        v_contagem := SQL%ROWCOUNT;
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE('✓ ' || v_contagem || ' funcionário(s) do cargo ' ||
+            p_cargo || ' reajustado(s) em ' || p_percentual || '%.');
+    END reajustar_por_cargo;
+
+END pkg_folha;
+/
+
+-- Testando
+EXEC pkg_folha.gerar_holerite(1);
+SELECT nome, salario, pkg_folha.calcular_salario_liquido(id) AS liquido FROM funcionarios;
+EXEC pkg_folha.reajustar_por_cargo('Analista', 5);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Verifique se as procedures, functions e pacotes foram
+          criados e estão executando sem erros. Teste chamando as sub-rotinas do
+          pacote <code>pkg_rh</code> e <code>pkg_folha</code> com diferentes
+          parâmetros.
+        </p>
+        <p>
+          Compare sua implementação com a versão funcional disponível em
+          <a
+            href="https://github.com/devfabioluiz/postgresql-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/postgresql-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando:
+          <code>aula5</code>
+        </p>
+        <p>
+          Nesta branch você encontrará todo o código do sistema de RH com
+          procedures, functions, transações (SAVEPOINT, PRAGMA
+          AUTONOMOUS_TRANSACTION) e os pacotes <code>pkg_rh</code>,
+          <code>pkg_util</code> e <code>pkg_folha</code> completos.
+        </p>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

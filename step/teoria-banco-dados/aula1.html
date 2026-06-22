@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 - Introdução à Teoria de Banco de Dados - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 1: Introdução à Teoria de Banco de Dados</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> História e etapas de desenvolvimento dos bancos de dados, Conceitos de banco de dados e SGBD, Comparação dos modelos de banco de dados (arquivos, rede, hierárquico, relacional, orientado a objetos, NoSQL), Modelo relacional, As Doze Regras de Codd, PostgreSQL vs outros SGBDs, Instalação do PostgreSQL, Criação de banco de dados.</div>
+    </header>
+    <main class="container">
+
+      <!-- O QUE É BANCO DE DADOS -->
+      <section>
+        <h2>O que é um Banco de Dados?</h2>
+        <p>
+          Um <strong>banco de dados</strong> é uma coleção organizada de dados estruturados, geralmente armazenados e acessados eletronicamente de um sistema computacional. Os bancos de dados permitem armazenar, recuperar, modificar e excluir dados de forma eficiente e segura.
+        </p>
+        <p>
+          Um <strong>SGBD</strong> (Sistema de Gerenciamento de Banco de Dados) é o software responsável por gerenciar o banco de dados. Ele atua como uma interface entre o usuário e os dados, garantindo:
+        </p>
+        <ul>
+          <li><strong>Persistência:</strong> os dados sobrevivem além da execução do programa</li>
+          <li><strong>Concorrência:</strong> múltiplos usuários acessam os dados simultaneamente</li>
+          <li><strong>Segurança:</strong> controle de acesso e permissões</li>
+          <li><strong>Integridade:</strong> regras e restrições para manter os dados consistentes</li>
+          <li><strong>Recuperação:</strong> mecanismos de backup e restauração</li>
+        </ul>
+      </section>
+
+      <!-- HISTÓRIA E EVOLUÇÃO -->
+      <section>
+        <h2>História e Evolução dos Bancos de Dados</h2>
+        <p>
+          A evolução dos bancos de dados acompanha a história da computação. Veja a linha do tempo:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Década</th>
+              <th>Modelo</th>
+              <th>Características</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1960</td>
+              <td>Sistemas de Arquivos</td>
+              <td>Dados armazenados em arquivos planos, sem estrutura padronizada</td>
+            </tr>
+            <tr>
+              <td>1960-1970</td>
+              <td>Modelo Hierárquico e em Rede</td>
+              <td>Primeiros SGBDs comerciais (IMS, IDMS). Dados organizados em árvores ou grafos</td>
+            </tr>
+            <tr>
+              <td>1970</td>
+              <td>Modelo Relacional</td>
+              <td>Edgar F. Codd publica o artigo "A Relational Model of Data for Large Shared Data Banks"</td>
+            </tr>
+            <tr>
+              <td>1980</td>
+              <td>SQL e SGBDs Relacionais</td>
+              <td>SQL torna-se padrão. Surgem Oracle, DB2, PostgreSQL, MySQL</td>
+            </tr>
+            <tr>
+              <td>1990</td>
+              <td>Modelo Orientado a Objetos</td>
+              <td>Tentativa de unir OO com bancos de dados. Surgem ODMG e produtos como ObjectStore</td>
+            </tr>
+            <tr>
+              <td>2000-2010</td>
+              <td>NoSQL</td>
+              <td>Surgem MongoDB, Cassandra, Redis para cenários de Big Data e escalabilidade horizontal</td>
+            </tr>
+            <tr>
+              <td>2010-presente</td>
+              <td>NewSQL e Poliglotas</td>
+              <td>Bancos que unem SQL e escalabilidade (CockroachDB, Spanner). Múltiplos modelos no mesmo sistema</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- MODELOS DE BANCO DE DADOS -->
+      <section>
+        <h2>Modelos de Banco de Dados</h2>
+        <p>
+          Cada modelo de banco de dados oferece uma forma diferente de organizar e relacionar os dados. A tabela a seguir compara os principais modelos:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Estrutura</th>
+              <th>Vantagens</th>
+              <th>Desvantagens</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Arquivos</td>
+              <td>Arquivos planos (CSV, texto)</td>
+              <td>Simples, sem dependência de software externo</td>
+              <td>Sem controle de concorrência, redundância, difícil de consultar</td>
+              <td>Arquivos .csv, .txt</td>
+            </tr>
+            <tr>
+              <td>Rede</td>
+              <td>Grafo direcionado (registros e sets)</td>
+              <td>Acesso rápido a relacionamentos complexos</td>
+              <td>Complexo de programar, difícil de modificar a estrutura</td>
+              <td>IDMS</td>
+            </tr>
+            <tr>
+              <td>Hierárquico</td>
+              <td>Árvore (pai-filho)</td>
+              <td>Rápido para consultas previsíveis</td>
+              <td>Rígido, não suporta relacionamentos muitos-para-muitos</td>
+              <td>IMS (IBM)</td>
+            </tr>
+            <tr>
+              <td>Relacional</td>
+              <td>Tabelas (relações) com linhas e colunas</td>
+              <td>Flexível, SQL padronizado, integridade forte</td>
+              <td>Escalabilidade vertical limitada, esquema rígido</td>
+              <td>PostgreSQL, MySQL, Oracle</td>
+            </tr>
+            <tr>
+              <td>Orientado a Objetos</td>
+              <td>Objetos com atributos e métodos</td>
+              <td>Integração natural com OOP, tipos complexos</td>
+              <td>Pouca adoção, ecossistema limitado</td>
+              <td>ObjectDB, db4o</td>
+            </tr>
+            <tr>
+              <td>NoSQL</td>
+              <td>Documentos, chave-valor, grafos, colunar</td>
+              <td>Escalabilidade horizontal, flexível, alta performance</td>
+              <td>Sem SQL padrão, consistência eventual, menos garantias ACID</td>
+              <td>MongoDB, Cassandra, Redis, Neo4j</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- MODELO RELACIONAL -->
+      <section>
+        <h2>Modelo Relacional</h2>
+        <p>
+          Proposto por <strong>Edgar F. Codd</strong> em 1970, o modelo relacional organiza os dados em <strong>tabelas</strong> (também chamadas de relações). É o modelo mais utilizado atualmente.
+        </p>
+        <h3>Conceitos Fundamentais</h3>
+        <ul>
+          <li><strong>Tabela (Relação):</strong> estrutura bidimensional com linhas e colunas</li>
+          <li><strong>Linha (Tupla):</strong> representa um registro único na tabela</li>
+          <li><strong>Coluna (Atributo):</strong> representa uma característica da entidade</li>
+          <li><strong>Chave Primária (PK):</strong> identificador único de cada linha</li>
+          <li><strong>Chave Estrangeira (FK):</strong> relaciona linhas entre tabelas diferentes</li>
+          <li><strong>Domínio:</strong> conjunto de valores válidos para um atributo</li>
+        </ul>
+        <h3>Exemplo de Tabela Relacional</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de alunos
+CREATE TABLE alunos (
+    id        SERIAL PRIMARY KEY,
+    nome      VARCHAR(100) NOT NULL,
+    email     VARCHAR(100) UNIQUE,
+    idade     INTEGER CHECK (idade > 0),
+    curso_id  INTEGER REFERENCES cursos(id)
+);
+
+-- Tabela de cursos
+CREATE TABLE cursos (
+    id     SERIAL PRIMARY KEY,
+    nome   VARCHAR(80) NOT NULL,
+    carga  INTEGER NOT NULL
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- 12 REGRAS DE CODD -->
+      <section>
+        <h2>As 12 Regras de Codd</h2>
+        <p>
+          Em 1985, Codd publicou 13 regras (numeradas de 0 a 12) que um SGBD deve seguir para ser considerado verdadeiramente relacional. Nenhum SGBD comercial atende todas perfeitamente, mas elas servem como guia de qualidade.
+        </p>
+        <ul>
+          <li><strong>Regra 0 — Regra Fundamental:</strong> O sistema deve gerenciar os dados exclusivamente através de suas capacidades relacionais</li>
+          <li><strong>Regra 1 — Informação:</strong> Toda informação deve ser representada como valores em tabelas</li>
+          <li><strong>Regra 2 — Acesso Garantido:</strong> Todo valor deve ser acessível pela combinação de tabela, chave primária e coluna</li>
+          <li><strong>Regra 3 — Tratamento Sistemático de Nulos:</strong> O SGBD deve tratar NULLs de forma uniforme e independente do tipo de dado</li>
+          <li><strong>Regra 4 — Catálogo Online:</strong> A descrição do banco de dados (metadados) deve ser armazenada como dados comuns, acessível via SQL</li>
+          <li><strong>Regra 5 — Sublinguagem de Dados:</strong> O sistema deve suportar uma linguagem com sintaxe linear para definição, manipulação, integridade e controle de transações</li>
+          <li><strong>Regra 6 — Atualização de Views:</strong> Todas as views teoricamente atualizáveis devem ser atualizáveis pelo sistema</li>
+          <li><strong>Regra 7 — Inserção, Atualização e Exclusão de Alto Nível:</strong> O sistema deve suportar operações que tratam conjuntos de tuplas de uma só vez</li>
+          <li><strong>Regra 8 — Independência Física dos Dados:</strong> Mudanças no armazenamento físico não devem afetar a aplicação</li>
+          <li><strong>Regra 9 — Independência Lógica dos Dados:</strong> Mudanças nas tabelas base não devem afetar a aplicação</li>
+          <li><strong>Regra 10 — Independência de Integridade:</strong> Restrições de integridade devem ser definidas na linguagem de dados e armazenadas no catálogo</li>
+          <li><strong>Regra 11 — Independência de Distribuição:</strong> A aplicação não deve saber se os dados estão distribuídos fisicamente</li>
+          <li><strong>Regra 12 — Não-Subversão:</strong> Se o sistema tiver uma interface de baixo nível, ela não deve burlar as regras de integridade</li>
+        </ul>
+      </section>
+
+      <!-- POSTGRESQL VS OUTROS -->
+      <section>
+        <h2>PostgreSQL vs Outros SGBDs</h2>
+        <p>
+          O <strong>PostgreSQL</strong> é um dos SGBDs relacionais de código aberto mais avançados do mercado. Veja como ele se compara com outras opções populares:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>PostgreSQL</th>
+              <th>MySQL</th>
+              <th>Oracle</th>
+              <th>SQL Server</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Licença</td>
+              <td>Open Source (PostgreSQL License)</td>
+              <td>Open Source (GPL)</td>
+              <td>Proprietária (cara)</td>
+              <td>Proprietária (cara)</td>
+            </tr>
+            <tr>
+              <td>Conformidade ACID</td>
+              <td>Completa</td>
+              <td>Depende da engine (InnoDB sim)</td>
+              <td>Completa</td>
+              <td>Completa</td>
+            </tr>
+            <tr>
+              <td>Tipos de Dados</td>
+              <td>Rico: JSON, Array, hstore, Geo, XML, UUID, etc.</td>
+              <td>Básico, com JSON suporte recente</td>
+              <td>Muito rico, mas proprietário</td>
+              <td>Rico, integrado ao ecossistema .NET</td>
+            </tr>
+            <tr>
+              <td>Extensibilidade</td>
+              <td>Extensões, linguagens procedurais (PL/pgSQL, PL/Python)</td>
+              <td>Plugins, stored procedures</td>
+              <td>PL/SQL, pacotes</td>
+              <td>T-SQL, CLR integration</td>
+            </tr>
+            <tr>
+              <td>Performance</td>
+              <td>Excelente para consultas complexas</td>
+              <td>Muito rápida em leitura simples</td>
+              <td>Alta performance em grandes volumes</td>
+              <td>Excelente com ecossistema Microsoft</td>
+            </tr>
+            <tr>
+              <td>Replicação</td>
+              <td>Streaming, lógica, síncrona e assíncrona</td>
+              <td>Master-Slave, Group Replication</td>
+              <td>Data Guard, GoldenGate</td>
+              <td>Always On, Mirroring</td>
+            </tr>
+            <tr>
+              <td>Curva de Aprendizado</td>
+              <td>Média</td>
+              <td>Baixa</td>
+              <td>Alta</td>
+              <td>Média (se familiar com MS)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          O PostgreSQL destaca-se por sua conformidade com os padrões SQL, extensibilidade e robustez, sendo a escolha ideal para este curso.
+        </p>
+      </section>
+
+      <!-- INSTALAÇÃO POSTGRESQL -->
+      <section>
+        <h2>Passo a passo: Instalando o PostgreSQL</h2>
+        <p>
+          Vamos instalar o PostgreSQL no Windows. Siga os passos abaixo cuidadosamente.
+        </p>
+
+        <h3>Passo 1 — Baixar o instalador</h3>
+        <p>Acesse o site oficial e faça o download do instalador para Windows:</p>
+        <ul>
+          <li>Acesse <strong>https://www.postgresql.org/download/windows/</strong></li>
+          <li>Clique em <strong>"Download the installer"</strong></li>
+          <li>Selecione a versão mais recente (ex: PostgreSQL 17)</li>
+          <li>Escolha o instalador para Windows x86-64</li>
+        </ul>
+
+        <h3>Passo 2 — Executar o instalador</h3>
+        <ul>
+          <li>Execute o arquivo <strong>.exe</strong> baixado como Administrador</li>
+          <li>Escolha o diretório de instalação (padrão: <code>C:\Program Files\PostgreSQL\17</code>)</li>
+          <li>Selecione os componentes: PostgreSQL Server, pgAdmin 4, Command Line Tools</li>
+          <li>Defina o diretório de dados (padrão: <code>C:\Program Files\PostgreSQL\17\data</code>)</li>
+        </ul>
+
+        <h3>Passo 3 — Configurar senha e porta</h3>
+        <ul>
+          <li>Defina uma senha para o superusuário <strong>postgres</strong></li>
+          <li>Mantenha a porta padrão: <strong>5432</strong></li>
+          <li>Mantenha o locale padrão</li>
+          <li>Conclua a instalação</li>
+        </ul>
+
+        <h3>Passo 4 — Verificar a instalação</h3>
+        <p>Abra o PowerShell ou Prompt de Comando e execute:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+psql --version
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Você deve ver a versão do PostgreSQL instalada, algo como:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+psql (PostgreSQL) 17.0
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CRIANDO PRIMEIRO BANCO -->
+      <section>
+        <h2>Passo a passo: Criando seu primeiro banco de dados</h2>
+        <p>
+          Após instalar o PostgreSQL, vamos criar nosso primeiro banco de dados.
+        </p>
+
+        <h3>Passo 1 — Acessar o PostgreSQL via terminal</h3>
+        <p>Abra o PowerShell e conecte-se ao PostgreSQL com o superusuário <strong>postgres</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+psql -U postgres
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Digite a senha configurada durante a instalação.</p>
+
+        <h3>Passo 2 — Criar o banco de dados</h3>
+        <p>Dentro do terminal psql, execute o comando para criar um novo banco:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE DATABASE minha_primeira_db;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Listar todos os bancos de dados</h3>
+        <p>Verifique se o banco foi criado com sucesso:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+\l
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>A lista exibirá todos os bancos de dados existentes, incluindo o <code>minha_primeira_db</code>.</p>
+
+        <h3>Passo 4 — Conectar ao banco criado</h3>
+        <p>Para conectar-se ao banco recém-criado:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+\c minha_primeira_db
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>O terminal exibirá a mensagem: <code>You are now connected to database "minha_primeira_db" as user "postgres".</code></p>
+
+        <h3>Passo 5 — Remover um banco de dados (se necessário)</h3>
+        <p>Para excluir um banco de dados, primeiro desconecte-se dele e execute:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DROP DATABASE IF EXISTS minha_primeira_db;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Instale o PostgreSQL e crie um banco de dados chamado "escola"</h3>
+            <p>Após a instalação, utilize o terminal psql para criar o banco.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE DATABASE escola;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Liste todos os bancos de dados existentes no seu PostgreSQL</h3>
+            <p>Use o comando apropriado no terminal psql para visualizar a lista.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+\l
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Pesquise e liste 3 diferenças entre PostgreSQL e MySQL</h3>
+            <p>Faça uma pesquisa e escreva pelo menos 3 diferenças significativas entre esses dois SGBDs.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <ul>
+                <li><strong>Tipos de dados:</strong> PostgreSQL oferece tipos nativos como JSONB, Array, UUID e hstore, enquanto MySQL tem suporte mais limitado a tipos avançados.</li>
+                <li><strong>Conformidade ACID:</strong> PostgreSQL implementa ACID de forma completa e nativa. MySQL depende da engine InnoDB para suporte ACID completo.</li>
+                <li><strong>Padrões SQL:</strong> PostgreSQL segue rigorosamente os padrões SQL, sendo mais fiel à especificação. MySQL historicamente priorizou performance sobre conformidade, embora tenha melhorado nas versões recentes.</li>
+                <li><strong>Extensibilidade:</strong> PostgreSQL suporta extensões customizadas e múltiplas linguagens procedurais (PL/pgSQL, PL/Python, PL/Perl), enquanto MySQL tem um ecossistema de plugins mais restrito.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se o PostgreSQL foi instalado, se você conseguiu criar o banco de dados e se os comandos SQL executaram sem erros.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

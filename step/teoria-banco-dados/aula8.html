@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 8 - Stored Procedures e Funções - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 8</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 7 (Parte 2): Stored Procedures e Funções</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> O que é uma stored procedure, Criação de procedures, Execução de procedures (CALL), Passagem de parâmetros (IN, OUT, INOUT), Parâmetros de saída, Retorno de valores, Funções definidas pelo usuário (UDF).</div>
+    </header>
+    <main class="container">
+
+      <!-- O QUE SÃO STORED PROCEDURES -->
+      <section>
+        <h2>O que são Stored Procedures?</h2>
+        <p>
+          Uma <strong>Stored Procedure</strong> (procedimento armazenado) é um bloco de código SQL pré-compilado que fica armazenado no servidor de banco de dados e pode ser executado sob demanda. Diferente de queries enviadas pela aplicação, as procedures residem no próprio SGBD e são executadas inteiramente no lado do servidor.
+        </p>
+        <p>Os principais <strong>benefícios</strong> de usar stored procedures são:</p>
+        <ul>
+          <li><strong>Performance:</strong> o código é pré-compilado e o plano de execução é cacheado, reduzindo o tempo de parsing</li>
+          <li><strong>Reusabilidade:</strong> a lógica de negócio fica centralizada no banco e pode ser reutilizada por diferentes aplicações (web, mobile, BI, etc.)</li>
+          <li><strong>Segurança:</strong> é possível conceder permissão para executar uma procedure sem dar acesso direto às tabelas subjacentes</li>
+          <li><strong>Redução de tráfego de rede:</strong> em vez de enviar dezenas de queries pela rede, a aplicação chama uma única procedure</li>
+          <li><strong>Manutenibilidade:</strong> alterações na lógica de negócio são feitas em um único lugar, sem reimplantar a aplicação</li>
+          <li><strong>Controle transacional:</strong> procedures podem gerenciar transações com COMMIT e ROLLBACK internamente</li>
+        </ul>
+        <p>
+          <strong>Quando usar?</strong> Procedures são ideais para operações que envolvem múltiplas etapas (ex: cadastrar um pedido com itens e atualizar estoque), processos batch, rotinas de manutenção e validações complexas de negócio.
+        </p>
+      </section>
+
+      <!-- DIFERENÇA ENTRE PROCEDURES E FUNCTIONS -->
+      <section>
+        <h2>Diferença entre Procedures e Functions</h2>
+        <p>
+          Embora ambos sejam blocos de código armazenados no banco, procedures e funções têm diferenças importantes que determinam quando usar cada um:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Stored Procedure</th>
+              <th>Function (UDF)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chamada</strong></td>
+              <td><code>CALL nome_procedure(args)</code></td>
+              <td><code>SELECT nome_funcao(args)</code></td>
+            </tr>
+            <tr>
+              <td><strong>Retorno obrigatório</strong></td>
+              <td>Não — pode não retornar nada</td>
+              <td>Sim — sempre deve retornar um valor (escalar, tabela ou trigger)</td>
+            </tr>
+            <tr>
+              <td><strong>Uso em queries</strong></td>
+              <td>Não pode ser usada dentro de SELECT, WHERE, FROM</td>
+              <td>Pode ser usada em SELECT, WHERE, JOIN, etc.</td>
+            </tr>
+            <tr>
+              <td><strong>Controle de transação</strong></td>
+              <td>Pode conter COMMIT e ROLLBACK</td>
+              <td>Não pode conter COMMIT/ROLLBACK (transação gerenciada externamente)</td>
+            </tr>
+            <tr>
+              <td><strong>Parâmetros</strong></td>
+              <td>IN, OUT, INOUT</td>
+              <td>Somente IN (comportamento padrão), mas pode retornar via RETURN</td>
+            </tr>
+            <tr>
+              <td><strong>Efeitos colaterais</strong></td>
+              <td>Esperados — INSERT, UPDATE, DELETE são comuns</td>
+              <td>Devem ser minimizados — idealmente funções puras (imutáveis)</td>
+            </tr>
+            <tr>
+              <td><strong>Disponível no PostgreSQL desde</strong></td>
+              <td>Versão 11 (2018)</td>
+              <td>Sempre disponível</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <strong>Regra prática:</strong> Use procedures para operações que modificam dados e envolvem lógica transacional. Use funções para cálculos, transformações e consultas que precisam ser reutilizadas dentro de queries SQL.
+        </p>
+      </section>
+
+      <!-- CRIANDO PROCEDURES -->
+      <section>
+        <h2>Criando Procedures</h2>
+        <p>
+          A sintaxe para criar uma stored procedure no PostgreSQL é:
+        </p>
+
+        <h3>Procedure Simples</h3>
+        <p>Uma procedure que atualiza o estoque de um produto:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE atualizar_estoque(
+    prod_id INT,
+    qtd     INT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE produtos
+    SET estoque = estoque - qtd
+    WHERE id = prod_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Produto com ID % não encontrado.', prod_id;
+    END IF;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Para executar a procedure, use o comando <code>CALL</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CALL atualizar_estoque(1, 5);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Procedure que insere dados com validação</h3>
+        <p>Uma procedure para cadastrar um novo cliente com verificação de duplicidade de e-mail:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE cadastrar_cliente(
+    p_nome  VARCHAR(100),
+    p_email VARCHAR(150)
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_count INTEGER;
+BEGIN
+    -- Verifica se o e-mail já existe
+    SELECT COUNT(*) INTO v_count
+    FROM clientes
+    WHERE email = p_email;
+
+    IF v_count > 0 THEN
+        RAISE EXCEPTION 'Já existe um cliente cadastrado com o e-mail %.', p_email;
+    END IF;
+
+    -- Insere o novo cliente
+    INSERT INTO clientes (nome, email)
+    VALUES (p_nome, p_email);
+
+    RAISE NOTICE 'Cliente "%" cadastrado com sucesso!', p_nome;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CALL cadastrar_cliente('Ana Costa', 'ana@email.com');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PARÂMETROS IN, OUT, INOUT -->
+      <section>
+        <h2>Parâmetros IN, OUT e INOUT</h2>
+        <p>
+          Procedures no PostgreSQL suportam três modos de parâmetros:
+        </p>
+
+        <h3>Parâmetros IN (padrão)</h3>
+        <p>Recebem valores de entrada. É o modo padrão — o prefixo <code>IN</code> pode ser omitido:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE saudacao(IN nome VARCHAR)
+LANGUAGE plpgsql AS $$
+BEGIN
+    RAISE NOTICE 'Olá, %! Bem-vindo ao banco de dados.', nome;
+END;
+$$;
+
+CALL saudacao('Fabio');
+-- Saída: NOTICE: Olá, Fabio! Bem-vindo ao banco de dados.
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Parâmetros OUT</h3>
+        <p>Retornam valores para o chamador. São ideais para procedures que precisam devolver resultados:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE total_vendas_cliente(
+    IN  p_cliente_id INTEGER,
+    OUT p_total      NUMERIC,
+    OUT p_qtd_pedidos INTEGER
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    SELECT
+        COALESCE(SUM(valor_total), 0),
+        COUNT(*)
+    INTO p_total, p_qtd_pedidos
+    FROM pedidos
+    WHERE cliente_id = p_cliente_id;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Para capturar os valores de saída no psql ou em código:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CALL total_vendas_cliente(1, NULL, NULL);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>No pgAdmin ou em código de aplicação, os parâmetros OUT são capturados como resultados da chamada.</p>
+
+        <h3>Parâmetros INOUT</h3>
+        <p>Funcionam como entrada E saída — o valor passado pode ser lido e sobrescrito:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE aplicar_desconto(
+    INOUT p_valor  NUMERIC,
+    IN    p_percent NUMERIC
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    p_valor := p_valor * (1 - p_percent / 100.0);
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplo de uso (no psql você precisa de um DO block ou código cliente)
+DO $$
+DECLARE
+    v_preco NUMERIC := 1000;
+BEGIN
+    CALL aplicar_desconto(v_preco, 15);
+    RAISE NOTICE 'Preço com desconto: R$ %', v_preco;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PROCEDURE DE CADASTRO DE PEDIDO -->
+      <section>
+        <h2>Passo a passo: Procedure de cadastro de pedido</h2>
+        <p>
+          Vamos construir uma procedure completa que cadastra um pedido com itens, atualiza o estoque e gerencia a transação com COMMIT/ROLLBACK.
+        </p>
+
+        <h3>Passo 1 — Criar as tabelas necessárias</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE produtos (
+    id      SERIAL PRIMARY KEY,
+    nome    VARCHAR(100) NOT NULL,
+    preco   NUMERIC(10,2) NOT NULL,
+    estoque INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE pedidos (
+    id          SERIAL PRIMARY KEY,
+    cliente_id  INTEGER NOT NULL,
+    data_pedido TIMESTAMP DEFAULT NOW(),
+    valor_total NUMERIC(10,2) DEFAULT 0,
+    status      VARCHAR(20) DEFAULT 'pendente'
+);
+
+CREATE TABLE itens_pedido (
+    id         SERIAL PRIMARY KEY,
+    pedido_id  INTEGER REFERENCES pedidos(id),
+    produto_id INTEGER REFERENCES produtos(id),
+    quantidade INTEGER NOT NULL,
+    preco_unit NUMERIC(10,2) NOT NULL
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a procedure</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE criar_pedido(
+    IN p_cliente_id INTEGER,
+    IN p_itens      JSONB  -- Formato: [{"produto_id": 1, "quantidade": 2}, ...]
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_pedido_id   INTEGER;
+    v_item        JSONB;
+    v_produto_id  INTEGER;
+    v_quantidade  INTEGER;
+    v_preco_unit  NUMERIC(10,2);
+    v_estoque_atual INTEGER;
+    v_total       NUMERIC(10,2) := 0;
+BEGIN
+    -- Criar o pedido
+    INSERT INTO pedidos (cliente_id, data_pedido, status)
+    VALUES (p_cliente_id, NOW(), 'pendente')
+    RETURNING id INTO v_pedido_id;
+
+    -- Processar cada item do pedido
+    FOR v_item IN SELECT * FROM jsonb_array_elements(p_itens)
+    LOOP
+        v_produto_id := (v_item->>'produto_id')::INTEGER;
+        v_quantidade := (v_item->>'quantidade')::INTEGER;
+
+        -- Obter o preço do produto e verificar estoque
+        SELECT preco, estoque INTO v_preco_unit, v_estoque_atual
+        FROM produtos WHERE id = v_produto_id;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Produto ID % não encontrado.', v_produto_id;
+        END IF;
+
+        IF v_estoque_atual < v_quantidade THEN
+            RAISE EXCEPTION 'Estoque insuficiente para o produto ID % (estoque: %, solicitado: %).',
+                v_produto_id, v_estoque_atual, v_quantidade;
+        END IF;
+
+        -- Inserir item do pedido
+        INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unit)
+        VALUES (v_pedido_id, v_produto_id, v_quantidade, v_preco_unit);
+
+        -- Atualizar estoque
+        UPDATE produtos
+        SET estoque = estoque - v_quantidade
+        WHERE id = v_produto_id;
+
+        -- Acumular total
+        v_total := v_total + (v_preco_unit * v_quantidade);
+    END LOOP;
+
+    -- Atualizar o valor total do pedido
+    UPDATE pedidos
+    SET valor_total = v_total, status = 'confirmado'
+    WHERE id = v_pedido_id;
+
+    RAISE NOTICE 'Pedido #% criado com sucesso! Total: R$ %', v_pedido_id, v_total;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Erro ao criar pedido: %', SQLERRM;
+        RAISE;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Chamar a procedure</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CALL criar_pedido(1, '[
+    {"produto_id": 1, "quantidade": 2},
+    {"produto_id": 3, "quantidade": 1},
+    {"produto_id": 5, "quantidade": 4}
+]');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Verificar os resultados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM pedidos WHERE id = 1;
+SELECT * FROM itens_pedido WHERE pedido_id = 1;
+SELECT id, nome, estoque FROM produtos ORDER BY id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- FUNÇÕES DEFINIDAS PELO USUÁRIO -->
+      <section>
+        <h2>Funções Definidas pelo Usuário (UDF)</h2>
+        <p>
+          Uma <strong>UDF</strong> (User-Defined Function) é uma função criada pelo desenvolvedor que pode ser chamada dentro de queries SQL, assim como funções nativas (<code>UPPER()</code>, <code>NOW()</code>, <code>COUNT()</code>).
+        </p>
+
+        <h3>Função Escalar</h3>
+        <p>Funções escalares retornam um único valor. Exemplo: calcular desconto sobre um preço.</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION calcular_desconto(
+    preco       NUMERIC,
+    percentual  NUMERIC
+)
+RETURNS NUMERIC AS $$
+BEGIN
+    RETURN preco * (1 - percentual / 100.0);
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Agora você pode usar a função diretamente em um SELECT:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    preco,
+    calcular_desconto(preco, 10) AS preco_com_desconto
+FROM produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Função com RETURNS TABLE</h3>
+        <p>Funções também podem retornar múltiplas linhas e colunas, funcionando como uma tabela virtual:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION produtos_por_categoria(p_categoria VARCHAR)
+RETURNS TABLE (
+    nome_produto  VARCHAR,
+    preco         NUMERIC,
+    estoque       INTEGER,
+    valor_estoque NUMERIC
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nome,
+        p.preco,
+        p.estoque,
+        p.preco * p.estoque AS valor_estoque
+    FROM produtos p
+    WHERE p.categoria = p_categoria
+    ORDER BY p.preco DESC;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Para usar a função table-returning no SELECT:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM produtos_por_categoria('Eletrônicos');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Funções de linguagem SQL (simples e rápidas)</h3>
+        <p>Para cálculos simples sem lógica condicional, use <code>LANGUAGE SQL</code> — é mais rápido que PL/pgSQL:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION calcular_imc(peso NUMERIC, altura NUMERIC)
+RETURNS NUMERIC
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT ROUND((peso / (altura * altura))::NUMERIC, 2);
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CONTROLE DE FLUXO -->
+      <section>
+        <h2>Controle de Fluxo em PL/pgSQL</h2>
+        <p>
+          PL/pgSQL oferece estruturas de controle de fluxo semelhantes às linguagens de programação tradicionais.
+        </p>
+
+        <h3>IF / ELSIF / ELSE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION classificar_cliente(p_total_gasto NUMERIC)
+RETURNS VARCHAR AS $$
+BEGIN
+    IF p_total_gasto >= 10000 THEN
+        RETURN 'Premium';
+    ELSIF p_total_gasto >= 5000 THEN
+        RETURN 'Ouro';
+    ELSIF p_total_gasto >= 1000 THEN
+        RETURN 'Prata';
+    ELSE
+        RETURN 'Bronze';
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Testando a função:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    total_gasto,
+    classificar_cliente(total_gasto) AS categoria
+FROM resumo_clientes;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE (expressão)</h3>
+        <p>Para lógica mais limpa, o CASE pode ser usado diretamente em SQL:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    preco,
+    CASE
+        WHEN preco > 1000 THEN 'Caro'
+        WHEN preco BETWEEN 100 AND 1000 THEN 'Médio'
+        ELSE 'Barato'
+    END AS faixa_preco
+FROM produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LOOP com EXIT e CONTINUE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION contar_ate_n(n INT)
+RETURNS VOID AS $$
+DECLARE
+    i INT := 1;
+BEGIN
+    LOOP
+        RAISE NOTICE 'Número: %', i;
+        i := i + 1;
+        EXIT WHEN i > n;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WHILE LOOP</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION processar_lote(lote_id INT)
+RETURNS VOID AS $$
+DECLARE
+    v_processados INT := 0;
+BEGIN
+    WHILE v_processados < 100 LOOP
+        UPDATE pedidos
+        SET status = 'processado'
+        WHERE id IN (
+            SELECT id FROM pedidos
+            WHERE lote = lote_id AND status = 'pendente'
+            LIMIT 10
+        );
+
+        GET DIAGNOSTICS v_processados = ROW_COUNT;
+        RAISE NOTICE 'Processados: % registros', v_processados;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>FOR LOOP sobre resultados de query</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION reajustar_precos(p_percentual NUMERIC)
+RETURNS TABLE (produto VARCHAR, preco_antigo NUMERIC, preco_novo NUMERIC) AS $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN SELECT id, nome, preco FROM produtos ORDER BY preco DESC
+    LOOP
+        UPDATE produtos
+        SET preco = preco * (1 + p_percentual / 100.0)
+        WHERE id = r.id;
+
+        RETURN QUERY
+        SELECT r.nome, r.preco, r.preco * (1 + p_percentual / 100.0);
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM reajustar_precos(10);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRATAMENTO DE EXCEÇÕES -->
+      <section>
+        <h2>Tratamento de Exceções</h2>
+        <p>
+          PL/pgSQL permite capturar e tratar erros usando o bloco <code>EXCEPTION</code>, de forma similar ao try-catch de outras linguagens.
+        </p>
+
+        <h3>Estrutura básica do EXCEPTION</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION inserir_cliente_seguro(
+    p_nome  VARCHAR,
+    p_email VARCHAR,
+    p_cpf   VARCHAR
+)
+RETURNS TEXT AS $$
+BEGIN
+    INSERT INTO clientes (nome, email, cpf)
+    VALUES (p_nome, p_email, p_cpf);
+
+    RETURN 'Cliente cadastrado com sucesso!';
+
+EXCEPTION
+    WHEN unique_violation THEN
+        RETURN 'Erro: Já existe um cliente com este CPF ou e-mail.';
+
+    WHEN not_null_violation THEN
+        RETURN 'Erro: Nome, e-mail e CPF são campos obrigatórios.';
+
+    WHEN check_violation THEN
+        RETURN 'Erro: Violação de restrição de verificação (CHECK constraint).';
+
+    WHEN foreign_key_violation THEN
+        RETURN 'Erro: Referência a um registro que não existe.';
+
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Erro inesperado: % (SQLSTATE: %)', SQLERRM, SQLSTATE;
+        RETURN 'Erro interno ao cadastrar cliente.';
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>EXCEPTION em procedures com transação</h3>
+        <p>Dentro de procedures, o EXCEPTION cria um sub-bloco implícito de transação. Se um erro ocorrer, as operações do bloco são revertidas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE PROCEDURE transferir_valores(
+    p_conta_origem  INT,
+    p_conta_destino INT,
+    p_valor         NUMERIC
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_saldo NUMERIC;
+BEGIN
+    -- Verificar saldo da conta de origem
+    SELECT saldo INTO v_saldo
+    FROM contas WHERE id = p_conta_origem
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta de origem (ID %) não encontrada.', p_conta_origem;
+    END IF;
+
+    IF v_saldo < p_valor THEN
+        RAISE EXCEPTION 'Saldo insuficiente na conta % (saldo: R$ %, transferência: R$ %).',
+            p_conta_origem, v_saldo, p_valor;
+    END IF;
+
+    -- Verificar se conta destino existe
+    PERFORM id FROM contas WHERE id = p_conta_destino FOR UPDATE;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta de destino (ID %) não encontrada.', p_conta_destino;
+    END IF;
+
+    -- Realizar a transferência
+    UPDATE contas SET saldo = saldo - p_valor WHERE id = p_conta_origem;
+    UPDATE contas SET saldo = saldo + p_valor WHERE id = p_conta_destino;
+
+    -- Registrar transação
+    INSERT INTO transacoes (conta_origem, conta_destino, valor, data_hora)
+    VALUES (p_conta_origem, p_conta_destino, p_valor, NOW());
+
+    RAISE NOTICE 'Transferência de R$ % da conta % para a conta % realizada com sucesso.',
+        p_valor, p_conta_origem, p_conta_destino;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Falha na transferência: %', SQLERRM;
+        RAISE;
+END;
+$$;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SQLSTATES comuns</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>SQLSTATE</th>
+              <th>Nome da Condição</th>
+              <th>Quando ocorre</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>23505</code></td>
+              <td><code>unique_violation</code></td>
+              <td>Violacão de UNIQUE ou PRIMARY KEY</td>
+            </tr>
+            <tr>
+              <td><code>23502</code></td>
+              <td><code>not_null_violation</code></td>
+              <td>Tentativa de inserir NULL em coluna NOT NULL</td>
+            </tr>
+            <tr>
+              <td><code>23503</code></td>
+              <td><code>foreign_key_violation</code></td>
+              <td>FK referencia registro inexistente</td>
+            </tr>
+            <tr>
+              <td><code>23514</code></td>
+              <td><code>check_violation</code></td>
+              <td>Violacão de CHECK constraint</td>
+            </tr>
+            <tr>
+              <td><code>40P01</code></td>
+              <td><code>deadlock_detected</code></td>
+              <td>Deadlock entre transações</td>
+            </tr>
+            <tr>
+              <td><code>57014</code></td>
+              <td><code>query_canceled</code></td>
+              <td>Query cancelada pelo usuário ou timeout</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie uma procedure que transfere valores entre duas contas (com validação de saldo)</h3>
+            <p>Considere uma tabela <code>contas (id, titular, saldo)</code>. A procedure deve: verificar se ambas as contas existem, verificar se há saldo suficiente na conta de origem e registrar a operação em uma tabela <code>transferencias</code>.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabelas necessárias
+CREATE TABLE contas (
+    id      SERIAL PRIMARY KEY,
+    titular VARCHAR(100) NOT NULL,
+    saldo   NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (saldo >= 0)
+);
+
+CREATE TABLE transferencias (
+    id              SERIAL PRIMARY KEY,
+    conta_origem    INTEGER REFERENCES contas(id),
+    conta_destino   INTEGER REFERENCES contas(id),
+    valor           NUMERIC(12,2) NOT NULL,
+    data_transferencia TIMESTAMP DEFAULT NOW()
+);
+
+CREATE OR REPLACE PROCEDURE transferir(
+    p_origem  INTEGER,
+    p_destino INTEGER,
+    p_valor   NUMERIC
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_saldo_origem NUMERIC;
+BEGIN
+    -- Bloquear as linhas para evitar concorrência
+    SELECT saldo INTO v_saldo_origem
+    FROM contas WHERE id = p_origem FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta de origem % não encontrada.', p_origem;
+    END IF;
+
+    PERFORM id FROM contas WHERE id = p_destino FOR UPDATE;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Conta de destino % não encontrada.', p_destino;
+    END IF;
+
+    IF v_saldo_origem < p_valor THEN
+        RAISE EXCEPTION 'Saldo insuficiente. Saldo atual: R$ %, Valor solicitado: R$ %.',
+            v_saldo_origem, p_valor;
+    END IF;
+
+    IF p_valor <= 0 THEN
+        RAISE EXCEPTION 'O valor da transferência deve ser positivo.';
+    END IF;
+
+    UPDATE contas SET saldo = saldo - p_valor WHERE id = p_origem;
+    UPDATE contas SET saldo = saldo + p_valor WHERE id = p_destino;
+
+    INSERT INTO transferencias (conta_origem, conta_destino, valor)
+    VALUES (p_origem, p_destino, p_valor);
+
+    COMMIT;
+END;
+$$;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>O <code>FOR UPDATE</code> bloqueia as linhas durante a transação, evitando condições de corrida.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie uma função que calcula a idade a partir da data de nascimento</h3>
+            <p>A função deve receber uma data (<code>DATE</code>) e retornar a idade em anos completos (<code>INTEGER</code>), considerando a data atual. Use-a em um SELECT sobre uma tabela de pessoas.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION calcular_idade(data_nasc DATE)
+RETURNS INTEGER
+LANGUAGE SQL
+IMMUTABLE
+AS $$
+    SELECT DATE_PART('year', AGE(CURRENT_DATE, data_nasc))::INTEGER;
+$$;
+
+-- Exemplo de uso
+SELECT
+    nome,
+    data_nascimento,
+    calcular_idade(data_nascimento) AS idade
+FROM pessoas
+ORDER BY idade DESC;
+
+-- Filtrar maiores de idade com a função
+SELECT nome, calcular_idade(data_nascimento) AS idade
+FROM pessoas
+WHERE calcular_idade(data_nascimento) >= 18;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>A função <code>AGE()</code> do PostgreSQL retorna um intervalo entre duas datas. <code>DATE_PART('year', ...)</code> extrai o componente ano desse intervalo.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Crie uma procedure com tratamento de exceção para inserção segura de registros</h3>
+            <p>Crie uma procedure para inserir um novo usuário em uma tabela <code>usuarios (id, username, email, senha_hash)</code>. A procedure deve tratar: duplicidade de username, duplicidade de e-mail e campos obrigatórios nulos. Em caso de sucesso, retorne o ID do novo usuário via parâmetro OUT.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Tabela de usuários
+CREATE TABLE usuarios (
+    id          SERIAL PRIMARY KEY,
+    username    VARCHAR(50) NOT NULL UNIQUE,
+    email       VARCHAR(150) NOT NULL UNIQUE,
+    senha_hash  VARCHAR(255) NOT NULL,
+    criado_em   TIMESTAMP DEFAULT NOW()
+);
+
+-- Procedure segura de inserção
+CREATE OR REPLACE PROCEDURE criar_usuario(
+    IN  p_username   VARCHAR(50),
+    IN  p_email      VARCHAR(150),
+    IN  p_senha_hash VARCHAR(255),
+    OUT p_usuario_id INTEGER,
+    OUT p_mensagem   TEXT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    -- Validações iniciais
+    IF p_username IS NULL OR TRIM(p_username) = '' THEN
+        p_mensagem := 'Erro: username é obrigatório.';
+        RETURN;
+    END IF;
+
+    IF p_email IS NULL OR TRIM(p_email) = '' THEN
+        p_mensagem := 'Erro: e-mail é obrigatório.';
+        RETURN;
+    END IF;
+
+    IF p_senha_hash IS NULL OR TRIM(p_senha_hash) = '' THEN
+        p_mensagem := 'Erro: senha é obrigatória.';
+        RETURN;
+    END IF;
+
+    -- Inserção com tratamento de exceções
+    INSERT INTO usuarios (username, email, senha_hash)
+    VALUES (p_username, p_email, p_senha_hash)
+    RETURNING id INTO p_usuario_id;
+
+    p_mensagem := 'Usuário criado com sucesso!';
+
+EXCEPTION
+    WHEN unique_violation THEN
+        -- Identificar qual constraint foi violada
+        IF SQLERRM LIKE '%username%' THEN
+            p_mensagem := 'Erro: O username "' || p_username || '" já está em uso.';
+        ELSIF SQLERRM LIKE '%email%' THEN
+            p_mensagem := 'Erro: O e-mail "' || p_email || '" já está cadastrado.';
+        ELSE
+            p_mensagem := 'Erro: Registro duplicado.';
+        END IF;
+
+    WHEN not_null_violation THEN
+        p_mensagem := 'Erro: Todos os campos são obrigatórios.';
+
+    WHEN OTHERS THEN
+        p_mensagem := 'Erro inesperado: ' || SQLERRM;
+END;
+$$;
+
+-- Testando a procedure
+DO $$
+DECLARE
+    v_id      INTEGER;
+    v_msg     TEXT;
+BEGIN
+    CALL criar_usuario('joaosilva', 'joao@email.com', 'hash123', v_id, v_msg);
+    RAISE NOTICE 'ID: %, Mensagem: %', v_id, v_msg;
+END;
+$$;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>A procedure faz validação explícita antes do INSERT e trata as exceções do banco individualmente. O parâmetro OUT <code>p_usuario_id</code> retorna o ID do novo registro ou NULL em caso de erro.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Teste as procedures com diferentes parâmetros, verifique se as funções retornam os valores esperados e teste os tratamentos de exceção com entradas inválidas.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula8</code></li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

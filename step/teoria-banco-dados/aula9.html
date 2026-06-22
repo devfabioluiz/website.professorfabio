@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 9 - Segurança, Backup e Restauração - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 9</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 8: Segurança, Backup e Restauração</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Modelo de segurança no PostgreSQL, Usuários (CREATE USER/ROLE), Roles e herança de privilégios, Comando GRANT, Comando REVOKE, Backup e restauração (pg_dump, pg_restore, pg_dumpall), Tipos de backup (lógico, físico, contínuo), Criação e restauração de backups.</div>
+    </header>
+    <main class="container">
+
+      <!-- MODELO DE SEGURANÇA NO POSTGRESQL -->
+      <section>
+        <h2>Modelo de Segurança no PostgreSQL</h2>
+        <p>
+          O PostgreSQL implementa um modelo de segurança robusto baseado em <strong>Roles</strong> (papéis), <strong>Privileges</strong> (privilégios) e <strong>Object Ownership</strong> (propriedade de objetos). Entender esse modelo é fundamental para administrar bancos de dados de forma segura.
+        </p>
+        <h3>Conceitos Fundamentais</h3>
+        <ul>
+          <li><strong>Roles:</strong> entidades que podem representar usuários individuais ou grupos de usuários. No PostgreSQL, não há distinção conceitual entre "usuário" e "grupo" — ambos são roles.</li>
+          <li><strong>Privilégios:</strong> permissões específicas que determinam o que uma role pode fazer (SELECT, INSERT, UPDATE, DELETE, CONNECT, USAGE, EXECUTE, etc.).</li>
+          <li><strong>Object Ownership:</strong> o criador de um objeto (tabela, schema, banco de dados) é o seu proprietário e tem todos os privilégios sobre ele por padrão. O proprietário pode conceder privilégios a outras roles.</li>
+          <li><strong>Herança:</strong> uma role pode herdar privilégios de outras roles das quais é membro, simplificando o gerenciamento de permissões.</li>
+        </ul>
+        <h3>Métodos de Autenticação</h3>
+        <p>O PostgreSQL suporta diversos métodos de autenticação para controlar como os usuários se conectam ao banco:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Descrição</th>
+              <th>Uso Típico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>password</strong></td>
+              <td>Senha enviada em texto claro</td>
+              <td>Apenas em conexões locais seguras (não recomendado em produção)</td>
+            </tr>
+            <tr>
+              <td><strong>md5</strong></td>
+              <td>Senha enviada com hash MD5 (obsoleto, evitar)</td>
+              <td>Compatibilidade com versões antigas</td>
+            </tr>
+            <tr>
+              <td><strong>scram-sha-256</strong></td>
+              <td>Mecanismo moderno de desafio-resposta com SHA-256 (recomendado)</td>
+              <td>Conexões remotas e produção</td>
+            </tr>
+            <tr>
+              <td><strong>peer</strong></td>
+              <td>Mapeia usuário do SO para role do PostgreSQL (Linux)</td>
+              <td>Conexões locais no Linux</td>
+            </tr>
+            <tr>
+              <td><strong>trust</strong></td>
+              <td>Sem autenticação — qualquer um se conecta (perigoso!)</td>
+              <td>Apenas desenvolvimento local isolado</td>
+            </tr>
+            <tr>
+              <td><strong>cert</strong></td>
+              <td>Autenticação via certificado SSL/TLS</td>
+              <td>Ambientes corporativos com PKI</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Esses métodos são configurados no arquivo <code>pg_hba.conf</code>, localizado no diretório de dados do PostgreSQL.
+        </p>
+      </section>
+
+      <!-- GERENCIANDO USUÁRIOS (ROLES) -->
+      <section>
+        <h2>Gerenciando Usuários (Roles)</h2>
+        <p>
+          No PostgreSQL, todo acesso ao banco é feito através de uma <strong>role</strong>. Vamos aprender a criar, modificar e remover roles.
+        </p>
+
+        <h3>CREATE ROLE</h3>
+        <p>
+          O comando <code>CREATE ROLE</code> cria uma nova role. Por padrão, uma role criada com <code>CREATE ROLE</code> não tem permissão de login. Para permitir login, usamos o atributo <code>LOGIN</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Cria uma role com permissão de login e senha
+CREATE ROLE estagiario WITH LOGIN PASSWORD 'senha123';
+
+-- Cria uma role sem permissão de login (será usada como grupo)
+CREATE ROLE desenvolvedores;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CREATE USER</h3>
+        <p>
+          <code>CREATE USER</code> é um alias para <code>CREATE ROLE</code> com o atributo <code>LOGIN</code> implícito. Ambos produzem o mesmo resultado, mas <code>CREATE USER</code> é mais intuitivo para criar usuários que farão login.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Equivalente a: CREATE ROLE joao WITH LOGIN PASSWORD 'senha456';
+CREATE USER joao WITH PASSWORD 'senha456';
+
+-- Criando múltiplos usuários
+CREATE USER maria WITH PASSWORD 'senha789';
+CREATE USER carlos WITH PASSWORD 'senha321' CREATEDB;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>ALTER ROLE</h3>
+        <p>
+          O comando <code>ALTER ROLE</code> modifica atributos de uma role existente.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Conceder privilégios de superusuário
+ALTER ROLE joao WITH SUPERUSER;
+
+-- Definir validade da senha
+ALTER ROLE joao VALID UNTIL '2025-12-31';
+
+-- Renomear uma role
+ALTER ROLE estagiario RENAME TO estagiario_antigo;
+
+-- Alterar senha
+ALTER ROLE maria WITH PASSWORD 'nova_senha_segura';
+
+-- Remover privilégio de superusuário
+ALTER ROLE joao WITH NOSUPERUSER;
+
+-- Conceder permissão para criar bancos de dados
+ALTER ROLE carlos WITH CREATEDB;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DROP ROLE</h3>
+        <p>
+          O comando <code>DROP ROLE</code> remove uma role do sistema. Use <code>IF EXISTS</code> para evitar erros caso a role não exista.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remove uma role (se não existir, gera erro)
+DROP ROLE estagiario_antigo;
+
+-- Remove uma role com segurança (não gera erro se não existir)
+DROP ROLE IF EXISTS estagiario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atributos de Role</h3>
+        <p>Ao criar ou alterar uma role, podemos definir diversos atributos que controlam suas capacidades:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Atributo</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>LOGIN / NOLOGIN</code></td>
+              <td>Permite ou nega a capacidade de se conectar ao banco de dados</td>
+            </tr>
+            <tr>
+              <td><code>SUPERUSER / NOSUPERUSER</code></td>
+              <td>Superusuário ignora todas as verificações de permissão (use com extrema cautela)</td>
+            </tr>
+            <tr>
+              <td><code>CREATEDB / NOCREATEDB</code></td>
+              <td>Permite ou nega a criação de bancos de dados</td>
+            </tr>
+            <tr>
+              <td><code>CREATEROLE / NOCREATEROLE</code></td>
+              <td>Permite ou nega a criação, alteração e remoção de outras roles</td>
+            </tr>
+            <tr>
+              <td><code>REPLICATION</code></td>
+              <td>Permite iniciar replicação de streaming e backups físicos</td>
+            </tr>
+            <tr>
+              <td><code>INHERIT / NOINHERIT</code></td>
+              <td>Determina se a role herda automaticamente privilégios das roles das quais é membro</td>
+            </tr>
+            <tr>
+              <td><code>BYPASSRLS / NOBYPASSRLS</code></td>
+              <td>Ignora políticas de Row Level Security (RLS)</td>
+            </tr>
+            <tr>
+              <td><code>PASSWORD</code></td>
+              <td>Define a senha da role (apenas para roles com LOGIN)</td>
+            </tr>
+            <tr>
+              <td><code>VALID UNTIL</code></td>
+              <td>Define uma data de expiração para a senha da role</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ROLES E HERANÇA DE PRIVILÉGIOS -->
+      <section>
+        <h2>Roles e Herança de Privilégios</h2>
+        <p>
+          Uma das features mais poderosas do PostgreSQL é a capacidade de usar <strong>roles como grupos</strong>. Você cria uma role sem permissão de login, concede privilégios a ela, e depois adiciona usuários como membros dessa role. Os membros herdam automaticamente os privilégios do grupo.
+        </p>
+
+        <h3>Criando uma estrutura de grupo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- 1. Cria uma role que funcionará como grupo (sem LOGIN)
+CREATE ROLE desenvolvedores;
+
+-- 2. Cria usuários individuais (com LOGIN)
+CREATE USER joao WITH PASSWORD 'senha456';
+CREATE USER maria WITH PASSWORD 'senha789';
+
+-- 3. Adiciona usuários como membros do grupo
+GRANT desenvolvedores TO joao;
+GRANT desenvolvedores TO maria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Verificando membros de uma role</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Lista todas as roles do sistema
+\du
+
+-- Consulta via SQL os membros de roles
+SELECT
+    r.rolname AS role,
+    array_agg(m.rolname) AS membros
+FROM pg_roles r
+LEFT JOIN pg_auth_members am ON r.oid = am.roleid
+LEFT JOIN pg_roles m ON am.member = m.oid
+WHERE r.rolcanlogin = false
+GROUP BY r.rolname;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Ativando uma role</h3>
+        <p>
+          Para assumir temporariamente uma role da qual você é membro (e usar seus privilégios), use <code>SET ROLE</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Assume a role desenvolvedores (usando seus privilégios)
+SET ROLE desenvolvedores;
+
+-- Volta à role original
+RESET ROLE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Herança INHERIT vs NOINHERIT</h3>
+        <p>
+          Por padrão, o atributo <code>INHERIT</code> está ativado e os privilégios de grupos são herdados automaticamente. Com <code>NOINHERIT</code>, o usuário precisa usar <code>SET ROLE</code> explicitamente para acessar os privilégios do grupo.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Usuário que NÃO herda automaticamente os privilégios do grupo
+CREATE USER pedro WITH PASSWORD 'senha000' NOINHERIT;
+GRANT desenvolvedores TO pedro;
+-- pedro precisa usar SET ROLE desenvolvedores para ter os privilégios
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMANDO GRANT -->
+      <section>
+        <h2>Comando GRANT — Concedendo Privilégios</h2>
+        <p>
+          O comando <code>GRANT</code> concede privilégios específicos a roles. Os privilégios podem ser concedidos em diferentes níveis: banco de dados, schema, tabela, coluna, sequência e função.
+        </p>
+
+        <h3>Nível de Banco de Dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permite que a role se conecte ao banco de dados
+GRANT CONNECT ON DATABASE meubanco TO desenvolvedores;
+
+-- Permite criar schemas dentro do banco
+GRANT CREATE ON DATABASE meubanco TO desenvolvedores;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nível de Schema</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permite acessar objetos dentro do schema
+GRANT USAGE ON SCHEMA public TO desenvolvedores;
+
+-- Permite criar objetos (tabelas, views, funções) no schema
+GRANT CREATE ON SCHEMA public TO desenvolvedores;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nível de Tabela</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Concede privilégios específicos em uma tabela
+GRANT SELECT, INSERT, UPDATE ON clientes TO desenvolvedores;
+GRANT ALL PRIVILEGES ON produtos TO admin;
+
+-- Concede DELETE em todas as tabelas do schema
+GRANT DELETE ON ALL TABLES IN SCHEMA public TO gerentes;
+
+-- Privilégios em tabelas que serão criadas no futuro
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT ON TABLES TO leitura;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nível de Coluna</h3>
+        <p>
+          É possível conceder privilégios em colunas específicas de uma tabela, permitindo um controle de acesso muito granular:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permite SELECT apenas nas colunas nome e email da tabela clientes
+GRANT SELECT (nome, email) ON clientes TO estagiario;
+
+-- Permite UPDATE apenas na coluna telefone
+GRANT UPDATE (telefone) ON clientes TO estagiario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nível de Sequência</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permite usar a sequência (necessário para INSERT com SERIAL)
+GRANT USAGE ON SEQUENCE produtos_id_seq TO dev;
+
+-- Concede em todas as sequências do schema
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO dev;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Nível de Função</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Permite executar uma função
+GRANT EXECUTE ON FUNCTION calcular_desconto(numeric) TO dev;
+
+-- Concede em todas as funções do schema
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO dev;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="info-box">
+          <strong>Resumo dos Privilégios Disponíveis:</strong>
+          <ul>
+            <li><strong>SELECT:</strong> permite consultar dados (SELECT)</li>
+            <li><strong>INSERT:</strong> permite inserir novos registros</li>
+            <li><strong>UPDATE:</strong> permite modificar registros existentes</li>
+            <li><strong>DELETE:</strong> permite excluir registros</li>
+            <li><strong>TRUNCATE:</strong> permite esvaziar a tabela completamente</li>
+            <li><strong>REFERENCES:</strong> permite criar chaves estrangeiras referenciando a tabela</li>
+            <li><strong>TRIGGER:</strong> permite criar triggers na tabela</li>
+            <li><strong>CONNECT:</strong> permite conectar-se ao banco de dados</li>
+            <li><strong>CREATE:</strong> permite criar objetos (schemas, tabelas, etc.)</li>
+            <li><strong>USAGE:</strong> permite usar schemas, sequências e tipos</li>
+            <li><strong>EXECUTE:</strong> permite executar funções e procedures</li>
+            <li><strong>ALL PRIVILEGES:</strong> concede todos os privilégios aplicáveis ao objeto</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- COMANDO REVOKE -->
+      <section>
+        <h2>Comando REVOKE — Revogando Privilégios</h2>
+        <p>
+          O comando <code>REVOKE</code> remove privilégios previamente concedidos com <code>GRANT</code>. É uma prática de segurança essencial, especialmente ao remover usuários ou alterar funções.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Revoga um privilégio específico
+REVOKE INSERT ON clientes FROM estagiario;
+
+-- Revoga todos os privilégios em todas as tabelas do schema
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM ex_funcionario;
+
+-- Revoga acesso ao banco de dados
+REVOKE CONNECT ON DATABASE meubanco FROM ex_funcionario;
+
+-- Revoga privilégio em uma coluna específica
+REVOKE SELECT (email) ON clientes FROM estagiario;
+
+-- Revoga privilégio de executar uma função
+REVOKE EXECUTE ON FUNCTION calcular_desconto(numeric) FROM estagiario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="warning-box">
+          <strong>Atenção:</strong> Revogar privilégios de um proprietário de objeto não surte efeito — o proprietário sempre mantém todos os privilégios sobre seus objetos. Para remover completamente o acesso, é necessário transferir a propriedade (<code>ALTER TABLE ... OWNER TO ...</code>) ou excluir o objeto.
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: SEGURANÇA -->
+      <section>
+        <h2>Passo a passo: Configurando Segurança em um Banco</h2>
+        <p>
+          Vamos configurar um sistema de segurança completo para um banco de dados, criando uma hierarquia de roles com diferentes níveis de acesso.
+        </p>
+
+        <h3>Passo 1 — Criar as roles</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Role de administração (acesso total)
+CREATE ROLE admin WITH LOGIN PASSWORD 'admin_senha_segura' SUPERUSER;
+
+-- Role de desenvolvimento (DML completo)
+CREATE ROLE dev WITH LOGIN PASSWORD 'dev_senha_segura';
+
+-- Role de leitura (apenas SELECT)
+CREATE ROLE leitura WITH LOGIN PASSWORD 'leitura_senha_segura';
+
+-- Role de aplicação (INSERT, UPDATE, SELECT, sem DELETE)
+CREATE ROLE app WITH LOGIN PASSWORD 'app_senha_segura';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Conceder acesso ao banco e schema</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Todos precisam de CONNECT ao banco
+GRANT CONNECT ON DATABASE meubanco TO dev, leitura, app;
+
+-- Todos precisam de USAGE no schema public
+GRANT USAGE ON SCHEMA public TO dev, leitura, app;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Conceder privilégios nas tabelas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Dev: acesso completo a dados (DML)
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dev;
+
+-- Leitura: apenas consultas
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO leitura;
+
+-- App: operações de negócio, sem DELETE
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO app;
+
+-- Conceder acesso a sequências (necessário para SERIAL)
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO dev, app;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Configurar privilégios para objetos futuros</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Para que novas tabelas herdem automaticamente os privilégios:
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dev;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT ON TABLES TO leitura;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE ON TABLES TO app;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE ON SEQUENCES TO dev, app;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Verificar a configuração</h3>
+        <p>Para verificar os privilégios concedidos, utilize as consultas a seguir:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar privilégios de tabela por role
+SELECT
+    grantee,
+    table_schema,
+    table_name,
+    privilege_type
+FROM information_schema.table_privileges
+WHERE table_schema = 'public'
+ORDER BY grantee, table_name, privilege_type;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- O QUE É BACKUP E RESTAURAÇÃO -->
+      <section>
+        <h2>O que é Backup e Restauração?</h2>
+        <p>
+          <strong>Backup</strong> é o processo de criar uma cópia de segurança dos dados e da estrutura do banco de dados. <strong>Restauração</strong> é o processo inverso: recuperar os dados a partir de um backup.
+        </p>
+        <p>
+          Backups são a última linha de defesa contra perda de dados. Sem um plano de backup adequado, você corre o risco de perder todo o trabalho em caso de:
+        </p>
+        <ul>
+          <li><strong>Falhas de hardware:</strong> discos rígidos queimados, servidores danificados</li>
+          <li><strong>Erros humanos:</strong> DROP TABLE acidental, DELETE sem WHERE</li>
+          <li><strong>Desastres naturais:</strong> incêndios, inundações, quedas de energia</li>
+          <li><strong>Ataques maliciosos:</strong> ransomware, invasões, sabotagem</li>
+          <li><strong>Migração de servidores:</strong> mover o banco para outro ambiente</li>
+        </ul>
+        <div class="warning-box">
+          <strong>Regra de ouro do DBA:</strong> "Se você não testou a restauração do seu backup, você não tem um backup — você tem apenas uma esperança."
+        </div>
+      </section>
+
+      <!-- TIPOS DE BACKUP -->
+      <section>
+        <h2>Tipos de Backup</h2>
+        <p>O PostgreSQL oferece três abordagens principais para backup:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Ferramenta</th>
+              <th>Descrição</th>
+              <th>Vantagens</th>
+              <th>Desvantagens</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lógico</strong></td>
+              <td><code>pg_dump</code><br><code>pg_dumpall</code></td>
+              <td>Gera comandos SQL para recriar a estrutura e os dados do banco</td>
+              <td>Portável entre versões e arquiteturas, permite restaurar objetos individuais, pode ser editado manualmente</td>
+              <td>Mais lento que backup físico, pode bloquear operações em tabelas grandes</td>
+            </tr>
+            <tr>
+              <td><strong>Físico</strong></td>
+              <td>Cópia do diretório de dados</td>
+              <td>Cópia em nível de arquivo do diretório <code>PGDATA</code></td>
+              <td>Extremamente rápido, ideal para volumes muito grandes de dados</td>
+              <td>Restauração somente no mesmo SO e arquitetura, não permite restaurar objetos individuais, requer que o servidor esteja parado</td>
+            </tr>
+            <tr>
+              <td><strong>Contínuo (WAL)</strong></td>
+              <td>WAL Archiving + pg_basebackup</td>
+              <td>Arquiva continuamente os Write-Ahead Logs, permitindo Point-In-Time Recovery (PITR)</td>
+              <td>Permite restaurar para qualquer ponto no tempo, perda mínima de dados (RPO próximo de zero), ideal para ambientes críticos</td>
+              <td>Mais complexo de configurar e gerenciar, requer mais espaço em disco, manutenção contínua</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Write-Ahead Log (WAL)</h3>
+        <p>
+          O WAL é o mecanismo central de durabilidade do PostgreSQL. Toda alteração é primeiro escrita no log (WAL) antes de ser aplicada aos arquivos de dados. Esse log pode ser arquivado para backup contínuo, permitindo restaurar o banco para qualquer ponto no tempo (Point-In-Time Recovery — PITR).
+        </p>
+      </section>
+
+      <!-- FERRAMENTAS DE BACKUP DO POSTGRESQL -->
+      <section>
+        <h2>Ferramentas de Backup do PostgreSQL</h2>
+
+        <h3>pg_dump — Backup Lógico de um Banco Específico</h3>
+        <p>
+          O <code>pg_dump</code> é a ferramenta mais utilizada para backups lógicos. Ele gera um arquivo contendo os comandos SQL necessários para recriar o banco de dados.
+        </p>
+
+        <h4>Backup em formato texto (SQL puro)</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+pg_dump -U postgres -d meubanco -f backup.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Backup em formato customizado (binário, comprimido)</h4>
+        <p>O formato customizado (<code>-Fc</code>) é mais eficiente, gera arquivos menores e permite restaurar objetos seletivamente com <code>pg_restore</code>.</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+pg_dump -U postgres -d meubanco -Fc -f backup.dump
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Backup apenas do schema (estrutura)</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+pg_dump -U postgres -d meubanco --schema-only -f schema.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Backup apenas dos dados</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+pg_dump -U postgres -d meubanco --data-only -f dados.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Backup de tabelas específicas</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+pg_dump -U postgres -d meubanco -t clientes -t pedidos -f tabelas.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Backup com compressão</h4>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Formato texto com compressão gzip
+pg_dump -U postgres -d meubanco | gzip > backup.sql.gz
+
+# Formato customizado com nível de compressão 9 (máximo)
+pg_dump -U postgres -d meubanco -Fc -Z9 -f backup_compressed.dump
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>pg_dumpall — Backup Lógico de Todo o Cluster</h3>
+        <p>
+          O <code>pg_dumpall</code> faz backup de todos os bancos de dados do cluster, incluindo objetos globais como roles e tablespaces.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup completo do cluster (todos os bancos + roles + tablespaces)
+pg_dumpall -U postgres -f backup_total.sql
+
+# Backup apenas das roles (objetos globais)
+pg_dumpall -U postgres --roles-only -f roles.sql
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Opções úteis do pg_dump</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Opção</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>-U usuario</code></td>
+              <td>Usuário de conexão</td>
+            </tr>
+            <tr>
+              <td><code>-d banco</code></td>
+              <td>Nome do banco de dados</td>
+            </tr>
+            <tr>
+              <td><code>-f arquivo</code></td>
+              <td>Arquivo de saída</td>
+            </tr>
+            <tr>
+              <td><code>-F formato</code></td>
+              <td>Formato: p (plain/texto), c (custom), t (tar), d (directory)</td>
+            </tr>
+            <tr>
+              <td><code>-t tabela</code></td>
+              <td>Fazer backup apenas de tabela(s) específica(s)</td>
+            </tr>
+            <tr>
+              <td><code>-Z 0-9</code></td>
+              <td>Nível de compressão (0 = sem, 9 = máxima)</td>
+            </tr>
+            <tr>
+              <td><code>--schema-only</code></td>
+              <td>Apenas estrutura, sem dados</td>
+            </tr>
+            <tr>
+              <td><code>--data-only</code></td>
+              <td>Apenas dados, sem estrutura</td>
+            </tr>
+            <tr>
+              <td><code>--no-owner</code></td>
+              <td>Não incluir comandos de propriedade (útil para restaurar em outro usuário)</td>
+            </tr>
+            <tr>
+              <td><code>--no-privileges</code></td>
+              <td>Não incluir comandos GRANT/REVOKE</td>
+            </tr>
+            <tr>
+              <td><code>--verbose</code></td>
+              <td>Exibe progresso detalhado durante o dump</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- RESTAURAÇÃO DE BACKUPS -->
+      <section>
+        <h2>Restauração de Backups</h2>
+        <p>
+          A restauração é o processo de recuperar um banco de dados a partir de um backup. O método depende do formato do backup.
+        </p>
+
+        <h3>Restaurando backup em formato texto (SQL)</h3>
+        <p>Para arquivos gerados com <code>pg_dump -Fp</code> ou <code>pg_dumpall</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Restaurar em um banco existente
+psql -U postgres -d meubanco -f backup.sql
+
+# Restaurar com saída detalhada (verbose)
+psql -U postgres -d meubanco -f backup.sql -v ON_ERROR_STOP=1
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Restaurando backup em formato customizado (.dump)</h3>
+        <p>Para arquivos gerados com <code>pg_dump -Fc</code>, use o <code>pg_restore</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Restaurar backup customizado em um banco existente
+pg_restore -U postgres -d meubanco backup.dump
+
+# Restaurar apenas uma tabela específica do backup customizado
+pg_restore -U postgres -d meubanco -t clientes backup.dump
+
+# Listar o conteúdo do backup antes de restaurar
+pg_restore -l backup.dump
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo a passo: Criar banco e restaurar backup</h3>
+        <p>Este é o fluxo completo para migrar ou recuperar um banco de dados:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Passo 1: Criar um novo banco de dados vazio
+createdb -U postgres novo_banco
+
+# Passo 2: Restaurar o backup no novo banco (formato texto)
+psql -U postgres -d novo_banco -f backup.sql
+
+# OU para formato customizado:
+pg_restore -U postgres -d novo_banco backup.dump
+
+# Passo 3: Verificar se a restauração foi bem-sucedida
+psql -U postgres -d novo_banco -c "\dt"
+psql -U postgres -d novo_banco -c "SELECT count(*) FROM clientes;"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Backup e restauração com pipe (sem arquivo intermediário)</h3>
+        <p>Para migrar diretamente entre bancos sem criar arquivo no disco:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+# Backup de um banco e restauração direta em outro
+pg_dump -U postgres -d banco_origem | psql -U postgres -d banco_destino
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Opções úteis do pg_restore</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Opção</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>-d banco</code></td>
+              <td>Nome do banco de destino</td>
+            </tr>
+            <tr>
+              <td><code>-t tabela</code></td>
+              <td>Restaurar apenas tabela(s) específica(s)</td>
+            </tr>
+            <tr>
+              <td><code>-l</code></td>
+              <td>Listar conteúdo do backup (sem restaurar)</td>
+            </tr>
+            <tr>
+              <td><code>-C</code></td>
+              <td>Criar o banco de dados antes de restaurar</td>
+            </tr>
+            <tr>
+              <td><code>-c</code></td>
+              <td>Limpar (drop) objetos antes de recriá-los</td>
+            </tr>
+            <tr>
+              <td><code>--no-owner</code></td>
+              <td>Não restaurar propriedade dos objetos</td>
+            </tr>
+            <tr>
+              <td><code>--no-privileges</code></td>
+              <td>Não restaurar privilégios (GRANT/REVOKE)</td>
+            </tr>
+            <tr>
+              <td><code>-j n</code></td>
+              <td>Restaurar com n jobs paralelos (apenas formato directory)</td>
+            </tr>
+            <tr>
+              <td><code>--verbose</code></td>
+              <td>Exibir progresso detalhado</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="success-box">
+          <strong>Boas práticas de backup:</strong>
+          <ul>
+            <li>Automatize backups com cron (Linux) ou Task Scheduler (Windows)</li>
+            <li>Armazene backups em local diferente do servidor de banco de dados</li>
+            <li>Teste a restauração periodicamente para garantir que os backups são válidos</li>
+            <li>Mantenha múltiplas gerações de backup (ex: diário dos últimos 7 dias + semanal dos últimos 30 dias)</li>
+            <li>Documente o procedimento de restauração — em uma emergência, não haverá tempo para pesquisar</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie 3 roles (admin_app, operador, relatorios) com diferentes níveis de permissão e aplique os GRANTs</h3>
+            <p>
+              Considere um banco de dados de uma loja com tabelas <code>produtos</code>, <code>vendas</code> e <code>clientes</code>.
+              Defina as permissões conforme abaixo:
+            </p>
+            <ul>
+              <li><strong>admin_app:</strong> acesso total (SELECT, INSERT, UPDATE, DELETE) em todas as tabelas</li>
+              <li><strong>operador:</strong> SELECT, INSERT, UPDATE em vendas e produtos; apenas SELECT em clientes</li>
+              <li><strong>relatorios:</strong> apenas SELECT em todas as tabelas</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Criar as roles
+CREATE ROLE admin_app WITH LOGIN PASSWORD 'admin123';
+CREATE ROLE operador WITH LOGIN PASSWORD 'oper123';
+CREATE ROLE relatorios WITH LOGIN PASSWORD 'rela123';
+
+-- Acesso ao banco e schema
+GRANT CONNECT ON DATABASE loja TO admin_app, operador, relatorios;
+GRANT USAGE ON SCHEMA public TO admin_app, operador, relatorios;
+
+-- admin_app: acesso total
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_app;
+
+-- operador: DML em vendas e produtos, SELECT em clientes
+GRANT SELECT, INSERT, UPDATE ON vendas, produtos TO operador;
+GRANT SELECT ON clientes TO operador;
+
+-- relatorios: apenas leitura
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO relatorios;
+
+-- Sequências para INSERT funcionar
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO admin_app, operador;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Escreva o comando bash para criar um backup lógico do banco "loja" usando pg_dump</h3>
+            <p>Utilize o formato customizado e salve como <code>backup_loja.dump</code>.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+pg_dump -U postgres -d loja -Fc -f backup_loja.dump
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Escreva os comandos bash para criar um novo banco "loja_restaurada" e restaurar nele o backup do exercício anterior</h3>
+            <p>O backup está no formato customizado (<code>backup_loja.dump</code>).</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-bash">
+createdb -U postgres loja_restaurada
+pg_restore -U postgres -d loja_restaurada backup_loja.dump
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se você conseguiu criar as roles, conceder privilégios, fazer o backup e restaurá-lo corretamente.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando:
+          <code>aula9</code>
+        </p>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

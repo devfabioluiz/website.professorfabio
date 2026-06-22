@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Curso Teoria de Banco de Dados - Versão 2.1.0</title>
+    <link rel="stylesheet" href="../../estilos/estilos-planos.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Teoria de Banco de Dados</h1>
+      <h2>Versão 2.1.0</h2>
+      <h3>Duração do Curso – 22 horas (11 aulas)</h3>
+
+      <h2>Objetivo do Curso</h2>
+      <p>
+        Treinar o aluno nos fundamentos da teoria de banco de dados. Explicar os
+        princípios de construção de bancos de dados. Ensinar a usar a linguagem
+        de consulta estruturada SQL para interagir com os dados. Explorar várias
+        construções da linguagem de consulta SQL para a construção correta de
+        consultas otimizadas.
+      </p>
+
+      <h3>Ao Final do Curso</h3>
+      <ul>
+        <li>Projetar bancos de dados</li>
+        <li>Aplicar formas normais para normalizar tabelas</li>
+        <li>Interagir com dados usando SQL</li>
+        <li>Criar consultas e subconsultas multitabulares</li>
+        <li>Usar funções de agregação</li>
+        <li>Entender os princípios de aplicação de várias construções SQL</li>
+        <li>
+          Desenvolver procedimentos armazenados, triggers e funções definidas
+          pelo usuário
+        </li>
+        <li>Usar funções de janela (window functions)</li>
+        <li>
+          Criar e modificar estruturas de banco de dados usando mecanismos DDL
+        </li>
+        <li>Aplicar mecanismos de backup e recuperação</li>
+        <li>Compreender os fundamentos da segurança no PostgreSQL</li>
+      </ul>
+
+      <h2>Avaliação do Curso</h2>
+      <p>
+        Após a conclusão deste curso, o aluno completará uma tarefa prática e um
+        exame teórico com base no material do curso. Para ser admitido ao exame,
+        todas as tarefas de casa e práticas devem ser concluídas. A tarefa
+        prática deve abranger o máximo de material de várias seções do curso.
+      </p>
+      <p>
+        Recomenda-se o uso do PostgreSQL como o SGBD para este curso. No
+        entanto, os MySQL ou Mariadb podem ser considerados como uma
+        alternativa.
+      </p>
+
+      <h2>Conteúdo Programático</h2>
+
+      <section>
+        <h2>Módulo 1 (2 horas)</h2>
+        <h3>Introdução à Teoria de Banco de Dados</h3>
+        <ol>
+          <li>
+            Introdução à Teoria de Banco de Dados
+            <ol type="a">
+              <li>História e etapas de desenvolvimento</li>
+              <li>
+                Conceitos de banco de dados e sistema de gerenciamento de banco
+                de dados
+              </li>
+              <li>
+                Comparação dos modelos de banco de dados existentes
+                <ul>
+                  <li>Modelo de arquivos</li>
+                  <li>Modelo de rede</li>
+                  <li>Modelo hierárquico</li>
+                  <li>Modelo relacional</li>
+                  <li>Modelo orientado a objetos</li>
+                  <li>Bancos de dados não relacionais</li>
+                </ul>
+              </li>
+              <li>Conceito do modelo de banco de dados relacional</li>
+              <li>As Doze Regras de Codd</li>
+              <li>
+                Análise comparativa do SGBD PostgreSQL com os sistemas de
+                gerenciamento de banco de dados existentes
+              </li>
+            </ol>
+          </li>
+          <li>
+            Fundamentos da interação com PostgreSQL
+            <ol type="a">
+              <li>Instalação do PostgreSQL</li>
+              <li>
+                Ferramentas e utilitários de gerenciamento do PostgreSQL
+              </li>
+              <li>
+                Gerenciamento de banco de dados
+                <ul>
+                  <li>Criação de um banco de dados</li>
+                  <li>Configuração de parâmetros do banco de dados</li>
+                  <li>Alteração do tamanho do banco de dados</li>
+                  <li>Renomeação do banco de dados</li>
+                  <li>Gerenciamento de grupos de arquivos</li>
+                  <li>Exclusão de um banco de dados</li>
+                </ul>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 2 (2 horas)</h2>
+        <h3>Fundamentos da Interação com PostgreSQL</h3>
+        <ol>
+          <li>
+            Tabelas
+            <ol type="a">
+              <li>Chave primária</li>
+              <li>Valor padrão</li>
+              <li>Unicidade</li>
+            </ol>
+          </li>
+          <li>
+            Tipos de dados
+            <ol type="a">
+              <li>Tipos inteiros</li>
+              <li>Tipos de dados para armazenamento de texto</li>
+              <li>Tipos de dados de ponto flutuante</li>
+              <li>Tipos de dados para armazenamento de data e hora</li>
+              <li>Tipos de dados de ponto fixo</li>
+              <li>Outros tipos de dados</li>
+            </ol>
+          </li>
+          <li>
+            Índice
+            <ol type="a">
+              <li>O que é um índice?</li>
+              <li>Objetivos do índice</li>
+              <li>Estrutura interna do índice</li>
+            </ol>
+          </li>
+          <li>Bancos de dados e tabelas do sistema</li>
+          <li>
+            Consultas
+            <ol type="a">
+              <li>Introdução ao SQL</li>
+              <li>
+                Linguagem SQL
+                <ul>
+                  <li>Padrões SQL</li>
+                  <li>Dialetos SQL</li>
+                </ul>
+              </li>
+              <li>Conceitos de DDL, DML, DCL</li>
+            </ol>
+          </li>
+          <li>Criação de tabelas (comando CREATE TABLE)</li>
+          <li>Modificação de tabelas (comando ALTER TABLE)</li>
+          <li>Exclusão de tabelas (comando DROP TABLE)</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 3 (2 horas)</h2>
+        <h3>Consultas SELECT, INSERT, UPDATE, DELETE</h3>
+        <ol>
+          <li>
+            Comando SELECT
+            <ol type="a">
+              <li>Cláusula SELECT</li>
+              <li>Cláusula FROM</li>
+              <li>Cláusula WHERE</li>
+              <li>Cláusula ORDER BY</li>
+            </ol>
+          </li>
+          <li>Palavras-chave IN, BETWEEN, LIKE</li>
+          <li>Uso de LIMIT para seleção de dados</li>
+          <li>Uso de CASE WHEN</li>
+          <li>Comando INSERT</li>
+          <li>Comando UPDATE</li>
+          <li>Comando DELETE</li>
+          <li>Conceito de transação. Uso de transações</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 4 (2 horas)</h2>
+        <h3>Bancos de Dados Multitabulares com múltiplas (várias) tabelas</h3>
+        <ol>
+          <li>
+            Anomalias de interação com um banco de dados de tabela única
+            <ol type="a">
+              <li>Anomalias de atualização</li>
+              <li>Anomalias de inserção</li>
+              <li>Anomalias de exclusão</li>
+            </ol>
+          </li>
+          <li>
+            Princípios de criação de um banco de dados multitabular
+            <ol type="a">
+              <li>Razões para criar um banco de dados multitabular</li>
+              <li>Chave estrangeira</li>
+              <li>Relacionamentos. Tipos de relacionamentos</li>
+              <li>Integridade dos dados</li>
+              <li>
+                Normalização
+                <ul>
+                  <li>Necessidade de normalização</li>
+                  <li>Conceito de forma normal</li>
+                  <li>Primeira forma normal</li>
+                  <li>Segunda forma normal</li>
+                  <li>Terceira forma normal</li>
+                  <li>Forma Normal de Boyce-Codd</li>
+                </ul>
+              </li>
+            </ol>
+          </li>
+          <li>
+            Consultas multitabulares
+            <ol type="a">
+              <li>Princípios de criação de consultas multitabulares</li>
+              <li>Produto cartesiano</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 5 (2 horas)</h2>
+        <h3>Funções de Agregação, Subconsultas, Funções de Janela</h3>
+        <ol>
+          <li>
+            Funções de agregação
+            <ol type="a">
+              <li>
+                Função COUNT
+                <ul>
+                  <li>Uso de COUNT com nome de coluna</li>
+                  <li>Uso de COUNT(*)</li>
+                </ul>
+              </li>
+              <li>
+                Função AVG
+                <ul>
+                  <li>Uso de AVG</li>
+                  <li>Uso de AVG com ALL</li>
+                  <li>Uso de AVG com DISTINCT</li>
+                </ul>
+              </li>
+              <li>Função SUM</li>
+              <li>Função MIN</li>
+              <li>Função MAX</li>
+            </ol>
+          </li>
+          <li>Conceito de agrupamento. Palavra-chave GROUP BY</li>
+          <li>
+            Palavra-chave HAVING
+            <ol type="a">
+              <li>Princípios de uso do HAVING</li>
+              <li>Análise comparativa entre HAVING e WHERE</li>
+            </ol>
+          </li>
+          <li>
+            Funções de janela (window functions)
+            <ol type="a">
+              <li>O que são funções de janela?</li>
+              <li>Objetivos das funções de janela</li>
+              <li>Tipos de funções de janela</li>
+              <li>Exemplos de uso de funções de janela</li>
+            </ol>
+          </li>
+          <li>
+            Subconsultas
+            <ol type="a">
+              <li>Necessidade de criar e usar subconsultas</li>
+              <li>
+                Comparação entre subconsultas e consultas multitabulares
+              </li>
+              <li>Princípio de funcionamento das subconsultas</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 6 (2 horas)</h2>
+        <h3>Junções</h3>
+        <ol>
+          <li>
+            Operadores para uso em subconsultas
+            <ol type="a">
+              <li>Operador EXISTS</li>
+              <li>Operadores ANY/SOME</li>
+              <li>Operador ALL</li>
+            </ol>
+          </li>
+          <li>
+            Combinação de resultados de consultas
+            <ol type="a">
+              <li>Princípios de combinação</li>
+              <li>Palavra-chave UNION</li>
+              <li>Palavra-chave UNION ALL</li>
+            </ol>
+          </li>
+          <li>
+            Junções (JOINs)
+            <ol type="a">
+              <li>Conceito de inner join</li>
+              <li>Conceito de left join</li>
+              <li>Conceito de right join</li>
+              <li>Conceito de full join</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 7 (4 horas)</h2>
+        <h3>Views, Triggers, Stored Procedures</h3>
+        <ol>
+          <li>
+            Views
+            <ol type="a">
+              <li>Criação de views</li>
+              <li>Modificação de views</li>
+              <li>Exclusão de views</li>
+              <li>Alteração de dados através de views</li>
+            </ol>
+          </li>
+          <li>
+            Triggers
+            <ol type="a">
+              <li>O que é um trigger?</li>
+              <li>Tipos de triggers: BEFORE, AFTER e INSTEAD OF</li>
+              <li>Trigger INSERT</li>
+              <li>Trigger UPDATE</li>
+              <li>Trigger DELETE</li>
+            </ol>
+          </li>
+          <li>
+            Stored Procedures
+            <ol type="a">
+              <li>O que é uma stored procedure?</li>
+              <li>Criação de procedures</li>
+              <li>Execução de procedures</li>
+              <li>Passagem de parâmetros</li>
+              <li>Parâmetros de saída</li>
+              <li>Retorno de valores</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 8 (2 horas)</h2>
+        <h3>Segurança. Backup e Restauração</h3>
+        <ol>
+          <li>
+            Segurança
+            <ol type="a">
+              <li>Como funciona o modelo de segurança no PostgreSQL?</li>
+              <li>Usuários</li>
+              <li>Roles</li>
+              <li>Comando GRANT</li>
+              <li>Comando REVOKE</li>
+            </ol>
+          </li>
+          <li>
+            Backup e Restauração
+            <ol type="a">
+              <li>O que é backup e restauração?</li>
+              <li>Backup e restauração. Necessidade e viabilidade</li>
+              <li>Tipos de backup</li>
+              <li>Ferramentas de backup do PostgreSQL</li>
+              <li>Criação de backups</li>
+              <li>Restauração de backups</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Módulo 9 (2 horas)</h2>
+        <h3>Exame</h3>
+      </section>
+    </div>
+
+    <div class="button-container">
+      <button class="btn-print" onclick="window.print()">Imprimir</button>
+    </div>
+    <div class="button-container">
+      <a class="btn-indice" href="../indice-step.html">
+        Ir para índice
+      </a>
+    </div>
+  </body>
+</html>

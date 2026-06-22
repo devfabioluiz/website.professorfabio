@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2 - Fundamentos da Interação com PostgreSQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 2</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 2: Fundamentos da Interação com PostgreSQL</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Tabelas (chave primária, valor padrão, unicidade), Tipos de dados (inteiros, texto, ponto flutuante, data/hora, ponto fixo), Índices, Bancos e tabelas do sistema, Introdução ao SQL (DDL, DML, DCL), CREATE TABLE, ALTER TABLE, DROP TABLE.</div>
+    </header>
+    <main class="container">
+
+      <!-- TABELAS NO POSTGRESQL -->
+      <section>
+        <h2>Tabelas no PostgreSQL</h2>
+        <p>
+          Uma <strong>tabela</strong> é a estrutura fundamental de um banco de dados relacional. Ela é composta por colunas (atributos) e linhas (registros/tuplas). Cada tabela representa uma entidade do mundo real — como alunos, cursos, produtos ou pedidos.
+        </p>
+        <h3>Elementos Essenciais de uma Tabela</h3>
+        <ul>
+          <li><strong>Nome da tabela:</strong> identificador único dentro do esquema (schema)</li>
+          <li><strong>Colunas:</strong> cada coluna possui um nome e um tipo de dado obrigatório</li>
+          <li><strong>Chave Primária (PRIMARY KEY):</strong> identifica unicamente cada linha da tabela</li>
+          <li><strong>Valor Padrão (DEFAULT):</strong> valor atribuído automaticamente quando nenhum é fornecido</li>
+          <li><strong>Unicidade (UNIQUE):</strong> garante que não haja valores duplicados em uma coluna ou conjunto de colunas</li>
+        </ul>
+        <p>
+          Veja um exemplo completo de definição de tabela:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE alunos (
+    id              SERIAL PRIMARY KEY,
+    nome            VARCHAR(100) NOT NULL,
+    email           VARCHAR(100) UNIQUE NOT NULL,
+    data_nascimento DATE,
+    ativo           BOOLEAN DEFAULT TRUE,
+    criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TIPOS DE DADOS -->
+      <section>
+        <h2>Tipos de Dados no PostgreSQL</h2>
+        <p>
+          O PostgreSQL oferece uma grande variedade de tipos de dados nativos. A escolha correta do tipo de dado impacta diretamente na performance, no armazenamento e na integridade dos dados.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Inteiros</td>
+              <td>SMALLINT</td>
+              <td>Inteiro de 2 bytes (-32768 a +32767)</td>
+              <td>idade SMALLINT</td>
+            </tr>
+            <tr>
+              <td>Inteiros</td>
+              <td>INTEGER / INT</td>
+              <td>Inteiro de 4 bytes</td>
+              <td>quantidade INTEGER</td>
+            </tr>
+            <tr>
+              <td>Inteiros</td>
+              <td>BIGINT</td>
+              <td>Inteiro de 8 bytes</td>
+              <td>populacao BIGINT</td>
+            </tr>
+            <tr>
+              <td>Serial</td>
+              <td>SERIAL</td>
+              <td>Inteiro com autoincremento (4 bytes)</td>
+              <td>id SERIAL PRIMARY KEY</td>
+            </tr>
+            <tr>
+              <td>Serial</td>
+              <td>BIGSERIAL</td>
+              <td>Autoincremento de 8 bytes</td>
+              <td>id BIGSERIAL PRIMARY KEY</td>
+            </tr>
+            <tr>
+              <td>Texto</td>
+              <td>VARCHAR(n)</td>
+              <td>Texto com tamanho máximo variável</td>
+              <td>nome VARCHAR(100)</td>
+            </tr>
+            <tr>
+              <td>Texto</td>
+              <td>CHAR(n)</td>
+              <td>Texto com tamanho fixo (completa com espaços)</td>
+              <td>sigla CHAR(3)</td>
+            </tr>
+            <tr>
+              <td>Texto</td>
+              <td>TEXT</td>
+              <td>Texto com tamanho ilimitado</td>
+              <td>descricao TEXT</td>
+            </tr>
+            <tr>
+              <td>Ponto Flutuante</td>
+              <td>REAL / FLOAT4</td>
+              <td>Precisão simples (4 bytes)</td>
+              <td>altura REAL</td>
+            </tr>
+            <tr>
+              <td>Ponto Flutuante</td>
+              <td>DOUBLE PRECISION</td>
+              <td>Precisão dupla (8 bytes)</td>
+              <td>peso DOUBLE PRECISION</td>
+            </tr>
+            <tr>
+              <td>Ponto Fixo</td>
+              <td>NUMERIC(p, s)</td>
+              <td>Precisão exata (p dígitos, s decimais)</td>
+              <td>preco NUMERIC(10, 2)</td>
+            </tr>
+            <tr>
+              <td>Booleano</td>
+              <td>BOOLEAN / BOOL</td>
+              <td>TRUE, FALSE ou NULL</td>
+              <td>ativo BOOLEAN DEFAULT TRUE</td>
+            </tr>
+            <tr>
+              <td>Data/Hora</td>
+              <td>DATE</td>
+              <td>Apenas data (AAAA-MM-DD)</td>
+              <td>data_nascimento DATE</td>
+            </tr>
+            <tr>
+              <td>Data/Hora</td>
+              <td>TIME</td>
+              <td>Apenas hora (HH:MM:SS)</td>
+              <td>horario TIME</td>
+            </tr>
+            <tr>
+              <td>Data/Hora</td>
+              <td>TIMESTAMP</td>
+              <td>Data e hora combinadas</td>
+              <td>criado_em TIMESTAMP</td>
+            </tr>
+            <tr>
+              <td>Data/Hora</td>
+              <td>TIMESTAMPTZ</td>
+              <td>Timestamp com fuso horário</td>
+              <td>log_at TIMESTAMPTZ</td>
+            </tr>
+            <tr>
+              <td>UUID</td>
+              <td>UUID</td>
+              <td>Identificador único universal</td>
+              <td>token UUID</td>
+            </tr>
+            <tr>
+              <td>JSON</td>
+              <td>JSON / JSONB</td>
+              <td>Dados no formato JSON (JSONB é binário, mais rápido)</td>
+              <td>config JSONB</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- CHAVE PRIMÁRIA E CONSTRAINTS -->
+      <section>
+        <h2>Chave Primária e Constraints</h2>
+        <p>
+          <strong>Constraints</strong> (restrições) são regras aplicadas às colunas de uma tabela para garantir a integridade dos dados. Elas são verificadas automaticamente pelo SGBD sempre que dados são inseridos ou alterados.
+        </p>
+        <h3>Tipos de Constraints</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Constraint</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PRIMARY KEY</td>
+              <td>Identifica unicamente cada linha. Não permite NULL. Apenas uma por tabela.</td>
+            </tr>
+            <tr>
+              <td>FOREIGN KEY</td>
+              <td>Garante integridade referencial entre tabelas</td>
+            </tr>
+            <tr>
+              <td>NOT NULL</td>
+              <td>Impede valores nulos na coluna</td>
+            </tr>
+            <tr>
+              <td>UNIQUE</td>
+              <td>Garante que todos os valores da coluna sejam distintos</td>
+            </tr>
+            <tr>
+              <td>CHECK</td>
+              <td>Valida se o valor atende a uma condição booleana</td>
+            </tr>
+            <tr>
+              <td>DEFAULT</td>
+              <td>Define um valor padrão quando nenhum é fornecido</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplos Práticos de Constraints</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- PRIMARY KEY: identificação única
+-- NOT NULL: campo obrigatório
+-- UNIQUE: email não pode se repetir
+-- CHECK: idade deve ser maior que zero
+-- DEFAULT: se não informado, ativo será TRUE
+
+CREATE TABLE funcionarios (
+    id       SERIAL PRIMARY KEY,
+    nome     VARCHAR(100) NOT NULL,
+    email    VARCHAR(100) UNIQUE NOT NULL,
+    idade    INTEGER CHECK (idade >= 18),
+    salario  NUMERIC(10, 2) CHECK (salario > 0),
+    ativo    BOOLEAN DEFAULT TRUE,
+    criado   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- FOREIGN KEY: relaciona funcionario ao departamento
+CREATE TABLE departamentos (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(80) NOT NULL UNIQUE
+);
+
+ALTER TABLE funcionarios
+    ADD COLUMN departamento_id INTEGER REFERENCES departamentos(id);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ÍNDICES -->
+      <section>
+        <h2>Índices</h2>
+        <p>
+          Um <strong>índice</strong> é uma estrutura de dados auxiliar que acelera as consultas em uma tabela. Funciona de forma semelhante ao índice de um livro: em vez de percorrer todas as páginas, você consulta o índice e vai direto ao conteúdo desejado.
+        </p>
+        <h3>Por que usar índices?</h3>
+        <ul>
+          <li><strong>Velocidade em SELECT:</strong> consultas com WHERE, JOIN e ORDER BY tornam-se muito mais rápidas</li>
+          <li><strong>Garantia de unicidade:</strong> PRIMARY KEY e UNIQUE criam índices automaticamente</li>
+          <li><strong>Melhoria em buscas textuais:</strong> índices GIN e GiST para全文检索</li>
+        </ul>
+        <h3>Estrutura Interna: B-tree</h3>
+        <p>
+          O PostgreSQL utiliza principalmente a estrutura <strong>B-tree</strong> (árvore balanceada) como padrão para índices. Nessa estrutura, os dados são organizados de forma hierárquica, permitindo buscas em tempo <strong>O(log n)</strong>.
+        </p>
+        <h3>Criando Índices</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Índice simples em uma coluna
+CREATE INDEX idx_alunos_nome
+    ON alunos (nome);
+
+-- Índice único (garante valores distintos)
+CREATE UNIQUE INDEX idx_alunos_email
+    ON alunos (email);
+
+-- Índice composto (múltiplas colunas)
+CREATE INDEX idx_alunos_nome_idade
+    ON alunos (nome, idade);
+
+-- Remover um índice
+DROP INDEX IF EXISTS idx_alunos_nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Atenção:</strong> Índices aceleram leituras (SELECT), mas tornam escritas (INSERT, UPDATE, DELETE) mais lentas, pois o índice também precisa ser atualizado. Use com equilíbrio.
+        </p>
+      </section>
+
+      <!-- BANCOS E TABELAS DO SISTEMA -->
+      <section>
+        <h2>Bancos e Tabelas do Sistema</h2>
+        <p>
+          O PostgreSQL mantém metadados sobre toda a estrutura do banco em tabelas internas do sistema. Essas tabelas permitem consultar informações sobre bancos, tabelas, colunas, índices e muito mais — tudo usando SQL.
+        </p>
+        <h3>Principais Tabelas e Views do Sistema</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tabela / View</th>
+              <th>Schema</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>pg_database</td>
+              <td>pg_catalog</td>
+              <td>Lista todos os bancos de dados do cluster</td>
+            </tr>
+            <tr>
+              <td>pg_tables</td>
+              <td>pg_catalog</td>
+              <td>Lista todas as tabelas (inclui views)</td>
+            </tr>
+            <tr>
+              <td>pg_indexes</td>
+              <td>pg_catalog</td>
+              <td>Lista todos os índices</td>
+            </tr>
+            <tr>
+              <td>pg_views</td>
+              <td>pg_catalog</td>
+              <td>Lista todas as views</td>
+            </tr>
+            <tr>
+              <td>tables</td>
+              <td>information_schema</td>
+              <td>Padrão SQL para listar tabelas</td>
+            </tr>
+            <tr>
+              <td>columns</td>
+              <td>information_schema</td>
+              <td>Padrão SQL para listar colunas</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Consultando o Catálogo do Sistema</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Listar todos os bancos de dados
+SELECT datname FROM pg_database;
+
+-- Listar todas as tabelas do schema public
+SELECT tablename FROM pg_tables
+    WHERE schemaname = 'public';
+
+-- Listar colunas de uma tabela específica (via information_schema)
+SELECT column_name, data_type, is_nullable
+    FROM information_schema.columns
+    WHERE table_name = 'alunos';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- INTRODUÇÃO AO SQL: DDL, DML, DCL -->
+      <section>
+        <h2>Introdução ao SQL: DDL, DML, DCL</h2>
+        <p>
+          <strong>SQL</strong> (Structured Query Language) é a linguagem padrão para interagir com bancos de dados relacionais. A linguagem SQL é dividida em subconjuntos, cada um com um propósito específico:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Subconjunto</th>
+              <th>Significado</th>
+              <th>Propósito</th>
+              <th>Principais Comandos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DDL</td>
+              <td>Data Definition Language</td>
+              <td>Definir e modificar a estrutura do banco</td>
+              <td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td>
+            </tr>
+            <tr>
+              <td>DML</td>
+              <td>Data Manipulation Language</td>
+              <td>Manipular os dados dentro das tabelas</td>
+              <td>SELECT, INSERT, UPDATE, DELETE</td>
+            </tr>
+            <tr>
+              <td>DCL</td>
+              <td>Data Control Language</td>
+              <td>Controlar acesso e permissões</td>
+              <td>GRANT, REVOKE</td>
+            </tr>
+            <tr>
+              <td>TCL</td>
+              <td>Transaction Control Language</td>
+              <td>Controlar transações</td>
+              <td>COMMIT, ROLLBACK, SAVEPOINT</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Exemplos de cada subconjunto</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- DDL: Criar estrutura
+CREATE TABLE produtos (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    preco NUMERIC(8, 2)
+);
+
+-- DML: Inserir e consultar dados
+INSERT INTO produtos (nome, preco)
+    VALUES ('Notebook', 3500.00);
+
+SELECT * FROM produtos;
+
+UPDATE produtos SET preco = 3200.00 WHERE id = 1;
+
+DELETE FROM produtos WHERE id = 1;
+
+-- DCL: Conceder permissão
+GRANT SELECT, INSERT ON produtos TO usuario_leitura;
+
+-- TCL: Gerenciar transação
+BEGIN;
+    INSERT INTO produtos (nome, preco) VALUES ('Mouse', 150.00);
+COMMIT;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: CREATE TABLE -->
+      <section>
+        <h2>Passo a passo: CREATE TABLE</h2>
+        <p>
+          Vamos criar tabelas de exemplo para um sistema acadêmico. Acompanhe cada passo e execute no seu terminal psql.
+        </p>
+
+        <h3>Passo 1 — Conectar ao banco de dados</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+psql -U postgres
+\c postgres
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a tabela de cursos</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE cursos (
+    id           SERIAL PRIMARY KEY,
+    nome         VARCHAR(100) NOT NULL,
+    descricao    TEXT,
+    carga_horaria INTEGER NOT NULL CHECK (carga_horaria > 0),
+    ativo        BOOLEAN DEFAULT TRUE,
+    criado_em    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar a tabela de alunos com chave estrangeira</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE alunos (
+    id              SERIAL PRIMARY KEY,
+    nome            VARCHAR(100) NOT NULL,
+    email           VARCHAR(100) UNIQUE NOT NULL,
+    data_nascimento DATE,
+    matricula       VARCHAR(20) UNIQUE NOT NULL,
+    curso_id        INTEGER REFERENCES cursos(id),
+    ativo           BOOLEAN DEFAULT TRUE,
+    criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Verificar as tabelas criadas</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+\dt
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>O comando <code>\dt</code> lista todas as tabelas do schema atual. Você deve ver <strong>cursos</strong> e <strong>alunos</strong>.</p>
+
+        <h3>Passo 5 — Verificar a estrutura de uma tabela</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">
+\d alunos
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Exibe colunas, tipos, constraints e índices da tabela <strong>alunos</strong>.</p>
+      </section>
+
+      <!-- PASSO A PASSO: ALTER TABLE -->
+      <section>
+        <h2>Passo a passo: ALTER TABLE</h2>
+        <p>
+          O comando <strong>ALTER TABLE</strong> permite modificar a estrutura de uma tabela já existente — adicionar colunas, modificar tipos, adicionar ou remover constraints, renomear tabelas e muito mais.
+        </p>
+
+        <h3>Adicionar uma nova coluna</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Adicionar coluna telefone à tabela alunos
+ALTER TABLE alunos
+    ADD COLUMN telefone VARCHAR(20);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Modificar o tipo de uma coluna</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Alterar o tipo da coluna telefone para aceitar mais caracteres
+ALTER TABLE alunos
+    ALTER COLUMN telefone TYPE VARCHAR(30);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Adicionar uma constraint NOT NULL</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tornar a coluna telefone obrigatória
+ALTER TABLE alunos
+    ALTER COLUMN telefone SET NOT NULL;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Adicionar uma constraint UNIQUE</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Garantir que telefone seja único
+ALTER TABLE alunos
+    ADD CONSTRAINT unique_telefone UNIQUE (telefone);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Adicionar uma constraint CHECK</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Adicionar validação de ano na tabela cursos
+ALTER TABLE cursos
+    ADD CONSTRAINT check_carga_horaria
+        CHECK (carga_horaria BETWEEN 10 AND 1000);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Remover uma constraint</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remover a constraint de CHECK
+ALTER TABLE cursos
+    DROP CONSTRAINT check_carga_horaria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Remover uma coluna</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remover coluna telefone (se não for mais necessária)
+ALTER TABLE alunos
+    DROP COLUMN IF EXISTS telefone;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Renomear uma tabela</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Renomear a tabela (exemplo)
+ALTER TABLE alunos
+    RENAME TO estudantes;
+
+-- Renomear de volta
+ALTER TABLE estudantes
+    RENAME TO alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO: DROP TABLE -->
+      <section>
+        <h2>Passo a passo: DROP TABLE</h2>
+        <p>
+          O comando <strong>DROP TABLE</strong> remove permanentemente uma tabela e todos os seus dados. Use com cautela — essa operação não pode ser desfeita.
+        </p>
+
+        <h3>DROP TABLE simples</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remove a tabela (gera erro se a tabela não existir)
+DROP TABLE alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DROP TABLE com IF EXISTS</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remove a tabela apenas se existir (forma segura)
+DROP TABLE IF EXISTS alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DROP TABLE com CASCADE</h3>
+        <p>
+          Quando uma tabela é referenciada por outra (via FOREIGN KEY), o PostgreSQL impede a exclusão. Para forçar a exclusão e remover também os objetos dependentes, use <strong>CASCADE</strong>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Remove a tabela e todos os objetos que dependem dela
+DROP TABLE IF EXISTS cursos CASCADE;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>DROP TABLE com RESTRICT (padrão)</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Comportamento padrão: recusa excluir se houver dependências
+DROP TABLE IF EXISTS cursos RESTRICT;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie uma tabela chamada "produtos" com as seguintes colunas</h3>
+            <p>
+              Colunas: <code>id</code> (SERIAL PRIMARY KEY), <code>nome</code> (VARCHAR 100 NOT NULL),
+              <code>preco</code> (NUMERIC 10,2) e <code>data_cadastro</code> (DATE DEFAULT CURRENT_DATE).
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE produtos (
+    id            SERIAL PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    preco         NUMERIC(10, 2),
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Altere a tabela "produtos" adicionando a coluna "categoria" VARCHAR(50)</h3>
+            <p>Use o comando ALTER TABLE adequado para adicionar essa nova coluna.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+ALTER TABLE produtos
+    ADD COLUMN categoria VARCHAR(50);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Crie um índice na coluna "nome" da tabela "produtos"</h3>
+            <p>
+              Crie um índice que acelere as buscas por nome na tabela produtos. Dê um nome descritivo ao índice.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE INDEX idx_produtos_nome
+    ON produtos (nome);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se as tabelas foram criadas com sucesso, se as constraints estão aplicadas corretamente e se os comandos ALTER TABLE e DROP TABLE funcionaram conforme esperado.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

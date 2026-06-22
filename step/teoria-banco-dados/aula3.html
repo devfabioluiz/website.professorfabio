@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3 - Consultas SELECT, INSERT, UPDATE, DELETE - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 3</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 3: Consultas SELECT, INSERT, UPDATE, DELETE</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Comando SELECT (cláusulas SELECT, FROM, WHERE, ORDER BY), Palavras-chave IN, BETWEEN, LIKE, Uso de LIMIT, Uso de CASE WHEN, Comando INSERT, Comando UPDATE, Comando DELETE, Transações (BEGIN, COMMIT, ROLLBACK).</div>
+    </header>
+    <main class="container">
+
+      <!-- O COMANDO SELECT -->
+      <section>
+        <h2>O Comando SELECT</h2>
+        <p>
+          O comando <strong>SELECT</strong> é a principal ferramenta de consulta em SQL. Ele permite recuperar dados de uma ou mais tabelas, filtrar registros, ordenar resultados e muito mais. Sua estrutura básica é:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT [colunas]
+FROM [tabela]
+WHERE [condições]
+ORDER BY [coluna] [ASC|DESC];
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SELECT Simples</h3>
+        <p>Para selecionar todos os registros e todas as colunas de uma tabela, utilize o caractere <strong>*</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Este comando retorna todas as linhas e todas as colunas da tabela <code>alunos</code>.</p>
+
+        <h3>SELECT com Colunas Específicas</h3>
+        <p>Para consultar apenas colunas específicas, substitua o <code>*</code> pelos nomes das colunas desejadas, separados por vírgula:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT nome, email FROM alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Isso é mais eficiente quando não precisamos de todas as colunas, reduzindo o tráfego de dados.</p>
+
+        <h3>SELECT com Cláusula WHERE</h3>
+        <p>
+          A cláusula <strong>WHERE</strong> filtra os registros com base em condições específicas. Apenas as linhas que satisfazem a condição são retornadas:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos WHERE idade >= 18;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Retorna apenas os alunos com idade maior ou igual a 18 anos.</p>
+
+        <h3>SELECT com ORDER BY</h3>
+        <p>
+          A cláusula <strong>ORDER BY</strong> ordena os resultados. Por padrão, a ordenação é ascendente (<code>ASC</code>). Para ordem descendente, utilize <code>DESC</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos ORDER BY nome ASC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos ORDER BY idade DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Também é possível ordenar por mais de uma coluna:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos ORDER BY curso ASC, nome ASC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SELECT com Múltiplas Condições WHERE (AND/OR)</h3>
+        <p>
+          Combine múltiplas condições usando os operadores lógicos <strong>AND</strong> e <strong>OR</strong>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE idade >= 18 AND curso = 'Python';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE curso = 'SQL' OR curso = 'React';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE (curso = 'Python' OR curso = 'SQL')
+  AND idade >= 18;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Atenção à precedência dos operadores: <code>AND</code> tem prioridade sobre <code>OR</code>. Use parênteses para controlar a ordem de avaliação.</p>
+      </section>
+
+      <!-- PALAVRAS-CHAVE IN, BETWEEN, LIKE -->
+      <section>
+        <h2>Palavras-chave IN, BETWEEN, LIKE</h2>
+        <p>
+          Estes operadores tornam as consultas mais concisas e expressivas, evitando múltiplas condições <code>OR</code> ou <code>AND</code> desnecessárias.
+        </p>
+
+        <h3>IN</h3>
+        <p>
+          O operador <strong>IN</strong> verifica se um valor pertence a uma lista de valores especificados. É equivalente a múltiplas condições <code>OR</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE curso IN ('Python', 'SQL', 'React');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Também pode ser usado com subconsultas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE curso_id IN (SELECT id FROM cursos WHERE carga > 40);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Use <code>NOT IN</code> para excluir valores da lista:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE curso NOT IN ('Java', 'C#');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>BETWEEN</h3>
+        <p>
+          O operador <strong>BETWEEN</strong> seleciona valores dentro de um intervalo (inclusivo). É equivalente a <code>valor &gt;= minimo AND valor &lt;= maximo</code>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos
+WHERE idade BETWEEN 18 AND 25;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Funciona também com datas e valores textuais:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM pedidos
+WHERE data_pedido BETWEEN '2025-01-01' AND '2025-06-30';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM produtos
+WHERE preco NOT BETWEEN 100 AND 500;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>LIKE</h3>
+        <p>
+          O operador <strong>LIKE</strong> busca padrões em colunas de texto. Utiliza dois caracteres curinga:
+        </p>
+        <ul>
+          <li><strong>%</strong> — representa zero ou mais caracteres</li>
+          <li><strong>_</strong> — representa exatamente um caractere</li>
+        </ul>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Nomes que começam com "João"
+SELECT * FROM alunos WHERE nome LIKE 'João%';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Emails do Gmail
+SELECT * FROM alunos WHERE email LIKE '%@gmail.com';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Nomes que contêm "Silva" em qualquer posição
+SELECT * FROM alunos WHERE nome LIKE '%Silva%';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Nomes com exatamente 4 letras
+SELECT * FROM alunos WHERE nome LIKE '____';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Para buscas case-insensitive no PostgreSQL, utilize <code>ILIKE</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM alunos WHERE nome ILIKE '%joão%';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- LIMIT E CASE WHEN -->
+      <section>
+        <h2>LIMIT e CASE WHEN</h2>
+
+        <h3>LIMIT</h3>
+        <p>
+          A cláusula <strong>LIMIT</strong> restringe o número de registros retornados pela consulta. Muito útil para paginação e para consultar os "Top N" registros:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Os 5 produtos mais caros
+SELECT * FROM produtos
+ORDER BY preco DESC
+LIMIT 5;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Use <code>OFFSET</code> para pular uma quantidade de registros (paginação):</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Página 2: registros de 6 a 10
+SELECT * FROM produtos
+ORDER BY preco DESC
+LIMIT 5 OFFSET 5;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CASE WHEN</h3>
+        <p>
+          O <strong>CASE WHEN</strong> permite criar colunas condicionais diretamente na consulta, funcionando como um "if/else" dentro do SQL:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    preco,
+    CASE
+        WHEN preco < 50 THEN 'Barato'
+        WHEN preco BETWEEN 50 AND 200 THEN 'Médio'
+        ELSE 'Caro'
+    END AS categoria_preco
+FROM produtos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Exemplo com múltiplas condições:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    idade,
+    CASE
+        WHEN idade < 12 THEN 'Criança'
+        WHEN idade BETWEEN 12 AND 17 THEN 'Adolescente'
+        WHEN idade BETWEEN 18 AND 60 THEN 'Adulto'
+        ELSE 'Idoso'
+    END AS faixa_etaria
+FROM alunos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMANDO INSERT -->
+      <section>
+        <h2>Comando INSERT</h2>
+        <p>
+          O comando <strong>INSERT</strong> adiciona novos registros a uma tabela. A sintaxe básica especifica a tabela, as colunas e os valores a serem inseridos:
+        </p>
+
+        <h3>Inserindo um Único Registro</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO alunos (nome, email, idade)
+VALUES ('Maria', 'maria@email.com', 22);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Se você for fornecer valores para <strong>todas</strong> as colunas na ordem correta, pode omitir a lista de colunas. Porém, essa prática é desencorajada, pois o código fica frágil a alterações na estrutura da tabela.
+        </p>
+
+        <h3>Inserindo Múltiplos Registros</h3>
+        <p>Para inserir vários registros de uma só vez, separe os conjuntos de valores com vírgula:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO alunos (nome, email, idade)
+VALUES
+    ('João', 'joao@email.com', 25),
+    ('Ana', 'ana@email.com', 20),
+    ('Carlos', 'carlos@email.com', 30);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Inserir múltiplos registros em um único comando é mais eficiente do que vários INSERTs separados.</p>
+
+        <h3>INSERT com SELECT (copiar dados)</h3>
+        <p>Também é possível inserir dados provenientes de uma consulta:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO alunos_backup (nome, email, idade)
+SELECT nome, email, idade FROM alunos
+WHERE idade >= 18;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>RETURNING</h3>
+        <p>No PostgreSQL, a cláusula <code>RETURNING</code> retorna os valores inseridos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO alunos (nome, email, idade)
+VALUES ('Pedro', 'pedro@email.com', 28)
+RETURNING id, nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMANDO UPDATE -->
+      <section>
+        <h2>Comando UPDATE</h2>
+        <p>
+          O comando <strong>UPDATE</strong> modifica registros existentes em uma tabela. A cláusula <strong>WHERE</strong> é fundamental para especificar quais linhas serão afetadas.
+        </p>
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">⚠️ Cuidado!</h2>
+          <p>
+            <strong>Nunca execute um UPDATE sem WHERE</strong> a menos que realmente queira atualizar <em>todos</em> os registros da tabela. Um UPDATE sem filtro altera todas as linhas!
+          </p>
+        </div>
+
+        <h3>Atualizando um Registro Específico</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+UPDATE alunos
+SET email = 'novo@email.com'
+WHERE id = 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atualizando Múltiplas Colunas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+UPDATE alunos
+SET email = 'contato@email.com',
+    idade = 26
+WHERE id = 2;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atualizando com Expressões</h3>
+        <p>É possível usar o valor atual da coluna na expressão de atualização:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Aumentar em 10% o preço dos eletrônicos
+UPDATE produtos
+SET preco = preco * 1.1
+WHERE categoria = 'Eletrônicos';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atualizando com Condições Complexas</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+UPDATE alunos
+SET status = 'Inativo'
+WHERE idade < 18
+   OR data_ultimo_acesso < '2024-01-01';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>RETURNING no UPDATE</h3>
+        <p>Assim como no INSERT, o PostgreSQL permite usar <code>RETURNING</code> para ver os dados após a atualização:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+UPDATE produtos
+SET preco = preco * 0.9
+WHERE categoria = 'Livros'
+RETURNING id, nome, preco;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- COMANDO DELETE -->
+      <section>
+        <h2>Comando DELETE</h2>
+        <p>
+          O comando <strong>DELETE</strong> remove registros de uma tabela. Assim como no UPDATE, a cláusula <strong>WHERE</strong> é essencial para evitar a remoção de todos os dados.
+        </p>
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">⚠️ Atenção!</h2>
+          <p>
+            <strong>DELETE sem WHERE remove TODOS os registros da tabela!</strong> Use com extrema cautela. Para remover todos os registros de forma mais eficiente (sem registros de log), prefira <code>TRUNCATE TABLE nome_tabela;</code>.
+          </p>
+        </div>
+
+        <h3>Removendo um Registro Específico</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DELETE FROM alunos WHERE id = 5;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Removendo com Condição</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DELETE FROM alunos WHERE idade < 18;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Removendo com Subconsulta</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DELETE FROM alunos
+WHERE curso_id IN (
+    SELECT id FROM cursos WHERE nome = 'Curso Cancelado'
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>RETURNING no DELETE</h3>
+        <p>O PostgreSQL permite usar <code>RETURNING</code> para saber quais registros foram removidos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DELETE FROM alunos
+WHERE idade < 18
+RETURNING id, nome, idade;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRANSAÇÕES -->
+      <section>
+        <h2>Transações no PostgreSQL</h2>
+        <p>
+          Uma <strong>transação</strong> é uma unidade lógica de trabalho que agrupa uma ou mais operações SQL. As transações seguem o princípio <strong>ACID</strong>:
+        </p>
+        <ul>
+          <li><strong>Atomicidade (Atomicity):</strong> ou todas as operações são executadas com sucesso, ou nenhuma é aplicada</li>
+          <li><strong>Consistência (Consistency):</strong> a transação leva o banco de um estado consistente a outro</li>
+          <li><strong>Isolamento (Isolation):</strong> transações concorrentes não interferem entre si</li>
+          <li><strong>Durabilidade (Durability):</strong> uma vez confirmada, os efeitos da transação são permanentes</li>
+        </ul>
+
+        <h3>BEGIN, COMMIT e ROLLBACK</h3>
+        <p>Os comandos fundamentais de controle de transação são:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inicia uma transação
+BEGIN;
+
+-- Operações da transação
+UPDATE contas SET saldo = saldo - 500 WHERE id = 1;
+UPDATE contas SET saldo = saldo + 500 WHERE id = 2;
+
+-- Se tudo deu certo, confirma
+COMMIT;
+
+-- Se algo deu errado, desfaz
+-- ROLLBACK;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Exemplo com ROLLBACK em caso de erro:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN;
+
+UPDATE produtos SET estoque = estoque - 10 WHERE id = 1;
+-- Suponha que a próxima operação falhe
+UPDATE produtos SET estoque = estoque + 10 WHERE id = 999;
+
+-- Desfaz todas as alterações desde o BEGIN
+ROLLBACK;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>SAVEPOINT</h3>
+        <p>
+          <strong>SAVEPOINT</strong> cria pontos de restauração parciais dentro de uma transação. Permite reverter apenas parte das operações sem desfazer a transação inteira:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN;
+
+INSERT INTO alunos (nome, email, idade)
+VALUES ('Roberto', 'roberto@email.com', 23);
+
+-- Cria um ponto de salvamento
+SAVEPOINT sp1;
+
+UPDATE alunos SET idade = 24 WHERE nome = 'Roberto';
+
+-- Suponha que a atualização foi errada
+ROLLBACK TO SAVEPOINT sp1;
+
+-- O INSERT permanece; o UPDATE foi desfeito
+COMMIT;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Observação:</strong> no PostgreSQL, os comandos <code>BEGIN</code>, <code>COMMIT</code> e <code>ROLLBACK</code> são equivalentes a <code>START TRANSACTION</code>, <code>COMMIT WORK</code> e <code>ROLLBACK WORK</code> respectivamente.
+        </p>
+      </section>
+
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>Passo a passo: Criando e populando uma tabela</h2>
+        <p>
+          Vamos colocar em prática tudo o que aprendemos. Criaremos uma tabela <strong>funcionarios</strong> e executaremos diversas operações.
+        </p>
+
+        <h3>Passo 1 — Criar a tabela</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE funcionarios (
+    id          SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    cargo       VARCHAR(50) NOT NULL,
+    salario     NUMERIC(10, 2) NOT NULL,
+    departamento VARCHAR(50) NOT NULL,
+    data_admissao DATE DEFAULT CURRENT_DATE
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Inserir dados</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+INSERT INTO funcionarios (nome, cargo, salario, departamento)
+VALUES
+    ('Ana Souza',    'Desenvolvedora', 4500.00, 'TI'),
+    ('Carlos Lima',  'Analista',       3800.00, 'TI'),
+    ('Beatriz Alves','Gerente',        6500.00, 'RH'),
+    ('Daniel Moreira','Analista',      3200.00, 'Financeiro'),
+    ('Eduarda Costa', 'DevOps',        7200.00, 'TI'),
+    ('Felipe Rocha', 'Assistente',     2500.00, 'RH'),
+    ('Gabriela Nunes','Contadora',     5000.00, 'Financeiro');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Consultas de exemplo</h3>
+        <p>Selecionar todos os funcionários:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM funcionarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Funcionários do departamento de TI com salário acima de 4000:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT nome, cargo, salario
+FROM funcionarios
+WHERE departamento = 'TI'
+  AND salario > 4000
+ORDER BY salario DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Classificação salarial com CASE WHEN:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    nome,
+    cargo,
+    salario,
+    CASE
+        WHEN salario < 3000 THEN 'Júnior'
+        WHEN salario BETWEEN 3000 AND 6000 THEN 'Pleno'
+        ELSE 'Sênior'
+    END AS nivel
+FROM funcionarios
+ORDER BY salario DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Funcionários contratados nos últimos 30 dias:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM funcionarios
+WHERE data_admissao >= CURRENT_DATE - INTERVAL '30 days';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Atualizações e remoções com transação</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+BEGIN;
+
+-- Aumentar salário do pessoal de TI em 5%
+UPDATE funcionarios
+SET salario = salario * 1.05
+WHERE departamento = 'TI'
+RETURNING nome, salario;
+
+-- Remover assistentes com salário abaixo de 3000
+DELETE FROM funcionarios
+WHERE cargo = 'Assistente' AND salario < 3000
+RETURNING nome;
+
+COMMIT;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Insira 5 registros na tabela funcionarios e selecione apenas os que têm salário > 3000</h3>
+            <p>Crie 5 novos registros variando cargos, salários e departamentos. Em seguida, escreva uma consulta que retorne apenas os funcionários com salário acima de R$ 3.000,00.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+INSERT INTO funcionarios (nome, cargo, salario, departamento)
+VALUES
+    ('Hugo Torres',   'Designer',        2800.00, 'Marketing'),
+    ('Iara Mendes',   'Coordenadora',    5500.00, 'RH'),
+    ('Jonas Pereira', 'Desenvolvedor',   6200.00, 'TI'),
+    ('Karen Duarte',  'Estagiária',      1500.00, 'Financeiro'),
+    ('Lucas Braga',   'Analista Senior', 8000.00, 'TI');
+
+SELECT * FROM funcionarios
+WHERE salario > 3000
+ORDER BY salario DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Atualize o salário de um funcionário específico e verifique com SELECT</h3>
+            <p>Escolha um funcionário pelo nome e aumente seu salário em 15%. Confirme a alteração com um SELECT.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+BEGIN;
+
+UPDATE funcionarios
+SET salario = salario * 1.15
+WHERE nome = 'Iara Mendes'
+RETURNING nome, salario;
+
+-- Verificar se a alteração foi aplicada
+SELECT nome, salario FROM funcionarios
+WHERE nome = 'Iara Mendes';
+
+COMMIT;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Delete funcionários de um departamento específico</h3>
+            <p>Remova todos os funcionários do departamento de Marketing. Antes de executar o DELETE, faça um SELECT para conferir quais registros serão afetados.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Primeiro, confira quais registros serão deletados
+SELECT * FROM funcionarios
+WHERE departamento = 'Marketing';
+
+-- Em seguida, execute a remoção
+BEGIN;
+
+DELETE FROM funcionarios
+WHERE departamento = 'Marketing'
+RETURNING id, nome;
+
+-- Se a remoção estiver correta, confirme
+COMMIT;
+-- Caso contrário, desfaça:
+-- ROLLBACK;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. Crie uma consulta com CASE WHEN classificando funcionários por faixa salarial (Júnior, Pleno, Sênior)</h3>
+            <p>Escreva uma consulta que retorne nome, departamento, salário e uma coluna de classificação seguindo os critérios: salário até R$ 3.000 = Júnior, entre R$ 3.001 e R$ 6.000 = Pleno, acima de R$ 6.000 = Sênior.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    nome,
+    departamento,
+    salario,
+    CASE
+        WHEN salario <= 3000 THEN 'Júnior'
+        WHEN salario BETWEEN 3001 AND 6000 THEN 'Pleno'
+        ELSE 'Sênior'
+    END AS classificacao
+FROM funcionarios
+ORDER BY salario ASC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Execute os comandos desta aula no seu PostgreSQL, teste cada cláusula SELECT, cada INSERT, UPDATE e DELETE, e pratique as transações com BEGIN/COMMIT/ROLLBACK.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

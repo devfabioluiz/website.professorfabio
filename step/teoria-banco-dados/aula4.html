@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4 - Bancos de Dados Multitabulares - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 4</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 4: Bancos de Dados Multitabulares</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Anomalias (atualização, inserção, exclusão), Chave estrangeira, Relacionamentos (1:1, 1:N, N:N), Integridade dos dados, Normalização (1FN, 2FN, 3FN, BCNF), Consultas multitabulares, Produto cartesiano.</div>
+    </header>
+    <main class="container">
+
+      <!-- ANOMALIAS EM TABELA ÚNICA -->
+      <section>
+        <h2>Anomalias em Tabela Única</h2>
+        <p>
+          Quando armazenamos todos os dados em uma única tabela (modelo não normalizado), diversos problemas podem surgir. Esses problemas são chamados de <strong>anomalias</strong> e comprometem a integridade e a consistência dos dados.
+        </p>
+        <p>Considere a seguinte tabela não normalizada <strong>pedidos_ruim</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE pedidos_ruim (
+    pedido_id      INT,
+    cliente_nome   VARCHAR(100),
+    cliente_cidade VARCHAR(50),
+    cliente_estado VARCHAR(2),
+    produto_nome   VARCHAR(100),
+    produto_preco  NUMERIC(10, 2),
+    quantidade     INT,
+    data_pedido    DATE
+);
+
+INSERT INTO pedidos_ruim VALUES
+(1, 'João Silva',  'São Paulo',  'SP', 'Notebook',  3500.00, 1, '2025-01-15'),
+(2, 'Maria Souza', 'Campinas',   'SP', 'Mouse',      150.00, 2, '2025-01-16'),
+(3, 'João Silva',  'São Paulo',  'SP', 'Teclado',    250.00, 1, '2025-01-16'),
+(4, 'Pedro Costa', 'Rio de Janeiro', 'RJ', 'Monitor', 1200.00, 1, '2025-01-17');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Anomalia de Atualização (Update Anomaly)</h3>
+        <p>
+          Ocorre quando a mesma informação está repetida em várias linhas e, ao atualizá-la, é necessário modificar múltiplos registros. Se algum registro não for atualizado, os dados ficam inconsistentes.
+        </p>
+        <p><strong>Exemplo:</strong> Se João Silva mudar de cidade, precisamos atualizar os pedidos 1 e 3. Se esquecermos de atualizar um deles, João Silva terá duas cidades diferentes nos registros:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Precisamos atualizar TODAS as linhas do João Silva
+UPDATE pedidos_ruim
+SET cliente_cidade = 'Guarulhos'
+WHERE cliente_nome = 'João Silva';
+
+-- Risco: se houver 500 pedidos do João,
+-- a atualização pode ser lenta e propensa a erro
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Anomalia de Inserção (Insert Anomaly)</h3>
+        <p>
+          Ocorre quando não é possível inserir um novo registro por falta de informações que não deveriam ser obrigatórias para aquela operação.
+        </p>
+        <p><strong>Exemplo:</strong> Queremos cadastrar um novo cliente "Ana Beatriz" que ainda não fez nenhum pedido. Como a tabela <code>pedidos_ruim</code> exige dados do pedido (pedido_id, produto, quantidade), <strong>não conseguimos inserir apenas os dados do cliente</strong>. Somos obrigados a inventar um pedido fictício ou deixar campos nulos.</p>
+
+        <h3>Anomalia de Exclusão (Delete Anomaly)</h3>
+        <p>
+          Ocorre quando, ao remover um registro, perdemos informações que não deveriam ser excluídas.
+        </p>
+        <p><strong>Exemplo:</strong> Se excluirmos todos os pedidos do Pedro Costa (pedido_id = 4), perdemos completamente a informação de que o Pedro Costa é um cliente cadastrado. Os dados do cliente desaparecem junto com os pedidos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Ao deletar o pedido 4, perdemos os dados do Pedro Costa
+DELETE FROM pedidos_ruim WHERE pedido_id = 4;
+
+-- Agora não sabemos mais que Pedro Costa existe como cliente
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          A solução para todas essas anomalias é dividir os dados em <strong>múltiplas tabelas</strong> relacionadas, processo conhecido como <strong>normalização</strong>.
+        </p>
+      </section>
+
+      <!-- POR QUE MÚLTIPLAS TABELAS -->
+      <section>
+        <h2>Por que Múltiplas Tabelas?</h2>
+        <p>
+          Dividir os dados em múltiplas tabelas especializadas traz vantagens fundamentais para a qualidade do banco de dados:
+        </p>
+        <ul>
+          <li><strong>Elimina redundância:</strong> cada dado é armazenado em um único local. O nome do cliente está apenas na tabela <code>clientes</code>, e não repetido em cada pedido.</li>
+          <li><strong>Evita anomalias:</strong> atualizar o nome de um cliente requer modificar apenas um registro na tabela <code>clientes</code>.</li>
+          <li><strong>Integridade dos dados:</strong> restrições como chaves estrangeiras garantem que relacionamentos sejam válidos.</li>
+          <li><strong>Facilita a manutenção:</strong> alterações na estrutura de uma entidade não impactam as demais.</li>
+          <li><strong>Melhora a performance:</strong> tabelas menores e mais enxutas consomem menos memória e aceleram consultas.</li>
+          <li><strong>Escalabilidade:</strong> cada tabela pode crescer independentemente.</li>
+        </ul>
+        <p>No exemplo anterior, a tabela <code>pedidos_ruim</code> seria dividida em:</p>
+        <ul>
+          <li><code>clientes</code> — armazena dados exclusivos do cliente (id, nome, cidade, estado)</li>
+          <li><code>produtos</code> — armazena dados exclusivos do produto (id, nome, preço)</li>
+          <li><code>pedidos</code> — armazena a relação: qual cliente fez qual pedido e quando</li>
+          <li><code>itens_pedido</code> — armazena quais produtos estão em cada pedido e em qual quantidade</li>
+        </ul>
+      </section>
+
+      <!-- CHAVE ESTRANGEIRA -->
+      <section>
+        <h2>Chave Estrangeira (FOREIGN KEY)</h2>
+        <p>
+          Uma <strong>chave estrangeira (Foreign Key — FK)</strong> é uma coluna (ou conjunto de colunas) em uma tabela que referencia a chave primária de outra tabela. Ela estabelece o vínculo lógico entre as tabelas, garantindo a <strong>integridade referencial</strong>.
+        </p>
+
+        <h3>Sintaxe Básica</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela pai (referenciada)
+CREATE TABLE clientes (
+    id   SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+
+-- Tabela filha (contém a FK)
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Com a FK definida, o PostgreSQL impede:
+        </p>
+        <ul>
+          <li>Inserir um pedido com <code>cliente_id</code> que não existe na tabela <code>clientes</code></li>
+          <li>Excluir um cliente que possui pedidos associados (a menos que ações adicionais sejam configuradas)</li>
+        </ul>
+
+        <h3>ON DELETE e ON UPDATE</h3>
+        <p>
+          As cláusulas <strong>ON DELETE</strong> e <strong>ON UPDATE</strong> definem o comportamento quando o registro referenciado é excluído ou atualizado:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Ação</th>
+              <th>Comportamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>CASCADE</code></td>
+              <td>Propaga a operação para os registros filhos (ex.: deletar cliente deleta seus pedidos)</td>
+            </tr>
+            <tr>
+              <td><code>SET NULL</code></td>
+              <td>Define a FK como NULL nos registros filhos</td>
+            </tr>
+            <tr>
+              <td><code>SET DEFAULT</code></td>
+              <td>Define a FK para o valor padrão nos registros filhos</td>
+            </tr>
+            <tr>
+              <td><code>RESTRICT</code></td>
+              <td>Impede a operação se existirem registros filhos (comportamento padrão)</td>
+            </tr>
+            <tr>
+              <td><code>NO ACTION</code></td>
+              <td>Similar ao RESTRICT, mas a verificação é adiada até o final da transação</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplo com ON DELETE CASCADE e ON UPDATE CASCADE
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplo com ON DELETE SET NULL
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT,  -- agora permite NULL
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+        ON DELETE SET NULL
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Cuidado:</strong> use <code>CASCADE</code> com atenção, pois pode causar exclusões em cascata inesperadas.
+        </p>
+      </section>
+
+      <!-- TIPOS DE RELACIONAMENTOS -->
+      <section>
+        <h2>Tipos de Relacionamentos</h2>
+        <p>
+          Os relacionamentos entre tabelas representam como as entidades do mundo real se conectam. Existem três tipos fundamentais:
+        </p>
+
+        <h3>Relacionamento 1:1 (Um para Um)</h3>
+        <p>
+          Cada registro na tabela A está associado a <strong>no máximo um</strong> registro na tabela B, e vice-versa.
+        </p>
+        <p><strong>Exemplo:</strong> Um usuário possui um único perfil, e um perfil pertence a um único usuário.</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE usuarios (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE perfis (
+    id         SERIAL PRIMARY KEY,
+    usuario_id INT UNIQUE NOT NULL,  -- UNIQUE garante 1:1
+    bio        TEXT,
+    avatar_url VARCHAR(200),
+    CONSTRAINT fk_perfis_usuarios
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios (id)
+        ON DELETE CASCADE
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Note o uso de <code>UNIQUE</code> na FK, que impede que o mesmo usuário tenha mais de um perfil.</p>
+
+        <h3>Relacionamento 1:N (Um para Muitos)</h3>
+        <p>
+          Cada registro na tabela A pode estar associado a <strong>vários</strong> registros na tabela B, mas cada registro em B está associado a apenas um registro em A.
+        </p>
+        <p><strong>Exemplo:</strong> Um cliente pode fazer vários pedidos, mas cada pedido pertence a um único cliente.</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE clientes (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    valor_total NUMERIC(10, 2),
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Este é o tipo de relacionamento mais comum em bancos de dados relacionais.</p>
+
+        <h3>Relacionamento N:N (Muitos para Muitos)</h3>
+        <p>
+          Cada registro na tabela A pode estar associado a <strong>vários</strong> registros na tabela B, e vice-versa. Este relacionamento requer uma <strong>tabela associativa</strong> (ou tabela de junção).
+        </p>
+        <p><strong>Exemplo:</strong> Um aluno pode se matricular em vários cursos, e um curso pode ter vários alunos matriculados.</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela alunos
+CREATE TABLE alunos (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE
+);
+
+-- Tabela cursos
+CREATE TABLE cursos (
+    id     SERIAL PRIMARY KEY,
+    nome   VARCHAR(100) NOT NULL,
+    carga_horaria INT NOT NULL
+);
+
+-- Tabela associativa para N:N
+CREATE TABLE matriculas (
+    aluno_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    data_matricula DATE DEFAULT CURRENT_DATE,
+    PRIMARY KEY (aluno_id, curso_id),
+    CONSTRAINT fk_matriculas_alunos
+        FOREIGN KEY (aluno_id)
+        REFERENCES alunos (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_matriculas_cursos
+        FOREIGN KEY (curso_id)
+        REFERENCES cursos (id)
+        ON DELETE CASCADE
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          A tabela <code>matriculas</code> possui uma <strong>chave primária composta</strong> (aluno_id, curso_id) e duas chaves estrangeiras. Essa estrutura é o padrão para modelar relacionamentos N:N.
+        </p>
+      </section>
+
+      <!-- INTEGRIDADE DOS DADOS -->
+      <section>
+        <h2>Integridade dos Dados</h2>
+        <p>
+          A integridade dos dados garante que as informações armazenadas no banco sejam precisas, consistentes e confiáveis. Existem três categorias principais:
+        </p>
+
+        <h3>Integridade de Entidade</h3>
+        <p>
+          Garante que cada tabela tenha uma <strong>chave primária</strong> única e não nula, identificando cada registro de forma exclusiva. Nenhuma linha pode ter PK duplicada ou nula.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Garantido por PRIMARY KEY
+CREATE TABLE produtos (
+    id    SERIAL PRIMARY KEY,  -- garante unicidade e NOT NULL
+    nome  VARCHAR(100) NOT NULL
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Integridade Referencial</h3>
+        <p>
+          Garante que os relacionamentos entre tabelas sejam válidos. Uma chave estrangeira deve sempre referenciar um registro existente na tabela pai, ou ser NULL (se permitido).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Garantido por FOREIGN KEY
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+);
+-- O PostgreSQL rejeitará INSERT/UPDATE que violem esta regra
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Integridade de Domínio</h3>
+        <p>
+          Garante que os valores em cada coluna pertençam ao conjunto de valores permitidos (domínio). É implementada através de restrições como:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE funcionarios (
+    id       SERIAL PRIMARY KEY,
+    nome     VARCHAR(100) NOT NULL,
+    idade    INT CHECK (idade >= 18 AND idade <= 100),
+    salario  NUMERIC(10, 2) CHECK (salario > 0),
+    email    VARCHAR(100) UNIQUE NOT NULL,
+    status   VARCHAR(20) DEFAULT 'Ativo'
+        CHECK (status IN ('Ativo', 'Inativo', 'Férias')),
+    data_admissao DATE NOT NULL
+        CHECK (data_admissao <= CURRENT_DATE)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>As constraints <code>CHECK</code>, <code>NOT NULL</code>, <code>UNIQUE</code> e <code>DEFAULT</code> são os mecanismos que garantem a integridade de domínio.</p>
+      </section>
+
+      <!-- NORMALIZAÇÃO -->
+      <section>
+        <h2>Normalização</h2>
+        <p>
+          A <strong>normalização</strong> é o processo de organizar os dados em tabelas para eliminar redundâncias e evitar anomalias. É aplicada em etapas chamadas <strong>Formas Normais (FN)</strong>.
+        </p>
+        <p>
+          Partiremos de uma tabela não normalizada e aplicaremos cada forma normal passo a passo.
+        </p>
+
+        <h3>Tabela Não Normalizada</h3>
+        <p>Considere a seguinte tabela que armazena pedidos de uma livraria:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE pedidos_livraria (
+    pedido_id     INT,
+    cliente_nome  VARCHAR(100),
+    cliente_telefone VARCHAR(20),
+    cliente_cidade  VARCHAR(50),
+    livro_titulo  VARCHAR(200),
+    livro_autor   VARCHAR(100),
+    livro_editora VARCHAR(100),
+    livro_preco   NUMERIC(10, 2),
+    quantidade    INT,
+    data_pedido   DATE
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>1FN — Primeira Forma Normal</h3>
+        <p>
+          <strong>Regra:</strong> Todos os atributos devem ser <strong>atômicos</strong> (indivisíveis). Não pode haver grupos repetidos ou colunas multivaloradas.
+        </p>
+        <p>Na tabela acima, todos os valores já são atômicos. Além disso, precisamos garantir que existe uma chave primária. Vamos definir <code>pedido_id</code> como PK e tornar os valores atômicos explícitos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE pedidos_livraria_1fn (
+    pedido_id       INT,
+    cliente_nome    VARCHAR(100) NOT NULL,
+    cliente_telefone VARCHAR(20),
+    cliente_cidade   VARCHAR(50),
+    livro_titulo    VARCHAR(200) NOT NULL,
+    livro_autor     VARCHAR(100),
+    livro_editora   VARCHAR(100),
+    livro_preco     NUMERIC(10, 2) NOT NULL,
+    quantidade      INT NOT NULL,
+    data_pedido     DATE NOT NULL,
+    PRIMARY KEY (pedido_id, livro_titulo)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          A chave primária composta <code>(pedido_id, livro_titulo)</code> é necessária porque um pedido pode conter vários livros, e um livro pode aparecer em vários pedidos.
+        </p>
+
+        <h3>2FN — Segunda Forma Normal</h3>
+        <p>
+          <strong>Regra:</strong> A tabela já deve estar na 1FN e todos os atributos não-chave devem ser <strong>totalmente dependentes</strong> da chave primária inteira (não apenas de parte dela).
+        </p>
+        <p>
+          Na nossa tabela 1FN, observe:
+        </p>
+        <ul>
+          <li><code>cliente_nome</code>, <code>cliente_telefone</code>, <code>cliente_cidade</code> dependem apenas de <code>pedido_id</code> (não do livro)</li>
+          <li><code>data_pedido</code> depende apenas de <code>pedido_id</code></li>
+          <li><code>livro_autor</code>, <code>livro_editora</code>, <code>livro_preco</code> dependem apenas de <code>livro_titulo</code> (não do pedido)</li>
+          <li>Apenas <code>quantidade</code> depende da combinação completa <code>(pedido_id, livro_titulo)</code></li>
+        </ul>
+        <p>Solução: dividir em três tabelas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de clientes
+CREATE TABLE clientes (
+    cliente_id   SERIAL PRIMARY KEY,
+    nome         VARCHAR(100) NOT NULL,
+    telefone     VARCHAR(20),
+    cidade       VARCHAR(50)
+);
+
+-- Tabela de livros
+CREATE TABLE livros (
+    livro_id  SERIAL PRIMARY KEY,
+    titulo    VARCHAR(200) NOT NULL,
+    autor     VARCHAR(100),
+    editora   VARCHAR(100),
+    preco     NUMERIC(10, 2) NOT NULL
+);
+
+-- Tabela de pedidos com itens
+CREATE TABLE pedidos (
+    pedido_id   INT NOT NULL,
+    livro_id    INT NOT NULL,
+    quantidade  INT NOT NULL,
+    data_pedido DATE NOT NULL,
+    PRIMARY KEY (pedido_id, livro_id),
+    CONSTRAINT fk_pedidos_livros
+        FOREIGN KEY (livro_id)
+        REFERENCES livros (livro_id)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3FN — Terceira Forma Normal</h3>
+        <p>
+          <strong>Regra:</strong> A tabela já deve estar na 2FN e não pode haver <strong>dependência transitiva</strong>. Ou seja, um atributo não-chave não pode depender de outro atributo não-chave.
+        </p>
+        <p>
+          Na tabela <code>clientes</code>, suponha que adicionamos a coluna <code>estado</code> e <code>codigo_estado</code>. O <code>codigo_estado</code> determina o nome do estado — isso é uma dependência transitiva: <code>cliente_id → codigo_estado → estado</code>.
+        </p>
+        <p>Solução: mover <code>estado</code> para sua própria tabela:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Tabela de estados
+CREATE TABLE estados (
+    codigo_estado VARCHAR(2) PRIMARY KEY,
+    nome_estado   VARCHAR(50) NOT NULL
+);
+
+-- Tabela clientes ajustada
+CREATE TABLE clientes (
+    cliente_id    SERIAL PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    telefone      VARCHAR(20),
+    cidade        VARCHAR(50),
+    codigo_estado VARCHAR(2),
+    CONSTRAINT fk_clientes_estados
+        FOREIGN KEY (codigo_estado)
+        REFERENCES estados (codigo_estado)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Agora, o nome do estado é armazenado apenas uma vez na tabela <code>estados</code>. Se o estado mudar de nome (raro, mas possível), atualizamos em um único lugar.
+        </p>
+
+        <h3>BCNF — Forma Normal de Boyce-Codd</h3>
+        <p>
+          <strong>Regra:</strong> Para toda dependência funcional X → Y, X deve ser uma <strong>superchave</strong> (chave candidata). A BCNF é uma versão mais rigorosa da 3FN.
+        </p>
+        <p>
+          A BCNF é necessária em casos específicos onde a 3FN não resolve todas as redundâncias. Exemplo: uma tabela de agendamento onde um professor pode estar em apenas uma sala, e uma sala pode ter vários professores em horários diferentes.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Exemplo de tabela que está na 3FN mas não na BCNF
+CREATE TABLE agendamentos (
+    professor VARCHAR(100),
+    sala      VARCHAR(10),
+    horario   TIME,
+    PRIMARY KEY (professor, horario)
+);
+
+-- Dependências:
+-- professor, horario → sala   (PK determina sala)
+-- sala, horario → professor   (em um horário, sala tem 1 professor)
+
+-- Na BCNF, quebramos em:
+CREATE TABLE alocacao_professor (
+    professor VARCHAR(100),
+    sala      VARCHAR(10),
+    PRIMARY KEY (professor)
+);
+
+CREATE TABLE alocacao_sala (
+    sala      VARCHAR(10),
+    horario   TIME,
+    professor VARCHAR(100),
+    PRIMARY KEY (sala, horario)
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Resumo das Formas Normais</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Forma Normal</th>
+              <th>Requisito Principal</th>
+              <th>Problema que Resolve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1FN</td>
+              <td>Valores atômicos, sem grupos repetidos</td>
+              <td>Colunas multivaloradas</td>
+            </tr>
+            <tr>
+              <td>2FN</td>
+              <td>Dependência funcional total da PK</td>
+              <td>Dependência parcial (atributos que dependem de parte da PK composta)</td>
+            </tr>
+            <tr>
+              <td>3FN</td>
+              <td>Sem dependências transitivas</td>
+              <td>Atributos que dependem de outros atributos não-chave</td>
+            </tr>
+            <tr>
+              <td>BCNF</td>
+              <td>Todo determinante é chave candidata</td>
+              <td>Casos específicos não cobertos pela 3FN</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Na prática, a maioria dos bancos de dados bem projetados atende até a <strong>3FN</strong>. A BCNF e formas superiores (4FN, 5FN) são aplicadas em cenários mais específicos.
+        </p>
+      </section>
+
+      <!-- CONSULTAS MULTITABULARES -->
+      <section>
+        <h2>Consultas Multitabulares</h2>
+        <p>
+          Quando os dados estão distribuídos em várias tabelas, precisamos de mecanismos para combiná-los em uma única consulta. A forma mais fundamental é o <strong>produto cartesiano</strong>.
+        </p>
+
+        <h3>Produto Cartesiano</h3>
+        <p>
+          O produto cartesiano combina <strong>todas</strong> as linhas da tabela A com <strong>todas</strong> as linhas da tabela B. Se a tabela A tem 5 linhas e a tabela B tem 10 linhas, o resultado terá 5 × 10 = 50 linhas.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Produto cartesiano: todas as combinações
+SELECT * FROM clientes, pedidos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          O resultado bruto do produto cartesiano raramente é útil. Precisamos <strong>filtrar</strong> para manter apenas as combinações que fazem sentido:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Filtrando o produto cartesiano com WHERE
+SELECT
+    clientes.nome AS cliente,
+    pedidos.id AS pedido_id,
+    pedidos.data_pedido
+FROM clientes, pedidos
+WHERE clientes.id = pedidos.cliente_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          Esta é a forma tradicional de fazer consultas multitabulares. A condição <code>clientes.id = pedidos.cliente_id</code> na cláusula WHERE conecta as duas tabelas pela chave estrangeira, produzindo o que chamamos de <strong>junção implícita</strong> (implicit join).
+        </p>
+
+        <h3>Exemplo Completo com Três Tabelas</h3>
+        <p>Vamos criar e popular tabelas relacionadas para demonstrar consultas multitabulares:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Criar as tabelas
+CREATE TABLE clientes (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    cidade VARCHAR(50)
+);
+
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+);
+
+CREATE TABLE itens_pedido (
+    pedido_id  INT NOT NULL,
+    produto    VARCHAR(100) NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unit NUMERIC(10, 2) NOT NULL,
+    PRIMARY KEY (pedido_id, produto),
+    CONSTRAINT fk_itens_pedidos
+        FOREIGN KEY (pedido_id)
+        REFERENCES pedidos (id)
+        ON DELETE CASCADE
+);
+
+-- Inserir dados
+INSERT INTO clientes (nome, cidade) VALUES
+    ('Ana Costa', 'São Paulo'),
+    ('Bruno Lima', 'Campinas'),
+    ('Carla Mendes', 'São Paulo');
+
+INSERT INTO pedidos (cliente_id, data_pedido) VALUES
+    (1, '2025-06-01'),
+    (1, '2025-06-10'),
+    (2, '2025-06-05'),
+    (3, '2025-06-12');
+
+INSERT INTO itens_pedido (pedido_id, produto, quantidade, preco_unit) VALUES
+    (1, 'Notebook', 1, 3500.00),
+    (1, 'Mouse',    2,  150.00),
+    (2, 'Teclado',  1,  250.00),
+    (3, 'Monitor',  1, 1200.00),
+    (4, 'Notebook', 1, 3500.00),
+    (4, 'Webcam',   1,  300.00);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Consulta unindo as três tabelas:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Consulta com 3 tabelas usando produto cartesiano filtrado
+SELECT
+    c.nome        AS cliente,
+    p.id          AS pedido,
+    p.data_pedido AS data,
+    i.produto,
+    i.quantidade,
+    i.preco_unit,
+    (i.quantidade * i.preco_unit) AS subtotal
+FROM clientes c, pedidos p, itens_pedido i
+WHERE c.id = p.cliente_id
+  AND p.id = i.pedido_id
+ORDER BY p.id, i.produto;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Consulta com filtro adicional — apenas clientes de São Paulo:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    c.nome AS cliente,
+    COUNT(p.id) AS total_pedidos
+FROM clientes c, pedidos p
+WHERE c.id = p.cliente_id
+  AND c.cidade = 'São Paulo'
+GROUP BY c.nome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie 3 tabelas relacionadas (clientes, pedidos, itens_pedido) com PKs e FKs</h3>
+            <p>Crie o esquema completo com as constraints de chave estrangeira. Defina ações ON DELETE apropriadas para cada relacionamento. Insira pelo menos 3 clientes, 5 pedidos e 8 itens de pedido.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE clientes (
+    id    SERIAL PRIMARY KEY,
+    nome  VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    cidade VARCHAR(50)
+);
+
+CREATE TABLE pedidos (
+    id         SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATE DEFAULT CURRENT_DATE,
+    status     VARCHAR(20) DEFAULT 'Pendente',
+    CONSTRAINT fk_pedidos_clientes
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes (id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE itens_pedido (
+    pedido_id  INT NOT NULL,
+    produto    VARCHAR(100) NOT NULL,
+    quantidade INT NOT NULL CHECK (quantidade > 0),
+    preco_unit NUMERIC(10, 2) NOT NULL CHECK (preco_unit > 0),
+    PRIMARY KEY (pedido_id, produto),
+    CONSTRAINT fk_itens_pedidos
+        FOREIGN KEY (pedido_id)
+        REFERENCES pedidos (id)
+        ON DELETE CASCADE
+);
+
+-- Inserir dados
+INSERT INTO clientes (nome, email, cidade) VALUES
+    ('Alice Martins', 'alice@email.com', 'Recife'),
+    ('Bruno Carvalho', 'bruno@email.com', 'Fortaleza'),
+    ('Carla Torres', 'carla@email.com', 'Salvador');
+
+INSERT INTO pedidos (cliente_id, data_pedido, status) VALUES
+    (1, '2025-06-01', 'Entregue'),
+    (1, '2025-06-10', 'Pendente'),
+    (2, '2025-06-05', 'Enviado'),
+    (3, '2025-06-12', 'Pendente'),
+    (3, '2025-06-15', 'Pendente');
+
+INSERT INTO itens_pedido (pedido_id, produto, quantidade, preco_unit) VALUES
+    (1, 'Fone de Ouvido', 2, 120.00),
+    (1, 'Carregador',     1,  80.00),
+    (2, 'Smartphone',     1, 2000.00),
+    (3, 'Tablet',         1, 1500.00),
+    (3, 'Capa para Tablet', 1, 60.00),
+    (4, 'Notebook',       1, 3800.00),
+    (5, 'Mouse',          1, 150.00),
+    (5, 'Teclado',        1, 300.00);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Faça uma consulta que retorne o nome do cliente, a data do pedido e o valor total de cada pedido</h3>
+            <p>Utilize produto cartesiano com filtro WHERE. Calcule o total do pedido somando (quantidade × preco_unit) agrupado por pedido.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+SELECT
+    c.nome        AS cliente,
+    p.id          AS pedido_id,
+    p.data_pedido,
+    SUM(i.quantidade * i.preco_unit) AS valor_total
+FROM clientes c, pedidos p, itens_pedido i
+WHERE c.id = p.cliente_id
+  AND p.id = i.pedido_id
+GROUP BY c.nome, p.id, p.data_pedido
+ORDER BY p.data_pedido;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Normalize a tabela abaixo até a 3FN</h3>
+            <p>Considere a seguinte tabela não normalizada. Identifique as dependências funcionais, aplique 1FN, 2FN e 3FN, e apresente o esquema final com as tabelas normalizadas.</p>
+            <div class="code-container">
+              <pre><code class="language-sql">
+CREATE TABLE vendas (
+    venda_id       INT,
+    cliente_nome   VARCHAR(100),
+    cliente_cpf    VARCHAR(14),
+    vendedor_nome  VARCHAR(100),
+    vendedor_setor VARCHAR(50),
+    produto_nome   VARCHAR(100),
+    produto_preco  NUMERIC(10, 2),
+    quantidade     INT,
+    data_venda     DATE
+);
+              </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <p><strong>Dependências funcionais identificadas:</strong></p>
+              <ul>
+                <li>venda_id → data_venda</li>
+                <li>venda_id → cliente_nome, cliente_cpf</li>
+                <li>venda_id → vendedor_nome, vendedor_setor</li>
+                <li>cliente_cpf → cliente_nome</li>
+                <li>vendedor_nome → vendedor_setor</li>
+                <li>produto_nome → produto_preco</li>
+                <li>(venda_id, produto_nome) → quantidade</li>
+              </ul>
+              <p><strong>1FN:</strong> Todos valores atômicos. PK composta: (venda_id, produto_nome).</p>
+              <p><strong>2FN:</strong> Separar atributos que dependem parcialmente da PK:</p>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE TABLE clientes (
+    cliente_id SERIAL PRIMARY KEY,
+    nome       VARCHAR(100) NOT NULL,
+    cpf        VARCHAR(14) UNIQUE NOT NULL
+);
+
+CREATE TABLE vendedores (
+    vendedor_id SERIAL PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    setor       VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE produtos (
+    produto_id SERIAL PRIMARY KEY,
+    nome       VARCHAR(100) NOT NULL,
+    preco      NUMERIC(10, 2) NOT NULL
+);
+
+CREATE TABLE vendas (
+    venda_id    SERIAL PRIMARY KEY,
+    cliente_id  INT NOT NULL,
+    vendedor_id INT NOT NULL,
+    data_venda  DATE NOT NULL,
+    CONSTRAINT fk_vendas_clientes
+        FOREIGN KEY (cliente_id) REFERENCES clientes (cliente_id),
+    CONSTRAINT fk_vendas_vendedores
+        FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id)
+);
+
+CREATE TABLE itens_venda (
+    venda_id   INT NOT NULL,
+    produto_id INT NOT NULL,
+    quantidade INT NOT NULL,
+    PRIMARY KEY (venda_id, produto_id),
+    CONSTRAINT fk_itens_vendas
+        FOREIGN KEY (venda_id) REFERENCES vendas (venda_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_itens_produtos
+        FOREIGN KEY (produto_id) REFERENCES produtos (produto_id)
+);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p><strong>3FN:</strong> Verificar dependências transitivas:</p>
+              <ul>
+                <li>Na tabela <code>clientes</code>: cpf (não-chave) → nome. Como cpf é UNIQUE (chave candidata), está OK. Se não fosse, teríamos que criar tabela separada.</li>
+                <li>Na tabela <code>vendedores</code>: nome (não-chave) → setor. Se nome não for UNIQUE, há dependência transitiva. Solução: manter setor na tabela vendedores se cada vendedor tem um único setor; caso contrário, normalizar.</li>
+              </ul>
+              <p>O esquema acima já atende à 3FN, pois não há dependências transitivas entre atributos não-chave nas tabelas criadas.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Execute as criações de tabelas, teste as chaves estrangeiras tentando inserir dados inválidos, pratique a normalização com outros exemplos e faça consultas unindo tabelas.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li><code>aula4</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

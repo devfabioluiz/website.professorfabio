@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7 - Views e Triggers - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 7</h1>
+      <h4 class="text-center">Teoria de Banco de Dados</h4>
+      <h4 class="text-center">Módulo 7 (Parte 1): Views e Triggers</h4>
+      <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Criação de views, Modificação de views (CREATE OR REPLACE), Exclusão de views, Alteração de dados através de views, O que é um trigger, Tipos de triggers (BEFORE, AFTER, INSTEAD OF), Trigger INSERT, Trigger UPDATE, Trigger DELETE.</div>
+    </header>
+    <main class="container">
+
+      <!-- O QUE SÃO VIEWS -->
+      <section>
+        <h2>O que são Views?</h2>
+        <p>
+          Uma <strong>view</strong> (visão) é uma tabela virtual baseada no resultado de uma consulta SQL. Ela não armazena dados fisicamente — sempre que você consulta uma view, o SGBD executa a query que a define e retorna os dados atualizados das tabelas base.
+        </p>
+        <p>As principais <strong>vantagens</strong> de usar views são:</p>
+        <ul>
+          <li><strong>Segurança:</strong> você pode expor apenas colunas específicas, ocultando dados sensíveis como senhas ou CPF</li>
+          <li><strong>Simplicidade:</strong> consultas complexas com múltiplos JOINs ficam encapsuladas em uma view simples de consultar</li>
+          <li><strong>Reusabilidade:</strong> a lógica da consulta é definida uma única vez e reutilizada em vários lugares</li>
+          <li><strong>Abstração:</strong> mudanças na estrutura das tabelas base podem ser transparentes para as aplicações que usam a view</li>
+          <li><strong>Consistência:</strong> todos os usuários e aplicações utilizam a mesma definição da consulta</li>
+        </ul>
+        <p>Pense nas views como "atalhos nomeados" para consultas frequentes. Em vez de reescrever um SELECT complexo toda vez, você cria a view uma vez e faz <code>SELECT * FROM view</code>.</p>
+      </section>
+
+      <!-- CRIANDO VIEWS -->
+      <section>
+        <h2>Criando Views</h2>
+        <p>
+          A sintaxe básica para criar uma view é:
+        </p>
+
+        <h3>View Simples</h3>
+        <p>Uma view que filtra clientes ativos de uma tabela:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW clientes_ativos AS
+SELECT * FROM clientes
+WHERE status = 'ativo';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Agora você pode consultar a view como se fosse uma tabela normal:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM clientes_ativos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>View com JOINs</h3>
+        <p>Uma view que consolida dados de múltiplas tabelas com INNER JOIN:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW resumo_pedidos AS
+SELECT
+    c.nome AS cliente,
+    p.data_pedido,
+    p.valor_total,
+    p.status
+FROM clientes c
+INNER JOIN pedidos p ON c.id = p.cliente_id;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Consultar pedidos de um cliente específico agora fica trivial:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT * FROM resumo_pedidos
+WHERE cliente = 'João Silva'
+ORDER BY data_pedido DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>View com Agregações</h3>
+        <p>Views também podem conter funções de agregação como COUNT, SUM, AVG, MAX e MIN:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW vendas_por_categoria AS
+SELECT
+    categoria,
+    COUNT(*) AS total_produtos,
+    SUM(valor) AS receita_total,
+    AVG(valor) AS preco_medio,
+    MAX(valor) AS produto_mais_caro,
+    MIN(valor) AS produto_mais_barato
+FROM produtos
+GROUP BY categoria;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Consultar quais categorias geram mais receita:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT categoria, receita_total
+FROM vendas_por_categoria
+ORDER BY receita_total DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Criando Views a partir de outras Views</h3>
+        <p>É possível criar views que referenciam outras views, construindo camadas de abstração:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW top_categorias AS
+SELECT categoria, receita_total
+FROM vendas_por_categoria
+WHERE receita_total > 5000;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- MODIFICANDO VIEWS -->
+      <section>
+        <h2>Modificando Views</h2>
+        <p>
+          Para alterar a definição de uma view existente sem precisar excluí-la e recriá-la, utilizamos o comando <code>CREATE OR REPLACE VIEW</code>. Isso preserva as permissões já concedidas sobre a view.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View original
+CREATE VIEW clientes_ativos AS
+SELECT * FROM clientes
+WHERE status = 'ativo';
+
+-- Substituindo a view para incluir apenas colunas específicas
+CREATE OR REPLACE VIEW clientes_ativos AS
+SELECT id, nome, email, cidade
+FROM clientes
+WHERE status = 'ativo';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Importante:</strong> O PostgreSQL também oferece <code>ALTER VIEW</code> para alterar propriedades auxiliares da view (como renomear, alterar dono, definir opções), mas para alterar a query da view usa-se <code>CREATE OR REPLACE VIEW</code>.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Renomear uma view
+ALTER VIEW clientes_ativos RENAME TO clientes_ativos_v2;
+
+-- Alterar o dono da view
+ALTER VIEW clientes_ativos_v2 OWNER TO outro_usuario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- EXCLUINDO VIEWS -->
+      <section>
+        <h2>Excluindo Views</h2>
+        <p>
+          Para remover uma view do banco de dados, utiliza-se o comando <code>DROP VIEW</code>. O uso de <code>IF EXISTS</code> evita erros caso a view não exista.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Excluir uma view
+DROP VIEW clientes_ativos;
+
+-- Excluir com verificação de existência (recomendado)
+DROP VIEW IF EXISTS clientes_ativos;
+
+-- Excluir múltiplas views de uma vez
+DROP VIEW IF EXISTS view1, view2, view3;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          <strong>Atenção:</strong> Excluir uma view <strong>não</strong> afeta os dados das tabelas base. Apenas a definição da consulta virtual é removida. Views que dependem de outras views também não são excluídas automaticamente — elas se tornarão inválidas.
+        </p>
+        <p>Para verificar quais views dependem de outras, use:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    dependent_ns.nspname AS dependent_schema,
+    dependent_view.relname AS dependent_view,
+    source_ns.nspname AS source_schema,
+    source_view.relname AS source_view
+FROM pg_depend
+JOIN pg_rewrite ON pg_depend.objid = pg_rewrite.oid
+JOIN pg_class AS dependent_view ON pg_rewrite.ev_class = dependent_view.oid
+JOIN pg_class AS source_view ON pg_depend.refobjid = source_view.oid
+JOIN pg_namespace AS dependent_ns ON dependent_ns.oid = dependent_view.relnamespace
+JOIN pg_namespace AS source_ns ON source_ns.oid = source_view.relnamespace
+WHERE dependent_view.relkind = 'v';
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ALTERANDO DADOS ATRAVÉS DE VIEWS -->
+      <section>
+        <h2>Alterando Dados através de Views</h2>
+        <p>
+          Em muitos casos, é possível executar INSERT, UPDATE e DELETE diretamente através de uma view. No PostgreSQL, uma view é <strong>automaticamente atualizável</strong> se atender a estas condições:
+        </p>
+        <ul>
+          <li>A view é baseada em <strong>exatamente uma</strong> tabela (ou view atualizável)</li>
+          <li>Todas as colunas da view referenciam diretamente colunas da tabela base (sem expressões, funções ou agregações)</li>
+          <li>A query da view não contém: DISTINCT, GROUP BY, HAVING, LIMIT, OFFSET, UNION, INTERSECT, EXCEPT</li>
+          <li>Não há funções de janela (WINDOW), nem funções de agregação no SELECT</li>
+        </ul>
+
+        <h3>Inserindo dados via View</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW clientes_simples AS
+SELECT id, nome, email
+FROM clientes;
+
+INSERT INTO clientes_simples (nome, email)
+VALUES ('Maria Souza', 'maria@email.com');
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Atualizando dados via View</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+UPDATE clientes_simples
+SET email = 'maria.nova@email.com'
+WHERE id = 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Excluindo dados via View</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+DELETE FROM clientes_simples
+WHERE id = 1;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>WITH CHECK OPTION</h3>
+        <p>
+          Ao criar uma view com <code>WITH CHECK OPTION</code>, você garante que qualquer INSERT ou UPDATE feito através da view respeite a condição WHERE da view. Isso impede que dados inseridos pela view "desapareçam" da visualização.
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE VIEW produtos_caros AS
+SELECT * FROM produtos
+WHERE preco > 1000
+WITH CHECK OPTION;
+
+-- Isso funciona (preço > 1000)
+INSERT INTO produtos_caros (nome, preco)
+VALUES ('Notebook Gamer', 5000);
+
+-- Isso falha (preço não é > 1000)
+INSERT INTO produtos_caros (nome, preco)
+VALUES ('Mouse', 50);
+-- ERRO: new row violates check option for view "produtos_caros"
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>O <code>WITH CASCADED CHECK OPTION</code> (padrão) propaga a verificação para views subjacentes. O <code>WITH LOCAL CHECK OPTION</code> verifica apenas a view atual.</p>
+      </section>
+
+      <!-- O QUE SÃO TRIGGERS -->
+      <section>
+        <h2>O que são Triggers?</h2>
+        <p>
+          Um <strong>trigger</strong> (gatilho) é um procedimento armazenado que é executado <strong>automaticamente</strong> pelo SGBD quando um evento específico (INSERT, UPDATE ou DELETE) ocorre em uma tabela.
+        </p>
+        <p>Triggers são fundamentais para:</p>
+        <ul>
+          <li><strong>Auditoria:</strong> registrar automaticamente quem fez qual alteração e quando</li>
+          <li><strong>Validação:</strong> impor regras de negócio complexas que vão além de constraints</li>
+          <li><strong>Integridade:</strong> manter dados derivados ou desnormalizados sincronizados</li>
+          <li><strong>Log:</strong> manter histórico de alterações em tabelas críticas</li>
+          <li><strong>Enforcement:</strong> aplicar políticas de segurança ou regras de acesso</li>
+        </ul>
+        <p>
+          <strong>A analogia:</strong> Pense em um trigger como um "alarme de carro" — você não precisa ligá-lo manualmente; ele dispara automaticamente quando alguém tenta abrir a porta (evento).
+        </p>
+      </section>
+
+      <!-- ESTRUTURA DE UM TRIGGER -->
+      <section>
+        <h2>Estrutura de um Trigger</h2>
+        <p>
+          No PostgreSQL, os triggers funcionam em duas partes:
+        </p>
+        <ol>
+          <li><strong>Função Trigger:</strong> uma função escrita em PL/pgSQL (ou outra linguagem procedural) que contém a lógica a ser executada</li>
+          <li><strong>Trigger propriamente dito:</strong> que associa a função a uma tabela e define quando ela será disparada</li>
+        </ol>
+        <p>Este é o template básico de uma função trigger e seu respectivo trigger:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- 1. Criar a função que o trigger executará
+CREATE OR REPLACE FUNCTION nome_da_funcao()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Lógica do trigger aqui
+    -- NEW representa a nova linha (INSERT/UPDATE)
+    -- OLD representa a linha antiga (UPDATE/DELETE)
+    -- TG_OP contém a operação: 'INSERT', 'UPDATE' ou 'DELETE'
+    RETURN NEW;  -- ou RETURN OLD para DELETE
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. Criar o trigger que chama a função
+CREATE TRIGGER nome_do_trigger
+BEFORE INSERT ON tabela
+FOR EACH ROW
+EXECUTE FUNCTION nome_da_funcao();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p><strong>Variáveis especiais disponíveis em funções trigger:</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Variável</th>
+              <th>Significado</th>
+              <th>Disponível em</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>NEW</code></td>
+              <td>Registro da nova linha (após a operação)</td>
+              <td>INSERT, UPDATE</td>
+            </tr>
+            <tr>
+              <td><code>OLD</code></td>
+              <td>Registro da linha antiga (antes da operação)</td>
+              <td>UPDATE, DELETE</td>
+            </tr>
+            <tr>
+              <td><code>TG_OP</code></td>
+              <td>Operação que disparou o trigger ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE')</td>
+              <td>Todos</td>
+            </tr>
+            <tr>
+              <td><code>TG_TABLE_NAME</code></td>
+              <td>Nome da tabela onde o trigger foi disparado</td>
+              <td>Todos</td>
+            </tr>
+            <tr>
+              <td><code>TG_WHEN</code></td>
+              <td>Quando o trigger é disparado ('BEFORE', 'AFTER', 'INSTEAD OF')</td>
+              <td>Todos</td>
+            </tr>
+            <tr>
+              <td><code>TG_LEVEL</code></td>
+              <td>'ROW' para FOR EACH ROW, 'STATEMENT' para FOR EACH STATEMENT</td>
+              <td>Todos</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- TIPOS DE TRIGGERS -->
+      <section>
+        <h2>Tipos de Triggers</h2>
+        <p>
+          Os triggers podem ser classificados pelo <strong>momento de execução</strong> e pelo <strong>evento disparador</strong>:
+        </p>
+
+        <h3>BEFORE INSERT — Validar dados antes da inserção</h3>
+        <p>Impede a inserção de um produto com preço negativo:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION validar_preco_produto()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.preco < 0 THEN
+        RAISE EXCEPTION 'O preço do produto não pode ser negativo: %', NEW.preco;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_valida_preco
+BEFORE INSERT ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION validar_preco_produto();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>AFTER INSERT — Registrar log de auditoria</h3>
+        <p>Registra toda inserção em uma tabela de log:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION log_insert_produto()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO log_operacoes (tabela, operacao, registro_id, data_hora)
+    VALUES ('produtos', 'INSERT', NEW.id, NOW());
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_log_insert
+AFTER INSERT ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION log_insert_produto();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>BEFORE UPDATE — Atualizar campo de data automaticamente</h3>
+        <p>Atualiza o campo <code>updated_at</code> sempre que uma linha é modificada:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION atualizar_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_timestamp
+BEFORE UPDATE ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_timestamp();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>AFTER UPDATE — Registrar alterações</h3>
+        <p>Registra em log quais campos foram alterados:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION log_update_produto()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.preco <> NEW.preco THEN
+        INSERT INTO log_alteracoes (tabela, registro_id, campo, valor_antigo, valor_novo, data_hora)
+        VALUES ('produtos', NEW.id, 'preco', OLD.preco::TEXT, NEW.preco::TEXT, NOW());
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_log_update
+AFTER UPDATE ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION log_update_produto();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>BEFORE DELETE — Impedir exclusão com condições</h3>
+        <p>Impede a exclusão de clientes que ainda possuem pedidos:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION impedir_exclusao_cliente()
+RETURNS TRIGGER AS $$
+DECLARE
+    pedidos_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO pedidos_count
+    FROM pedidos
+    WHERE cliente_id = OLD.id;
+
+    IF pedidos_count > 0 THEN
+        RAISE EXCEPTION 'Não é possível excluir o cliente ID % pois ele possui % pedido(s) ativo(s).', OLD.id, pedidos_count;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_impede_delete_cliente
+BEFORE DELETE ON clientes
+FOR EACH ROW
+EXECUTE FUNCTION impedir_exclusao_cliente();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>AFTER DELETE — Limpeza de dados relacionados</h3>
+        <p>Remove automaticamente registros dependentes:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION limpar_dependentes()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM telefones WHERE cliente_id = OLD.id;
+    DELETE FROM enderecos WHERE cliente_id = OLD.id;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_after_delete_cliente
+AFTER DELETE ON clientes
+FOR EACH ROW
+EXECUTE FUNCTION limpar_dependentes();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>INSTEAD OF — Para Views não atualizáveis</h3>
+        <p>Permite INSERT, UPDATE e DELETE em views complexas que não seriam naturalmente atualizáveis:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- View que junta clientes e pedidos (não é naturalmente atualizável)
+CREATE VIEW clientes_com_pedidos AS
+SELECT
+    c.id AS cliente_id,
+    c.nome,
+    p.id AS pedido_id,
+    p.valor_total
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id;
+
+-- Função que trata INSERT na view
+CREATE OR REPLACE FUNCTION insere_cliente_view()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO clientes (nome) VALUES (NEW.nome);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_instead_of_insert
+INSTEAD OF INSERT ON clientes_com_pedidos
+FOR EACH ROW
+EXECUTE FUNCTION insere_cliente_view();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- SISTEMA DE AUDITORIA COM TRIGGERS -->
+      <section>
+        <h2>Passo a passo: Criando um sistema de auditoria com triggers</h2>
+        <p>
+          Vamos construir um sistema completo de auditoria que registra automaticamente todas as operações (INSERT, UPDATE, DELETE) na tabela <strong>clientes</strong>.
+        </p>
+
+        <h3>Passo 1 — Criar a tabela de auditoria</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE auditoria (
+    id               SERIAL PRIMARY KEY,
+    tabela           VARCHAR(100) NOT NULL,
+    operacao         VARCHAR(10) NOT NULL,
+    registro_id      INTEGER,
+    dados_antigos    JSONB,
+    dados_novos      JSONB,
+    usuario          VARCHAR(100) DEFAULT CURRENT_USER,
+    data_hora        TIMESTAMP DEFAULT NOW()
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a tabela de clientes de exemplo</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TABLE clientes (
+    id     SERIAL PRIMARY KEY,
+    nome   VARCHAR(100) NOT NULL,
+    email  VARCHAR(150),
+    status VARCHAR(20) DEFAULT 'ativo'
+);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar a função de auditoria</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION fn_auditoria()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO auditoria (tabela, operacao, registro_id, dados_novos)
+        VALUES (TG_TABLE_NAME, 'INSERT', NEW.id, row_to_json(NEW)::JSONB);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO auditoria (tabela, operacao, registro_id, dados_antigos, dados_novos)
+        VALUES (TG_TABLE_NAME, 'UPDATE', NEW.id, row_to_json(OLD)::JSONB, row_to_json(NEW)::JSONB);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO auditoria (tabela, operacao, registro_id, dados_antigos)
+        VALUES (TG_TABLE_NAME, 'DELETE', OLD.id, row_to_json(OLD)::JSONB);
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar os triggers na tabela clientes</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+CREATE TRIGGER trg_auditoria_insert
+AFTER INSERT ON clientes
+FOR EACH ROW
+EXECUTE FUNCTION fn_auditoria();
+
+CREATE TRIGGER trg_auditoria_update
+AFTER UPDATE ON clientes
+FOR EACH ROW
+EXECUTE FUNCTION fn_auditoria();
+
+CREATE TRIGGER trg_auditoria_delete
+AFTER DELETE ON clientes
+FOR EACH ROW
+EXECUTE FUNCTION fn_auditoria();
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Testar o sistema</h3>
+        <p>Execute operações e verifique os registros de auditoria:</p>
+        <div class="code-container">
+          <pre><code class="language-sql">
+-- Inserir clientes
+INSERT INTO clientes (nome, email) VALUES ('João Silva', 'joao@email.com');
+INSERT INTO clientes (nome, email) VALUES ('Maria Souza', 'maria@email.com');
+
+-- Atualizar um cliente
+UPDATE clientes SET email = 'joao.novo@email.com' WHERE id = 1;
+
+-- Excluir um cliente
+DELETE FROM clientes WHERE id = 2;
+
+-- Verificar os registros de auditoria
+SELECT * FROM auditoria ORDER BY data_hora DESC;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Listar todos os triggers do banco</h3>
+        <div class="code-container">
+          <pre><code class="language-sql">
+SELECT
+    tgname AS trigger_name,
+    relname AS table_name,
+    CASE WHEN tgfoid IS NOT NULL THEN proname END AS function_name,
+    CASE
+        WHEN (t.tgtype::int & 2) = 2 AND (t.tgtype::int & 1) = 0 THEN 'BEFORE'
+        WHEN (t.tgtype::int & 2) = 2 AND (t.tgtype::int & 1) = 1 THEN 'AFTER'
+        WHEN (t.tgtype::int & 2) = 0 THEN 'INSTEAD OF'
+    END AS when_trigger
+FROM pg_trigger t
+JOIN pg_class c ON t.tgrelid = c.oid
+LEFT JOIN pg_proc p ON t.tgfoid = p.oid
+WHERE NOT t.tgisinternal
+ORDER BY relname, tgname;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+
+          <div class="question">
+            <h3>1. Crie uma view que mostre clientes e seus totais de pedidos</h3>
+            <p>A view deve exibir o nome do cliente, quantidade de pedidos e valor total gasto. Considere as tabelas <code>clientes</code> (<code>id</code>, <code>nome</code>) e <code>pedidos</code> (<code>id</code>, <code>cliente_id</code>, <code>valor</code>).</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE VIEW clientes_total_pedidos AS
+SELECT
+    c.nome,
+    COUNT(p.id) AS total_pedidos,
+    COALESCE(SUM(p.valor), 0) AS valor_total_gasto
+FROM clientes c
+LEFT JOIN pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.nome
+ORDER BY valor_total_gasto DESC;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>O <code>LEFT JOIN</code> garante que clientes sem pedidos também apareçam na view. O <code>COALESCE</code> converte NULL em 0 para o valor total.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Crie um trigger BEFORE INSERT que impede a inserção de produto com preço negativo</h3>
+            <p>Considere a tabela <code>produtos (id, nome, preco, estoque)</code>. O trigger deve lançar uma exceção com mensagem descritiva quando o preço for menor que zero.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+CREATE OR REPLACE FUNCTION validar_preco_produto()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.preco < 0 THEN
+        RAISE EXCEPTION 'Erro: O preço do produto "%" não pode ser negativo (R$ %).', NEW.nome, NEW.preco;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_valida_preco_produto
+BEFORE INSERT ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION validar_preco_produto();
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>O trigger também pode ser estendido para UPDATE com <code>BEFORE INSERT OR UPDATE</code> para validar alterações de preço.</p>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. Crie um trigger AFTER UPDATE que registra em uma tabela de log as alterações de preço dos produtos</h3>
+            <p>Crie a tabela <code>log_precos</code> e o trigger que registra: id do produto, preço antigo, preço novo, data da alteração e usuário que realizou a mudança.</p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-sql">
+-- Passo 1: Criar a tabela de log
+CREATE TABLE log_precos (
+    id           SERIAL PRIMARY KEY,
+    produto_id   INTEGER NOT NULL,
+    preco_antigo NUMERIC(10,2),
+    preco_novo   NUMERIC(10,2),
+    usuario      VARCHAR(100) DEFAULT CURRENT_USER,
+    data_alteracao TIMESTAMP DEFAULT NOW()
+);
+
+-- Passo 2: Criar a função trigger
+CREATE OR REPLACE FUNCTION registrar_alteracao_preco()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.preco <> NEW.preco THEN
+        INSERT INTO log_precos (produto_id, preco_antigo, preco_novo)
+        VALUES (NEW.id, OLD.preco, NEW.preco);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Passo 3: Criar o trigger
+CREATE TRIGGER trg_log_alteracao_preco
+AFTER UPDATE ON produtos
+FOR EACH ROW
+EXECUTE FUNCTION registrar_alteracao_preco();
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>A condição <code>IF OLD.preco <> NEW.preco</code> garante que só registramos quando o preço realmente mudou, evitando logs desnecessários.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando corretamente. Verifique se as views retornam os dados esperados, se os triggers disparam corretamente e se os registros de auditoria estão sendo criados.
+        </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/teoria-banco-dados-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/teoria-banco-dados-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula7</code></li>
+        </ul>
+      </div>
+
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
