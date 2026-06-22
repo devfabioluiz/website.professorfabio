@@ -98,3 +98,10 @@ var DIFICIL_ACESSO = 141.02;       // Art. 38, II, Lei 1.614/1990 c/c Decreto 15
 var PREVIDENCIA_ALIQUOTA = 0.14;
 var DEDUCAO_DEPENDENTE = 189.59;
 var MAX_TRIENIOS = 11;
+
+var RECOMPOSICOES = [
+  { id: "parcela1",  descricao: "1ª parcela IPCA (50%) — Lei 9.436/21", pct: 13.05, competencia: "2022-01", jaAplicado: true },
+  { id: "extra2023", descricao: "Recomposição extra — Lei 9.952/23",      pct:  5.90, competencia: "2023-01", jaAplicado: true },
+  { id: "parcela2",  descricao: "1ª parcela de 2026 — Dec. 50.302/26", pct:  5.62, competencia: "2026-07", jaAplicado: false },
+  { id: "parcela3",  descricao: "2ª parcela de 2026 — Dec. 50.302/26", pct:  5.62, competencia: "2026-10", jaAplicado: false },
+];

@@ -32,23 +32,51 @@ function getTrienioPercentual(trienios) {
   return trienios > 0 ? 5 + trienios * 5 : 0;
 }
 
+function getRecomposicoesAtivas(dataSimulacao) {
+  var ativas = [];
+  if (!dataSimulacao) return ativas;
+
+  RECOMPOSICOES.forEach(function (r) {
+    if (!r.jaAplicado && dataSimulacao >= r.competencia) {
+      ativas.push(r);
+    }
+  });
+  return ativas;
+}
+
+function aplicarRecomposicoes(valor, dataSimulacao) {
+  if (!dataSimulacao) return valor;
+  var v = valor;
+  RECOMPOSICOES.forEach(function (r) {
+    if (!r.jaAplicado && dataSimulacao >= r.competencia) {
+      v = round2(v * (1 + r.pct / 100));
+    }
+  });
+  return v;
+}
+
 function calcular(params) {
   var cargo = CARGOS[params.cargoKey];
   var ref = cargo.referencias[params.refIndex];
   var carga = cargo.carga;
 
-  var total = round2(ref.vb + ref.complemento);
+  var dataSim = params.dataSimulacao;
+
+  var vb = aplicarRecomposicoes(ref.vb, dataSim);
+  var complemento = aplicarRecomposicoes(ref.complemento, dataSim);
+  var total = round2(vb + complemento);
 
   var trienioPct = getTrienioPercentual(params.trienios);
   var trienioValor = trienioPct > 0 ? round2(total * trienioPct / 100) : 0;
 
-  var aqValor = params.qualificacao === "nenhuma" ? 0 : round2(AQ[carga][params.qualificacao]);
+  var aqValor = params.qualificacao === "nenhuma" ? 0 : aplicarRecomposicoes(AQ[carga][params.qualificacao], dataSim);
 
   var glpTempos = params.glpTempos || 0;
-  var glpValor = glpTempos > 0 ? round2(glpTempos * 4 * (GLP.baseMensal / GLP.temposBase)) : 0;
+  var glpBase = aplicarRecomposicoes(GLP.baseMensal, dataSim);
+  var glpValor = glpTempos > 0 ? round2(glpTempos * 4 * (glpBase / GLP.temposBase)) : 0;
 
-  var dpValor = params.dificilProvimento ? DIFICIL_PROVIMENTO : 0;
-  var daValor = params.dificilAcesso ? DIFICIL_ACESSO : 0;
+  var dpValor = params.dificilProvimento ? aplicarRecomposicoes(DIFICIL_PROVIMENTO, dataSim) : 0;
+  var daValor = params.dificilAcesso ? aplicarRecomposicoes(DIFICIL_ACESSO, dataSim) : 0;
 
   var basePrev = round2(total + trienioValor + aqValor);
 
@@ -70,8 +98,8 @@ function calcular(params) {
   var aliquotaEfetivaIR = baseIRRF > 0 ? round2((irrf / baseIRRF) * 100) : 0;
 
   return {
-    vb: ref.vb,
-    complemento: ref.complemento,
+    vb: vb,
+    complemento: complemento,
     total: total,
     trienioValor: trienioValor,
     trienioPct: trienioPct,
@@ -92,7 +120,8 @@ function calcular(params) {
     liquido: liquido,
     aliquotaEfetivaIR: aliquotaEfetivaIR,
     ref: ref,
-    exibeComplemento: ref.complemento > 0,
+    recomposicoesAtivas: getRecomposicoesAtivas(dataSim),
+    exibeComplemento: complemento > 0,
     exibeTrienio: params.trienios > 0,
     exibeAQ: aqValor > 0,
     exibeGLP: glpValor > 0,

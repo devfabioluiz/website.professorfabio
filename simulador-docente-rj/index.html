@@ -41,6 +41,25 @@
 
       <!-- FORMULÁRIO -->
       <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <!-- Data da Simulação -->
+        <div
+          class="mb-5 bg-blue-50 rounded-lg px-4 py-3 border border-blue-100"
+        >
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Simular para</label
+          >
+          <select
+            id="sim-periodo"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="2026-06">Até Junho/26 - sem reajuste</option>
+            <option value="2026-07">
+              De Junho/26 a Outubro/26 — 1ª parcela
+            </option>
+            <option value="2026-10">Outubro/26 em diante — 2ª parcela</option>
+          </select>
+        </div>
+
         <!-- Cargo -->
         <div class="mb-4">
           <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -243,23 +262,33 @@
           </div>
         </div>
 
-        <!-- Regência -->
+        <!-- Auxílio Transporte -->
         <div class="mb-4">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Auxílio Transporte</label
-          >
+            >Auxílio Transporte
+            <span
+              id="auxilio-transporte-tooltip"
+              class="hidden cursor-help"
+              title="Professor com GLP não se enquadra na categoria 'Com regência de turma' (1 turma, sem GLP). O auxílio transporte é automaticamente definido como 'Demais' (5 créditos/semana)."
+              >&#x2139;</span
+            >
+          </label>
           <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label
+              id="label-regencia-com"
+              class="flex items-center gap-2 cursor-pointer"
+            >
               <input
                 type="radio"
                 name="regencia"
                 value="com"
                 checked
                 class="accent-blue-600 regencia-radio"
+                id="regencia-com"
               />
               <span class="text-sm text-gray-700"
-                >Com regência de turma (R$ 205,20)</span
-              >
+                >Com regência de turma sem GLP
+              </span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
@@ -267,8 +296,9 @@
                 name="regencia"
                 value="demais"
                 class="accent-blue-600 regencia-radio"
+                id="regencia-demais"
               />
-              <span class="text-sm text-gray-700">Demais (R$ 342,00)</span>
+              <span class="text-sm text-gray-700">Com GLP ou demais</span>
             </label>
           </div>
         </div>
@@ -302,7 +332,8 @@
 
       <p class="text-center text-xs text-gray-400 mt-4">
         Valores baseados no Caderno de Remuneração SEEDUC. Atualização:
-        Jan/2025.
+        Jan/2025. Reajustes futuros conforme Lei 9.436/2021 e Decreto
+        50.302/2026.
       </p>
     </div>
 
@@ -317,6 +348,13 @@
         var elDependentes = document.getElementById("dependentes");
         var elMsgTrienio = document.getElementById("msg-trienio");
         var elResultado = document.getElementById("linhas-resultado");
+        var elRegenciaCom = document.getElementById("regencia-com");
+        var elRegenciaDemais = document.getElementById("regencia-demais");
+        var elLabelRegenciaCom = document.getElementById("label-regencia-com");
+        var elAuxilioTransporteTooltip = document.getElementById(
+          "auxilio-transporte-tooltip",
+        );
+        var regenciaAnterior = getRegencia();
 
         function getIngresso() {
           return document.querySelector('input[name="ingresso"]:checked').value;
@@ -380,11 +418,43 @@
             dificilProvimento: getDificilProvimento(),
             dificilAcesso: getDificilAcesso(),
             dependentes: parseInt(elDependentes.value) || 0,
+            dataSimulacao: document.getElementById("sim-periodo").value,
           };
 
           var r = calcular(params);
 
           var linhas = [];
+
+          // Recomposição banner
+          var recMsg = "";
+          if (r.recomposicoesAtivas && r.recomposicoesAtivas.length > 0) {
+            var ativas = r.recomposicoesAtivas;
+            var temParcela2 = ativas.some(function (x) { return x.id === "parcela2"; });
+            var temParcela3 = ativas.some(function (x) { return x.id === "parcela3"; });
+
+            var itens;
+            if (temParcela2 && temParcela3) {
+              var outras = ativas.filter(function (x) { return x.id !== "parcela2" && x.id !== "parcela3"; });
+              var merged = { descricao: "1ª e 2ª parcelas de 2026 — Dec. 50.302/26", pct: 5.62 };
+              itens = outras.concat([merged]);
+            } else {
+              itens = ativas;
+            }
+
+            var nomes = itens
+              .map(function (x) {
+                return x.descricao + " (+" + x.pct.toFixed(2) + "%)";
+              })
+              .join(" + ");
+            recMsg =
+              '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Reajustes aplicados: ' +
+              nomes +
+              "</div>";
+          } else {
+            recMsg =
+              '<div class="bg-gray-50 rounded-lg px-3 py-1.5 text-xs text-gray-400">Nenhum reajuste adicional vigente para esta data</div>';
+          }
+          linhas.push({ html: recMsg });
 
           // Vencimento Base
           linhas.push(linha("Vencimento Base", r.vb, "text-gray-600"));
@@ -555,6 +625,32 @@
           radio.addEventListener("change", atualizarResultado);
         });
 
+        function atualizarAuxilioTransporte() {
+          var temGlp =
+            document.querySelector('input[name="glp"]:checked').value === "sim";
+
+          if (temGlp) {
+            regenciaAnterior = getRegencia();
+            elRegenciaDemais.checked = true;
+            elRegenciaCom.disabled = true;
+            elLabelRegenciaCom.classList.add(
+              "opacity-50",
+              "cursor-not-allowed",
+            );
+            elAuxilioTransporteTooltip.classList.remove("hidden");
+          } else {
+            elRegenciaCom.disabled = false;
+            elLabelRegenciaCom.classList.remove(
+              "opacity-50",
+              "cursor-not-allowed",
+            );
+            elAuxilioTransporteTooltip.classList.add("hidden");
+            if (regenciaAnterior === "com") {
+              elRegenciaCom.checked = true;
+            }
+          }
+        }
+
         function atualizarGlpMax() {
           var cargoKey = elCargo.value;
           var carga = CARGOS[cargoKey].carga;
@@ -583,6 +679,7 @@
             if (temGlp) {
               atualizarGlpMax();
             }
+            atualizarAuxilioTransporte();
             atualizarResultado();
           });
         });
@@ -600,6 +697,10 @@
         elDaRadios.forEach(function (radio) {
           radio.addEventListener("change", atualizarResultado);
         });
+
+        // Data simulacao
+        var elSimPeriodo = document.getElementById("sim-periodo");
+        elSimPeriodo.addEventListener("change", atualizarResultado);
 
         atualizarReferencias();
         atualizarTrienio();
