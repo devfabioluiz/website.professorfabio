@@ -63,7 +63,8 @@ function calcular(params) {
   var dataSim = params.dataSimulacao;
 
   var vb = aplicarRecomposicoes(ref.vb, dataSim);
-  var complemento = aplicarRecomposicoes(ref.complemento, dataSim);
+  var piso = PISO[carga];
+  var complemento = Math.max(0, round2(piso - vb));
   var total = round2(vb + complemento);
 
   var trienioPct = getTrienioPercentual(params.trienios);

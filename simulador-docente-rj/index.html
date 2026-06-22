@@ -429,13 +429,22 @@
           var recMsg = "";
           if (r.recomposicoesAtivas && r.recomposicoesAtivas.length > 0) {
             var ativas = r.recomposicoesAtivas;
-            var temParcela2 = ativas.some(function (x) { return x.id === "parcela2"; });
-            var temParcela3 = ativas.some(function (x) { return x.id === "parcela3"; });
+            var temParcela2 = ativas.some(function (x) {
+              return x.id === "parcela2";
+            });
+            var temParcela3 = ativas.some(function (x) {
+              return x.id === "parcela3";
+            });
 
             var itens;
             if (temParcela2 && temParcela3) {
-              var outras = ativas.filter(function (x) { return x.id !== "parcela2" && x.id !== "parcela3"; });
-              var merged = { descricao: "1ª e 2ª parcelas de 2026 — Dec. 50.302/26", pct: 5.62 };
+              var outras = ativas.filter(function (x) {
+                return x.id !== "parcela2" && x.id !== "parcela3";
+              });
+              var merged = {
+                descricao: "1ª e 2ª parcelas de 2026 — Dec. 50.302/26",
+                pct: 5.62,
+              };
               itens = outras.concat([merged]);
             } else {
               itens = ativas;
@@ -443,7 +452,7 @@
 
             var nomes = itens
               .map(function (x) {
-                return x.descricao + " (+" + x.pct.toFixed(2) + "%)";
+                return x.descricao;
               })
               .join(" + ");
             recMsg =

@@ -1,3 +1,11 @@
+var PISO = {
+  18: 2190.50,
+  22: 2677.27,
+  25: 3042.36,
+  30: 3650.83,
+  40: 4867.77
+};
+
 var CARGOS = {
   docente1_18h: {
     nome: "Professor Docente I - 18h",
