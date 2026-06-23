@@ -195,6 +195,8 @@ var PREVIDENCIA_ALIQUOTA = 0.14;
 var DEDUCAO_DEPENDENTE = 189.59;
 var MAX_TRIENIOS = 11;
 
+var MAX_CARGA_SEMANAL = 65;   // Art. 8º, Dec. 46.920/20 — soma de cargos efetivos + GLP
+
 var RECOMPOSICOES = [
   { id: "parcela1",  descricao: "1ª parcela IPCA (50%) — Lei 9.436/21", pct: 13.05, competencia: "2022-01", jaAplicado: true },
   { id: "extra2023", descricao: "Recomposição extra — Lei 9.952/23",      pct:  5.90, competencia: "2023-01", jaAplicado: true },
