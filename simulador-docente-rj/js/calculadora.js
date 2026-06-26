@@ -63,15 +63,10 @@ function calcularVencimentos(params) {
 
   var dataSim = params.dataSimulacao;
 
-  var converteu40h = !params.cedido && funcao.carga40h && cargaOriginal < 40;
-  var cargaEfetiva = converteu40h ? 40 : cargaOriginal;
+  var cargaEfetiva = cargaOriginal;
+  var cargaParaGLP = (!params.cedido && funcao.carga40h) ? 40 : cargaOriginal;
 
-  var vb;
-  if (converteu40h) {
-    vb = aplicarRecomposicoes(round2(ref.vb * (40 / cargaOriginal)), dataSim);
-  } else {
-    vb = aplicarRecomposicoes(ref.vb, dataSim);
-  }
+  var vb = aplicarRecomposicoes(ref.vb, dataSim);
 
   var piso = PISO[cargaEfetiva];
   var complemento = Math.max(0, round2(piso - vb));
@@ -133,6 +128,7 @@ function calcularVencimentos(params) {
     ajudaCusto: ajudaCusto,
     funcaoNome: funcao.nome !== "Nenhuma" ? funcao.nome : null,
     cargaEfetiva: cargaEfetiva,
+    cargaParaGLP: cargaParaGLP,
     auxTransporte: auxTransporte,
     auxAlimentacao: auxAlimentacao,
     auxilios: auxilios,
@@ -149,7 +145,7 @@ function calcularVencimentos(params) {
     exibeDA: daValor > 0,
     exibeGratFuncao: gratFuncao > 0,
     exibeAjudaCusto: ajudaCusto > 0,
-    exibeConversao40h: converteu40h,
+    exibeConversao40h: false,
   };
 }
 
@@ -199,7 +195,7 @@ function calcular(params) {
     exibeDA: r.exibeDA,
     exibeGratFuncao: r.exibeGratFuncao,
     exibeAjudaCusto: r.exibeAjudaCusto,
-    exibeConversao40h: r.exibeConversao40h,
+    exibeConversao40h: false,
   };
 }
 
@@ -251,7 +247,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
   var combinedBruta = round2(r1.bruta + r2.bruta);
   var combinedPrevidencia = round2(r1.previdencia + r2.previdencia);
   var combinedLiquido = round2(combinedBruta - combinedPrevidencia - combinedIRRF);
-  var cargaTotal = r1.cargaEfetiva + r2.cargaEfetiva + r1.glpTempos + r2.glpTempos;
+  var cargaTotal = r1.cargaParaGLP + r2.cargaParaGLP + r1.glpTempos + r2.glpTempos;
   var excede65h = cargaTotal > MAX_CARGA_SEMANAL;
 
   return {
@@ -282,6 +278,10 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
       irrfSeparado: irrfTotalSeparado,
       liquido: combinedLiquido,
       cargaTotal: cargaTotal,
+      cargaParaGLP1: r1.cargaParaGLP,
+      cargaParaGLP2: r2.cargaParaGLP,
+      cargaEfetiva1: r1.cargaEfetiva,
+      cargaEfetiva2: r2.cargaEfetiva,
       excede65h: excede65h,
       recomposicoesAtivas: r1.recomposicoesAtivas,
       exibeComplemento: r1.exibeComplemento || r2.exibeComplemento,

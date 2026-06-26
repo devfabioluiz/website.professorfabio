@@ -115,10 +115,8 @@
             <option value="diretor_adjunto">Diretor Adjunto</option>
             <option value="secretario_escolar">Secretário Escolar</option>
             <option value="agente_acompanhamento">Agente de Acomp. da Gestão Escolar</option>
+            <option value="orientador_educacional">Orientador Educacional</option>
           </select>
-          <p id="msg-carga40h" class="text-xs text-blue-600 mt-1 hidden">
-            Carga horária convertida para 40h (Lei 9.584/2022)
-          </p>
         </div>
 
         <!-- Categoria da Escola -->
@@ -418,8 +416,8 @@
               <option value="diretor_adjunto">Diretor Adjunto</option>
               <option value="secretario_escolar">Secretário Escolar</option>
               <option value="agente_acompanhamento">Agente de Acomp. da Gestão Escolar</option>
+              <option value="orientador_educacional">Orientador Educacional</option>
             </select>
-            <p id="m2-msg-carga40h" class="text-xs text-blue-600 mt-1 hidden">Carga horária convertida para 40h (Lei 9.584/2022)</p>
           </div>
 
           <!-- m2: Categoria da Escola -->
@@ -689,13 +687,17 @@
         function atualizarGlpMax(prefix) {
           var dual = isDual();
           var cargoKey = el(prefix, "cargo").value;
-          var carga = CARGOS[cargoKey].carga;
+          var funcao = FUNCOES[getFuncaoKey(prefix)];
+          var cedido = getCedido(prefix);
+          var carga = (!cedido && funcao.carga40h) ? 40 : CARGOS[cargoKey].carga;
           var maxTempos;
 
           if (dual) {
             var otherPrefix = prefix === "" ? "m2-" : "";
             var otherCargoKey = el(otherPrefix, "cargo").value;
-            var otherCarga = CARGOS[otherCargoKey].carga;
+            var otherFuncao = FUNCOES[getFuncaoKey(otherPrefix)];
+            var otherCedido = getCedido(otherPrefix);
+            var otherCarga = (!otherCedido && otherFuncao.carga40h) ? 40 : CARGOS[otherCargoKey].carga;
             var otherGlpTempos = getGlpTempos(otherPrefix);
             maxTempos = Math.max(GLP.minTempos, MAX_CARGA_SEMANAL - carga - otherCarga - otherGlpTempos);
           } else {
@@ -756,9 +758,6 @@
             if (naoDp) naoDp.checked = true;
             if (naoDa) naoDa.checked = true;
           }
-
-          var converteu40h = !cedido && funcao.carga40h && cargo && cargo.carga < 40;
-          el(prefix, "msg-carga40h").classList.toggle("hidden", !converteu40h);
 
           var temCategorias = !cedido && !!funcao.categorias;
           el(prefix, "categoria-escola-section").classList.toggle("hidden", !temCategorias);
@@ -829,7 +828,6 @@
         function renderResultadoSimples(r, params) {
           var linhas = [];
           linhas.push({ html: renderBannerRecomposicao(r.recomposicoesAtivas) });
-          if (r.exibeConversao40h) { linhas.push({ html: '<div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5 text-xs text-blue-700">Carga convertida para 40h (Lei 9.584/2022)</div>' }); }
           if (params.cedido) { linhas.push({ html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Servidor cedido: GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam</div>' }); }
           renderRubricasSimples(r, linhas);
           linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
@@ -854,7 +852,7 @@
 
           // ── Card Matrícula 1 (compacto) ──
           var card1 = '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">' +
-            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 1 — ' + m1.cargo.nome + ' · Ref ' + m1.ref.ref + '</div>' +
+            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 1 — ' + m1.cargo.nome + ' · Ref ' + m1.ref.ref + (m1.cargaParaGLP !== m1.cargaEfetiva ? ' <span class="text-amber-600">(' + m1.cargaParaGLP + 'h efetiva)</span>' : '') + '</div>' +
             '<div class="text-xs text-gray-600 space-y-0.5">' +
             linhaSimples("VB+Complemento", m1.total) +
             (m1.exibeTrienio ? linhaSimples("Triênio", m1.trienioValor) : "") +
@@ -873,7 +871,7 @@
 
           // ── Card Matrícula 2 (compacto) ──
           var card2 = '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100 mt-2">' +
-            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 2 — ' + m2.cargo.nome + ' · Ref ' + m2.ref.ref + '</div>' +
+            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 2 — ' + m2.cargo.nome + ' · Ref ' + m2.ref.ref + (m2.cargaParaGLP !== m2.cargaEfetiva ? ' <span class="text-amber-600">(' + m2.cargaParaGLP + 'h efetiva)</span>' : '') + '</div>' +
             '<div class="text-xs text-gray-600 space-y-0.5">' +
             linhaSimples("VB+Complemento", m2.total) +
             (m2.exibeTrienio ? linhaSimples("Triênio", m2.trienioValor) : "") +
@@ -890,9 +888,6 @@
             '</div></div>';
           linhas.push({ html: card2 });
 
-          // ── Conversão 40h ──
-          if (m1.exibeConversao40h) { linhas.push({ html: '<div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5 text-xs text-blue-700 mt-2">Mat. 1: Carga convertida para 40h (Lei 9.584/2022)</div>' }); }
-          if (m2.exibeConversao40h) { linhas.push({ html: '<div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5 text-xs text-blue-700 mt-1">Mat. 2: Carga convertida para 40h (Lei 9.584/2022)</div>' }); }
           if (params1.cedido || params2.cedido) { linhas.push({ html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700 mt-2">Há matrícula(s) cedida(s): GLP, DP, DA e gratificações não se aplicam na(s) matrícula(s) cedida(s)</div>' }); }
 
           // ── COMBINADO ──
@@ -929,7 +924,9 @@
           // Carga horária e GLP
           linhas.push({ html: '<div class="h-2"></div>' });
           var cargaHtml = '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
-            '<div class="flex justify-between"><span>Carga horária total:</span><span class="font-medium">' + c.cargaTotal + 'h/semana' + (c.excede65h ? ' <span class="text-red-500 font-bold">⚠ EXCEDE 65h!</span>' : '') + '</span></div>';
+            '<div class="flex justify-between"><span>Carga horária total:</span><span class="font-medium">' + c.cargaTotal + 'h/semana' + (c.excede65h ? ' <span class="text-red-500 font-bold">⚠ EXCEDE 65h!</span>' : '') + '</span></div>' +
+            '<div class="flex justify-between"><span>  Mat. 1:</span><span class="font-medium">' + c.cargaParaGLP1 + 'h' + (c.cargaParaGLP1 !== c.cargaEfetiva1 ? ' (contratual ' + c.cargaEfetiva1 + 'h, +' + (c.cargaParaGLP1 - c.cargaEfetiva1) + 'h pela função)' : '') + '</span></div>' +
+            '<div class="flex justify-between"><span>  Mat. 2:</span><span class="font-medium">' + c.cargaParaGLP2 + 'h' + (c.cargaParaGLP2 !== c.cargaEfetiva2 ? ' (contratual ' + c.cargaEfetiva2 + 'h, +' + (c.cargaParaGLP2 - c.cargaEfetiva2) + 'h pela função)' : '') + '</span></div>';
           if (c.glpTempos > 0) {
             cargaHtml += '<div class="flex justify-between"><span>GLP total:</span><span class="font-medium">' + c.glpTempos + ' tempos</span></div>';
           }

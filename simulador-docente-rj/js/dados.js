@@ -173,6 +173,15 @@ var FUNCOES = {
     ajudaCusto: 300.00,        // Lei 6.834/14 Art. 4º (indenizatório)
     incidePrev: false,         // ajuda de custo é indenizatória
   },
+  orientador_educacional: {
+    nome: "Orientador Educacional",
+    gratificacao: 950.00,      // Dec. 44.711/14
+    carga40h: true,             // Lei 9.584/2022
+    permiteGLP: true,           // Art. 6, III e Art. 7 §único Dec. 46.920/20
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: true,           // gratificação de encargos especiais
+  },
 };
 
 var TRANSPORTE = {
