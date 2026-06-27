@@ -820,24 +820,24 @@ python manage.py runserver
         <div class="code-container">
           <pre><code class="language-bash">
 # Listar tarefas (com autenticação básica)
-curl -u admin:senha123 http://localhost:8000/api/tarefas/
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI http://localhost:8000/api/tarefas/
 
 # Criar tarefa
-curl -u admin:senha123 -X POST http://localhost:8000/api/tarefas/ ^
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI -X POST http://localhost:8000/api/tarefas/ ^
   -H "Content-Type: application/json" ^
   -d "{\"titulo\": \"Estudar Django\", \"prioridade\": \"alta\"}"
 
 # Concluir tarefa
-curl -u admin:senha123 -X POST http://localhost:8000/api/tarefas/1/concluir/
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI -X POST http://localhost:8000/api/tarefas/1/concluir/
 
 # Filtrar tarefas não concluídas de alta prioridade
-curl -u admin:senha123 "http://localhost:8000/api/tarefas/?concluida=false&prioridade=alta"
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI "http://localhost:8000/api/tarefas/?concluida=false&prioridade=alta"
 
 # Buscar por título
-curl -u admin:senha123 "http://localhost:8000/api/tarefas/?search=Django"
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI "http://localhost:8000/api/tarefas/?search=Django"
 
 # Ordenar por prioridade
-curl -u admin:senha123 "http://localhost:8000/api/tarefas/?ordering=prioridade"
+curl -u SEU_USUARIO_AQUI:SUA_SENHA_DO_SUPERUSUARIO_AQUI "http://localhost:8000/api/tarefas/?ordering=prioridade"
 
 # Documentação Swagger
 start http://localhost:8000/api/docs/
