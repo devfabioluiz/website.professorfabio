@@ -535,18 +535,20 @@ python manage.py startapp tarefas
           <pre><code class="language-python">
 # todo_api/settings.py
 INSTALLED_APPS = [
-    'django.contrib.admin',
+     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # acrescente estes arquivos abaixo de  'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
     'drf_spectacular',
     'tarefas',
 ]
 
+# após o INSTALLED_APPS acrescente este objeto abaixo:
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -557,6 +559,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+# após o REST_FRAMEWORK acrescente este objeto abaixo:
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API de Tarefas',
     'DESCRIPTION': 'API REST para gerenciamento de tarefas',
