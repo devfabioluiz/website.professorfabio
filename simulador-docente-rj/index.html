@@ -342,6 +342,37 @@
           </p>
         </div>
 
+        <!-- Abono de Permanência -->
+        <div class="mb-4" id="abono-section">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Abono de Permanência
+            <span class="text-gray-400 font-normal"
+              >(restitui a contribuição previdenciária)</span
+            ></label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="abonoPermanencia"
+                value="nao"
+                checked
+                class="accent-blue-600 abono-radio"
+              />
+              <span class="text-sm text-gray-700">Não</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="abonoPermanencia"
+                value="sim"
+                class="accent-blue-600 abono-radio"
+              />
+              <span class="text-sm text-gray-700">Sim</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Auxílio Transporte -->
         <div class="mb-4">
           <label class="block text-sm font-semibold text-gray-700 mb-2"
@@ -545,6 +576,37 @@
             <p id="m2-msg-cedido" class="text-xs text-amber-600 mt-1 hidden">GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam ao servidor cedido.</p>
           </div>
 
+          <!-- m2: Abono de Permanência -->
+          <div class="mb-4" id="m2-abono-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Abono de Permanência
+              <span class="text-gray-400 font-normal"
+                >(restitui a contribuição previdenciária)</span
+              ></label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="m2-abonoPermanencia"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 m2-abono-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="m2-abonoPermanencia"
+                  value="sim"
+                  class="accent-blue-600 m2-abono-radio"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+          </div>
+
           <!-- m2: Auxílio Transporte -->
           <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Auxílio Transporte <span id="m2-auxilio-transporte-tooltip" class="hidden cursor-help" title="Professor com GLP não se enquadra na categoria 'Com regência de turma'. O auxílio transporte é automaticamente definido como 'Demais'.">&#x2139;</span></label>
@@ -644,6 +706,8 @@
         function getCategoriaEscola(prefix) { return el(prefix, "categoria-escola").value; }
         function getCedido(prefix) { return radio(prefix, "cedido") && radio(prefix, "cedido").value === "sim"; }
 
+        function getAbonoPermanencia(prefix) { return radio(prefix, "abonoPermanencia") && radio(prefix, "abonoPermanencia").value === "sim"; }
+
         function coletarParams(prefix) {
           return {
             cargoKey: el(prefix, "cargo").value,
@@ -657,6 +721,7 @@
             dificilProvimento: getDificilProvimento(prefix),
             dificilAcesso: getDificilAcesso(prefix),
             cedido: getCedido(prefix),
+            abonoPermanencia: getAbonoPermanencia(prefix),
           };
         }
 
@@ -821,6 +886,9 @@
             if (r.exibeAjudaCusto) notas.push("Ajuda de Custo");
             h += '<div class="text-gray-400 mt-1">* ' + notas.join(" e ") + ' não integram a base previdenciária</div>';
           }
+          if (r.exibeAbonoPermanencia) {
+            h += '<div class="text-green-600 mt-1">* Abono de Permanência restitui integralmente a contribuição previdenciária</div>';
+          }
           h += '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' + r.aliquotaEfetivaIR.toFixed(1) + '%</span></div></div>';
           return h;
         }
@@ -834,6 +902,9 @@
           linhas.push(linha("Remuneração Bruta", r.bruta, "text-gray-800 font-bold"));
           linhas.push({ html: '<div class="h-1"></div>' });
           linhas.push(linha("Previdência RPPS (14%)", -r.previdencia, "text-red-500"));
+          if (r.exibeAbonoPermanencia) {
+            linhas.push(linha("Abono de Permanência", r.abonoPermanenciaValor, "text-green-600"));
+          }
           linhas.push(linha("IRPF", -r.irrf, "text-red-500"));
           linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
           linhas.push({ html: '<div class="flex justify-between items-center py-1"><span class="text-base font-bold text-gray-800">Salário Líquido</span><span class="text-xl font-bold text-green-700">R$ ' + formatarReal(r.liquido) + '</span></div>' });
@@ -866,6 +937,7 @@
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m1.bruta, "font-medium") +
             linhaSimples("Previdência", -m1.previdencia, "text-red-500") +
+            (m1.exibeAbonoPermanencia ? linhaSimples("Abono de Permanência", m1.abonoPermanenciaValor, "text-green-600") : "") +
             '</div></div>';
           linhas.push({ html: card1 });
 
@@ -885,6 +957,7 @@
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m2.bruta, "font-medium") +
             linhaSimples("Previdência", -m2.previdencia, "text-red-500") +
+            (m2.exibeAbonoPermanencia ? linhaSimples("Abono de Permanência", m2.abonoPermanenciaValor, "text-green-600") : "") +
             '</div></div>';
           linhas.push({ html: card2 });
 
@@ -908,6 +981,9 @@
           linhas.push(linha("Remuneração Bruta Total", c.bruta, "text-gray-800 font-bold"));
           linhas.push({ html: '<div class="h-1"></div>' });
           linhas.push(linha("Previdência RPPS Total (14%)", -c.previdencia, "text-red-500"));
+          if (c.exibeAbonoPermanencia) {
+            linhas.push(linha("Abono de Permanência (total)", c.abonoPermanenciaValor, "text-green-600"));
+          }
 
           // IRPF com destaque do impacto
           var irrfDiff = round2(c.irrf - c.irrfSeparado);
@@ -934,6 +1010,9 @@
             '<div class="flex justify-between"><span>Base previdenciária total:</span><span class="font-medium">R$ ' + formatarReal(c.basePrev) + '</span></div>';
           if (c.exibeGLP || c.exibeDP || c.exibeDA || c.exibeAjudaCusto) {
             cargaHtml += '<div class="text-gray-400 mt-1">* GLP, Difícil Provimento, Difícil Acesso e Ajuda de Custo não integram a base previdenciária</div>';
+          }
+          if (c.exibeAbonoPermanencia) {
+            cargaHtml += '<div class="text-green-600 mt-1">* Abono de Permanência restitui a contribuição previdenciária</div>';
           }
           cargaHtml += '</div>';
           linhas.push({ html: cargaHtml });
@@ -1041,6 +1120,10 @@
               atualizarRestricoes(prefix);
               atualizarResultado();
             });
+          });
+
+          document.querySelectorAll("." + prefix + "abono-radio").forEach(function (radio) {
+            radio.addEventListener("change", atualizarResultado);
           });
         }
 

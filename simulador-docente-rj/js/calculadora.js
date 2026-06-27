@@ -65,6 +65,7 @@ function calcularVencimentos(params) {
 
   var cargaEfetiva = cargaOriginal;
   var cargaParaGLP = (!params.cedido && funcao.carga40h) ? 40 : cargaOriginal;
+  var cargaParaAuxilios = (!params.cedido && funcao.carga40h) ? 40 : cargaOriginal;
 
   var vb = aplicarRecomposicoes(ref.vb, dataSim);
 
@@ -104,8 +105,10 @@ function calcularVencimentos(params) {
   var basePrev = round2(total + trienioValor + aqValor + (funcao.incidePrev ? gratFuncao : 0));
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
 
+  var abonoPermanenciaValor = params.abonoPermanencia ? previdencia : 0;
+
   var auxTransporte = params.comRegencia ? TRANSPORTE.comRegencia : TRANSPORTE.demais;
-  var auxAlimentacao = ALIMENTACAO[cargaEfetiva];
+  var auxAlimentacao = ALIMENTACAO[cargaParaAuxilios];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
   var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + gratFuncao + ajudaCusto + auxilios);
@@ -135,6 +138,8 @@ function calcularVencimentos(params) {
     bruta: bruta,
     previdencia: previdencia,
     basePrev: basePrev,
+    abonoPermanenciaValor: abonoPermanenciaValor,
+    exibeAbonoPermanencia: abonoPermanenciaValor > 0,
     ref: ref,
     recomposicoesAtivas: getRecomposicoesAtivas(dataSim),
     exibeComplemento: complemento > 0,
@@ -156,7 +161,7 @@ function calcular(params) {
   if (baseIRRF < 0) baseIRRF = 0;
 
   var irrf = round2(calcularIRRF(baseIRRF));
-  var liquido = round2(r.bruta - r.previdencia - irrf);
+  var liquido = round2(r.bruta - r.previdencia - irrf + (r.abonoPermanenciaValor || 0));
   var aliquotaEfetivaIR = baseIRRF > 0 ? round2((irrf / baseIRRF) * 100) : 0;
 
   return {
@@ -181,6 +186,8 @@ function calcular(params) {
     bruta: r.bruta,
     previdencia: r.previdencia,
     basePrev: r.basePrev,
+    abonoPermanenciaValor: r.abonoPermanenciaValor,
+    exibeAbonoPermanencia: r.exibeAbonoPermanencia,
     baseIRRF: baseIRRF,
     irrf: irrf,
     liquido: liquido,
@@ -212,6 +219,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
     dificilProvimento: params1.dificilProvimento,
     dificilAcesso: params1.dificilAcesso,
     cedido: params1.cedido,
+    abonoPermanencia: params1.abonoPermanencia,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });
@@ -228,6 +236,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
     dificilProvimento: params2.dificilProvimento,
     dificilAcesso: params2.dificilAcesso,
     cedido: params2.cedido,
+    abonoPermanencia: params2.abonoPermanencia,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });
@@ -246,7 +255,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
 
   var combinedBruta = round2(r1.bruta + r2.bruta);
   var combinedPrevidencia = round2(r1.previdencia + r2.previdencia);
-  var combinedLiquido = round2(combinedBruta - combinedPrevidencia - combinedIRRF);
+  var combinedLiquido = round2(combinedBruta - combinedPrevidencia - combinedIRRF + (r1.abonoPermanenciaValor || 0) + (r2.abonoPermanenciaValor || 0));
   var cargaTotal = r1.cargaParaGLP + r2.cargaParaGLP + r1.glpTempos + r2.glpTempos;
   var excede65h = cargaTotal > MAX_CARGA_SEMANAL;
 
@@ -267,6 +276,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
       daValor: sum('daValor'),
       gratFuncao: sum('gratFuncao'),
       ajudaCusto: sum('ajudaCusto'),
+      abonoPermanenciaValor: sum('abonoPermanenciaValor'),
       auxTransporte: sum('auxTransporte'),
       auxAlimentacao: sum('auxAlimentacao'),
       auxilios: sum('auxilios'),
@@ -292,6 +302,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes) {
       exibeDA: r1.exibeDA || r2.exibeDA,
       exibeGratFuncao: r1.exibeGratFuncao || r2.exibeGratFuncao,
       exibeAjudaCusto: r1.exibeAjudaCusto || r2.exibeAjudaCusto,
+      exibeAbonoPermanencia: r1.exibeAbonoPermanencia || r2.exibeAbonoPermanencia,
     },
   };
 }

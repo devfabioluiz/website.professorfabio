@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 11: Agentes de IA com CrewAI - Analista de Vaga Automático - IT Step</title>
+    <title>
+      Aula 11: Agentes de IA com CrewAI - Analista de Vaga Automático - IT Step
+    </title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -16,47 +18,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
-
-    
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 11</h1>
       <h4 class="text-center">Python Backend</h4>
-      <h4 class="text-center">Agentes de IA com CrewAI: Analista de Vaga Automático</h4>
+      <h4 class="text-center">
+        Agentes de IA com CrewAI: Analista de Vaga Automático
+      </h4>
       <div class="topicos-aula">
         <strong>Tópicos abordados nessa aula:</strong>
-        Agentes de IA, CrewAI (Agents, Tasks, Crew), Groq API, Web Scraping, Prompt Engineering, Multi-Agent Systems.
+        Agentes de IA, CrewAI (Agents, Tasks, Crew), Groq API, Web Scraping,
+        Prompt Engineering, Multi-Agent Systems.
       </div>
     </header>
 
     <main class="container">
-
       <section>
         <h2>Objetivo da aula</h2>
         <p>
-          Nesta aula, vamos entrar no mundo dos <strong>agentes de IA</strong>: sistemas que
-          não apenas respondem perguntas, mas <strong>tomam decisões, usam ferramentas e
-          colaboram entre si</strong> para completar tarefas complexas.
+          Nesta aula, vamos entrar no mundo dos <strong>agentes de IA</strong>:
+          sistemas que não apenas respondem perguntas, mas
+          <strong>tomam decisões, usam ferramentas e colaboram entre si</strong>
+          para completar tarefas complexas.
         </p>
         <p>
-          <strong>Projeto:</strong> Vamos construir um <strong>Analista de Vaga Automático</strong>.
-          Você cola a URL de uma vaga real, fornece seu currículo, e uma equipe de 3 agentes
-          (Scraper → Analyst → Strategist) entrega: relatório de match, cover letter personalizada
-          e plano de estudos.
+          <strong>Projeto:</strong> Vamos construir um
+          <strong>Analista de Vaga Automático</strong>. Você cola a URL de uma
+          vaga real, fornece seu currículo, e uma equipe de 3 agentes (Scraper →
+          Analyst → Strategist) entrega: relatório de match, cover letter
+          personalizada e plano de estudos.
         </p>
 
         <h3>Conteúdos da aula</h3>
         <ul>
           <li>O que são agentes de IA e como diferem de chatbots</li>
           <li>Multi-agente: quando dividir o trabalho entre especialistas</li>
-          <li>CrewAI: <code>Agent</code> (role, goal, backstory), <code>Task</code>, <code>Crew</code></li>
-          <li>Processo <code>sequential</code> — cada agente recebe o output do anterior</li>
+          <li>
+            CrewAI: <code>Agent</code> (role, goal, backstory),
+            <code>Task</code>, <code>Crew</code>
+          </li>
+          <li>
+            Processo <code>sequential</code> — cada agente recebe o output do
+            anterior
+          </li>
           <li>Groq como LLM gratuito — <code>llama3-70b</code>, sem GPU</li>
-          <li>Ferramentas: <code>ScrapeWebsiteTool</code>, <code>FileReadTool</code></li>
-          <li>Prompt Engineering por agente — backstory molda tom e precisão</li>
+          <li>
+            Ferramentas: <code>ScrapeWebsiteTool</code>,
+            <code>FileReadTool</code>
+          </li>
+          <li>
+            Prompt Engineering por agente — backstory molda tom e precisão
+          </li>
         </ul>
       </section>
 
@@ -64,27 +81,48 @@
         <h2>1. Agentes de IA vs Chatbots</h2>
 
         <p>
-          Um <strong>chatbot</strong> (como o ChatGPT) segue o padrão: pergunta → resposta.
-          Um <strong>agente</strong> vai além:
+          Um <strong>chatbot</strong> (como o ChatGPT) segue o padrão: pergunta
+          → resposta. Um <strong>agente</strong> vai além:
         </p>
 
         <table>
           <thead>
-            <tr><th>Chatbot</th><th>Agente de IA</th></tr>
+            <tr>
+              <th>Chatbot</th>
+              <th>Agente de IA</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>Recebe pergunta, devolve resposta</td><td>Recebe objetivo, decide próximos passos</td></tr>
-            <tr><td>Não usa ferramentas externas</td><td>Usa ferramentas (scraping, arquivos, APIs)</td></tr>
-            <tr><td>Atua sozinho</td><td>Pode atuar em equipe (multi-agente)</td></tr>
-            <tr><td>Sem memória entre interações</td><td>Mantém contexto e delega entre agentes</td></tr>
-            <tr><td>Exemplo: "O que é Python?"</td><td>Exemplo: "Analise esta vaga, compare com meu CV e gere uma carta"</td></tr>
+            <tr>
+              <td>Recebe pergunta, devolve resposta</td>
+              <td>Recebe objetivo, decide próximos passos</td>
+            </tr>
+            <tr>
+              <td>Não usa ferramentas externas</td>
+              <td>Usa ferramentas (scraping, arquivos, APIs)</td>
+            </tr>
+            <tr>
+              <td>Atua sozinho</td>
+              <td>Pode atuar em equipe (multi-agente)</td>
+            </tr>
+            <tr>
+              <td>Sem memória entre interações</td>
+              <td>Mantém contexto e delega entre agentes</td>
+            </tr>
+            <tr>
+              <td>Exemplo: "O que é Python?"</td>
+              <td>
+                Exemplo: "Analise esta vaga, compare com meu CV e gere uma
+                carta"
+              </td>
+            </tr>
           </tbody>
         </table>
 
         <h3>Por que multi-agente?</h3>
         <p>
-          Tarefas complexas se beneficiam de especialização. Em vez de um agente tentar fazer tudo,
-          você tem:
+          Tarefas complexas se beneficiam de especialização. Em vez de um agente
+          tentar fazer tudo, você tem:
         </p>
 
         <div class="code-container">
@@ -111,7 +149,6 @@ Tarefa: "Analisar vaga de Desenvolvedor Python no LinkedIn"
               ▼
          Arquivos prontos para usar!
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -119,12 +156,15 @@ Tarefa: "Analisar vaga de Desenvolvedor Python no LinkedIn"
         <h2>2. CrewAI — O Framework</h2>
 
         <p>
-          <strong>CrewAI</strong> é um framework Python para orquestrar agentes de IA colaborativos.
-          Os 3 pilares são:
+          <strong>CrewAI</strong> é um framework Python para orquestrar agentes
+          de IA colaborativos. Os 3 pilares são:
         </p>
 
         <h3>Agent</h3>
-        <p>Define <strong>quem</strong> é o agente: seu papel, objetivo, personalidade e ferramentas.</p>
+        <p>
+          Define <strong>quem</strong> é o agente: seu papel, objetivo,
+          personalidade e ferramentas.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -145,11 +185,13 @@ job_scraper = Agent(
     verbose=True,
 )
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Task</h3>
-        <p>Define <strong>o que</strong> fazer: descrição, saída esperada, qual agente executa.</p>
+        <p>
+          Define <strong>o que</strong> fazer: descrição, saída esperada, qual
+          agente executa.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -168,7 +210,6 @@ scrape_task = Task(
     agent=job_scraper,
 )
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Crew</h3>
@@ -187,7 +228,6 @@ crew = Crew(
 
 resultado = crew.kickoff()
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -195,27 +235,55 @@ resultado = crew.kickoff()
         <h2>3. Groq — LLM Gratuito e Rápido</h2>
 
         <p>
-          O <strong>Groq</strong> oferece acesso gratuito a modelos de linguagem de alta qualidade
-          via API, com latência muito baixa. Ideal para projetos que não exigem GPU local.
+          O <strong>Groq</strong> oferece acesso gratuito a modelos de linguagem
+          de alta qualidade via API, com latência muito baixa. Ideal para
+          projetos que não exigem GPU local.
         </p>
 
         <table>
           <thead>
-            <tr><th>Característica</th><th>Groq</th><th>Ollama (local)</th></tr>
+            <tr>
+              <th>Característica</th>
+              <th>Groq</th>
+              <th>Ollama (local)</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>GPU necessária</td><td>Não (roda na nuvem)</td><td>Sim (roda na sua máquina)</td></tr>
-            <tr><td>Custo</td><td>Grátis (limite generoso)</td><td>Grátis</td></tr>
-            <tr><td>Modelos disponíveis</td><td>llama3-70b, mixtral, gemma</td><td>Depende do download</td></tr>
-            <tr><td>Velocidade</td><td>Muito rápida (hardware dedicado)</td><td>Depende da sua GPU</td></tr>
-            <tr><td>Internet</td><td>Necessária</td><td>Não necessária</td></tr>
+            <tr>
+              <td>GPU necessária</td>
+              <td>Não (roda na nuvem)</td>
+              <td>Sim (roda na sua máquina)</td>
+            </tr>
+            <tr>
+              <td>Custo</td>
+              <td>Grátis (limite generoso)</td>
+              <td>Grátis</td>
+            </tr>
+            <tr>
+              <td>Modelos disponíveis</td>
+              <td>llama3-70b, mixtral, gemma</td>
+              <td>Depende do download</td>
+            </tr>
+            <tr>
+              <td>Velocidade</td>
+              <td>Muito rápida (hardware dedicado)</td>
+              <td>Depende da sua GPU</td>
+            </tr>
+            <tr>
+              <td>Internet</td>
+              <td>Necessária</td>
+              <td>Não necessária</td>
+            </tr>
           </tbody>
         </table>
 
         <h3>Configurando o Groq</h3>
 
         <p>
-          1. Acesse <a href="https://console.groq.com" target="_blank">console.groq.com</a>
+          1. Acesse
+          <a href="https://console.groq.com" target="_blank"
+            >console.groq.com</a
+          >
         </p>
         <p>2. Crie uma conta gratuita (pode usar login Google/GitHub)</p>
         <p>3. Vá em <strong>API Keys</strong> e crie uma chave</p>
@@ -223,28 +291,24 @@ resultado = crew.kickoff()
 
         <div class="code-container">
           <pre><code class="language-bash">
-pip install langchain-groq python-dotenv
+pip install litellm==1.52.0
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
-
-        <br>
 
         <div class="code-container">
           <pre><code class="language-python">
 import os
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
+from crewai import LLM
 
 load_dotenv()
 
-llm = ChatGroq(
+llm = LLM(
+    model="groq/llama3-70b-8192",   # ou "groq/mixtral-8x7b-32768"
     api_key=os.getenv("GROQ_API_KEY"),
-    model="llama3-70b-8192",   # ou "mixtral-8x7b-32768"
-    temperature=0.3,            # 0.3 = mais preciso, menos criativo
+    temperature=0.3,                 # 0.3 = mais preciso, menos criativo
 )
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -252,12 +316,15 @@ llm = ChatGroq(
         <h2>4. Ferramentas (Tools)</h2>
 
         <p>
-          Ferramentas são funções que os agentes podem chamar para interagir com o mundo real.
-          O CrewAI já vem com várias prontas.
+          Ferramentas são funções que os agentes podem chamar para interagir com
+          o mundo real. O CrewAI já vem com várias prontas.
         </p>
 
         <h3>ScrapeWebsiteTool</h3>
-        <p>Raspa o conteúdo de qualquer página web. O agente vai usar isso para ler a vaga.</p>
+        <p>
+          Raspa o conteúdo de qualquer página web. O agente vai usar isso para
+          ler a vaga.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -266,11 +333,13 @@ from crewai_tools import ScrapeWebsiteTool
 scrape_tool = ScrapeWebsiteTool()
 # O agente pode chamar: scrape_tool.run(url="https://...")
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>FileReadTool</h3>
-        <p>Lê arquivos do sistema. O agente vai usar para ler o currículo do aluno.</p>
+        <p>
+          Lê arquivos do sistema. O agente vai usar para ler o currículo do
+          aluno.
+        </p>
 
         <div class="code-container">
           <pre><code class="language-python">
@@ -279,7 +348,6 @@ from crewai_tools import FileReadTool
 leitor_cv = FileReadTool(file_path="meu_cv.txt")
 # O agente pode chamar: leitor_cv.run()
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -289,15 +357,21 @@ leitor_cv = FileReadTool(file_path="meu_cv.txt")
         <h3>Passo 0 — Git</h3>
 
         <ul>
-          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
-          <li>Crie a branch: <strong>aula11-crewai-analista-vagas</strong></li>
+          <li>
+            Acesse o repositório <strong>projeto-python-step</strong> no GitHub
+          </li>
+          <li>
+            Crie a branch baseada na main (não deve existir nenhum projeto
+            python nessa branch)
+          </li>
           <li>No VS Code, execute:</li>
         </ul>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula11-crewai-analista-vagas
+git checkout main
+git checkout -b aula11-crewai-analista-vagas
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -310,7 +384,7 @@ mkdir aula11_analista_vagas
 cd aula11_analista_vagas
 py -3.11 -m venv venv
 venv\Scripts\activate
-pip install crewai crewai-tools langchain-groq python-dotenv
+pip install crewai crewai-tools "litellm==1.52.0" python-dotenv
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -346,10 +420,11 @@ type nul > meu_cv.txt
 
         <div class="code-container">
           <pre><code class="language-text">
-NOME: Fabio Luiz
-EMAIL: fabio@email.com
-LINKEDIN: linkedin.com/in/fabioluiz
-GITHUB: github.com/devfabioluiz
+
+NOME: SEU_NOME
+EMAIL: SEU_EMAIL
+LINKEDIN: linkedin.com/in/SEU_USERNAME
+GITHUB: github.com/SEU_USERNAME
 
 RESUMO PROFISSIONAL:
 Desenvolvedor Backend com 3 anos de experiência em Python, Django e FastAPI.
@@ -395,15 +470,14 @@ mkdir output
           <pre><code class="language-python">
 import os
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
-from crewai import Agent
+from crewai import Agent, LLM
 from crewai_tools import ScrapeWebsiteTool, FileReadTool
 
 load_dotenv()
 
-llm = ChatGroq(
+llm = LLM(
+    model="groq/llama3-70b-8192",
     api_key=os.getenv("GROQ_API_KEY"),
-    model="llama3-70b-8192",
     temperature=0.3,
 )
 
@@ -627,7 +701,10 @@ python main.py
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Quando solicitado, cole a URL de uma vaga real. Exemplos de sites que funcionam bem:</p>
+        <p>
+          Quando solicitado, cole a URL de uma vaga real. Exemplos de sites que
+          funcionam bem:
+        </p>
         <ul>
           <li>LinkedIn (vagas públicas)</li>
           <li>Programathor</li>
@@ -637,8 +714,9 @@ python main.py
         </ul>
 
         <p>
-          O processo leva de <strong>30 segundos a 2 minutos</strong> dependendo da complexidade
-          da vaga. Você verá o log de cada agente trabalhando em sequência.
+          O processo leva de <strong>30 segundos a 2 minutos</strong> dependendo
+          da complexidade da vaga. Você verá o log de cada agente trabalhando em
+          sequência.
         </p>
 
         <h3>Passo 8 — Salvar no Git</h3>
@@ -673,7 +751,9 @@ git push origin aula11-crewai-analista-vagas
             </tr>
             <tr>
               <td>Tarefa</td>
-              <td><code>Task(description, expected_output, agent, context)</code></td>
+              <td>
+                <code>Task(description, expected_output, agent, context)</code>
+              </td>
               <td>Define o que fazer e qual a saída esperada</td>
             </tr>
             <tr>
@@ -688,7 +768,7 @@ git push origin aula11-crewai-analista-vagas
             </tr>
             <tr>
               <td>LLM Groq</td>
-              <td><code>ChatGroq(model="llama3-70b-8192")</code></td>
+              <td><code>LLM(model="groq/llama3-70b-8192")</code></td>
               <td>Modelo de linguagem gratuito via API</td>
             </tr>
             <tr>
@@ -714,23 +794,35 @@ git push origin aula11-crewai-analista-vagas
         <h2>Dever de Casa</h2>
 
         <div id="question-container-casa">
-
           <div class="question">
             <h3>1. Execute com uma vaga real do seu interesse</h3>
             <p>
-              Encontre uma vaga real no LinkedIn, Programathor ou similar que corresponda
-              à sua área de interesse. Execute o analista com essa vaga e seu currículo real.
-              Leia os 3 arquivos gerados e avalie se a cover letter está convincente.
+              Encontre uma vaga real no LinkedIn, Programathor ou similar que
+              corresponda à sua área de interesse. Execute o analista com essa
+              vaga e seu currículo real. Leia os 3 arquivos gerados e avalie se
+              a cover letter está convincente.
             </p>
 
             <button class="btn-gabarito">Ver dicas</button>
             <div class="gabarito">
               <b>Dicas:</b>
               <ul>
-                <li>Prefira vagas com descrições detalhadas (mais de 5 requisitos listados)</li>
-                <li>Quanto mais completo seu currículo no <code>meu_cv.txt</code>, melhor o match</li>
-                <li>Se o scraping falhar, teste com outra URL (alguns sites bloqueiam bots)</li>
-                <li>Ajuste o <code>temperature</code> no <code>ChatGroq</code> se quiser respostas mais criativas (0.7) ou mais precisas (0.1)</li>
+                <li>
+                  Prefira vagas com descrições detalhadas (mais de 5 requisitos
+                  listados)
+                </li>
+                <li>
+                  Quanto mais completo seu currículo no <code>meu_cv.txt</code>,
+                  melhor o match
+                </li>
+                <li>
+                  Se o scraping falhar, teste com outra URL (alguns sites
+                  bloqueiam bots)
+                </li>
+                <li>
+                  Ajuste o <code>temperature</code> no <code>LLM</code> se
+                  quiser respostas mais criativas (0.7) ou mais precisas (0.1)
+                </li>
               </ul>
             </div>
           </div>
@@ -738,9 +830,10 @@ git push origin aula11-crewai-analista-vagas
           <div class="question">
             <h3>2. Adicione um quarto agente: Interview Coach</h3>
             <p>
-              Crie um novo agente chamado <code>interview_coach</code> com a tarefa de gerar
-              5 perguntas prováveis de entrevista técnica baseadas na vaga, junto com sugestões
-              de resposta. Conecte ele no fluxo sequential após o <code>career_strategist</code>.
+              Crie um novo agente chamado <code>interview_coach</code> com a
+              tarefa de gerar 5 perguntas prováveis de entrevista técnica
+              baseadas na vaga, junto com sugestões de resposta. Conecte ele no
+              fluxo sequential após o <code>career_strategist</code>.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -793,9 +886,10 @@ crew = Crew(
           <div class="question">
             <h3>3. Experimente outro modelo Groq</h3>
             <p>
-              Altere o modelo de <code>llama3-70b-8192</code> para <code>mixtral-8x7b-32768</code>
-              ou <code>gemma2-9b-it</code> e compare a qualidade dos resultados. Qual foi melhor
-              para esta tarefa específica?
+              Altere o modelo de <code>llama3-70b-8192</code> para
+              <code>mixtral-8x7b-32768</code> ou <code>gemma2-9b-it</code> e
+              compare a qualidade dos resultados. Qual foi melhor para esta
+              tarefa específica?
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -804,63 +898,59 @@ crew = Crew(
               <div class="code-container">
                 <pre><code class="language-python">
 # agents.py — altere o modelo
-llm = ChatGroq(
+llm = LLM(
+    model="groq/mixtral-8x7b-32768",   # teste este
+    # model="groq/gemma2-9b-it",       # ou este
     api_key=os.getenv("GROQ_API_KEY"),
-    model="mixtral-8x7b-32768",   # teste este
-    # model="gemma2-9b-it",       # ou este
     temperature=0.3,
 )
 
 # Modelos disponíveis (podem mudar):
-# - llama3-70b-8192       (melhor para tarefas complexas)
-# - mixtral-8x7b-32768    (bom equilíbrio)
-# - gemma2-9b-it          (mais leve e rápido)
-# - llama3-8b-8192        (mais rápido, menos preciso)
+# - groq/llama3-70b-8192       (melhor para tarefas complexas)
+# - groq/mixtral-8x7b-32768    (bom equilíbrio)
+# - groq/gemma2-9b-it          (mais leve e rápido)
+# - groq/llama3-8b-8192        (mais rápido, menos preciso)
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-        <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
-        <div class="alert-box-github">
-          <h2 class="alert-title-github">
-            📌 Confira o resultado da aplicação
-          </h2>
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
 
-          <p>
-            Agora é importante que você valide se tudo está funcionando
-            corretamente na sua aplicação. Execute o projeto, teste os endpoints
-            e observe se os comportamentos estão de acordo com o esperado.
-          </p>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente na sua aplicação. Execute o projeto, teste os endpoints e
+          observe se os comportamentos estão de acordo com o esperado.
+        </p>
 
-          <p>
-            Compare sua implementação com uma versão funcional da nossa aula em
-            <a
-              href="https://github.com/devfabioluiz/projeto-python-step"
-              target="_blank"
-              class="alert-link-github"
-            >
-              github.com/devfabioluiz/projeto-python-step
-            </a>
-          </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/projeto-python-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-python-step
+          </a>
+        </p>
 
-          <p>
-            Dentro do repositório, selecione a branch correspondente à aula que
-            você está estudando. O padrão utilizado é:
-          </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
 
-          <ul>
-            <li><code>aula1</code></li>
-            <li><code>aula2</code></li>
-            <li><code>aula3</code></li>
-            <li>...</li>
-          </ul>
-        </div>
-
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
     </main>
 
     <script src="../../scripts/copy-clipboard.js"></script>
