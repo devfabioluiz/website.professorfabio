@@ -94,7 +94,6 @@ urlpatterns = [
     path('api/usuarios/<int:id>/deletar/', deletar_usuario),
 ]
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
@@ -116,7 +115,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 # PATCH  /usuarios/{id}/    → partial_update
 # DELETE /usuarios/{id}/    → destroy
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
@@ -205,7 +203,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(concluidas, many=True)
         return Response(serializer.data)
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>
@@ -233,7 +230,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,  # 10 itens por página
 }
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <p>Resposta da API (com paginação):</p>
@@ -250,7 +246,6 @@ REST_FRAMEWORK = {
     ]
 }
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>3.2 — LimitOffsetPagination</h3>
@@ -264,7 +259,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25,
 }
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>3.3 — Paginação customizada por ViewSet</h3>
@@ -284,7 +278,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
     serializer_class = TarefaSerializer
     pagination_class = TarefaPaginacao
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -349,7 +342,6 @@ class TarefaPublicaViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TarefaSerializer
     permission_classes = [AllowAny]  # qualquer um pode ver
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Permissão customizada: dono do recurso</h3>
@@ -370,7 +362,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
         # Associa a tarefa ao usuário logado automaticamente
         serializer.save(usuario=self.request.user)
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -396,7 +387,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
 
 # Uso: GET /tarefas/?search=comprar
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>5.2 — OrderingFilter (ordenação)</h3>
@@ -413,7 +403,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
 
 # Uso: GET /tarefas/?ordering=prioridade,-data_criacao
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>5.3 — DjangoFilterBackend (filtros por campo exato)</h3>
@@ -422,7 +411,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
           <pre><code class="language-bash">
 pip install django-filter
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <br>
@@ -452,7 +440,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
 
 # Uso: GET /tarefas/?concluida=false&prioridade=alta&search=comprar
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
 
@@ -468,7 +455,6 @@ class TarefaViewSet(viewsets.ModelViewSet):
           <pre><code class="language-bash">
 pip install drf-spectacular
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <br>
@@ -500,13 +486,8 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>
-          Pronto! Acesse <code>http://localhost:8000/api/docs/</code> e você verá
-          uma interface Swagger completa, onde pode testar todos os endpoints da API.
-        </p>
       </section>
 
       <section>
