@@ -65,6 +65,22 @@ var CARGOS = {
       { nivel: "D", ref: 9, vb: 6967.11, complemento: 0.0 },
     ],
   },
+  docente2_40h: {
+    nome: "Professor Docente II - 40h",
+    carga: 40,
+    extincao: true,
+    referencias: [
+      { nivel: "A", ref: 1, vb: 2251.11, complemento: 0 },
+      { nivel: "B", ref: 2, vb: 2521.26, complemento: 0 },
+      { nivel: "C", ref: 3, vb: 2823.80, complemento: 0 },
+      { nivel: "D", ref: 4, vb: 3162.63, complemento: 0 },
+      { nivel: "D", ref: 5, vb: 3542.17, complemento: 0 },
+      { nivel: "D", ref: 6, vb: 3967.24, complemento: 0 },
+      { nivel: "D", ref: 7, vb: 4443.30, complemento: 0 },
+      { nivel: "D", ref: 8, vb: 4976.50, complemento: 0 },
+      { nivel: "D", ref: 9, vb: 5573.66, complemento: 0 },
+    ],
+  },
   supervisor_oe_ie_25h: {
     nome: "Prof. Supervisor/Orient./Inspetor Escolar - 25h",
     carga: 25,
