@@ -969,7 +969,7 @@ git push --set-upstream origin aula8-cliente-cookies-sessoes
                   carrinho
                 </li>
                 <li>
-                  Uma rota <code>POST /carrinho/limpar</code> que limpa o
+                  Uma rota <code>DELETE /carrinho</code> que limpa o
                   carrinho
                 </li>
                 <li>O carrinho deve ser um array de objetos na sessão</li>
@@ -1023,6 +1023,7 @@ module.exports = {
 };
                     </code>
                   </pre>
+                  <button class="btn-copy">Copiar Código</button>
                 </div>
 
                 <p>
@@ -1152,60 +1153,40 @@ app.use(sessaoRoutes);
 app.use(climaRoutes);
 app.use(carrinhoRoutes);
 module.exports = app;
-</pre>
+</code></pre>
                 <button class="btn-copy">Copiar Código</button>
             </div>
 
             <p>Agora teste as rotas criadas no seu postman</p>
 
-            <div class="code-container">
-              <pre>
-                <code class="language-bash">curl http://localhost:3000/clima/rio-de-janeiro</code>
-              </pre>                <button class="btn-copy">Copiar Código</button>
-
+            <div class="code-container"><pre><code class="language-bash">curl http://localhost:3000/clima/rio-de-janeiro</code></pre><button class="btn-copy">Copiar Código</button>
             </div>
 
             <div class="code-container">
-              <pre>
-                <code class="language-bash">curl --location 'http://localhost:3000/carrinho' \
+<pre><code class="language-bash">curl --location 'http://localhost:3000/carrinho' \
 --header 'Content-Type: application/json' \
 --header 'Cookie: connect.sid=s%3AK7qyBlNDji22P2sYRzHOdjgLc1Q_1XvV.gBHjAr5fkbaH6XNHusn1MuafLkPRc66S%2Bo1LeD%2BZlWk; temaPreferido=escuro' \
 --data '{
     "id": 1,
     "produto": "TV",
     "quantidade": 2
-}'</code>
-              </pre>                <button class="btn-copy">Copiar Código</button>
-
+}'</code></pre>
+              <button class="btn-copy">Copiar Código</button>
             </div>
 
             <div class="code-container">
-              <pre>
-                <code class="language-bash">curl http://localhost:3000/carrinho</code>
-              </pre>                <button class="btn-copy">Copiar Código</button>
-
+<pre><code class="language-bash">curl http://localhost:3000/carrinho</code></pre><button class="btn-copy">Copiar Código</button>
             </div>
 
-            <div class="code-container">
-              <pre>
-                <code class="language-bash">curl --location --request DELETE 'http://localhost:3000/carrinho' \
---header 'Cookie: connect.sid=s%3AHk6A7i5Ddtj24iIfe44xTGpx-qJE93d7.ATNolyVJZXdqENYTc6EM1dBp6X03l%2FeOIxeAKM1IaSE; temaPreferido=escuro'</code>
-              </pre>
-                <button class="btn-copy">Copiar Código</button>
-
-            </div>
+            <div class="code-container"><pre><code class="language-bash">curl --location --request DELETE 'http://localhost:3000/carrinho' \
+--header 'Cookie: connect.sid=s%3AHk6A7i5Ddtj24iIfe44xTGpx-qJE93d7.ATNolyVJZXdqENYTc6EM1dBp6X03l%2FeOIxeAKM1IaSE; temaPreferido=escuro'</code></pre><button class="btn-copy">Copiar Código</button></div>
 
             <p>Não esqueça de subir as alterações para o GitHub</p>
 
             <div class="code-container">
-              <pre>
-                <code class="language-bash">git add .
+              <pre><code class="language-bash">git add .
 git commit -m "dever de casa aula 8: clima e carrinho com sessão"
-git push --set-upstream origin dever-de-casa-aula8</code>
-              </pre>
-                <button class="btn-copy">Copiar Código</button>
-
-            </div>
+git push --set-upstream origin dever-de-casa-aula8</code></pre><button class="btn-copy">Copiar Código</button></div>
 
           </div>
         </section>
