@@ -1105,8 +1105,7 @@ module.exports = router;
               <strong>app.js</strong>
 
               <div class="code-container">
-                <pre><code class="language-javascript">const carrinhoRoutes = require("./routes/carrinhoRoutes");
-const express = require("express");
+                <pre><code class="language-javascript">const express = require("express");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
@@ -1153,6 +1152,8 @@ app.use(sessaoRoutes);
 app.use(climaRoutes);
 app.use(carrinhoRoutes);
 module.exports = app;
+</pre>
+                <button class="btn-copy">Copiar Código</button>
             </div>
 
             <p>Agora teste as rotas criadas no seu postman</p>
@@ -1160,7 +1161,8 @@ module.exports = app;
             <div class="code-container">
               <pre>
                 <code class="language-bash">curl http://localhost:3000/clima/rio-de-janeiro</code>
-              </pre>
+              </pre>                <button class="btn-copy">Copiar Código</button>
+
             </div>
 
             <div class="code-container">
@@ -1173,13 +1175,15 @@ module.exports = app;
     "produto": "TV",
     "quantidade": 2
 }'</code>
-              </pre>
+              </pre>                <button class="btn-copy">Copiar Código</button>
+
             </div>
 
             <div class="code-container">
               <pre>
                 <code class="language-bash">curl http://localhost:3000/carrinho</code>
-              </pre>
+              </pre>                <button class="btn-copy">Copiar Código</button>
+
             </div>
 
             <div class="code-container">
@@ -1187,6 +1191,20 @@ module.exports = app;
                 <code class="language-bash">curl --location --request DELETE 'http://localhost:3000/carrinho' \
 --header 'Cookie: connect.sid=s%3AHk6A7i5Ddtj24iIfe44xTGpx-qJE93d7.ATNolyVJZXdqENYTc6EM1dBp6X03l%2FeOIxeAKM1IaSE; temaPreferido=escuro'</code>
               </pre>
+                <button class="btn-copy">Copiar Código</button>
+
+            </div>
+
+            <p>Não esqueça de subir as alterações para o GitHub</p>
+
+            <div class="code-container">
+              <pre>
+                <code class="language-bash">git add .
+git commit -m "dever de casa aula 8: clima e carrinho com sessão"
+git push --set-upstream origin dever-de-casa-aula8</code>
+              </pre>
+                <button class="btn-copy">Copiar Código</button>
+
             </div>
 
           </div>
