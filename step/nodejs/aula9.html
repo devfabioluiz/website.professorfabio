@@ -23,15 +23,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 9</h1>
       <h4 class="text-center">Node.js</h4>
-      <h4 class="text-center">Arquivos Estáticos e Integração com PostgreSQL</h4>
+      <h4 class="text-center">
+        Arquivos Estáticos e Integração com PostgreSQL
+      </h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
         Arquivos estáticos, Integração com PostgreSQL, Aplicar princípios de
@@ -68,9 +71,9 @@ app.use(express.static('public'));
         </div>
 
         <p>
-          Com essa configuração, a pasta <strong>public</strong> se torna pública.
-          Um arquivo <code>public/css/style.css</code> pode ser acessado pelo
-          navegador como:
+          Com essa configuração, a pasta <strong>public</strong> se torna
+          pública. Um arquivo <code>public/css/style.css</code> pode ser
+          acessado pelo navegador como:
         </p>
 
         <div class="code-container">
@@ -90,21 +93,24 @@ app.use(
         </div>
 
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
 
           <h3>🔹 path.join()</h3>
 
           <p>
-            Constrói caminhos de forma segura, independente do sistema operacional
-            (Windows usa <code>\</code>, Linux/Mac usam <code>/</code>). SEMPRE
-            use <code>path.join()</code> em vez de concatenar strings.
+            Constrói caminhos de forma segura, independente do sistema
+            operacional (Windows usa <code>\</code>, Linux/Mac usam
+            <code>/</code>). SEMPRE use <code>path.join()</code> em vez de
+            concatenar strings.
           </p>
 
           <h3>🔹 __dirname</h3>
 
           <p>
-            Contém o caminho absoluto do diretório onde o arquivo atual está. Isso
-            garante que o caminho funcione independente de onde o comando
+            Contém o caminho absoluto do diretório onde o arquivo atual está.
+            Isso garante que o caminho funcione independente de onde o comando
             <code>node</code> foi executado.
           </p>
 
@@ -114,7 +120,9 @@ app.use(
             <li>O navegador solicita <code>/css/style.css</code></li>
             <li>O Express procura o arquivo na pasta configurada</li>
             <li>Se encontrar, envia o arquivo com o Content-Type correto</li>
-            <li>Se não encontrar, chama <code>next()</code> (próximo middleware)</li>
+            <li>
+              Se não encontrar, chama <code>next()</code> (próximo middleware)
+            </li>
           </ol>
         </div>
 
@@ -151,11 +159,16 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
           <tbody>
             <tr>
               <td><code>maxAge</code></td>
-              <td>Tempo que o navegador pode usar o cache (ms ou string como '7d')</td>
+              <td>
+                Tempo que o navegador pode usar o cache (ms ou string como '7d')
+              </td>
             </tr>
             <tr>
               <td><code>etag</code></td>
-              <td>Gera um hash do arquivo para validação condicional (304 Not Modified)</td>
+              <td>
+                Gera um hash do arquivo para validação condicional (304 Not
+                Modified)
+              </td>
             </tr>
             <tr>
               <td><code>immutable</code></td>
@@ -167,10 +180,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
         <h2>O que é PostgreSQL?</h2>
 
         <p>
-          PostgreSQL é um banco de dados <strong>relacional</strong> open source,
-          considerado um dos mais robustos e completos do mercado. Diferente do
-          MongoDB (NoSQL, documentos), o PostgreSQL organiza dados em
-          <strong>tabelas</strong> com <strong>colunas</strong> e
+          PostgreSQL é um banco de dados <strong>relacional</strong> open
+          source, considerado um dos mais robustos e completos do mercado.
+          Diferente do MongoDB (NoSQL, documentos), o PostgreSQL organiza dados
+          em <strong>tabelas</strong> com <strong>colunas</strong> e
           <strong>linhas</strong>, com relacionamentos entre elas.
         </p>
 
@@ -256,7 +269,9 @@ CREATE TABLE produtos (
         </div>
 
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
 
           <h3>🔹 SERIAL</h3>
           <p>
@@ -274,12 +289,14 @@ CREATE TABLE produtos (
           <p>
             Cria um relacionamento entre tabelas. O <code>categoria_id</code> na
             tabela produtos referencia o <code>id</code> da tabela categorias. O
-            banco impede que você insira um <code>categoria_id</code> que não existe.
+            banco impede que você insira um <code>categoria_id</code> que não
+            existe.
           </p>
 
           <h3>🔹 CHECK</h3>
           <p>
-            Restrição que valida os dados antes de inserir. <code>CHECK (preco > 0)</code>
+            Restrição que valida os dados antes de inserir.
+            <code>CHECK (preco > 0)</code>
             impede preços negativos ou zero.
           </p>
         </div>
@@ -287,8 +304,8 @@ CREATE TABLE produtos (
         <h2>Conectando Node.js ao PostgreSQL</h2>
 
         <p>
-          Usaremos a biblioteca <strong>pg</strong> (node-postgres), a mais popular
-          para conectar Node.js ao PostgreSQL.
+          Usaremos a biblioteca <strong>pg</strong> (node-postgres), a mais
+          popular para conectar Node.js ao PostgreSQL.
         </p>
 
         <div class="code-container">
@@ -383,32 +400,34 @@ async function deletarProduto(id) {
         </div>
 
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
 
           <h3>🔹 Parâmetros com $1, $2, $3...</h3>
 
           <p>
             NUNCA concatene valores diretamente na string SQL. Isso abre brecha
             para <strong>SQL Injection</strong>. O <code>pg</code> usa
-            <strong>parameterized queries</strong>: os placeholders <code>$1</code>,
-            <code>$2</code> são substituídos de forma segura pelo segundo argumento
-            (o array de valores).
+            <strong>parameterized queries</strong>: os placeholders
+            <code>$1</code>, <code>$2</code> são substituídos de forma segura
+            pelo segundo argumento (o array de valores).
           </p>
 
           <h3>🔹 RETURNING *</h3>
 
           <p>
-            Clausula específica do PostgreSQL que retorna as linhas afetadas pela
-            operação. Muito útil para INSERT, UPDATE e DELETE — evita uma query
-            extra de SELECT.
+            Clausula específica do PostgreSQL que retorna as linhas afetadas
+            pela operação. Muito útil para INSERT, UPDATE e DELETE — evita uma
+            query extra de SELECT.
           </p>
 
           <h3>🔹 resultado.rows</h3>
 
           <p>
-            O <code>pool.query()</code> retorna um objeto com várias propriedades.
-            A mais usada é <code>.rows</code>, que é um array de objetos onde cada
-            objeto é uma linha da tabela.
+            O <code>pool.query()</code> retorna um objeto com várias
+            propriedades. A mais usada é <code>.rows</code>, que é um array de
+            objetos onde cada objeto é uma linha da tabela.
           </p>
         </div>
 
@@ -463,11 +482,15 @@ ORDER BY p.nome;
             </tr>
             <tr>
               <td><code>LEFT JOIN</code></td>
-              <td>Todos da tabela esquerda + correspondências da direita (ou NULL)</td>
+              <td>
+                Todos da tabela esquerda + correspondências da direita (ou NULL)
+              </td>
             </tr>
             <tr>
               <td><code>RIGHT JOIN</code></td>
-              <td>Todos da tabela direita + correspondências da esquerda (ou NULL)</td>
+              <td>
+                Todos da tabela direita + correspondências da esquerda (ou NULL)
+              </td>
             </tr>
             <tr>
               <td><code>FULL JOIN</code></td>
@@ -502,7 +525,9 @@ ORDER BY p.nome;
 
         <!-- PASSO A PASSO -->
         <section>
-          <h2>Passo a Passo: Integrando PostgreSQL e Servindo Arquivos Estáticos</h2>
+          <h2>
+            Passo a Passo: Integrando PostgreSQL e Servindo Arquivos Estáticos
+          </h2>
 
           <p>
             Vamos adicionar uma pasta pública ao projeto e criar um módulo de
@@ -912,8 +937,6 @@ app.use(climaRoutes);
 app.use(carrinhoRoutes);
 app.use(produtoPgRoutes);
 
-const express = require("express");
-
 module.exports = app;
             </code></pre>
             <button class="btn-copy">Copiar Código</button>
@@ -979,12 +1002,13 @@ git push --set-upstream origin aula9-estaticos-postgresql
                 <li>Controller para categorias</li>
                 <li>Rotas REST para categorias</li>
                 <li>
-                  Rota <code>GET /pg/produtos-por-categoria/:categoriaId</code> que
+                  Rota
+                  <code>GET /pg/produtos-por-categoria/:categoriaId</code> que
                   lista produtos de uma categoria específica usando JOIN
                 </li>
                 <li>
-                  Uma página HTML servida estaticamente com uma tabela que exibe as
-                  categorias (use fetch para consumir a API)
+                  Uma página HTML servida estaticamente com uma tabela que exibe
+                  as categorias (use fetch para consumir a API)
                 </li>
               </ul>
 
