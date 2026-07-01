@@ -165,6 +165,7 @@ var FUNCOES = {
       C: 1047.24,
       D:  950.00,
     },
+    adicionalCatD: 71.82,  // Dec. 43.894/2012 — adicional para escolas Tipo D
     carga40h: true,            // Lei 9.584/2022
     permiteGLP: false,
     permiteDPDA: false,
@@ -173,7 +174,13 @@ var FUNCOES = {
   },
   secretario_escolar: {
     nome: "Secretário Escolar",
-    gratificacao: null,        // Anexo Dec. 43.668/12
+    categorias: {
+      A: 915.42,   // Dec. 43.668/12
+      B: 835.58,
+      C: 754.48,
+      D: 684.22,
+      E: 622.90,
+    },
     carga40h: false,           // Lei 9.584 NÃO menciona secretário
     permiteGLP: false,
     permiteDPDA: false,

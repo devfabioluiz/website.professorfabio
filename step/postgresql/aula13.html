@@ -1,0 +1,1490 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 13 - Integração Node.js com PostgreSQL - IT Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 13</h1>
+      <h4 class="text-center">Oracle e Postgre SQL</h4>
+      <h4 class="text-center">
+        Módulo 13: Integração Node.js com PostgreSQL
+      </h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Driver pg (node-postgres), Pool de conexões, Queries parametrizadas
+        (prevenção a SQL Injection), CRUD com RETURNING *, Transações no
+        PostgreSQL via Node.js (BEGIN/COMMIT/ROLLBACK), JOINs executados a
+        partir do Node.js, Repository Pattern.
+      </div>
+    </header>
+    <main class="container">
+      <!-- INTRODUÇÃO -->
+      <section>
+        <h2>Por que integrar Node.js com PostgreSQL?</h2>
+        <p>
+          Até agora, executamos nossas queries diretamente no
+          <strong>psql</strong> ou no <strong>pgAdmin</strong>. Mas em uma
+          aplicação web real, quem dispara as queries é o
+          <strong>backend</strong> — e o Node.js é um dos runtimes mais
+          populares para isso. A integração permite:
+        </p>
+        <ul>
+          <li>APIs REST que leem e gravam dados no PostgreSQL</li>
+          <li>Autenticação de usuários com sessões persistidas no banco</li>
+          <li>Dashboards que consomem queries analíticas em tempo real</li>
+          <li>Sistemas de e-commerce, ERPs, CRMs com dados relacionais</li>
+          <li>Microsserviços que usam PostgreSQL como fonte da verdade</li>
+        </ul>
+        <p>
+          Nesta aula, usaremos o pacote <strong>pg</strong> (node-postgres), o
+          driver mais maduro e popular para conectar Node.js ao PostgreSQL. Ele
+          implementa o protocolo nativo do PostgreSQL sobre TCP, sem dependências
+          externas.
+        </p>
+      </section>
+
+      <!-- INSTALANDO O DRIVER PG -->
+      <section>
+        <h2>1. Instalando o driver pg (node-postgres)</h2>
+        <p>
+          O pacote <code>pg</code> está disponível no npm. Ele fornece duas
+          formas principais de conexão:
+        </p>
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Classe</th>
+              <th>Uso</th>
+              <th>Quando usar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Client</code></td>
+              <td>Conexão única, manual</td>
+              <td>Scripts pontuais, migrações, tarefas agendadas</td>
+            </tr>
+            <tr>
+              <td><code>Pool</code></td>
+              <td>Conjunto reutilizável de conexões</td>
+              <td>
+                Aplicações web (recomendado para 99% dos casos)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Instalação</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">npm install pg
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Também instalaremos o <code>dotenv</code> para gerenciar credenciais
+          de forma segura (nunca coloque senhas no código-fonte):
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">npm install pg dotenv
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- POOL DE CONEXÕES -->
+      <section>
+        <h2>2. Pool de Conexões — Como o PostgreSQL gerencia conexões no Node.js</h2>
+        <p>
+          Toda vez que um cliente se conecta ao PostgreSQL, o servidor cria um
+          <strong>processo backend</strong> (no Linux, um fork do processo
+          postmaster). Esse processo consome memória (~5-10 MB por conexão) e
+          uma entrada na tabela <code>pg_stat_activity</code>. Em produção, abrir
+          uma conexão nova a cada requisição HTTP é inviável — gasta tempo,
+          CPU e pode esgotar o limite configurado em
+          <code>max_connections</code>.
+        </p>
+        <p>
+          O <strong>Pool</strong> resolve isso mantendo um conjunto fixo de
+          conexões abertas e reutilizáveis:
+        </p>
+        <ol>
+          <li>Quando uma query é solicitada, o pool entrega uma conexão já pronta</li>
+          <li>Após o uso, a conexão <strong>volta ao pool</strong> (não é fechada)</li>
+          <li>Se todas as conexões estiverem ocupadas, a query aguarda na fila (até o timeout)</li>
+          <li>Conexões ociosas por muito tempo são fechadas automaticamente</li>
+        </ol>
+
+        <h3>Configurando o Pool</h3>
+        <p>
+          Crie um arquivo <strong>src/database/pg.js</strong>:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Pool } = require("pg");
+
+const pool = new Pool({
+  host: process.env.PG_HOST || "localhost",
+  port: process.env.PG_PORT || 5432,
+  user: process.env.PG_USER || "postgres",
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE || "meubanco",
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+pool.on("error", (erro) => {
+  console.error("Erro inesperado no pool do PostgreSQL:", erro.message);
+});
+
+module.exports = pool;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 max: 20</h3>
+          <p>
+            Máximo de conexões simultâneas mantidas no pool. Esse valor
+            <strong>NUNCA</strong> deve ultrapassar o
+            <code>max_connections</code> do PostgreSQL (padrão 100). Uma boa
+            prática é deixar margem para o pgAdmin, psql e outras ferramentas.
+          </p>
+
+          <h3>🔹 idleTimeoutMillis: 30000</h3>
+          <p>
+            Se uma conexão ficar 30 segundos ociosa, ela é fechada
+            automaticamente. Isso evita acumular conexões de períodos de baixa
+            demanda.
+          </p>
+
+          <h3>🔹 connectionTimeoutMillis: 5000</h3>
+          <p>
+            Tempo máximo para estabelecer uma nova conexão. Se o PostgreSQL não
+            responder em 5 segundos, um erro é lançado — evitando que a
+            aplicação trave indefinidamente.
+          </p>
+
+          <h3>🔹 pool.on("error")</h3>
+          <p>
+            Captura erros de conexões ociosas que quebraram (ex: PostgreSQL
+            reiniciou). Sem esse listener, o erro derruba o processo Node.js.
+          </p>
+        </div>
+
+        <h3>Arquivo .env — Credenciais fora do código</h3>
+        <p>
+          Nunca coloque host, usuário e senha diretamente no arquivo
+          <code>pg.js</code>. Use variáveis de ambiente:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-bash">PG_HOST=localhost
+PG_PORT=5432
+PG_USER=postgres
+PG_PASSWORD=sua_senha_segura
+PG_DATABASE=aula13_node_pg
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Carregando o .env no Node.js</h3>
+        <p>
+          No topo do arquivo principal da aplicação (antes de qualquer import
+          que dependa de variáveis de ambiente):
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- QUERIES SEGURAS -->
+      <section>
+        <h2>
+          3. Executando queries de forma segura — Parameterized Queries
+        </h2>
+        <p>
+          Um dos ataques mais comuns e perigosos contra bancos de dados é o
+          <strong>SQL Injection</strong>. Ele ocorre quando concatenamos
+          strings diretamente na query:
+        </p>
+
+        <h3>❌ ERRADO — Vulnerável a SQL Injection</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">// NUNCA FAÇA ISSO!
+const nome = req.body.nome;
+
+// Se o usuário digitar: '; DROP TABLE produtos; --
+await pool.query(`SELECT * FROM produtos WHERE nome = '${nome}'`);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>✅ CORRETO — Parameterized Query</h3>
+        <p>
+          O <code>pg</code> oferece suporte nativo a
+          <strong>parameterized queries</strong> usando placeholders
+          <code>$1</code>, <code>$2</code>, <code>$3</code>... O driver envia os
+          valores separadamente do texto SQL, eliminando qualquer possibilidade
+          de injeção:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">// Forma correta e segura
+const nome = req.body.nome;
+
+const resultado = await pool.query(
+  "SELECT * FROM produtos WHERE nome = $1",
+  [nome]
+);
+
+// O pg envia:
+//   Parse: SELECT * FROM produtos WHERE nome = $1
+//   Bind:  $1 -> 'valor seguro'
+//   Execute
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Como a proteção funciona internamente</h3>
+          <p>
+            O PostgreSQL usa o <strong>Extended Query Protocol</strong>. Nesse
+            protocolo, a query e os parâmetros trafegam em mensagens separadas:
+          </p>
+          <ol>
+            <li>
+              <strong>Parse:</strong> o texto SQL é enviado ao PostgreSQL, que
+              monta a árvore sintática (sem os valores ainda)
+            </li>
+            <li>
+              <strong>Bind:</strong> os valores dos parâmetros são enviados
+              <strong>já com os tipos definidos</strong> — o PostgreSQL sabe que
+              $1 é um VARCHAR, $2 é um INTEGER, etc.
+            </li>
+            <li>
+              <strong>Execute:</strong> a query é executada com os valores
+              vinculados — o PostgreSQL nunca interpreta os parâmetros como SQL,
+              apenas como dados
+            </li>
+          </ol>
+          <p>
+            Mesmo que o valor de <code>$1</code> contenha
+            <code>'; DROP TABLE produtos; --</code>, ele será tratado como uma
+            string literal. O PostgreSQL NUNCA tentará executar comandos que
+            venham como parâmetros.
+          </p>
+        </div>
+
+        <h3>Múltiplos parâmetros</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const resultado = await pool.query(
+  `INSERT INTO produtos (nome, preco, estoque)
+   VALUES ($1, $2, $3)
+   RETURNING *`,
+  ["Teclado Mecânico", 350.00, 15]
+);
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>A cláusula RETURNING — Exclusiva do PostgreSQL</h3>
+        <p>
+          O PostgreSQL possui a cláusula <code>RETURNING</code>, que devolve as
+          linhas afetadas por INSERT, UPDATE ou DELETE sem precisar de uma query
+          SELECT extra:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">-- Sem RETURNING: precisa de 2 queries
+INSERT INTO produtos (nome, preco) VALUES ('Mouse', 80);
+SELECT * FROM produtos WHERE id = currval('produtos_id_seq');
+
+-- Com RETURNING: uma única query resolve
+INSERT INTO produtos (nome, preco) VALUES ('Mouse', 80)
+RETURNING id, nome, preco, criado_em;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>
+          No Node.js, o resultado vem direto no objeto retornado pelo pool:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">const resultado = await pool.query(
+  `INSERT INTO produtos (nome, preco) VALUES ($1, $2) RETURNING *`,
+  ["Mouse", 80]
+);
+
+console.log(resultado.rows[0]);
+// { id: 1, nome: 'Mouse', preco: 80, criado_em: 2026-06-29T... }
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- CRUD COMPLETO -->
+      <section>
+        <h2>4. CRUD completo — PostgreSQL via Node.js</h2>
+        <p>
+          Abaixo, um exemplo completo de operações CRUD usando o Pool e
+          parameterized queries. Note o uso do <strong>Repository
+          Pattern</strong>: separamos a lógica de banco de dados do
+          controller, facilitando testes e manutenção.
+        </p>
+
+        <h3>Repository — src/repositories/produtoPgRepository.js</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listarTodos = async () => {
+  const resultado = await pool.query(
+    "SELECT * FROM produtos ORDER BY nome"
+  );
+  return resultado.rows;
+};
+
+const buscarPorId = async (id) => {
+  const resultado = await pool.query(
+    "SELECT * FROM produtos WHERE id = $1",
+    [id]
+  );
+  return resultado.rows[0] || null;
+};
+
+const criar = async (dados) => {
+  const { nome, preco, estoque } = dados;
+
+  const resultado = await pool.query(
+    `INSERT INTO produtos (nome, preco, estoque)
+     VALUES ($1, $2, $3)
+     RETURNING *`,
+    [nome, preco, estoque]
+  );
+
+  return resultado.rows[0];
+};
+
+const atualizar = async (id, dados) => {
+  const { nome, preco, estoque } = dados;
+
+  const resultado = await pool.query(
+    `UPDATE produtos
+     SET nome = $1, preco = $2, estoque = $3,
+         atualizado_em = NOW()
+     WHERE id = $4
+     RETURNING *`,
+    [nome, preco, estoque, id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM produtos WHERE id = $1 RETURNING *",
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+module.exports = {
+  listarTodos,
+  buscarPorId,
+  criar,
+  atualizar,
+  deletar,
+};
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Controller — src/controllers/produtoPgController.js</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const repository = require("../repositories/produtoPgRepository");
+
+const listar = async (req, res) => {
+  try {
+    const produtos = await repository.listarTodos();
+    res.json(produtos);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao listar produtos" });
+  }
+};
+
+const obterPorId = async (req, res) => {
+  try {
+    const produto = await repository.buscarPorId(req.params.id);
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao buscar produto" });
+  }
+};
+
+const criar = async (req, res) => {
+  try {
+    const { nome, preco, estoque } = req.body;
+
+    if (!nome || !preco) {
+      return res.status(400).json({
+        erro: "Nome e preço são obrigatórios",
+      });
+    }
+
+    const produto = await repository.criar({
+      nome,
+      preco: Number(preco),
+      estoque: Number(estoque) || 0,
+    });
+
+    res.status(201).json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao criar produto" });
+  }
+};
+
+const atualizar = async (req, res) => {
+  try {
+    const { nome, preco, estoque } = req.body;
+
+    const produto = await repository.atualizar(req.params.id, {
+      nome,
+      preco: Number(preco),
+      estoque: Number(estoque),
+    });
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao atualizar produto" });
+  }
+};
+
+const deletar = async (req, res) => {
+  try {
+    const produto = await repository.deletar(req.params.id);
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json({ mensagem: "Produto removido", produto });
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao deletar produto" });
+  }
+};
+
+module.exports = { listar, obterPorId, criar, atualizar, deletar };
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- TRANSAÇÕES -->
+      <section>
+        <h2>5. Transações no PostgreSQL via Node.js</h2>
+        <p>
+          Uma <strong>transação</strong> agrupa múltiplas operações em uma
+          unidade atômica: ou todas são confirmadas juntas (<code>COMMIT</code>)
+          ou todas são revertidas (<code>ROLLBACK</code>). O PostgreSQL é
+          totalmente ACID — as propriedades de Atomicidade, Consistência,
+          Isolamento e Durabilidade são garantidas nativamente.
+        </p>
+
+        <h3>Usando pool.query() — Desconectado (não recomendado para transações)</h3>
+        <p>
+          Cada chamada a <code>pool.query()</code> pode usar uma
+          <strong>conexão diferente</strong> do pool. Para transações, você
+          precisa que todas as queries rodem na
+          <strong>mesma conexão</strong>. Use
+          <code>pool.connect()</code> para obter um Client dedicado:
+        </p>
+
+        <h3>✅ Transação com Client dedicado</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const transferirEstoque = async (origemId, destinoId, quantidade) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const origem = await client.query(
+      "SELECT estoque FROM produtos WHERE id = $1 FOR UPDATE",
+      [origemId]
+    );
+
+    if (origem.rows.length === 0) {
+      throw new Error("Produto de origem não encontrado");
+    }
+
+    if (origem.rows[0].estoque < quantidade) {
+      throw new Error("Estoque insuficiente na origem");
+    }
+
+    await client.query(
+      "UPDATE produtos SET estoque = estoque - $1 WHERE id = $2",
+      [quantidade, origemId]
+    );
+
+    await client.query(
+      "UPDATE produtos SET estoque = estoque + $1 WHERE id = $2",
+      [quantidade, destinoId]
+    );
+
+    await client.query("COMMIT");
+
+    return { mensagem: "Transferência realizada com sucesso" };
+  } catch (erro) {
+    await client.query("ROLLBACK");
+    throw erro;
+  } finally {
+    client.release();
+  }
+};
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 pool.connect()</h3>
+          <p>
+            Reserva uma conexão exclusiva do pool. Use para transações ou quando
+            precisar executar múltiplas queries na mesma sessão (ex: SET LOCAL,
+            criar tabelas temporárias).
+          </p>
+
+          <h3>🔹 client.release() no finally</h3>
+          <p>
+            <strong>SEMPRE</strong> devolva a conexão ao pool, mesmo se ocorrer
+            erro. Colocar <code>release()</code> no <code>finally</code> garante
+            que a conexão será liberada em qualquer cenário. Se você esquecer, o
+            pool ficará sem conexões disponíveis.
+          </p>
+
+          <h3>🔹 FOR UPDATE</h3>
+          <p>
+            Bloqueia a linha selecionada até o fim da transação. Isso impede que
+            outra transação altere o estoque simultaneamente (controle de
+            concorrência pessimista).
+          </p>
+
+          <h3>🔹 SAVEPOINT</h3>
+          <p>
+            Para operações mais complexas, você pode criar pontos de salvamento
+            parciais dentro da transação:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-sql">SAVEPOINT antes_da_validacao;
+
+-- Se a validação falhar...
+ROLLBACK TO SAVEPOINT antes_da_validacao;
+
+-- Se tudo estiver certo...
+RELEASE SAVEPOINT antes_da_validacao;
+COMMIT;
+</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOINS -->
+      <section>
+        <h2>6. JOINs executados a partir do Node.js</h2>
+        <p>
+          Uma das maiores vantagens do PostgreSQL é a capacidade de realizar
+          JOINs complexos. No Node.js, você envia a query completa e recebe os
+          dados já relacionados — o banco faz o trabalho pesado.
+        </p>
+
+        <h3>Exemplo: Produtos com Categoria (LEFT JOIN)</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const listarComCategoria = async () => {
+  const resultado = await pool.query(`
+    SELECT
+      p.id,
+      p.nome,
+      p.preco,
+      p.estoque,
+      c.nome AS categoria_nome,
+      c.id AS categoria_id
+
+    FROM produtos p
+
+    LEFT JOIN categorias c
+      ON p.categoria_id = c.id
+
+    ORDER BY c.nome, p.nome
+  `);
+
+  return resultado.rows;
+};
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Exemplo com parâmetros: Buscar produtos por categoria</h3>
+        <div class="code-container">
+          <pre><code class="language-javascript">const buscarPorCategoria = async (categoriaId) => {
+  const resultado = await pool.query(
+    `SELECT p.*, c.nome AS categoria_nome
+     FROM produtos p
+     INNER JOIN categorias c ON p.categoria_id = c.id
+     WHERE c.id = $1
+     ORDER BY p.nome`,
+    [categoriaId]
+  );
+
+  return resultado.rows;
+};
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Por que fazer o JOIN no banco, e não no Node.js?</h3>
+          <p>
+            O PostgreSQL é otimizado para JOINs há décadas. Ele usa índices,
+            hash joins, merge joins e nested loops automaticamente. Fazer o JOIN
+            no Node.js (baixar duas tabelas e cruzar com JavaScript) seria:
+          </p>
+          <ul>
+            <li>Mais lento (tráfego de rede desnecessário)</li>
+            <li>Mais memória (todos os dados na RAM do Node.js)</li>
+            <li>Mais código (você reescreveria lógica de banco em JS)</li>
+          </ul>
+          <p>
+            <strong>Regra de ouro:</strong> quem faz JOIN é o banco. O Node.js
+            recebe o resultado pronto.
+          </p>
+        </div>
+      </section>
+
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>
+          Passo a Passo: Integrando o PostgreSQL ao Projeto Node.js
+        </h2>
+
+        <p>
+          Vamos adicionar um módulo completo de produtos com PostgreSQL ao
+          projeto Node.js que você já tem. Para isso, use o projeto da
+          <strong>Aula 8 de Node.js</strong> como base — ele já possui Express,
+          middlewares, rotas, controllers e autenticação configurados.
+        </p>
+
+        <p>
+          Se você ainda não tem o projeto, clone o repositório:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git clone https://github.com/devfabioluiz/projeto-nodejs-step.git
+cd projeto-nodejs-step
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 0 — Criar branch da aula</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout aula8-cliente-cookies-sessoes
+git pull
+git checkout -b aula13-node-postgresql
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Instalar dependências</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">npm install pg dotenv
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar arquivo .env</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">PG_HOST=localhost
+PG_PORT=5432
+PG_USER=postgres
+PG_PASSWORD=sua_senha
+PG_DATABASE=aula13_node_pg
+SESSION_SECRET=segredo-super-seguro
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar conexão com PostgreSQL (Pool)</h3>
+        <p>Criar o diretório e o arquivo <strong>src/database/pg.js</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir src\database
+type nul > src\database\pg.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Pool } = require("pg");
+
+const pool = new Pool({
+  host: process.env.PG_HOST || "localhost",
+  port: process.env.PG_PORT || 5432,
+  user: process.env.PG_USER || "postgres",
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE || "aula13_node_pg",
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+pool.on("error", (erro) => {
+  console.error("Erro inesperado no pool do PostgreSQL:", erro.message);
+});
+
+module.exports = pool;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar script de migração (criar tabelas)</h3>
+        <p>Criar <strong>src/database/migrate.js</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\database\migrate.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const pool = require("./pg");
+
+const criarTabelas = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS categorias (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL UNIQUE,
+        descricao TEXT,
+        criado_em TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS produtos (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(150) NOT NULL,
+        preco DECIMAL(10, 2) NOT NULL CHECK (preco > 0),
+        estoque INTEGER NOT NULL DEFAULT 0 CHECK (estoque >= 0),
+        categoria_id INTEGER REFERENCES categorias(id) ON DELETE SET NULL,
+        criado_em TIMESTAMP DEFAULT NOW(),
+        atualizado_em TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    console.log("Tabelas criadas com sucesso!");
+
+    await pool.end();
+    process.exit(0);
+  } catch (erro) {
+    console.error("Erro ao criar tabelas:", erro.message);
+    await pool.end();
+    process.exit(1);
+  }
+};
+
+criarTabelas();
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Criar o banco e executar a migração</h3>
+        <p>
+          Primeiro, crie o banco de dados no psql ou pgAdmin:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-sql">CREATE DATABASE aula13_node_pg;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <p>Depois execute a migração:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">node src\database\migrate.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar Repository para produtos</h3>
+        <p>Criar <strong>src/repositories/produtoPgRepository.js</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir src\repositories
+type nul > src\repositories\produtoPgRepository.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listarTodos = async () => {
+  const resultado = await pool.query(`
+    SELECT
+      p.id,
+      p.nome,
+      p.preco,
+      p.estoque,
+      c.nome AS categoria_nome,
+      p.categoria_id,
+      p.criado_em,
+      p.atualizado_em
+    FROM produtos p
+    LEFT JOIN categorias c ON p.categoria_id = c.id
+    ORDER BY p.nome
+  `);
+
+  return resultado.rows;
+};
+
+const buscarPorId = async (id) => {
+  const resultado = await pool.query(
+    `SELECT p.*, c.nome AS categoria_nome
+     FROM produtos p
+     LEFT JOIN categorias c ON p.categoria_id = c.id
+     WHERE p.id = $1`,
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const criar = async (dados) => {
+  const { nome, preco, estoque, categoria_id } = dados;
+
+  const resultado = await pool.query(
+    `INSERT INTO produtos (nome, preco, estoque, categoria_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [nome, preco, estoque, categoria_id || null]
+  );
+
+  return resultado.rows[0];
+};
+
+const atualizar = async (id, dados) => {
+  const { nome, preco, estoque, categoria_id } = dados;
+
+  const resultado = await pool.query(
+    `UPDATE produtos
+     SET nome = $1, preco = $2, estoque = $3,
+         categoria_id = $4, atualizado_em = NOW()
+     WHERE id = $5
+     RETURNING *`,
+    [nome, preco, estoque, categoria_id || null, id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM produtos WHERE id = $1 RETURNING *",
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+module.exports = {
+  listarTodos,
+  buscarPorId,
+  criar,
+  atualizar,
+  deletar,
+};
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Criar Controller</h3>
+        <p>Criar <strong>src/controllers/produtoPgController.js</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\controllers\produtoPgController.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">const repository = require("../repositories/produtoPgRepository");
+
+const listar = async (req, res) => {
+  try {
+    const produtos = await repository.listarTodos();
+    res.json(produtos);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao listar produtos" });
+  }
+};
+
+const obterPorId = async (req, res) => {
+  try {
+    const produto = await repository.buscarPorId(req.params.id);
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao buscar produto" });
+  }
+};
+
+const criar = async (req, res) => {
+  try {
+    const { nome, preco, estoque, categoria_id } = req.body;
+
+    if (!nome || !preco) {
+      return res.status(400).json({
+        erro: "Nome e preço são obrigatórios",
+      });
+    }
+
+    const produto = await repository.criar({
+      nome,
+      preco: Number(preco),
+      estoque: Number(estoque) || 0,
+      categoria_id: categoria_id || null,
+    });
+
+    res.status(201).json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao criar produto" });
+  }
+};
+
+const atualizar = async (req, res) => {
+  try {
+    const { nome, preco, estoque, categoria_id } = req.body;
+
+    const produto = await repository.atualizar(req.params.id, {
+      nome,
+      preco: Number(preco),
+      estoque: Number(estoque),
+      categoria_id: categoria_id || null,
+    });
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json(produto);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao atualizar produto" });
+  }
+};
+
+const deletar = async (req, res) => {
+  try {
+    const produto = await repository.deletar(req.params.id);
+
+    if (!produto) {
+      return res.status(404).json({ erro: "Produto não encontrado" });
+    }
+
+    res.json({ mensagem: "Produto removido", produto });
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao deletar produto" });
+  }
+};
+
+module.exports = { listar, obterPorId, criar, atualizar, deletar };
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Criar Rotas</h3>
+        <p>Criar <strong>src/routes/produtoPgRoutes.js</strong>:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\routes\produtoPgRoutes.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  listar,
+  obterPorId,
+  criar,
+  atualizar,
+  deletar,
+} = require("../controllers/produtoPgController");
+
+router.get("/pg/produtos", listar);
+router.get("/pg/produtos/:id", obterPorId);
+router.post("/pg/produtos", criar);
+router.put("/pg/produtos/:id", atualizar);
+router.delete("/pg/produtos/:id", deletar);
+
+module.exports = router;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Atualizar app.js</h3>
+        <p>
+          Adicione as novas rotas no <strong>src/app.js</strong>. Acrescente o
+          <code>require</code> do dotenv no topo do
+          <strong>server.js</strong> (ou no próprio app.js) e registre as rotas:
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
+const arquivoRoutes = require("./routes/arquivoRoutes");
+const authRoutes = require("./routes/authRoutes");
+const streamRoutes = require("./routes/streamRoutes");
+const cepRoutes = require("./routes/cepRoutes");
+const sessaoRoutes = require("./routes/sessaoRoutes");
+const produtoPgRoutes = require("./routes/produtoPgRoutes");
+
+const loggerMiddleware = require("./middlewares/loggerMiddleware");
+
+const app = express();
+
+app.use(loggerMiddleware);
+
+app.use(cookieParser());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "segredo-super-seguro",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 60 * 1000,
+      httpOnly: true,
+    },
+  }),
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(authRoutes);
+app.use(produtoRoutes);
+app.use(usuarioRoutes);
+app.use(arquivoRoutes);
+app.use(streamRoutes);
+app.use(cepRoutes);
+app.use(sessaoRoutes);
+app.use(produtoPgRoutes);
+
+module.exports = app;
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Rodar e testar</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">node server.js
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Listar produtos:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">curl http://localhost:3000/pg/produtos
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Criar produto:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">curl -X POST http://localhost:3000/pg/produtos \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Teclado Mecânico\",\"preco\":350,\"estoque\":20}"
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Resposta esperada:</p>
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "id": 1,
+  "nome": "Teclado Mecânico",
+  "preco": 350.00,
+  "estoque": 20,
+  "categoria_id": null,
+  "criado_em": "2026-06-29T21:00:00.000Z",
+  "atualizado_em": "2026-06-29T21:00:00.000Z"
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Buscar produto por ID:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">curl http://localhost:3000/pg/produtos/1
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Atualizar produto:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">curl -X PUT http://localhost:3000/pg/produtos/1 \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Teclado Mecânico RGB\",\"preco\":399,\"estoque\":15}"
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Deletar produto:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">curl -X DELETE http://localhost:3000/pg/produtos/1
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">git add .
+git commit -m "implementa integracao Node.js com PostgreSQL - CRUD produtos"
+git push --set-upstream origin aula13-node-postgresql
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              1. CRUD de Categorias via PostgreSQL
+            </h3>
+            <p>
+              Crie uma branch chamada
+              <strong>dever-de-casa-aula13</strong>.
+            </p>
+            <p>Desenvolva o CRUD completo para a tabela categorias:</p>
+            <ul>
+              <li>Repository: <code>categoriaPgRepository.js</code> com listar, criar, atualizar e deletar</li>
+              <li>Controller: <code>categoriaPgController.js</code> com validação (nome obrigatório)</li>
+              <li>Rotas: <code>GET/POST/PUT/DELETE /pg/categorias</code></li>
+              <li>
+                Rota extra: <code>GET /pg/produtos-por-categoria/:categoriaId</code>
+                que use JOIN para listar produtos de uma categoria específica
+              </li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><strong>categoriaPgRepository.js</strong></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listar = async () => {
+  const resultado = await pool.query(
+    "SELECT * FROM categorias ORDER BY nome"
+  );
+  return resultado.rows;
+};
+
+const criar = async (dados) => {
+  const resultado = await pool.query(
+    `INSERT INTO categorias (nome, descricao)
+     VALUES ($1, $2) RETURNING *`,
+    [dados.nome, dados.descricao || null]
+  );
+  return resultado.rows[0];
+};
+
+const atualizar = async (id, dados) => {
+  const resultado = await pool.query(
+    `UPDATE categorias
+     SET nome = $1, descricao = $2
+     WHERE id = $3 RETURNING *`,
+    [dados.nome, dados.descricao || null, id]
+  );
+  return resultado.rows[0] || null;
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM categorias WHERE id = $1 RETURNING *",
+    [id]
+  );
+  return resultado.rows[0] || null;
+};
+
+const buscarProdutosPorCategoria = async (categoriaId) => {
+  const resultado = await pool.query(
+    `SELECT p.*, c.nome AS categoria_nome
+     FROM produtos p
+     INNER JOIN categorias c ON p.categoria_id = c.id
+     WHERE c.id = $1
+     ORDER BY p.nome`,
+    [categoriaId]
+  );
+  return resultado.rows;
+};
+
+module.exports = {
+  listar,
+  criar,
+  atualizar,
+  deletar,
+  buscarProdutosPorCategoria,
+};
+</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              2. Transferência de Estoque com Transação
+            </h3>
+            <p>
+              Crie uma rota <code>POST /pg/transferencia</code> que:
+            </p>
+            <ul>
+              <li>Receba no body: <code>origemId</code>, <code>destinoId</code>, <code>quantidade</code></li>
+              <li>Use <code>pool.connect()</code> com <code>BEGIN</code>/<code>COMMIT</code>/<code>ROLLBACK</code></li>
+              <li>Use <code>SELECT ... FOR UPDATE</code> na consulta de origem</li>
+              <li>Valide se o produto de origem tem estoque suficiente</li>
+              <li>Atualize o estoque dos dois produtos</li>
+              <li>Retorne os dois produtos atualizados em caso de sucesso</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const transferirEstoque = async (req, res) => {
+  const { origemId, destinoId, quantidade } = req.body;
+
+  if (!origemId || !destinoId || !quantidade) {
+    return res.status(400).json({
+      erro: "origemId, destinoId e quantidade são obrigatórios",
+    });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const origem = await client.query(
+      "SELECT * FROM produtos WHERE id = $1 FOR UPDATE",
+      [origemId]
+    );
+
+    if (origem.rows.length === 0) {
+      throw new Error("Produto de origem não encontrado");
+    }
+
+    if (origem.rows[0].estoque < quantidade) {
+      throw new Error(
+        `Estoque insuficiente. Disponível: ${origem.rows[0].estoque}`
+      );
+    }
+
+    const produtoOrigem = await client.query(
+      `UPDATE produtos
+       SET estoque = estoque - $1, atualizado_em = NOW()
+       WHERE id = $2
+       RETURNING *`,
+      [quantidade, origemId]
+    );
+
+    const produtoDestino = await client.query(
+      `UPDATE produtos
+       SET estoque = estoque + $1, atualizado_em = NOW()
+       WHERE id = $2
+       RETURNING *`,
+      [quantidade, destinoId]
+    );
+
+    await client.query("COMMIT");
+
+    res.json({
+      mensagem: "Transferência realizada com sucesso",
+      origem: produtoOrigem.rows[0],
+      destino: produtoDestino.rows[0],
+    });
+  } catch (erro) {
+    await client.query("ROLLBACK");
+    res.status(400).json({ erro: erro.message });
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = { transferirEstoque };
+</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><strong>Rotas (adicione no produtoPgRoutes.js):</strong></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">router.post("/pg/transferencia", transferirEstoque);
+</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>
+              3. Query com JOIN e Filtro — Produtos por Preço Mínimo
+            </h3>
+            <p>
+              Crie uma rota <code>GET /pg/produtos-filtro?precoMin=100&categoria=1</code> que:
+            </p>
+            <ul>
+              <li>Use parâmetros de query string (req.query)</li>
+              <li>Filtre produtos com preço maior ou igual ao informado (opcional)</li>
+              <li>Filtre por categoria (opcional)</li>
+              <li>Faça LEFT JOIN com categorias para retornar o nome da categoria</li>
+              <li>Ordene por preço DESC</li>
+              <li>Use parameterized queries para todos os filtros</li>
+            </ul>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-javascript">const listarComFiltro = async (req, res) => {
+  try {
+    const { precoMin, categoria } = req.query;
+
+    let query = `
+      SELECT p.*, c.nome AS categoria_nome
+      FROM produtos p
+      LEFT JOIN categorias c ON p.categoria_id = c.id
+      WHERE 1=1
+    `;
+
+    const params = [];
+    let paramIndex = 1;
+
+    if (precoMin) {
+      query += ` AND p.preco >= $${paramIndex}`;
+      params.push(Number(precoMin));
+      paramIndex++;
+    }
+
+    if (categoria) {
+      query += ` AND p.categoria_id = $${paramIndex}`;
+      params.push(Number(categoria));
+      paramIndex++;
+    }
+
+    query += " ORDER BY p.preco DESC";
+
+    const resultado = await pool.query(query, params);
+
+    res.json(resultado.rows);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao buscar produtos" });
+  }
+};
+</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>Teste:</p>
+              <div class="code-container">
+                <pre><code class="language-bash">curl "http://localhost:3000/pg/produtos-filtro?precoMin=100"
+curl "http://localhost:3000/pg/produtos-filtro?categoria=1"
+curl "http://localhost:3000/pg/produtos-filtro?precoMin=50&categoria=2"
+</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ÚLTIMO PASSO -->
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          📌 Confira o resultado da aplicação
+        </h2>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente. Teste cada rota criada nesta aula — CRUD de produtos,
+          JOIN com categorias, transferência com transação e filtro com
+          parâmetros dinâmicos. Verifique também se as variáveis de ambiente
+          estão corretamente configuradas no <code>.env</code>.
+        </p>
+        <p>
+          Compare sua implementação com a versão completa do projeto em
+          <a
+            href="https://github.com/devfabioluiz/projeto-nodejs-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-nodejs-step
+          </a>
+        </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+        <ul>
+          <li><code>aula13-node-postgresql</code></li>
+        </ul>
+      </div>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

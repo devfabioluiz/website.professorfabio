@@ -92,6 +92,8 @@ function calcularVencimentos(params) {
     gratFuncao = aplicarRecomposicoes(funcao.gratificacao, dataSim);
   }
   var ajudaCusto = funcao.ajudaCusto;
+  var adicionalFuncao = (funcao.adicionalCatD && params.categoriaEscola === "D")
+    ? aplicarRecomposicoes(funcao.adicionalCatD, dataSim) : 0;
 
   if (params.cedido) {
     glpTempos = 0;
@@ -100,9 +102,10 @@ function calcularVencimentos(params) {
     daValor = 0;
     gratFuncao = 0;
     ajudaCusto = 0;
+    adicionalFuncao = 0;
   }
 
-  var basePrev = round2(total + trienioValor + aqValor + (funcao.incidePrev ? gratFuncao : 0));
+  var basePrev = round2(total + trienioValor + aqValor + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
 
   var abonoPermanenciaValor = params.abonoPermanencia ? previdencia : 0;
@@ -111,7 +114,7 @@ function calcularVencimentos(params) {
   var auxAlimentacao = ALIMENTACAO[cargaParaAuxilios];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + gratFuncao + ajudaCusto + auxilios);
+  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + gratFuncao + adicionalFuncao + ajudaCusto + auxilios);
 
   return {
     cargo: cargo,
@@ -128,6 +131,7 @@ function calcularVencimentos(params) {
     dpValor: dpValor,
     daValor: daValor,
     gratFuncao: gratFuncao,
+    adicionalFuncao: adicionalFuncao,
     ajudaCusto: ajudaCusto,
     funcaoNome: funcao.nome !== "Nenhuma" ? funcao.nome : null,
     cargaEfetiva: cargaEfetiva,
@@ -149,6 +153,7 @@ function calcularVencimentos(params) {
     exibeDP: dpValor > 0,
     exibeDA: daValor > 0,
     exibeGratFuncao: gratFuncao > 0,
+    exibeAdicionalFuncao: adicionalFuncao > 0,
     exibeAjudaCusto: ajudaCusto > 0,
     exibeConversao40h: false,
   };
@@ -178,6 +183,7 @@ function calcular(params) {
     dpValor: r.dpValor,
     daValor: r.daValor,
     gratFuncao: r.gratFuncao,
+    adicionalFuncao: r.adicionalFuncao,
     ajudaCusto: r.ajudaCusto,
     funcaoNome: r.funcaoNome,
     cargaEfetiva: r.cargaEfetiva,
@@ -203,6 +209,7 @@ function calcular(params) {
     exibeDP: r.exibeDP,
     exibeDA: r.exibeDA,
     exibeGratFuncao: r.exibeGratFuncao,
+    exibeAdicionalFuncao: r.exibeAdicionalFuncao,
     exibeAjudaCusto: r.exibeAjudaCusto,
     exibeConversao40h: false,
   };
@@ -255,6 +262,34 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
 
   function sum(prop) { return round2((r1[prop] || 0) + (r2[prop] || 0)); }
 
+  var auxAlimentacaoTotal = sum('auxAlimentacao');
+  var auxAlimentacaoCap = Math.min(auxAlimentacaoTotal, ALIMENTACAO[40]);
+  var auxAlimentacaoDiff = round2(auxAlimentacaoTotal - auxAlimentacaoCap);
+
+  if (auxAlimentacaoDiff > 0) {
+    var r1AjusteAlim = round2(r1.auxAlimentacao - auxAlimentacaoCap);
+    var r2AjusteAlim = r2.auxAlimentacao;
+    r1.auxAlimentacao = auxAlimentacaoCap;
+    r2.auxAlimentacao = 0;
+    r1.bruta = round2(r1.bruta - r1AjusteAlim);
+    r2.bruta = round2(r2.bruta - r2AjusteAlim);
+    r1.auxilios = round2(r1.auxilios - r1AjusteAlim);
+    r2.auxilios = round2(r2.auxilios - r2AjusteAlim);
+  }
+
+  // Auxílio transporte: pago uma única vez (Dec. 42.788/11, art. 1º, §2º)
+  // Dupla matrícula → 2+ turmas → enquadra como "Demais" (5 créditos/semana)
+  var auxTransporteUnico = TRANSPORTE.demais;
+  var auxTransporteAjuste1 = round2(r1.auxTransporte - auxTransporteUnico);
+  r1.auxTransporte = auxTransporteUnico;
+  r1.bruta = round2(r1.bruta - auxTransporteAjuste1);
+  r1.auxilios = round2(r1.auxilios - auxTransporteAjuste1);
+  var auxTransporteAjuste2 = r2.auxTransporte;
+  r2.auxTransporte = 0;
+  r2.bruta = round2(r2.bruta - auxTransporteAjuste2);
+  r2.auxilios = round2(r2.auxilios - auxTransporteAjuste2);
+  var auxTransporteDiff = round2(auxTransporteAjuste1 + auxTransporteAjuste2);
+
   var combinedBruta = round2(r1.bruta + r2.bruta);
   var combinedPrevidencia = round2(r1.previdencia + r2.previdencia);
   var combinedLiquido = round2(combinedBruta - combinedPrevidencia - combinedIRRF - pensaoAlimenticia + (r1.abonoPermanenciaValor || 0) + (r2.abonoPermanenciaValor || 0));
@@ -277,10 +312,13 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       dpValor: sum('dpValor'),
       daValor: sum('daValor'),
       gratFuncao: sum('gratFuncao'),
+      adicionalFuncao: sum('adicionalFuncao'),
       ajudaCusto: sum('ajudaCusto'),
       abonoPermanenciaValor: sum('abonoPermanenciaValor'),
       auxTransporte: sum('auxTransporte'),
-      auxAlimentacao: sum('auxAlimentacao'),
+      auxTransporteDiff: auxTransporteDiff,
+      auxAlimentacao: auxAlimentacaoCap,
+      auxAlimentacaoDiff: auxAlimentacaoDiff,
       auxilios: sum('auxilios'),
       bruta: combinedBruta,
       previdencia: combinedPrevidencia,
@@ -304,6 +342,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       exibeDP: r1.exibeDP || r2.exibeDP,
       exibeDA: r1.exibeDA || r2.exibeDA,
       exibeGratFuncao: r1.exibeGratFuncao || r2.exibeGratFuncao,
+      exibeAdicionalFuncao: r1.exibeAdicionalFuncao || r2.exibeAdicionalFuncao,
       exibeAjudaCusto: r1.exibeAjudaCusto || r2.exibeAjudaCusto,
       exibeAbonoPermanencia: r1.exibeAbonoPermanencia || r2.exibeAbonoPermanencia,
     },

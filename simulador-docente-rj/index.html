@@ -62,402 +62,469 @@
 
         <!-- Toggle Dupla Matrícula -->
         <div class="mb-5" id="dual-toggle-section">
-          <label class="flex items-center gap-3 cursor-pointer bg-blue-50 rounded-lg px-4 py-3 border border-blue-100">
-            <input type="checkbox" id="dual-matricula" class="accent-blue-600 w-5 h-5" />
-            <span class="text-sm font-semibold text-gray-700">Possuo duas matrículas na SEEDUC</span>
+          <label
+            class="flex items-center gap-3 cursor-pointer bg-blue-50 rounded-lg px-4 py-3 border border-blue-100"
+          >
+            <input
+              type="checkbox"
+              id="dual-matricula"
+              class="accent-blue-600 w-5 h-5"
+            />
+            <span class="text-sm font-semibold text-gray-700"
+              >Possuo duas matrículas na SEEDUC</span
+            >
           </label>
         </div>
 
         <!-- Matrícula 1 Section -->
         <div id="matricula1-section">
-          <h3 class="text-sm font-bold text-blue-700 mb-3 uppercase tracking-wide border-b border-blue-100 pb-1">Matrícula 1</h3>
+          <h3
+            class="text-sm font-bold text-blue-700 mb-3 uppercase tracking-wide border-b border-blue-100 pb-1"
+          >
+            Matrícula 1
+          </h3>
 
-        <!-- Cargo -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Cargo</label
-          >
-          <select
-            id="cargo"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          >
-            <option value="docente1_18h">Professor Docente I - 18h</option>
-            <option value="docente1_30h">Professor Docente I - 30h</option>
-            <option value="docente2_22h">Professor Docente II - 22h</option>
-            <option value="docente1_40h">Professor Docente I - 40h</option>
-            <option value="docente2_40h">Professor Docente II - 40h</option>
-            <option value="supervisor_oe_ie_25h">Prof. Supervisor/Orient./Inspetor Escolar - 25h</option>
-          </select>
-        </div>
-
-        <!-- Referência -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Referência</label
-          >
-          <select
-            id="referencia"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          ></select>
-        </div>
-
-        <!-- Função Gratificada -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Função Gratificada</label
-          >
-          <select
-            id="funcao"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          >
-            <option value="nenhuma">Nenhuma</option>
-            <option value="coordenador_pedagogico">Coordenador Pedagógico</option>
-            <option value="diretor_geral">Diretor Geral</option>
-            <option value="diretor_adjunto">Diretor Adjunto</option>
-            <option value="secretario_escolar">Secretário Escolar</option>
-            <option value="agente_acompanhamento">Agente de Acomp. da Gestão Escolar</option>
-            <option value="orientador_educacional">Orientador Educacional</option>
-          </select>
-        </div>
-
-        <!-- Categoria da Escola -->
-        <div class="mb-4" id="categoria-escola-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Categoria da Escola</label
-          >
-          <select
-            id="categoria-escola"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          >
-            <option value="A">A — mais de 50 turmas ou horário integral</option>
-            <option value="B">B — 31 a 50 turmas</option>
-            <option value="C">C — 16 a 30 turmas</option>
-            <option value="D">D — 6 a 15 turmas</option>
-            <option value="E">E — até 5 turmas</option>
-          </select>
-        </div>
-
-        <!-- Data de Ingresso -->
-        <div class="mb-4 hidden">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Data de ingresso no serviço público</label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="ingresso"
-                value="ate2021"
-                checked
-                class="accent-blue-600 ingresso-radio"
-              />
-              <span class="text-sm text-gray-700">Edital até 31/12/2021</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="ingresso"
-                value="pos2022"
-                class="accent-blue-600 ingresso-radio"
-              />
-              <span class="text-sm text-gray-700"
-                >Edital a partir de 01/01/2022</span
-              >
-            </label>
-          </div>
-          <p id="msg-trienio" class="text-xs text-amber-600 mt-1 hidden">
-            Sem direito a triênio (LC 194/2021)
-          </p>
-        </div>
-
-        <!-- Triênios -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Triênios
-            <span class="text-gray-400 font-normal"
-              >(1º triênio = 10%, demais = +5% cada)</span
-            ></label
-          >
-          <select
-            id="trienios"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          >
-            <option value="0">0 triênio (0%)</option>
-            <option value="1">1 triênio - 3 a 5 anos (10%)</option>
-            <option value="2">2 triênios - 6 a 8 anos (15%)</option>
-            <option value="3">3 triênios - 9 a 11 anos (20%)</option>
-            <option value="4">4 triênios - 12 a 14 anos (25%)</option>
-            <option value="5">5 triênios - 15 a 17 anos (30%)</option>
-            <option value="6">6 triênios - 18 a 20 anos (35%)</option>
-            <option value="7">7 triênios - 21 a 23 anos (40%)</option>
-            <option value="8">8 triênios - 24 a 26 anos (45%)</option>
-            <option value="9">9 triênios - 27 a 29 anos (50%)</option>
-            <option value="10">10 triênios - 30 a 32 anos (55%)</option>
-            <option value="11">11 triênios - 33+ anos (60%)</option>
-          </select>
-        </div>
-
-        <!-- Qualificação -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Adicional de Qualificação (AQ)</label
-          >
-          <select
-            id="qualificacao"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          >
-            <option value="nenhuma">Nenhuma</option>
-            <option value="mestrado">Mestrado</option>
-            <option value="doutorado">Doutorado</option>
-          </select>
-        </div>
-
-        <!-- GLP -->
-        <div class="mb-4" id="glp-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Gratificação por Lotação Prioritária (GLP)</label
-          >
-          <div class="flex gap-4 mb-2">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="glp"
-                value="nao"
-                checked
-                class="accent-blue-600 glp-radio"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="glp"
-                value="sim"
-                class="accent-blue-600 glp-radio"
-              />
-              <span class="text-sm text-gray-700">Sim</span>
-            </label>
-          </div>
-          <div id="glp-tempos-container" class="hidden">
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-400">Tempos semanais:</span>
-              <input
-                type="number"
-                id="glp-tempos"
-                min="1"
-                max="47"
-                value="1"
-                class="w-20 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              />
-              <span id="glp-max-label" class="text-xs text-gray-400"
-                >(máx. 47)</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Difícil Provimento -->
-        <div class="mb-4" id="dp-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Gratificação de Difícil Provimento</label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="dificilProvimento"
-                value="nao"
-                checked
-                class="accent-blue-600 dp-radio"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="dificilProvimento"
-                value="sim"
-                class="accent-blue-600 dp-radio"
-              />
-              <span class="text-sm text-gray-700">Sim</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Difícil Acesso -->
-        <div class="mb-4" id="da-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Gratificação de Difícil Acesso</label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="dificilAcesso"
-                value="nao"
-                checked
-                class="accent-blue-600 da-radio"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="dificilAcesso"
-                value="sim"
-                class="accent-blue-600 da-radio"
-              />
-              <span class="text-sm text-gray-700">Sim</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Cedido / Disposição -->
-        <div class="mb-4" id="cedido-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Cedido / Disposição para outro órgão</label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="cedido"
-                value="nao"
-                checked
-                class="accent-blue-600 cedido-radio"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="cedido"
-                value="sim"
-                class="accent-blue-600 cedido-radio"
-              />
-              <span class="text-sm text-gray-700">Sim (cessão/disposição)</span>
-            </label>
-          </div>
-          <p id="msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
-            GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam ao servidor cedido. Mantém-se vencimento-base, triênio, AQ e auxílios (Dec. 47.469/21 para PROMURJ).
-          </p>
-        </div>
-
-        <!-- Abono de Permanência -->
-        <div class="mb-4" id="abono-section">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Abono de Permanência
-            <span class="text-gray-400 font-normal"
-              >(restitui a contribuição previdenciária)</span
-            ></label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="abonoPermanencia"
-                value="nao"
-                checked
-                class="accent-blue-600 abono-radio"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="abonoPermanencia"
-                value="sim"
-                class="accent-blue-600 abono-radio"
-              />
-              <span class="text-sm text-gray-700">Sim</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Auxílio Transporte -->
-        <div class="mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Auxílio Transporte
-            <span
-              id="auxilio-transporte-tooltip"
-              class="hidden cursor-help"
-              title="Professor com GLP não se enquadra na categoria 'Com regência de turma' (1 turma, sem GLP). O auxílio transporte é automaticamente definido como 'Demais' (5 créditos/semana)."
-              >&#x2139;</span
-            >
-          </label>
-          <div class="flex gap-4">
-            <label
-              id="label-regencia-com"
-              class="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="radio"
-                name="regencia"
-                value="com"
-                checked
-                class="accent-blue-600 regencia-radio"
-                id="regencia-com"
-              />
-              <span class="text-sm text-gray-700"
-                >Com regência de turma sem GLP
-              </span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="regencia"
-                value="demais"
-                class="accent-blue-600 regencia-radio"
-                id="regencia-demais"
-              />
-              <span class="text-sm text-gray-700">Com GLP ou demais</span>
-            </label>
-          </div>
-        </div>
-        </div><!-- close matricula1-section -->
-
-        <!-- Matrícula 2 Section -->
-        <div id="matricula2-section" class="hidden mt-4 pt-4 border-t-2 border-blue-200">
-          <h3 class="text-sm font-bold text-blue-700 mb-3 uppercase tracking-wide border-b border-blue-100 pb-1">Matrícula 2</h3>
-
-          <!-- m2: Cargo -->
+          <!-- Cargo -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Cargo</label>
-            <select id="m2-cargo" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Cargo</label
+            >
+            <select
+              id="cargo"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
               <option value="docente1_18h">Professor Docente I - 18h</option>
               <option value="docente1_30h">Professor Docente I - 30h</option>
               <option value="docente2_22h">Professor Docente II - 22h</option>
               <option value="docente1_40h">Professor Docente I - 40h</option>
               <option value="docente2_40h">Professor Docente II - 40h</option>
-              <option value="supervisor_oe_ie_25h">Prof. Supervisor/Orient./Inspetor Escolar - 25h</option>
+              <option value="supervisor_oe_ie_25h">
+                Prof. Supervisor/Orient./Inspetor Escolar - 25h
+              </option>
+            </select>
+          </div>
+
+          <!-- Referência -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Referência/Nível (progressão funcional)
+              <span class="text-xs text-gray-400 font-normal"
+                >— inclui progressão por Pós Lato Sensu</span
+              ></label
+            >
+            <select
+              id="referencia"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            ></select>
+          </div>
+
+          <!-- Função Gratificada -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Função Gratificada</label
+            >
+            <select
+              id="funcao"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="nenhuma">Nenhuma</option>
+              <option value="coordenador_pedagogico">
+                Coordenador Pedagógico
+              </option>
+              <option value="diretor_geral">Diretor Geral</option>
+              <option value="diretor_adjunto">Diretor Adjunto</option>
+              <option value="secretario_escolar">Secretário Escolar</option>
+              <option value="agente_acompanhamento">
+                Agente de Acomp. da Gestão Escolar
+              </option>
+              <option value="orientador_educacional">
+                Orientador Educacional
+              </option>
+            </select>
+          </div>
+
+          <!-- Categoria da Escola -->
+          <div class="mb-4" id="categoria-escola-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Categoria da Escola</label
+            >
+            <select
+              id="categoria-escola"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="A">
+                A — mais de 50 turmas ou horário integral
+              </option>
+              <option value="B">B — 31 a 50 turmas</option>
+              <option value="C">C — 16 a 30 turmas</option>
+              <option value="D">D — 6 a 15 turmas</option>
+              <option value="E">E — até 5 turmas</option>
+            </select>
+          </div>
+
+          <!-- Data de Ingresso -->
+          <div class="mb-4 hidden">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Data de ingresso no serviço público</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ingresso"
+                  value="ate2021"
+                  checked
+                  class="accent-blue-600 ingresso-radio"
+                />
+                <span class="text-sm text-gray-700">Edital até 31/12/2021</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ingresso"
+                  value="pos2022"
+                  class="accent-blue-600 ingresso-radio"
+                />
+                <span class="text-sm text-gray-700"
+                  >Edital a partir de 01/01/2022</span
+                >
+              </label>
+            </div>
+            <p id="msg-trienio" class="text-xs text-amber-600 mt-1 hidden">
+              Sem direito a triênio (LC 194/2021)
+            </p>
+          </div>
+
+          <!-- Triênios -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Triênios
+            </label>
+            <select
+              id="trienios"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="0">0 triênio (0%)</option>
+              <option value="1">1 triênio - 3 a 5 anos (10%)</option>
+              <option value="2">2 triênios - 6 a 8 anos (15%)</option>
+              <option value="3">3 triênios - 9 a 11 anos (20%)</option>
+              <option value="4">4 triênios - 12 a 14 anos (25%)</option>
+              <option value="5">5 triênios - 15 a 17 anos (30%)</option>
+              <option value="6">6 triênios - 18 a 20 anos (35%)</option>
+              <option value="7">7 triênios - 21 a 23 anos (40%)</option>
+              <option value="8">8 triênios - 24 a 26 anos (45%)</option>
+              <option value="9">9 triênios - 27 a 29 anos (50%)</option>
+              <option value="10">10 triênios - 30 a 32 anos (55%)</option>
+              <option value="11">11 triênios - 33+ anos (60%)</option>
+            </select>
+          </div>
+
+          <!-- Qualificação -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Adicional de Qualificação (AQ)</label
+            >
+            <select
+              id="qualificacao"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="nenhuma">Nenhuma</option>
+              <option value="mestrado">Mestrado</option>
+              <option value="doutorado">Doutorado</option>
+            </select>
+          </div>
+
+          <!-- GLP -->
+          <div class="mb-4" id="glp-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação por Lotação Prioritária (GLP)</label
+            >
+            <div class="flex gap-4 mb-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="glp"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 glp-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="glp"
+                  value="sim"
+                  class="accent-blue-600 glp-radio"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+            <div id="glp-tempos-container" class="hidden">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-400">Tempos semanais:</span>
+                <input
+                  type="number"
+                  id="glp-tempos"
+                  min="1"
+                  max="47"
+                  value="1"
+                  class="w-20 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                />
+                <span id="glp-max-label" class="text-xs text-gray-400"
+                  >(máx. 47)</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Difícil Provimento -->
+          <div class="mb-4" id="dp-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação de Difícil Provimento</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="dificilProvimento"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 dp-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="dificilProvimento"
+                  value="sim"
+                  class="accent-blue-600 dp-radio"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Difícil Acesso -->
+          <div class="mb-4" id="da-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação de Difícil Acesso</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="dificilAcesso"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 da-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="dificilAcesso"
+                  value="sim"
+                  class="accent-blue-600 da-radio"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cedido / Disposição -->
+          <div class="mb-4" id="cedido-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Cedido / Disposição para outro órgão</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="cedido"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 cedido-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="cedido"
+                  value="sim"
+                  class="accent-blue-600 cedido-radio"
+                />
+                <span class="text-sm text-gray-700"
+                  >Sim (cessão/disposição)</span
+                >
+              </label>
+            </div>
+            <p id="msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
+              GLP, Difícil Provimento, Difícil Acesso e gratificações de função
+              não se aplicam ao servidor cedido. Mantém-se vencimento-base,
+              triênio, AQ e auxílios (Dec. 47.469/21 para PROMURJ).
+            </p>
+          </div>
+
+          <!-- Abono de Permanência -->
+          <div class="mb-4" id="abono-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Abono de Permanência
+              <span class="text-gray-400 font-normal"
+                >— restitui a contribuição previdenciária</span
+              ></label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="abonoPermanencia"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 abono-radio"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="abonoPermanencia"
+                  value="sim"
+                  class="accent-blue-600 abono-radio"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Auxílio Transporte -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Auxílio Transporte
+              <span
+                id="auxilio-transporte-tooltip"
+                class="hidden cursor-help"
+                title="Professor com GLP não se enquadra na categoria 'Com regência de turma' (1 turma, sem GLP). O auxílio transporte é automaticamente definido como 'Demais' (5 créditos/semana)."
+                >&#x2139;</span
+              >
+            </label>
+            <div class="flex gap-4">
+              <label
+                id="label-regencia-com"
+                class="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="regencia"
+                  value="com"
+                  checked
+                  class="accent-blue-600 regencia-radio"
+                  id="regencia-com"
+                />
+                <span class="text-sm text-gray-700"
+                  >Com regência de turma sem GLP
+                </span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="regencia"
+                  value="demais"
+                  class="accent-blue-600 regencia-radio"
+                  id="regencia-demais"
+                />
+                <span class="text-sm text-gray-700">Com GLP ou demais</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- close matricula1-section -->
+
+        <!-- Matrícula 2 Section -->
+        <div
+          id="matricula2-section"
+          class="hidden mt-4 pt-4 border-t-2 border-blue-200"
+        >
+          <h3
+            class="text-sm font-bold text-blue-700 mb-3 uppercase tracking-wide border-b border-blue-100 pb-1"
+          >
+            Matrícula 2
+          </h3>
+
+          <!-- m2: Cargo -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Cargo</label
+            >
+            <select
+              id="m2-cargo"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="docente1_18h">Professor Docente I - 18h</option>
+              <option value="docente1_30h">Professor Docente I - 30h</option>
+              <option value="docente2_22h">Professor Docente II - 22h</option>
+              <option value="docente1_40h">Professor Docente I - 40h</option>
+              <option value="docente2_40h">Professor Docente II - 40h</option>
+              <option value="supervisor_oe_ie_25h">
+                Prof. Supervisor/Orient./Inspetor Escolar - 25h
+              </option>
             </select>
           </div>
 
           <!-- m2: Referência -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Referência</label>
-            <select id="m2-referencia" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></select>
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Referência/Nível (progressão funcional)
+              <span class="text-xs text-gray-400 font-normal"
+                >— inclui progressão por Pós Lato Sensu</span
+              ></label
+            >
+            <select
+              id="m2-referencia"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            ></select>
           </div>
 
           <!-- m2: Função Gratificada -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Função Gratificada</label>
-            <select id="m2-funcao" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Função Gratificada</label
+            >
+            <select
+              id="m2-funcao"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
               <option value="nenhuma">Nenhuma</option>
-              <option value="coordenador_pedagogico">Coordenador Pedagógico</option>
+              <option value="coordenador_pedagogico">
+                Coordenador Pedagógico
+              </option>
               <option value="diretor_geral">Diretor Geral</option>
               <option value="diretor_adjunto">Diretor Adjunto</option>
               <option value="secretario_escolar">Secretário Escolar</option>
-              <option value="agente_acompanhamento">Agente de Acomp. da Gestão Escolar</option>
-              <option value="orientador_educacional">Orientador Educacional</option>
+              <option value="agente_acompanhamento">
+                Agente de Acomp. da Gestão Escolar
+              </option>
+              <option value="orientador_educacional">
+                Orientador Educacional
+              </option>
             </select>
           </div>
 
           <!-- m2: Categoria da Escola -->
           <div class="mb-4" id="m2-categoria-escola-section">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Categoria da Escola</label>
-            <select id="m2-categoria-escola" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-              <option value="A">A — mais de 50 turmas ou horário integral</option>
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Categoria da Escola</label
+            >
+            <select
+              id="m2-categoria-escola"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="A">
+                A — mais de 50 turmas ou horário integral
+              </option>
               <option value="B">B — 31 a 50 turmas</option>
               <option value="C">C — 16 a 30 turmas</option>
               <option value="D">D — 6 a 15 turmas</option>
@@ -467,24 +534,46 @@
 
           <!-- m2: Data de Ingresso -->
           <div class="mb-4 hidden">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Data de ingresso no serviço público</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Data de ingresso no serviço público</label
+            >
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-ingresso" value="ate2021" checked class="accent-blue-600 m2-ingresso-radio" />
+                <input
+                  type="radio"
+                  name="m2-ingresso"
+                  value="ate2021"
+                  checked
+                  class="accent-blue-600 m2-ingresso-radio"
+                />
                 <span class="text-sm text-gray-700">Edital até 31/12/2021</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-ingresso" value="pos2022" class="accent-blue-600 m2-ingresso-radio" />
-                <span class="text-sm text-gray-700">Edital a partir de 01/01/2022</span>
+                <input
+                  type="radio"
+                  name="m2-ingresso"
+                  value="pos2022"
+                  class="accent-blue-600 m2-ingresso-radio"
+                />
+                <span class="text-sm text-gray-700"
+                  >Edital a partir de 01/01/2022</span
+                >
               </label>
             </div>
-            <p id="m2-msg-trienio" class="text-xs text-amber-600 mt-1 hidden">Sem direito a triênio (LC 194/2021)</p>
+            <p id="m2-msg-trienio" class="text-xs text-amber-600 mt-1 hidden">
+              Sem direito a triênio (LC 194/2021)
+            </p>
           </div>
 
           <!-- m2: Triênios -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Triênios <span class="text-gray-400 font-normal">(1º triênio = 10%, demais = +5% cada)</span></label>
-            <select id="m2-trienios" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Triênios
+            </label>
+            <select
+              id="m2-trienios"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
               <option value="0">0 triênio (0%)</option>
               <option value="1">1 triênio - 3 a 5 anos (10%)</option>
               <option value="2">2 triênios - 6 a 8 anos (15%)</option>
@@ -502,8 +591,18 @@
 
           <!-- m2: Qualificação -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Adicional de Qualificação (AQ)</label>
-            <select id="m2-qualificacao" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Adicional de Qualificação (AQ)
+              <span
+                class="cursor-help text-gray-400"
+                title="Apenas Mestrado e Doutorado dão direito ao AQ. Pós-Graduação Lato Sensu (especialização) NÃO gera AQ — ela é refletida na Referência (progressão)."
+                >&#x2139;</span
+              ></label
+            >
+            <select
+              id="m2-qualificacao"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
               <option value="nenhuma">Nenhuma</option>
               <option value="mestrado">Mestrado</option>
               <option value="doutorado">Doutorado</option>
@@ -512,36 +611,71 @@
 
           <!-- m2: GLP -->
           <div class="mb-4" id="m2-glp-section">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gratificação por Lotação Prioritária (GLP)</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação por Lotação Prioritária (GLP)</label
+            >
             <div class="flex gap-4 mb-2">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-glp" value="nao" checked class="accent-blue-600 m2-glp-radio" />
+                <input
+                  type="radio"
+                  name="m2-glp"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 m2-glp-radio"
+                />
                 <span class="text-sm text-gray-700">Não</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-glp" value="sim" class="accent-blue-600 m2-glp-radio" />
+                <input
+                  type="radio"
+                  name="m2-glp"
+                  value="sim"
+                  class="accent-blue-600 m2-glp-radio"
+                />
                 <span class="text-sm text-gray-700">Sim</span>
               </label>
             </div>
             <div id="m2-glp-tempos-container" class="hidden">
               <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-400">Tempos semanais:</span>
-                <input type="number" id="m2-glp-tempos" min="1" max="47" value="1" class="w-20 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
-                <span id="m2-glp-max-label" class="text-xs text-gray-400">(máx. 47)</span>
+                <input
+                  type="number"
+                  id="m2-glp-tempos"
+                  min="1"
+                  max="47"
+                  value="1"
+                  class="w-20 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                />
+                <span id="m2-glp-max-label" class="text-xs text-gray-400"
+                  >(máx. 47)</span
+                >
               </div>
             </div>
           </div>
 
           <!-- m2: Difícil Provimento -->
           <div class="mb-4" id="m2-dp-section">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gratificação de Difícil Provimento</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação de Difícil Provimento</label
+            >
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-dificilProvimento" value="nao" checked class="accent-blue-600 m2-dp-radio" />
+                <input
+                  type="radio"
+                  name="m2-dificilProvimento"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 m2-dp-radio"
+                />
                 <span class="text-sm text-gray-700">Não</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-dificilProvimento" value="sim" class="accent-blue-600 m2-dp-radio" />
+                <input
+                  type="radio"
+                  name="m2-dificilProvimento"
+                  value="sim"
+                  class="accent-blue-600 m2-dp-radio"
+                />
                 <span class="text-sm text-gray-700">Sim</span>
               </label>
             </div>
@@ -549,14 +683,27 @@
 
           <!-- m2: Difícil Acesso -->
           <div class="mb-4" id="m2-da-section">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gratificação de Difícil Acesso</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Gratificação de Difícil Acesso</label
+            >
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-dificilAcesso" value="nao" checked class="accent-blue-600 m2-da-radio" />
+                <input
+                  type="radio"
+                  name="m2-dificilAcesso"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 m2-da-radio"
+                />
                 <span class="text-sm text-gray-700">Não</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-dificilAcesso" value="sim" class="accent-blue-600 m2-da-radio" />
+                <input
+                  type="radio"
+                  name="m2-dificilAcesso"
+                  value="sim"
+                  class="accent-blue-600 m2-da-radio"
+                />
                 <span class="text-sm text-gray-700">Sim</span>
               </label>
             </div>
@@ -564,18 +711,36 @@
 
           <!-- m2: Cedido / Disposição -->
           <div class="mb-4" id="m2-cedido-section">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Cedido / Disposição para outro órgão</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Cedido / Disposição para outro órgão</label
+            >
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-cedido" value="nao" checked class="accent-blue-600 m2-cedido-radio" />
+                <input
+                  type="radio"
+                  name="m2-cedido"
+                  value="nao"
+                  checked
+                  class="accent-blue-600 m2-cedido-radio"
+                />
                 <span class="text-sm text-gray-700">Não</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-cedido" value="sim" class="accent-blue-600 m2-cedido-radio" />
-                <span class="text-sm text-gray-700">Sim (cessão/disposição)</span>
+                <input
+                  type="radio"
+                  name="m2-cedido"
+                  value="sim"
+                  class="accent-blue-600 m2-cedido-radio"
+                />
+                <span class="text-sm text-gray-700"
+                  >Sim (cessão/disposição)</span
+                >
               </label>
             </div>
-            <p id="m2-msg-cedido" class="text-xs text-amber-600 mt-1 hidden">GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam ao servidor cedido.</p>
+            <p id="m2-msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
+              GLP, Difícil Provimento, Difícil Acesso e gratificações de função
+              não se aplicam ao servidor cedido.
+            </p>
           </div>
 
           <!-- m2: Abono de Permanência -->
@@ -583,7 +748,7 @@
             <label class="block text-sm font-semibold text-gray-700 mb-2"
               >Abono de Permanência
               <span class="text-gray-400 font-normal"
-                >(restitui a contribuição previdenciária)</span
+                >— restitui a contribuição previdenciária</span
               ></label
             >
             <div class="flex gap-4">
@@ -611,14 +776,40 @@
 
           <!-- m2: Auxílio Transporte -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Auxílio Transporte <span id="m2-auxilio-transporte-tooltip" class="hidden cursor-help" title="Professor com GLP não se enquadra na categoria 'Com regência de turma'. O auxílio transporte é automaticamente definido como 'Demais'.">&#x2139;</span></label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Auxílio Transporte
+              <span
+                id="m2-auxilio-transporte-tooltip"
+                class="hidden cursor-help"
+                title="Professor com GLP não se enquadra na categoria 'Com regência de turma'. O auxílio transporte é automaticamente definido como 'Demais'."
+                >&#x2139;</span
+              ></label
+            >
             <div class="flex gap-4">
-              <label id="m2-label-regencia-com" class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-regencia" value="com" checked class="accent-blue-600 m2-regencia-radio" id="m2-regencia-com" />
-                <span class="text-sm text-gray-700">Com regência de turma sem GLP</span>
+              <label
+                id="m2-label-regencia-com"
+                class="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="m2-regencia"
+                  value="com"
+                  checked
+                  class="accent-blue-600 m2-regencia-radio"
+                  id="m2-regencia-com"
+                />
+                <span class="text-sm text-gray-700"
+                  >Com regência de turma sem GLP</span
+                >
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="m2-regencia" value="demais" class="accent-blue-600 m2-regencia-radio" id="m2-regencia-demais" />
+                <input
+                  type="radio"
+                  name="m2-regencia"
+                  value="demais"
+                  class="accent-blue-600 m2-regencia-radio"
+                  id="m2-regencia-demais"
+                />
                 <span class="text-sm text-gray-700">Com GLP ou demais</span>
               </label>
             </div>
@@ -644,7 +835,9 @@
         <div class="mb-2">
           <label class="block text-sm font-semibold text-gray-700 mb-1"
             >Pensão Alimentícia (mensal)
-            <span class="text-gray-400 font-normal">— reduz base IRPF e salário líquido</span></label
+            <span class="text-gray-400 font-normal"
+              >— reduz base IRPF e salário líquido</span
+            ></label
           >
           <input
             type="number"
@@ -690,42 +883,74 @@
         var elRegenciaCom = document.getElementById("regencia-com");
         var elRegenciaDemais = document.getElementById("regencia-demais");
         var elLabelRegenciaCom = document.getElementById("label-regencia-com");
-        var elAuxilioTransporteTooltip = document.getElementById("auxilio-transporte-tooltip");
+        var elAuxilioTransporteTooltip = document.getElementById(
+          "auxilio-transporte-tooltip",
+        );
         var elDualToggle = document.getElementById("dual-matricula");
         var elM2Section = document.getElementById("matricula2-section");
         var regenciaAnterior = getRegencia("");
 
         // ── GETTERS parametrizados ──
 
-        function el(prefix, id) { return document.getElementById(prefix + id); }
-        function radio(prefix, name) { return document.querySelector('input[name="' + prefix + name + '"]:checked'); }
+        function el(prefix, id) {
+          return document.getElementById(prefix + id);
+        }
+        function radio(prefix, name) {
+          return document.querySelector(
+            'input[name="' + prefix + name + '"]:checked',
+          );
+        }
 
         function getIngresso(prefix) {
-          return radio(prefix, "ingresso") ? radio(prefix, "ingresso").value : "ate2021";
+          return radio(prefix, "ingresso")
+            ? radio(prefix, "ingresso").value
+            : "ate2021";
         }
 
         function getRegencia(prefix) {
-          return radio(prefix, "regencia") ? radio(prefix, "regencia").value : "com";
+          return radio(prefix, "regencia")
+            ? radio(prefix, "regencia").value
+            : "com";
         }
 
         function getGlpTempos(prefix) {
-          var temGlp = radio(prefix, "glp") && radio(prefix, "glp").value === "sim";
+          var temGlp =
+            radio(prefix, "glp") && radio(prefix, "glp").value === "sim";
           return temGlp ? parseInt(el(prefix, "glp-tempos").value) || 0 : 0;
         }
 
         function getDificilProvimento(prefix) {
-          return radio(prefix, "dificilProvimento") && radio(prefix, "dificilProvimento").value === "sim";
+          return (
+            radio(prefix, "dificilProvimento") &&
+            radio(prefix, "dificilProvimento").value === "sim"
+          );
         }
 
         function getDificilAcesso(prefix) {
-          return radio(prefix, "dificilAcesso") && radio(prefix, "dificilAcesso").value === "sim";
+          return (
+            radio(prefix, "dificilAcesso") &&
+            radio(prefix, "dificilAcesso").value === "sim"
+          );
         }
 
-        function getFuncaoKey(prefix) { return el(prefix, "funcao").value; }
-        function getCategoriaEscola(prefix) { return el(prefix, "categoria-escola").value; }
-        function getCedido(prefix) { return radio(prefix, "cedido") && radio(prefix, "cedido").value === "sim"; }
+        function getFuncaoKey(prefix) {
+          return el(prefix, "funcao").value;
+        }
+        function getCategoriaEscola(prefix) {
+          return el(prefix, "categoria-escola").value;
+        }
+        function getCedido(prefix) {
+          return (
+            radio(prefix, "cedido") && radio(prefix, "cedido").value === "sim"
+          );
+        }
 
-        function getAbonoPermanencia(prefix) { return radio(prefix, "abonoPermanencia") && radio(prefix, "abonoPermanencia").value === "sim"; }
+        function getAbonoPermanencia(prefix) {
+          return (
+            radio(prefix, "abonoPermanencia") &&
+            radio(prefix, "abonoPermanencia").value === "sim"
+          );
+        }
 
         function coletarParams(prefix) {
           return {
@@ -744,7 +969,9 @@
           };
         }
 
-        function isDual() { return elDualToggle.checked; }
+        function isDual() {
+          return elDualToggle.checked;
+        }
 
         // ── ATUALIZAÇÕES DE CAMPOS ──
 
@@ -765,7 +992,9 @@
           var semDireito = getIngresso(prefix) === "pos2022";
           el(prefix, "trienios").disabled = semDireito;
           el(prefix, "msg-trienio").classList.toggle("hidden", !semDireito);
-          if (semDireito) { el(prefix, "trienios").value = "0"; }
+          if (semDireito) {
+            el(prefix, "trienios").value = "0";
+          }
         }
 
         function atualizarGlpMax(prefix) {
@@ -773,7 +1002,7 @@
           var cargoKey = el(prefix, "cargo").value;
           var funcao = FUNCOES[getFuncaoKey(prefix)];
           var cedido = getCedido(prefix);
-          var carga = (!cedido && funcao.carga40h) ? 40 : CARGOS[cargoKey].carga;
+          var carga = !cedido && funcao.carga40h ? 40 : CARGOS[cargoKey].carga;
           var maxTempos;
 
           if (dual) {
@@ -781,9 +1010,15 @@
             var otherCargoKey = el(otherPrefix, "cargo").value;
             var otherFuncao = FUNCOES[getFuncaoKey(otherPrefix)];
             var otherCedido = getCedido(otherPrefix);
-            var otherCarga = (!otherCedido && otherFuncao.carga40h) ? 40 : CARGOS[otherCargoKey].carga;
+            var otherCarga =
+              !otherCedido && otherFuncao.carga40h
+                ? 40
+                : CARGOS[otherCargoKey].carga;
             var otherGlpTempos = getGlpTempos(otherPrefix);
-            maxTempos = Math.max(GLP.minTempos, MAX_CARGA_SEMANAL - carga - otherCarga - otherGlpTempos);
+            maxTempos = Math.max(
+              GLP.minTempos,
+              MAX_CARGA_SEMANAL - carga - otherCarga - otherGlpTempos,
+            );
           } else {
             maxTempos = Math.max(GLP.minTempos, MAX_CARGA_SEMANAL - carga);
           }
@@ -793,12 +1028,15 @@
           if (inp) {
             inp.max = maxTempos;
             if (lbl) lbl.textContent = "(max. " + maxTempos + ")";
-            if (parseInt(inp.value) > maxTempos) { inp.value = maxTempos; }
+            if (parseInt(inp.value) > maxTempos) {
+              inp.value = maxTempos;
+            }
           }
         }
 
         function atualizarAuxilioTransporte(prefix) {
-          var temGlp = radio(prefix, "glp") && radio(prefix, "glp").value === "sim";
+          var temGlp =
+            radio(prefix, "glp") && radio(prefix, "glp").value === "sim";
           var cargo = CARGOS[el(prefix, "cargo").value];
           var semRegencia = cargo && cargo.regencia === false;
           var radioCom = el(prefix, "regencia-com");
@@ -809,11 +1047,15 @@
           if (temGlp || semRegencia) {
             if (radioDemais) radioDemais.checked = true;
             if (radioCom) radioCom.disabled = true;
-            if (labelCom) { labelCom.classList.add("opacity-50", "cursor-not-allowed"); }
+            if (labelCom) {
+              labelCom.classList.add("opacity-50", "cursor-not-allowed");
+            }
             if (tooltip) tooltip.classList.remove("hidden");
           } else {
             if (radioCom) radioCom.disabled = false;
-            if (labelCom) { labelCom.classList.remove("opacity-50", "cursor-not-allowed"); }
+            if (labelCom) {
+              labelCom.classList.remove("opacity-50", "cursor-not-allowed");
+            }
             if (tooltip) tooltip.classList.add("hidden");
           }
         }
@@ -823,10 +1065,13 @@
           var funcao = FUNCOES[getFuncaoKey(prefix)];
           var cedido = getCedido(prefix);
 
-          var permiteGLP = !cedido && cargo && cargo.glp !== false && funcao.permiteGLP;
+          var permiteGLP =
+            !cedido && cargo && cargo.glp !== false && funcao.permiteGLP;
           el(prefix, "glp-section").classList.toggle("hidden", !permiteGLP);
           if (!permiteGLP) {
-            var naoRadio = document.querySelector('input[name="' + prefix + 'glp"][value="nao"]');
+            var naoRadio = document.querySelector(
+              'input[name="' + prefix + 'glp"][value="nao"]',
+            );
             if (naoRadio) naoRadio.checked = true;
             el(prefix, "glp-tempos-container").classList.add("hidden");
           }
@@ -837,14 +1082,21 @@
           if (dpSec) dpSec.classList.toggle("hidden", !permiteDPDA);
           if (daSec) daSec.classList.toggle("hidden", !permiteDPDA);
           if (!permiteDPDA) {
-            var naoDp = document.querySelector('input[name="' + prefix + 'dificilProvimento"][value="nao"]');
-            var naoDa = document.querySelector('input[name="' + prefix + 'dificilAcesso"][value="nao"]');
+            var naoDp = document.querySelector(
+              'input[name="' + prefix + 'dificilProvimento"][value="nao"]',
+            );
+            var naoDa = document.querySelector(
+              'input[name="' + prefix + 'dificilAcesso"][value="nao"]',
+            );
             if (naoDp) naoDp.checked = true;
             if (naoDa) naoDa.checked = true;
           }
 
           var temCategorias = !cedido && !!funcao.categorias;
-          el(prefix, "categoria-escola-section").classList.toggle("hidden", !temCategorias);
+          el(prefix, "categoria-escola-section").classList.toggle(
+            "hidden",
+            !temCategorias,
+          );
 
           el(prefix, "msg-cedido").classList.toggle("hidden", !cedido);
 
@@ -857,82 +1109,223 @@
           var sinal = valor >= 0 ? "" : "-";
           var absValor = Math.abs(valor);
           return {
-            html: '<div class="flex justify-between items-center">' +
-              '<span class="text-gray-600">' + label + '</span>' +
-              '<span class="' + classeValor + '">' + sinal + 'R$ ' + formatarReal(absValor) + '</span>' +
-              '</div>',
+            html:
+              '<div class="flex justify-between items-center">' +
+              '<span class="text-gray-600">' +
+              label +
+              "</span>" +
+              '<span class="' +
+              classeValor +
+              '">' +
+              sinal +
+              "R$ " +
+              formatarReal(absValor) +
+              "</span>" +
+              "</div>",
           };
         }
 
         function renderBannerRecomposicao(recomposicoesAtivas) {
           if (recomposicoesAtivas && recomposicoesAtivas.length > 0) {
             var ativas = recomposicoesAtivas;
-            var temParcela2 = ativas.some(function (x) { return x.id === "parcela2"; });
-            var temParcela3 = ativas.some(function (x) { return x.id === "parcela3"; });
+            var temParcela2 = ativas.some(function (x) {
+              return x.id === "parcela2";
+            });
+            var temParcela3 = ativas.some(function (x) {
+              return x.id === "parcela3";
+            });
             var itens;
             if (temParcela2 && temParcela3) {
-              var outras = ativas.filter(function (x) { return x.id !== "parcela2" && x.id !== "parcela3"; });
-              itens = outras.concat([{ descricao: "1ª e 2ª parcelas de 2026 — Dec. 50.302/26", pct: 5.62 }]);
-            } else { itens = ativas; }
-            var nomes = itens.map(function (x) { return x.descricao; }).join(" + ");
-            return '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Reajustes aplicados: ' + nomes + '</div>';
+              var outras = ativas.filter(function (x) {
+                return x.id !== "parcela2" && x.id !== "parcela3";
+              });
+              itens = outras.concat([
+                {
+                  descricao: "1ª e 2ª parcelas de 2026 — Dec. 50.302/26",
+                  pct: 5.62,
+                },
+              ]);
+            } else {
+              itens = ativas;
+            }
+            var nomes = itens
+              .map(function (x) {
+                return x.descricao;
+              })
+              .join(" + ");
+            return (
+              '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Reajustes aplicados: ' +
+              nomes +
+              "</div>"
+            );
           }
           return '<div class="bg-gray-50 rounded-lg px-3 py-1.5 text-xs text-gray-400">Nenhum reajuste adicional vigente para esta data</div>';
         }
 
         function renderRubricasSimples(r, linhas) {
           linhas.push(linha("Vencimento Base", r.vb, "text-gray-600"));
-          if (r.exibeComplemento) { linhas.push(linha("Complemento Piso", r.complemento, "text-gray-500")); }
-          if (r.exibeComplemento || r.exibeTrienio) { linhas.push(linha("Total Base", r.total, "text-gray-700 font-medium")); }
-          if (r.exibeTrienio) { linhas.push(linha("Triênio (" + r.trienioPct + "%)", r.trienioValor, "text-blue-600")); }
-          if (r.exibeAQ) { linhas.push(linha("AQ (" + r.qualificacaoNome + ")", r.aqValor, "text-blue-600")); }
-          if (r.exibeGLP) { linhas.push(linha("GLP (" + r.glpTempos + " tempos/sem)", r.glpValor, "text-purple-600")); }
-          if (r.exibeDP) { linhas.push(linha("Difícil Provimento", r.dpValor, "text-purple-600")); }
-          if (r.exibeDA) { linhas.push(linha("Difícil Acesso", r.daValor, "text-purple-600")); }
-          if (r.exibeGratFuncao) { linhas.push(linha("Gratificação (" + r.funcaoNome + ")", r.gratFuncao, "text-purple-600")); }
-          if (r.exibeAjudaCusto) { linhas.push(linha("Ajuda de Custo (indenizatória)", r.ajudaCusto, "text-purple-600")); }
-          linhas.push(linha("Auxílio Transporte", r.auxTransporte, "text-green-600"));
-          linhas.push(linha("Auxílio Alimentação", r.auxAlimentacao, "text-green-600"));
+          if (r.exibeComplemento) {
+            linhas.push(
+              linha("Complemento Piso", r.complemento, "text-gray-500"),
+            );
+          }
+          if (r.exibeComplemento || r.exibeTrienio) {
+            linhas.push(
+              linha("Total Base", r.total, "text-gray-700 font-medium"),
+            );
+          }
+          if (r.exibeTrienio) {
+            linhas.push(
+              linha(
+                "Triênio (" + r.trienioPct + "%)",
+                r.trienioValor,
+                "text-blue-600",
+              ),
+            );
+          }
+          if (r.exibeAQ) {
+            linhas.push(
+              linha(
+                "AQ (" + r.qualificacaoNome + ")",
+                r.aqValor,
+                "text-blue-600",
+              ),
+            );
+          }
+          if (r.exibeGLP) {
+            linhas.push(
+              linha(
+                "GLP (" + r.glpTempos + " tempos/sem)",
+                r.glpValor,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (r.exibeDP) {
+            linhas.push(
+              linha("Difícil Provimento", r.dpValor, "text-purple-600"),
+            );
+          }
+          if (r.exibeDA) {
+            linhas.push(linha("Difícil Acesso", r.daValor, "text-purple-600"));
+          }
+          if (r.exibeGratFuncao) {
+            linhas.push(
+              linha(
+                "Gratificação (" + r.funcaoNome + ")",
+                r.gratFuncao,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (r.exibeAdicionalFuncao) {
+            linhas.push(
+              linha(
+                "Adicional Cat D (Dec. 43.894/12)",
+                r.adicionalFuncao,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (r.exibeAjudaCusto) {
+            linhas.push(
+              linha(
+                "Ajuda de Custo (indenizatória)",
+                r.ajudaCusto,
+                "text-purple-600",
+              ),
+            );
+          }
+          linhas.push(
+            linha("Auxílio Transporte", r.auxTransporte, "text-green-600"),
+          );
+          linhas.push(
+            linha("Auxílio Alimentação", r.auxAlimentacao, "text-green-600"),
+          );
         }
 
         function renderInfoAdicional(r) {
-          var h = '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
-            '<div class="flex justify-between"><span>Base de cálculo IRRF:</span><span class="font-medium">R$ ' + formatarReal(r.baseIRRF) + '</span></div>' +
-            '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' + formatarReal(r.basePrev) + '</span></div>';
+          var h =
+            '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
+            '<div class="flex justify-between"><span>Base de cálculo IRRF:</span><span class="font-medium">R$ ' +
+            formatarReal(r.baseIRRF) +
+            "</span></div>" +
+            '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
+            formatarReal(r.basePrev) +
+            "</span></div>";
           if (r.exibeGLP || r.exibeDP || r.exibeDA || r.exibeAjudaCusto) {
             var notas = [];
-            if (r.exibeGLP || r.exibeDP || r.exibeDA) notas.push("GLP, Difícil Provimento e Difícil Acesso");
+            if (r.exibeGLP || r.exibeDP || r.exibeDA)
+              notas.push("GLP, Difícil Provimento e Difícil Acesso");
             if (r.exibeAjudaCusto) notas.push("Ajuda de Custo");
-            h += '<div class="text-gray-400 mt-1">* ' + notas.join(" e ") + ' não integram a base previdenciária</div>';
+            h +=
+              '<div class="text-gray-400 mt-1">* ' +
+              notas.join(" e ") +
+              " não integram a base previdenciária</div>";
           }
           if (r.exibeAbonoPermanencia) {
-            h += '<div class="text-green-600 mt-1">* Abono de Permanência restitui integralmente a contribuição previdenciária</div>';
+            h +=
+              '<div class="text-green-600 mt-1">* Abono de Permanência restitui integralmente a contribuição previdenciária</div>';
           }
-          h += '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' + r.aliquotaEfetivaIR.toFixed(1) + '%</span></div></div>';
+          h +=
+            '<div class="flex justify-between"><span>Alíquota efetiva IR:</span><span class="font-medium">' +
+            r.aliquotaEfetivaIR.toFixed(1) +
+            "%</span></div></div>";
           return h;
         }
 
         function renderResultadoSimples(r, params) {
           var linhas = [];
-          linhas.push({ html: renderBannerRecomposicao(r.recomposicoesAtivas) });
-          if (params.cedido) { linhas.push({ html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Servidor cedido: GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam</div>' }); }
+          linhas.push({
+            html: renderBannerRecomposicao(r.recomposicoesAtivas),
+          });
+          if (params.cedido) {
+            linhas.push({
+              html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700">Servidor cedido: GLP, Difícil Provimento, Difícil Acesso e gratificações de função não se aplicam</div>',
+            });
+          }
           renderRubricasSimples(r, linhas);
-          linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
-          linhas.push(linha("Remuneração Bruta", r.bruta, "text-gray-800 font-bold"));
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+          linhas.push(
+            linha("Remuneração Bruta", r.bruta, "text-gray-800 font-bold"),
+          );
           linhas.push({ html: '<div class="h-1"></div>' });
-          linhas.push(linha("Previdência RPPS (14%)", -r.previdencia, "text-red-500"));
+          linhas.push(
+            linha("Previdência RPPS (14%)", -r.previdencia, "text-red-500"),
+          );
           if (r.exibeAbonoPermanencia) {
-            linhas.push(linha("Abono de Permanência", r.abonoPermanenciaValor, "text-green-600"));
+            linhas.push(
+              linha(
+                "Abono de Permanência",
+                r.abonoPermanenciaValor,
+                "text-green-600",
+              ),
+            );
           }
           if (r.pensaoAlimenticia > 0) {
-            linhas.push(linha("Pensão Alimentícia", -r.pensaoAlimenticia, "text-red-500"));
+            linhas.push(
+              linha("Pensão Alimentícia", -r.pensaoAlimenticia, "text-red-500"),
+            );
           }
           linhas.push(linha("IRPF", -r.irrf, "text-red-500"));
-          linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
-          linhas.push({ html: '<div class="flex justify-between items-center py-1"><span class="text-base font-bold text-gray-800">Salário Líquido</span><span class="text-xl font-bold text-green-700">R$ ' + formatarReal(r.liquido) + '</span></div>' });
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+          linhas.push({
+            html:
+              '<div class="flex justify-between items-center py-1"><span class="text-base font-bold text-gray-800">Salário Líquido</span><span class="text-xl font-bold text-green-700">R$ ' +
+              formatarReal(r.liquido) +
+              "</span></div>",
+          });
           linhas.push({ html: '<div class="h-2"></div>' });
           linhas.push({ html: renderInfoAdicional(r) });
-          return linhas.map(function (l) { return l.html; }).join("");
+          return linhas
+            .map(function (l) {
+              return l.html;
+            })
+            .join("");
         }
 
         function renderResultadoDupla(r, params1, params2) {
@@ -941,11 +1334,23 @@
           var c = r.combinado;
 
           var linhas = [];
-          linhas.push({ html: renderBannerRecomposicao(c.recomposicoesAtivas) });
+          linhas.push({
+            html: renderBannerRecomposicao(c.recomposicoesAtivas),
+          });
 
           // ── Card Matrícula 1 (compacto) ──
-          var card1 = '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">' +
-            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 1 — ' + m1.cargo.nome + ' · Ref ' + m1.ref.ref + (m1.cargaParaGLP !== m1.cargaEfetiva ? ' <span class="text-amber-600">(' + m1.cargaParaGLP + 'h efetiva)</span>' : '') + '</div>' +
+          var card1 =
+            '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">' +
+            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 1 — ' +
+            m1.cargo.nome +
+            " · Ref " +
+            m1.ref.ref +
+            (m1.cargaParaGLP !== m1.cargaEfetiva
+              ? ' <span class="text-amber-600">(' +
+                m1.cargaParaGLP +
+                "h efetiva)</span>"
+              : "") +
+            "</div>" +
             '<div class="text-xs text-gray-600 space-y-0.5">' +
             linhaSimples("VB+Complemento", m1.total) +
             (m1.exibeTrienio ? linhaSimples("Triênio", m1.trienioValor) : "") +
@@ -953,19 +1358,46 @@
             (m1.exibeGLP ? linhaSimples("GLP", m1.glpValor) : "") +
             (m1.exibeDP ? linhaSimples("Dif.Provimento", m1.dpValor) : "") +
             (m1.exibeDA ? linhaSimples("Dif.Acesso", m1.daValor) : "") +
-            (m1.exibeGratFuncao ? linhaSimples("Grat.Função", m1.gratFuncao) : "") +
+            (m1.exibeGratFuncao
+              ? linhaSimples("Grat.Função", m1.gratFuncao)
+              : "") +
+            (m1.exibeAdicionalFuncao
+              ? linhaSimples("Adic.Cat.D", m1.adicionalFuncao)
+              : "") +
             linhaSimples("Aux. Transporte", m1.auxTransporte) +
+            (c.auxTransporteDiff > 0
+              ? '<div class="text-amber-600 text-[10px] mt-0.5">* valor único pago nesta matrícula (Dec. 42.788/11, art. 1º, §2º)</div>'
+              : "") +
             linhaSimples("Aux. Alimentação", m1.auxAlimentacao) +
+            (c.auxAlimentacaoDiff > 0
+              ? '<div class="text-amber-600 text-[10px] mt-0.5">* valor único pago nesta matrícula (teto 40h, Dec. 47.536/21)</div>'
+              : "") +
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m1.bruta, "font-medium") +
             linhaSimples("Previdência", -m1.previdencia, "text-red-500") +
-            (m1.exibeAbonoPermanencia ? linhaSimples("Abono de Permanência", m1.abonoPermanenciaValor, "text-green-600") : "") +
-            '</div></div>';
+            (m1.exibeAbonoPermanencia
+              ? linhaSimples(
+                  "Abono de Permanência",
+                  m1.abonoPermanenciaValor,
+                  "text-green-600",
+                )
+              : "") +
+            "</div></div>";
           linhas.push({ html: card1 });
 
           // ── Card Matrícula 2 (compacto) ──
-          var card2 = '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100 mt-2">' +
-            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 2 — ' + m2.cargo.nome + ' · Ref ' + m2.ref.ref + (m2.cargaParaGLP !== m2.cargaEfetiva ? ' <span class="text-amber-600">(' + m2.cargaParaGLP + 'h efetiva)</span>' : '') + '</div>' +
+          var card2 =
+            '<div class="bg-blue-50 rounded-lg px-3 py-2 border border-blue-100 mt-2">' +
+            '<div class="text-xs font-bold text-blue-700 mb-1">MATRÍCULA 2 — ' +
+            m2.cargo.nome +
+            " · Ref " +
+            m2.ref.ref +
+            (m2.cargaParaGLP !== m2.cargaEfetiva
+              ? ' <span class="text-amber-600">(' +
+                m2.cargaParaGLP +
+                "h efetiva)</span>"
+              : "") +
+            "</div>" +
             '<div class="text-xs text-gray-600 space-y-0.5">' +
             linhaSimples("VB+Complemento", m2.total) +
             (m2.exibeTrienio ? linhaSimples("Triênio", m2.trienioValor) : "") +
@@ -973,83 +1405,259 @@
             (m2.exibeGLP ? linhaSimples("GLP", m2.glpValor) : "") +
             (m2.exibeDP ? linhaSimples("Dif.Provimento", m2.dpValor) : "") +
             (m2.exibeDA ? linhaSimples("Dif.Acesso", m2.daValor) : "") +
-            (m2.exibeGratFuncao ? linhaSimples("Grat.Função", m2.gratFuncao) : "") +
+            (m2.exibeGratFuncao
+              ? linhaSimples("Grat.Função", m2.gratFuncao)
+              : "") +
+            (m2.exibeAdicionalFuncao
+              ? linhaSimples("Adic.Cat.D", m2.adicionalFuncao)
+              : "") +
             linhaSimples("Aux. Transporte", m2.auxTransporte) +
+            (c.auxTransporteDiff > 0
+              ? '<div class="text-amber-600 text-[10px] mt-0.5">* incluso na Matrícula 1 (pago uma única vez)</div>'
+              : "") +
             linhaSimples("Aux. Alimentação", m2.auxAlimentacao) +
+            (c.auxAlimentacaoDiff > 0
+              ? '<div class="text-amber-600 text-[10px] mt-0.5">* incluso na Matrícula 1 (limitado ao teto 40h)</div>'
+              : "") +
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m2.bruta, "font-medium") +
             linhaSimples("Previdência", -m2.previdencia, "text-red-500") +
-            (m2.exibeAbonoPermanencia ? linhaSimples("Abono de Permanência", m2.abonoPermanenciaValor, "text-green-600") : "") +
-            '</div></div>';
+            (m2.exibeAbonoPermanencia
+              ? linhaSimples(
+                  "Abono de Permanência",
+                  m2.abonoPermanenciaValor,
+                  "text-green-600",
+                )
+              : "") +
+            "</div></div>";
           linhas.push({ html: card2 });
 
-          if (params1.cedido || params2.cedido) { linhas.push({ html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700 mt-2">Há matrícula(s) cedida(s): GLP, DP, DA e gratificações não se aplicam na(s) matrícula(s) cedida(s)</div>' }); }
+          if (params1.cedido || params2.cedido) {
+            linhas.push({
+              html: '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700 mt-2">Há matrícula(s) cedida(s): GLP, DP, DA e gratificações não se aplicam na(s) matrícula(s) cedida(s)</div>',
+            });
+          }
 
           // ── COMBINADO ──
-          linhas.push({ html: '<div class="mt-3 pt-3 border-t-2 border-blue-300"><div class="text-sm font-bold text-blue-800 mb-2">RESULTADO COMBINADO</div></div>' });
+          linhas.push({
+            html: '<div class="mt-3 pt-3 border-t-2 border-blue-300"><div class="text-sm font-bold text-blue-800 mb-2">RESULTADO COMBINADO</div></div>',
+          });
 
           linhas.push(linha("Vencimento Base", c.vb, "text-gray-600"));
-          if (c.exibeComplemento) { linhas.push(linha("Complemento Piso", c.complemento, "text-gray-500")); }
-          if (c.exibeComplemento || c.exibeTrienio) { linhas.push(linha("Total Base", c.total, "text-gray-700 font-medium")); }
-          if (c.exibeTrienio) { linhas.push(linha("Triênio (total)", c.trienioValor, "text-blue-600")); }
-          if (c.exibeAQ) { linhas.push(linha("AQ (total)", c.aqValor, "text-blue-600")); }
-          if (c.exibeGLP) { linhas.push(linha("GLP (" + c.glpTempos + " tempos/sem)", c.glpValor, "text-purple-600")); }
-          if (c.exibeDP) { linhas.push(linha("Difícil Provimento", c.dpValor, "text-purple-600")); }
-          if (c.exibeDA) { linhas.push(linha("Difícil Acesso", c.daValor, "text-purple-600")); }
-          if (c.exibeGratFuncao) { linhas.push(linha("Gratificação (total)", c.gratFuncao, "text-purple-600")); }
-          if (c.exibeAjudaCusto) { linhas.push(linha("Ajuda de Custo (indenizatória)", c.ajudaCusto, "text-purple-600")); }
+          if (c.exibeComplemento) {
+            linhas.push(
+              linha("Complemento Piso", c.complemento, "text-gray-500"),
+            );
+          }
+          if (c.exibeComplemento || c.exibeTrienio) {
+            linhas.push(
+              linha("Total Base", c.total, "text-gray-700 font-medium"),
+            );
+          }
+          if (c.exibeTrienio) {
+            linhas.push(
+              linha("Triênio (total)", c.trienioValor, "text-blue-600"),
+            );
+          }
+          if (c.exibeAQ) {
+            linhas.push(linha("AQ (total)", c.aqValor, "text-blue-600"));
+          }
+          if (c.exibeGLP) {
+            linhas.push(
+              linha(
+                "GLP (" + c.glpTempos + " tempos/sem)",
+                c.glpValor,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (c.exibeDP) {
+            linhas.push(
+              linha("Difícil Provimento", c.dpValor, "text-purple-600"),
+            );
+          }
+          if (c.exibeDA) {
+            linhas.push(linha("Difícil Acesso", c.daValor, "text-purple-600"));
+          }
+          if (c.exibeGratFuncao) {
+            linhas.push(
+              linha("Gratificação (total)", c.gratFuncao, "text-purple-600"),
+            );
+          }
+          if (c.exibeAdicionalFuncao) {
+            linhas.push(
+              linha(
+                "Adicional Cat D (Dec. 43.894/12)",
+                c.adicionalFuncao,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (c.exibeAjudaCusto) {
+            linhas.push(
+              linha(
+                "Ajuda de Custo (indenizatória)",
+                c.ajudaCusto,
+                "text-purple-600",
+              ),
+            );
+          }
+          linhas.push(
+            linha(
+              "Auxílio Transporte (total)",
+              c.auxTransporte,
+              "text-green-600",
+            ),
+          );
+          if (c.auxTransporteDiff > 0) {
+            linhas.push({
+              html:
+                '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700 mt-1">ⓘ Auxílio transporte pago uma única vez (Dec. 42.788/11, art. 1º, §2º). Dupla matrícula enquadrada como "Demais" (5 créditos/semana = R$ ' +
+                formatarReal(TRANSPORTE.demais) +
+                ").</div>",
+            });
+          }
+          linhas.push(
+            linha(
+              "Auxílio Alimentação (total)",
+              c.auxAlimentacao,
+              "text-green-600",
+            ),
+          );
+          if (c.auxAlimentacaoDiff > 0) {
+            linhas.push({
+              html:
+                '<div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 text-xs text-amber-700 mt-1">ⓘ Auxílio alimentação limitado ao teto de 40h (R$ ' +
+                formatarReal(ALIMENTACAO[40]) +
+                ") — Dec. 47.536/21, art. 6º. " +
+                "</div>",
+            });
+          }
 
-          linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
-          linhas.push(linha("Remuneração Bruta Total", c.bruta, "text-gray-800 font-bold"));
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+          linhas.push(
+            linha(
+              "Remuneração Bruta Total",
+              c.bruta,
+              "text-gray-800 font-bold",
+            ),
+          );
           linhas.push({ html: '<div class="h-1"></div>' });
-          linhas.push(linha("Previdência RPPS Total (14%)", -c.previdencia, "text-red-500"));
+          linhas.push(
+            linha(
+              "Previdência RPPS Total (14%)",
+              -c.previdencia,
+              "text-red-500",
+            ),
+          );
           if (c.exibeAbonoPermanencia) {
-            linhas.push(linha("Abono de Permanência (total)", c.abonoPermanenciaValor, "text-green-600"));
+            linhas.push(
+              linha(
+                "Abono de Permanência (total)",
+                c.abonoPermanenciaValor,
+                "text-green-600",
+              ),
+            );
           }
           if (c.pensaoAlimenticia > 0) {
-            linhas.push(linha("Pensão Alimentícia", -c.pensaoAlimenticia, "text-red-500"));
+            linhas.push(
+              linha("Pensão Alimentícia", -c.pensaoAlimenticia, "text-red-500"),
+            );
           }
 
-          // IRPF com destaque do impacto
-          var irrfDiff = round2(c.irrf - c.irrfSeparado);
           linhas.push(linha("IRPF (base combinada)", -c.irrf, "text-red-500"));
-          if (irrfDiff > 0) {
-            linhas.push({ html: '<div class="bg-red-50 rounded-lg px-3 py-1.5 text-xs text-red-600 mt-1">ⓘ IRPF se calculado separadamente: <b>R$ ' + formatarReal(c.irrfSeparado) + '</b>. Impacto da acumulação: <b>+R$ ' + formatarReal(irrfDiff) + '</b></div>' });
-          } else if (c.irrf === 0 && c.irrfSeparado === 0) {
-            linhas.push({ html: '<div class="bg-green-50 rounded-lg px-3 py-1.5 text-xs text-green-600 mt-1">ⓘ Isento de IRPF mesmo com a renda combinada</div>' });
-          }
 
-          linhas.push({ html: '<div class="border-t border-gray-200 my-1"></div>' });
-          linhas.push({ html: '<div class="flex justify-between items-center py-1"><span class="text-base font-bold text-gray-800">Salário Líquido Total</span><span class="text-xl font-bold text-green-700">R$ ' + formatarReal(c.liquido) + '</span></div>' });
+          linhas.push({
+            html: '<div class="border-t border-gray-200 my-1"></div>',
+          });
+          linhas.push({
+            html:
+              '<div class="flex justify-between items-center py-1"><span class="text-base font-bold text-gray-800">Salário Líquido Total</span><span class="text-xl font-bold text-green-700">R$ ' +
+              formatarReal(c.liquido) +
+              "</span></div>",
+          });
 
           // Carga horária e GLP
           linhas.push({ html: '<div class="h-2"></div>' });
-          var cargaHtml = '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
-            '<div class="flex justify-between"><span>Carga horária total:</span><span class="font-medium">' + c.cargaTotal + 'h/semana' + (c.excede65h ? ' <span class="text-red-500 font-bold">⚠ EXCEDE 65h!</span>' : '') + '</span></div>' +
-            '<div class="flex justify-between"><span>  Mat. 1:</span><span class="font-medium">' + c.cargaParaGLP1 + 'h' + (c.cargaParaGLP1 !== c.cargaEfetiva1 ? ' (contratual ' + c.cargaEfetiva1 + 'h, +' + (c.cargaParaGLP1 - c.cargaEfetiva1) + 'h pela função)' : '') + '</span></div>' +
-            '<div class="flex justify-between"><span>  Mat. 2:</span><span class="font-medium">' + c.cargaParaGLP2 + 'h' + (c.cargaParaGLP2 !== c.cargaEfetiva2 ? ' (contratual ' + c.cargaEfetiva2 + 'h, +' + (c.cargaParaGLP2 - c.cargaEfetiva2) + 'h pela função)' : '') + '</span></div>';
+          var cargaHtml =
+            '<div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">' +
+            '<div class="flex justify-between"><span>Carga horária total:</span><span class="font-medium">' +
+            c.cargaTotal +
+            "h/semana" +
+            (c.excede65h
+              ? ' <span class="text-red-500 font-bold">⚠ EXCEDE 65h!</span>'
+              : "") +
+            "</span></div>" +
+            '<div class="flex justify-between"><span>  Mat. 1:</span><span class="font-medium">' +
+            c.cargaParaGLP1 +
+            "h" +
+            (c.cargaParaGLP1 !== c.cargaEfetiva1
+              ? " (contratual " +
+                c.cargaEfetiva1 +
+                "h, +" +
+                (c.cargaParaGLP1 - c.cargaEfetiva1) +
+                "h pela função)"
+              : "") +
+            "</span></div>" +
+            '<div class="flex justify-between"><span>  Mat. 2:</span><span class="font-medium">' +
+            c.cargaParaGLP2 +
+            "h" +
+            (c.cargaParaGLP2 !== c.cargaEfetiva2
+              ? " (contratual " +
+                c.cargaEfetiva2 +
+                "h, +" +
+                (c.cargaParaGLP2 - c.cargaEfetiva2) +
+                "h pela função)"
+              : "") +
+            "</span></div>";
           if (c.glpTempos > 0) {
-            cargaHtml += '<div class="flex justify-between"><span>GLP total:</span><span class="font-medium">' + c.glpTempos + ' tempos</span></div>';
+            cargaHtml +=
+              '<div class="flex justify-between"><span>GLP total:</span><span class="font-medium">' +
+              c.glpTempos +
+              " tempos</span></div>";
           }
-          cargaHtml += '<div class="flex justify-between"><span>Base IRRF combinada:</span><span class="font-medium">R$ ' + formatarReal(c.baseIRRF) + '</span></div>' +
-            '<div class="flex justify-between"><span>Base previdenciária total:</span><span class="font-medium">R$ ' + formatarReal(c.basePrev) + '</span></div>';
+          cargaHtml +=
+            '<div class="flex justify-between"><span>Base IRRF combinada:</span><span class="font-medium">R$ ' +
+            formatarReal(c.baseIRRF) +
+            "</span></div>" +
+            '<div class="flex justify-between"><span>Base previdenciária total:</span><span class="font-medium">R$ ' +
+            formatarReal(c.basePrev) +
+            "</span></div>";
           if (c.exibeGLP || c.exibeDP || c.exibeDA || c.exibeAjudaCusto) {
-            cargaHtml += '<div class="text-gray-400 mt-1">* GLP, Difícil Provimento, Difícil Acesso e Ajuda de Custo não integram a base previdenciária</div>';
+            cargaHtml +=
+              '<div class="text-gray-400 mt-1">* GLP, Difícil Provimento, Difícil Acesso e Ajuda de Custo não integram a base previdenciária</div>';
           }
           if (c.exibeAbonoPermanencia) {
-            cargaHtml += '<div class="text-green-600 mt-1">* Abono de Permanência restitui a contribuição previdenciária</div>';
+            cargaHtml +=
+              '<div class="text-green-600 mt-1">* Abono de Permanência restitui a contribuição previdenciária</div>';
           }
-          cargaHtml += '</div>';
+          cargaHtml += "</div>";
           linhas.push({ html: cargaHtml });
 
-          return linhas.map(function (l) { return l.html; }).join("");
+          return linhas
+            .map(function (l) {
+              return l.html;
+            })
+            .join("");
         }
 
         function linhaSimples(label, valor, extraClass) {
           var cls = extraClass || "";
           var sinal = valor >= 0 ? "" : "-";
           var absValor = Math.abs(valor);
-          return '<div class="flex justify-between"><span>' + label + '</span><span class="' + cls + '">' + sinal + 'R$ ' + formatarReal(absValor) + '</span></div>';
+          return (
+            '<div class="flex justify-between"><span>' +
+            label +
+            '</span><span class="' +
+            cls +
+            '">' +
+            sinal +
+            "R$ " +
+            formatarReal(absValor) +
+            "</span></div>"
+          );
         }
 
         // ── RESULTADO PRINCIPAL ──
@@ -1088,43 +1696,61 @@
             atualizarRestricoes(prefix);
             atualizarResultado();
           });
-          el(prefix, "referencia").addEventListener("change", atualizarResultado);
+          el(prefix, "referencia").addEventListener(
+            "change",
+            atualizarResultado,
+          );
           el(prefix, "trienios").addEventListener("change", atualizarResultado);
-          el(prefix, "qualificacao").addEventListener("change", atualizarResultado);
+          el(prefix, "qualificacao").addEventListener(
+            "change",
+            atualizarResultado,
+          );
 
           el(prefix, "funcao").addEventListener("change", function () {
             atualizarRestricoes(prefix);
             atualizarResultado();
           });
 
-          el(prefix, "categoria-escola").addEventListener("change", atualizarResultado);
+          el(prefix, "categoria-escola").addEventListener(
+            "change",
+            atualizarResultado,
+          );
 
-          document.querySelectorAll("." + prefix + "ingresso-radio").forEach(function (radio) {
-            radio.addEventListener("change", function () {
-              atualizarTrienio(prefix);
-              atualizarResultado();
+          document
+            .querySelectorAll("." + prefix + "ingresso-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", function () {
+                atualizarTrienio(prefix);
+                atualizarResultado();
+              });
             });
-          });
 
-          document.querySelectorAll("." + prefix + "regencia-radio").forEach(function (radio) {
-            radio.addEventListener("change", atualizarResultado);
-          });
+          document
+            .querySelectorAll("." + prefix + "regencia-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", atualizarResultado);
+            });
 
-          document.querySelectorAll("." + prefix + "glp-radio").forEach(function (radio) {
-            radio.addEventListener("change", function () {
-              var temGlp = radio.value === "sim";
-              el(prefix, "glp-tempos-container").classList.toggle("hidden", !temGlp);
-              if (temGlp) {
-                atualizarGlpMax(prefix);
-                if (isDual()) {
-                  var other = prefix === "" ? "m2-" : "";
-                  atualizarGlpMax(other);
+          document
+            .querySelectorAll("." + prefix + "glp-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", function () {
+                var temGlp = radio.value === "sim";
+                el(prefix, "glp-tempos-container").classList.toggle(
+                  "hidden",
+                  !temGlp,
+                );
+                if (temGlp) {
+                  atualizarGlpMax(prefix);
+                  if (isDual()) {
+                    var other = prefix === "" ? "m2-" : "";
+                    atualizarGlpMax(other);
+                  }
                 }
-              }
-              atualizarAuxilioTransporte(prefix);
-              atualizarResultado();
+                atualizarAuxilioTransporte(prefix);
+                atualizarResultado();
+              });
             });
-          });
 
           el(prefix, "glp-tempos").addEventListener("input", function () {
             if (isDual()) {
@@ -1134,32 +1760,47 @@
             atualizarResultado();
           });
 
-          document.querySelectorAll("." + prefix + "dp-radio").forEach(function (radio) {
-            radio.addEventListener("change", atualizarResultado);
-          });
-
-          document.querySelectorAll("." + prefix + "da-radio").forEach(function (radio) {
-            radio.addEventListener("change", atualizarResultado);
-          });
-
-          document.querySelectorAll("." + prefix + "cedido-radio").forEach(function (radio) {
-            radio.addEventListener("change", function () {
-              atualizarRestricoes(prefix);
-              atualizarResultado();
+          document
+            .querySelectorAll("." + prefix + "dp-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", atualizarResultado);
             });
-          });
 
-          document.querySelectorAll("." + prefix + "abono-radio").forEach(function (radio) {
-            radio.addEventListener("change", atualizarResultado);
-          });
+          document
+            .querySelectorAll("." + prefix + "da-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", atualizarResultado);
+            });
+
+          document
+            .querySelectorAll("." + prefix + "cedido-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", function () {
+                atualizarRestricoes(prefix);
+                atualizarResultado();
+              });
+            });
+
+          document
+            .querySelectorAll("." + prefix + "abono-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", atualizarResultado);
+            });
         }
 
         // Listener para o toggle dual
         elDualToggle.addEventListener("change", function () {
           var dual = isDual();
           elM2Section.classList.toggle("hidden", !dual);
-          document.getElementById("matricula1-section").querySelector("h3").classList.toggle("hidden", !dual);
-          document.getElementById("dual-toggle-section").querySelector("span").textContent = dual ? "Duas matrículas na SEEDUC (ativado)" : "Possuo duas matrículas na SEEDUC";
+          document
+            .getElementById("matricula1-section")
+            .querySelector("h3")
+            .classList.toggle("hidden", !dual);
+          document
+            .getElementById("dual-toggle-section")
+            .querySelector("span").textContent = dual
+            ? "Duas matrículas na SEEDUC (ativado)"
+            : "Possuo duas matrículas na SEEDUC";
 
           if (dual) {
             // Garante que Matrícula 2 tem referências populadas
