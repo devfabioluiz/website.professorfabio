@@ -834,11 +834,9 @@ const {
   deletar,
 } = require("../controllers/produtoPgController");
 
-const autenticar = require("../middlewares/autenticar");
-
 router.get("/pg/produtos", listar);
-router.post("/pg/produtos", autenticar, criar);
-router.delete("/pg/produtos/:id", autenticar, deletar);
+router.post("/pg/produtos", criar);
+router.delete("/pg/produtos/:id", deletar);
 
 module.exports = router;
             </code></pre>
