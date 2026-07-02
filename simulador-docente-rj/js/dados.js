@@ -229,6 +229,22 @@ var MAX_TRIENIOS = 11;
 
 var MAX_CARGA_SEMANAL = 65;   // Art. 8º, Dec. 46.920/20 — soma de cargos efetivos + GLP
 
+var INSS_FAIXAS = [
+  { ate: 1621.00, aliquota: 0.075, deducao: 0 },
+  { ate: 2902.84, aliquota: 0.09, deducao: 24.32 },
+  { ate: 4354.27, aliquota: 0.12, deducao: 111.40 },
+  { ate: 8475.55, aliquota: 0.14, deducao: 198.49 },
+  { ate: Infinity, aliquota: 0, deducao: 0, teto: 8475.55 },
+];
+
+var SALARIO_MINIMO = 1518.00;
+
+var TIPO_OUTRA_RENDA = {
+  clt: { nome: "CLT (particular)" },
+  pj: { nome: "Pessoa Jurídica / MEI" },
+  rede_federal: { nome: "Rede Federal ou Municipal" },
+};
+
 var RECOMPOSICOES = [
   { id: "parcela1",  descricao: "1ª parcela IPCA (50%) — Lei 9.436/21", pct: 13.05, competencia: "2022-01", jaAplicado: true },
   { id: "extra2023", descricao: "Recomposição extra — Lei 9.952/23",      pct:  5.90, competencia: "2023-01", jaAplicado: true },
