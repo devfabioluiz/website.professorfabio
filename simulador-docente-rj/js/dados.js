@@ -227,6 +227,11 @@ var PREVIDENCIA_ALIQUOTA = 0.14;
 var DEDUCAO_DEPENDENTE = 189.59;
 var MAX_TRIENIOS = 11;
 
+var DIESP = {
+  docente1: 516.00,   // Gratificação de Encargos Especiais (GEE-SEEDUC) — Proc. UEP PA E03/10184/08
+  docente2: 450.00,   // Gratificação de Encargos Especiais (GEE-SEEDUC) — Proc. UEP PA E03/10184/08
+};
+
 var MAX_CARGA_SEMANAL = 65;   // Art. 8º, Dec. 46.920/20 — soma de cargos efetivos + GLP
 
 var RECOMPOSICOES = [

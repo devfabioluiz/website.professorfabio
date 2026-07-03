@@ -56,7 +56,8 @@ function aplicarRecomposicoes(valor, dataSimulacao) {
 }
 
 function calcularVencimentos(params) {
-  var cargo = CARGOS[params.cargoKey];
+  var cargoKey = params.cargoKey;
+  var cargo = CARGOS[cargoKey];
   var ref = cargo.referencias[params.refIndex];
   var cargaOriginal = cargo.carga;
   var funcao = (params.funcaoKey && FUNCOES[params.funcaoKey]) ? FUNCOES[params.funcaoKey] : FUNCOES.nenhuma;
@@ -85,6 +86,12 @@ function calcularVencimentos(params) {
   var dpValor = (params.dificilProvimento && funcao.permiteDPDA) ? aplicarRecomposicoes(DIFICIL_PROVIMENTO, dataSim) : 0;
   var daValor = (params.dificilAcesso && funcao.permiteDPDA) ? aplicarRecomposicoes(DIFICIL_ACESSO, dataSim) : 0;
 
+  var diespValor = 0;
+  if (params.diesp && cargoKey.indexOf("docente") === 0) {
+    var key = cargoKey.indexOf("docente2") === 0 ? "docente2" : "docente1";
+    diespValor = aplicarRecomposicoes(DIESP[key], dataSim);
+  }
+
   var gratFuncao = 0;
   if (funcao.categorias && params.categoriaEscola && funcao.categorias[params.categoriaEscola]) {
     gratFuncao = aplicarRecomposicoes(funcao.categorias[params.categoriaEscola], dataSim);
@@ -100,6 +107,7 @@ function calcularVencimentos(params) {
     glpValor = 0;
     dpValor = 0;
     daValor = 0;
+    diespValor = 0;
     gratFuncao = 0;
     ajudaCusto = 0;
     adicionalFuncao = 0;
@@ -114,7 +122,7 @@ function calcularVencimentos(params) {
   var auxAlimentacao = ALIMENTACAO[cargaParaAuxilios];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + gratFuncao + adicionalFuncao + ajudaCusto + auxilios);
+  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + diespValor + gratFuncao + adicionalFuncao + ajudaCusto + auxilios);
 
   return {
     cargo: cargo,
@@ -130,6 +138,7 @@ function calcularVencimentos(params) {
     glpValor: glpValor,
     dpValor: dpValor,
     daValor: daValor,
+    diespValor: diespValor,
     gratFuncao: gratFuncao,
     adicionalFuncao: adicionalFuncao,
     ajudaCusto: ajudaCusto,
@@ -152,6 +161,7 @@ function calcularVencimentos(params) {
     exibeGLP: glpValor > 0,
     exibeDP: dpValor > 0,
     exibeDA: daValor > 0,
+    exibeDIESP: diespValor > 0,
     exibeGratFuncao: gratFuncao > 0,
     exibeAdicionalFuncao: adicionalFuncao > 0,
     exibeAjudaCusto: ajudaCusto > 0,
@@ -182,6 +192,7 @@ function calcular(params) {
     glpValor: r.glpValor,
     dpValor: r.dpValor,
     daValor: r.daValor,
+    diespValor: r.diespValor,
     gratFuncao: r.gratFuncao,
     adicionalFuncao: r.adicionalFuncao,
     ajudaCusto: r.ajudaCusto,
@@ -208,6 +219,7 @@ function calcular(params) {
     exibeGLP: r.exibeGLP,
     exibeDP: r.exibeDP,
     exibeDA: r.exibeDA,
+    exibeDIESP: r.exibeDIESP,
     exibeGratFuncao: r.exibeGratFuncao,
     exibeAdicionalFuncao: r.exibeAdicionalFuncao,
     exibeAjudaCusto: r.exibeAjudaCusto,
@@ -227,6 +239,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     glpTempos: params1.glpTempos,
     dificilProvimento: params1.dificilProvimento,
     dificilAcesso: params1.dificilAcesso,
+    diesp: params1.diesp,
     cedido: params1.cedido,
     abonoPermanencia: params1.abonoPermanencia,
     dependentes: 0,
@@ -244,6 +257,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     glpTempos: params2.glpTempos,
     dificilProvimento: params2.dificilProvimento,
     dificilAcesso: params2.dificilAcesso,
+    diesp: params2.diesp,
     cedido: params2.cedido,
     abonoPermanencia: params2.abonoPermanencia,
     dependentes: 0,
@@ -311,6 +325,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       glpValor: sum('glpValor'),
       dpValor: sum('dpValor'),
       daValor: sum('daValor'),
+      diespValor: sum('diespValor'),
       gratFuncao: sum('gratFuncao'),
       adicionalFuncao: sum('adicionalFuncao'),
       ajudaCusto: sum('ajudaCusto'),
@@ -341,6 +356,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       exibeGLP: r1.exibeGLP || r2.exibeGLP,
       exibeDP: r1.exibeDP || r2.exibeDP,
       exibeDA: r1.exibeDA || r2.exibeDA,
+      exibeDIESP: r1.exibeDIESP || r2.exibeDIESP,
       exibeGratFuncao: r1.exibeGratFuncao || r2.exibeGratFuncao,
       exibeAdicionalFuncao: r1.exibeAdicionalFuncao || r2.exibeAdicionalFuncao,
       exibeAjudaCusto: r1.exibeAjudaCusto || r2.exibeAjudaCusto,
