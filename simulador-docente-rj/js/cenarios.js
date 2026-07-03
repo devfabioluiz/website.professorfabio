@@ -90,26 +90,34 @@ function getNomeTipoOutraRenda(tipo) {
   return nomes[tipo] || tipo;
 }
 
+function calcularIRPFSimplificado(rendaTributavelAnual) {
+  var desconto = Math.min(rendaTributavelAnual * 0.20, LIMITE_DESCONTO_SIMPLIFICADO);
+  var baseApos = Math.max(0, rendaTributavelAnual - desconto);
+  var imposto = 0;
+  for (var i = 0; i < FAIXAS_IRPF_ANUAL.length; i++) {
+    if (baseApos <= FAIXAS_IRPF_ANUAL[i].ate) {
+      imposto = baseApos * FAIXAS_IRPF_ANUAL[i].aliquota - FAIXAS_IRPF_ANUAL[i].deducao;
+      break;
+    }
+  }
+  return { base: baseApos, imposto: round2(Math.max(0, imposto)), desconto: round2(desconto) };
+}
+
 function calcularIRPFAnualCompleto(params) {
   var rendaBrutaAnual = params.rendaBrutaAnual;
   var previdenciaAnual = params.previdenciaAnual || 0;
   var saudeAnual = params.saudeAnual || 0;
   var prevPrivadaAnual = params.prevPrivadaAnual || 0;
   var educacaoAnual = params.educacaoAnual || 0;
+  var pensaoAnual = params.pensaoAnual || 0;
+  var dependentesAnual = params.dependentesAnual || 0;
 
-  var base = Math.max(0, rendaBrutaAnual - previdenciaAnual - saudeAnual - prevPrivadaAnual - educacaoAnual);
+  var base = Math.max(0, rendaBrutaAnual - previdenciaAnual - saudeAnual - prevPrivadaAnual - educacaoAnual - pensaoAnual - dependentesAnual);
 
   var impostoBruto = 0;
-  var faixasAnuais = [
-    { ate: 29143.20, aliquota: 0, deducao: 0 },
-    { ate: 33919.80, aliquota: 7.5 / 100, deducao: 2185.74 },
-    { ate: 45012.60, aliquota: 15 / 100, deducao: 4729.94 },
-    { ate: 55976.16, aliquota: 22.5 / 100, deducao: 8105.88 },
-    { ate: Infinity, aliquota: 27.5 / 100, deducao: 10904.76 },
-  ];
-  for (var i = 0; i < faixasAnuais.length; i++) {
-    if (base <= faixasAnuais[i].ate) {
-      impostoBruto = base * faixasAnuais[i].aliquota - faixasAnuais[i].deducao;
+  for (var i = 0; i < FAIXAS_IRPF_ANUAL.length; i++) {
+    if (base <= FAIXAS_IRPF_ANUAL[i].ate) {
+      impostoBruto = base * FAIXAS_IRPF_ANUAL[i].aliquota - FAIXAS_IRPF_ANUAL[i].deducao;
       break;
     }
   }

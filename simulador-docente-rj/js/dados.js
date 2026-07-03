@@ -239,6 +239,16 @@ var INSS_FAIXAS = [
 
 var SALARIO_MINIMO = 1518.00;
 
+var FAIXAS_IRPF_ANUAL = [
+  { ate: 29143.20, aliquota: 0,       deducao: 0 },
+  { ate: 33919.80, aliquota: 0.075,   deducao: 2185.74 },
+  { ate: 45012.60, aliquota: 0.15,    deducao: 4729.94 },
+  { ate: 55976.16, aliquota: 0.225,   deducao: 8105.88 },
+  { ate: Infinity, aliquota: 0.275,   deducao: 10904.76 },
+];
+
+var LIMITE_DESCONTO_SIMPLIFICADO = 16754.34;
+
 var TIPO_OUTRA_RENDA = {
   clt: { nome: "CLT (particular)" },
   pj: { nome: "Pessoa Jurídica / MEI" },
