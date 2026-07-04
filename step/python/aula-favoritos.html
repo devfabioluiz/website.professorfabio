@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula Especial: Meu Catálogo de Favoritos</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <style>
+      body {
+        background: #f0f7ff;
+        font-size: 19px;
+        line-height: 2;
+      }
+      .container {
+        max-width: 860px;
+        padding: 35px 40px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      }
+      h1 {
+        color: #1a56db;
+        font-size: 2.2rem;
+        text-align: center;
+        border-bottom: none;
+        margin-bottom: 5px;
+      }
+      h1 .emoji-grande {
+        font-size: 2.8rem;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .meta-aula {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #1e293b;
+        background: #eef2ff;
+        padding: 16px 24px;
+        border-radius: 14px;
+        border-left: 6px solid #1a56db;
+        margin: 10px auto 30px auto;
+        max-width: 600px;
+      }
+      h2 {
+        color: #1e293b;
+        font-size: 1.8rem;
+        border-bottom: 3px solid #1a56db;
+        padding-bottom: 8px;
+        margin-top: 0;
+      }
+      h3 {
+        color: #1e293b;
+        font-size: 1.3rem;
+        margin: 0;
+      }
+      p, li {
+        font-size: 19px;
+      }
+
+      .preview-box {
+        background: linear-gradient(135deg, #eef2ff, #f8fafc);
+        border: 2px dashed #93c5fd;
+        border-radius: 16px;
+        padding: 25px 30px;
+        margin: 25px 0;
+        text-align: center;
+      }
+      .preview-box .preview-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #1a56db;
+        margin-bottom: 15px;
+      }
+      .preview-grid {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .preview-card {
+        background: white;
+        border-radius: 14px;
+        padding: 18px 22px;
+        min-width: 140px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        border-left: 5px solid #1a56db;
+        text-align: left;
+      }
+      .preview-card .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: white;
+      }
+      .tag-azul { background: #2563eb; }
+      .tag-verde { background: #059669; }
+      .tag-roxo { background: #7c3aed; }
+      .tag-laranja { background: #ea580c; }
+      .preview-card .nome-item { font-size: 1.1rem; font-weight: bold; margin-top: 6px; color: #1e293b; }
+
+      .progresso {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+      }
+      .progresso-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+      .progresso-item .circulo {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        display: inline-block;
+      }
+      .progresso-item .linha {
+        width: 20px;
+        height: 2px;
+        background: #e2e8f0;
+        display: inline-block;
+      }
+      .progresso-item.ativo .circulo {
+        background: #1a56db;
+        box-shadow: 0 0 0 3px #bfdbfe;
+      }
+      .progresso-item.ativo {
+        color: #1a56db;
+        font-weight: bold;
+      }
+      .progresso-item.feito .circulo {
+        background: #059669;
+      }
+      .progresso-item.feito {
+        color: #059669;
+      }
+
+      .passo {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 35px;
+        border-left: 6px solid #e2e8f0;
+        transition: all 0.2s;
+      }
+      .passo-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 15px;
+      }
+      .passo-numero {
+        background: #1a56db;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .passo-concluido {
+        margin-top: 18px;
+        padding: 12px 20px;
+        background: #d1fae5;
+        border-radius: 12px;
+        color: #065f46;
+        font-weight: bold;
+        font-size: 1.05rem;
+        border-left: 5px solid #059669;
+      }
+
+      .code-container {
+        margin-top: 15px;
+      }
+      .code-container pre {
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+      }
+      .explica-box {
+        background: #eef2ff;
+        border: 1px solid #c7d2fe;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin: 15px 0 5px 0;
+        font-size: 0.95rem;
+      }
+      .explica-box strong {
+        color: #4338ca;
+      }
+
+      .arquivo-destino {
+        display: inline-block;
+        background: #1e293b;
+        color: white;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        padding: 4px 14px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .final-box {
+        background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+        border: 2px solid #059669;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        margin-top: 30px;
+      }
+      .final-box h2 {
+        color: #065f46;
+        border: none;
+        font-size: 2rem;
+      }
+      .final-box .check-grande {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .instrucao {
+        font-size: 1rem;
+        color: #475569;
+        margin-bottom: 12px;
+      }
+
+      .dica-box {
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin: 12px 0;
+        font-size: 0.95rem;
+      }
+      .dica-box strong {
+        color: #b45309;
+      }
+
+      @media print {
+        .progresso, .back-btn { display: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar</button>
+
+    <header>
+      <h1><span class="emoji-grande">⭐</span>Meu Catálogo de Favoritos</h1>
+      <h4 class="text-center">Django — Uma aula especial</h4>
+
+      <div class="meta-aula">
+        🎯 Sua meta: criar um site que mostra seus favoritos na tela!
+      </div>
+
+      <div class="progresso" id="progresso">
+        <span class="progresso-item ativo" data-step="1">
+          <span class="circulo"></span>App
+        </span><span class="progresso-item" data-step="2">
+          <span class="linha"></span><span class="circulo"></span>Config
+        </span><span class="progresso-item" data-step="3">
+          <span class="linha"></span><span class="circulo"></span>Model
+        </span><span class="progresso-item" data-step="4">
+          <span class="linha"></span><span class="circulo"></span>Form
+        </span><span class="progresso-item" data-step="5">
+          <span class="linha"></span><span class="circulo"></span>View
+        </span><span class="progresso-item" data-step="6">
+          <span class="linha"></span><span class="circulo"></span>URLs
+        </span><span class="progresso-item" data-step="7">
+          <span class="linha"></span><span class="circulo"></span>Páginas
+        </span><span class="progresso-item" data-step="8">
+          <span class="linha"></span><span class="circulo"></span>Rodar!
+        </span>
+      </div>
+    </header>
+
+    <main class="container">
+
+      <div class="preview-box">
+        <div class="preview-title">👀 Olha o que você vai construir!</div>
+        <div class="preview-grid">
+          <div class="preview-card" style="border-left-color:#2563eb;">
+            <span class="tag tag-azul">Jogo</span>
+            <div class="nome-item">Minecraft</div>
+          </div>
+          <div class="preview-card" style="border-left-color:#059669;">
+            <span class="tag tag-verde">Animal</span>
+            <div class="nome-item">Gato</div>
+          </div>
+          <div class="preview-card" style="border-left-color:#7c3aed;">
+            <span class="tag tag-roxo">Personagem</span>
+            <div class="nome-item">Mario</div>
+          </div>
+          <div class="preview-card" style="border-left-color:#ea580c;">
+            <span class="tag tag-laranja">Comida</span>
+            <div class="nome-item">Pizza</div>
+          </div>
+        </div>
+        <p style="margin-top:12px;font-size:0.95rem;color:#64748b;">
+          Você escolhe o que colocar. Eu só coloquei exemplos! 😊
+        </p>
+      </div>
+
+      <section>
+        <h2>📋 Passos</h2>
+        <p class="instrucao">Cada passo tem um código para copiar e colar. Vá na ordem certa!</p>
+
+        <div class="passo" id="passo1">
+          <div class="passo-header">
+            <span class="passo-numero">1</span>
+            <h3>Criar o app "favoritos"</h3>
+          </div>
+          <p class="instrucao">Abra o terminal, ative o ambiente virtual e digite:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">cd projeto_django_mvt
+python manage.py startapp favoritos</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que esse comando faz:</strong>
+            Cria uma pasta nova chamada <code>favoritos/</code> dentro do projeto.
+            Dentro dela vão ficar os arquivos do nosso catálogo.
+          </div>
+          <div class="passo-concluido">✅ Passo 1 concluído! A pasta "favoritos" foi criada.</div>
+        </div>
+
+        <div class="passo" id="passo2">
+          <div class="passo-header">
+            <span class="passo-numero">2</span>
+            <h3>Apresentar o app para o Django</h3>
+          </div>
+          <p class="instrucao">Abra o arquivo <code>settings.py</code> e adicione <code>'favoritos'</code> na lista:</p>
+          <div class="arquivo-destino">📁 projeto_django_mvt/settings.py</div>
+          <div class="code-container">
+            <pre><code class="language-python">INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'favoritos',
+]</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que isso faz:</strong>
+            O Django precisa saber que o app <code>favoritos</code> existe.
+            Colocamos ele na lista de apps instalados.
+          </div>
+          <div class="dica-box">
+            💡 <strong>Dica:</strong> Substitua TUDO que está dentro dos colchetes de <code>INSTALLED_APPS</code> pelo código acima.
+          </div>
+          <div class="passo-concluido">✅ Passo 2 concluído! O Django já conhece o app "favoritos".</div>
+        </div>
+
+        <div class="passo" id="passo3">
+          <div class="passo-header">
+            <span class="passo-numero">3</span>
+            <h3>Criar a tabela "Favorito" (Model)</h3>
+          </div>
+          <p class="instrucao">Abra o arquivo <code>models.py</code> e cole TODO este código:</p>
+          <div class="arquivo-destino">📁 favoritos/models.py</div>
+          <div class="code-container">
+            <pre><code class="language-python">from django.db import models
+
+class Favorito(models.Model):
+    CATEGORIAS = [
+        ('animal', 'Animal'),
+        ('jogo', 'Jogo'),
+        ('personagem', 'Personagem'),
+        ('comida', 'Comida'),
+        ('outro', 'Outro'),
+    ]
+
+    nome = models.CharField(max_length=100)
+    categoria = models.CharField(max_length=20, choices=CATEGORIAS)
+    descricao = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.nome</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que esse código faz:</strong>
+            Cria a "ficha" do favorito. Cada favorito tem:
+            <strong>nome</strong> (texto),
+            <strong>categoria</strong> (escolhe entre: Animal, Jogo, Personagem, Comida, Outro),
+            <strong>descrição</strong> (texto maior, opcional).
+          </div>
+          <div class="passo-concluido">✅ Passo 3 concluído! A tabela "Favorito" está pronta.</div>
+        </div>
+
+        <div class="passo" id="passo4">
+          <div class="passo-header">
+            <span class="passo-numero">4</span>
+            <h3>Criar o formulário</h3>
+          </div>
+          <p class="instrucao">Crie um arquivo novo chamado <code>forms.py</code> dentro da pasta <code>favoritos/</code> e cole:</p>
+          <div class="arquivo-destino">📁 favoritos/forms.py (criar novo)</div>
+          <div class="code-container">
+            <pre><code class="language-python">from django import forms
+from .models import Favorito
+
+class FavoritoForm(forms.ModelForm):
+    class Meta:
+        model = Favorito
+        fields = ['nome', 'categoria', 'descricao']</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que isso faz:</strong>
+            Cria um formulário automático baseado no model Favorito.
+            O Django já sabe os campos (nome, categoria, descricao) e cria os inputs pra gente.
+          </div>
+          <div class="passo-concluido">✅ Passo 4 concluído! O formulário está pronto.</div>
+        </div>
+
+        <div class="passo" id="passo5">
+          <div class="passo-header">
+            <span class="passo-numero">5</span>
+            <h3>Criar as funções (Views)</h3>
+          </div>
+          <p class="instrucao">Abra o arquivo <code>views.py</code> e substitua TODO o conteúdo por este:</p>
+          <div class="arquivo-destino">📁 favoritos/views.py</div>
+          <div class="code-container">
+            <pre><code class="language-python">from django.shortcuts import render, redirect
+from .models import Favorito
+from .forms import FavoritoForm
+
+def listar(request):
+    favoritos = Favorito.objects.all()
+    return render(request, 'favoritos/lista.html', {'favoritos': favoritos})
+
+def adicionar(request):
+    if request.method == 'POST':
+        form = FavoritoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar')
+    else:
+        form = FavoritoForm()
+    return render(request, 'favoritos/adicionar.html', {'form': form})</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que esse código faz:</strong>
+            Duas funções:<br>
+            <strong>listar</strong> → busca todos os favoritos do banco e manda pro template.<br>
+            <strong>adicionar</strong> → mostra o formulário vazio. Se o usuário preencher e salvar, guarda no banco.
+          </div>
+          <div class="passo-concluido">✅ Passo 5 concluído! As funções estão prontas.</div>
+        </div>
+
+        <div class="passo" id="passo6">
+          <div class="passo-header">
+            <span class="passo-numero">6</span>
+            <h3>Criar as URLs (endereços)</h3>
+          </div>
+          <p class="instrucao">Crie um arquivo <code>urls.py</code> dentro da pasta <code>favoritos/</code> e cole:</p>
+          <div class="arquivo-destino">📁 favoritos/urls.py (criar novo)</div>
+          <div class="code-container">
+            <pre><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.listar, name='listar'),
+    path('adicionar/', views.adicionar, name='adicionar'),
+]</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que isso faz:</strong>
+            Define os endereços:<br>
+            <code>/</code> → mostra a lista de favoritos<br>
+            <code>/adicionar/</code> → mostra o formulário para adicionar
+          </div>
+          <p class="instrucao">Agora abra o arquivo <code>urls.py</code> principal e atualize:</p>
+          <div class="arquivo-destino">📁 projeto_django_mvt/urls.py</div>
+          <div class="code-container">
+            <pre><code class="language-python">from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('favoritos.urls')),
+]</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que isso faz:</strong>
+            Diz pro Django: "quando alguém acessar o site, usa as URLs do app favoritos".
+          </div>
+          <div class="passo-concluido">✅ Passo 6 concluído! Os caminhos estão configurados.</div>
+        </div>
+
+        <div class="passo" id="passo7">
+          <div class="passo-header">
+            <span class="passo-numero">7</span>
+            <h3>Criar as páginas (Templates)</h3>
+          </div>
+          <p class="instrucao">Crie a pasta de templates:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">cd favoritos
+mkdir templates
+cd templates
+mkdir favoritos
+cd ..\..</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p class="instrucao">Crie o arquivo <code>lista.html</code>:</p>
+          <div class="arquivo-destino">📁 favoritos/templates/favoritos/lista.html (criar novo)</div>
+          <div class="code-container">
+            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Meus Favoritos&lt;/title&gt;
+    &lt;style&gt;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f7ff;
+            padding: 40px 20px;
+            color: #333;
+        }
+        h1 { text-align: center; color: #1a56db; font-size: 2rem; margin-bottom: 10px; }
+        .tag {
+            display: inline-block; padding: 4px 14px;
+            border-radius: 20px; font-size: 0.85rem;
+            font-weight: bold; color: white;
+        }
+        .tag-animal { background: #059669; }
+        .tag-jogo { background: #2563eb; }
+        .tag-personagem { background: #7c3aed; }
+        .tag-comida { background: #ea580c; }
+        .tag-outro { background: #6b7280; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px; max-width: 900px; margin: 30px auto;
+        }
+        .card {
+            background: white; border-radius: 16px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 6px solid #1a56db;
+        }
+        .card h3 { font-size: 1.3rem; margin: 8px 0; color: #1e293b; }
+        .card p { font-size: 1rem; color: #64748b; line-height: 1.6; }
+        .vazio { text-align: center; padding: 60px; color: #94a3b8; }
+        .btn-add {
+            display: block; width: fit-content; margin: 20px auto 0;
+            background: #1a56db; color: white; text-decoration: none;
+            padding: 14px 32px; border-radius: 12px;
+            font-size: 1.2rem; font-weight: bold; text-align: center;
+        }
+        .btn-add:hover { background: #1e40af; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;⭐ Meus Favoritos&lt;/h1&gt;
+
+    {% if favoritos %}
+    &lt;div class="grid"&gt;
+        {% for item in favoritos %}
+        &lt;div class="card"&gt;
+            &lt;span class="tag tag-{{ item.categoria }}"&gt;
+                {{ item.get_categoria_display }}
+            &lt;/span&gt;
+            &lt;h3&gt;{{ item.nome }}&lt;/h3&gt;
+            {% if item.descricao %}
+            &lt;p&gt;{{ item.descricao }}&lt;/p&gt;
+            {% endif %}
+        &lt;/div&gt;
+        {% endfor %}
+    &lt;/div&gt;
+    {% else %}
+    &lt;div class="vazio"&gt;
+        &lt;p&gt;Nenhum favorito ainda.&lt;/p&gt;
+        &lt;p&gt;Clique no botão abaixo para adicionar!&lt;/p&gt;
+    &lt;/div&gt;
+    {% endif %}
+
+    &lt;a href="{% url 'adicionar' %}" class="btn-add"&gt;+ Adicionar Favorito&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p class="instrucao">Crie o arquivo <code>adicionar.html</code>:</p>
+          <div class="arquivo-destino">📁 favoritos/templates/favoritos/adicionar.html (criar novo)</div>
+          <div class="code-container">
+            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Adicionar Favorito&lt;/title&gt;
+    &lt;style&gt;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f7ff;
+            padding: 40px 20px;
+            color: #333;
+        }
+        .box {
+            max-width: 500px; margin: 0 auto;
+            background: white; padding: 40px;
+            border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 { text-align: center; color: #1a56db; font-size: 1.8rem; margin-bottom: 30px; }
+        form p { margin-bottom: 20px; }
+        form label { display: block; font-weight: bold; margin-bottom: 6px; color: #1e293b; }
+        form input, form select, form textarea {
+            width: 100%; padding: 12px;
+            border: 2px solid #e2e8f0; border-radius: 10px;
+            font-size: 1rem; font-family: Arial, sans-serif;
+        }
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #1a56db; outline: none;
+        }
+        form textarea { min-height: 100px; }
+        .btn-salvar {
+            display: block; width: 100%;
+            background: #059669; color: white; border: none;
+            padding: 14px; border-radius: 12px;
+            font-size: 1.2rem; font-weight: bold; cursor: pointer;
+        }
+        .btn-salvar:hover { background: #047857; }
+        .btn-voltar {
+            display: block; text-align: center;
+            margin-top: 15px; color: #1a56db;
+            text-decoration: none;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="box"&gt;
+        &lt;h1&gt;➕ Adicionar Favorito&lt;/h1&gt;
+        &lt;form method="POST"&gt;
+            {% csrf_token %}
+            {{ form.as_p }}
+            &lt;button type="submit" class="btn-salvar"&gt;✓ Salvar&lt;/button&gt;
+        &lt;/form&gt;
+        &lt;a href="{% url 'listar' %}" class="btn-voltar"&gt;← Voltar&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="passo-concluido">✅ Passo 7 concluído! As páginas estão criadas.</div>
+        </div>
+
+        <div class="passo" id="passo8">
+          <div class="passo-header">
+            <span class="passo-numero">8</span>
+            <h3>Rodar e ver seus favoritos!</h3>
+          </div>
+          <p class="instrucao">Último passo! Cria as tabelas no banco e inicia o servidor:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="explica-box">
+            <strong>📖 O que esses comandos fazem:</strong><br>
+            <strong>makemigrations</strong> → prepara a criação da tabela "Favorito"<br>
+            <strong>migrate</strong> → cria de fato a tabela no banco<br>
+            <strong>runserver</strong> → liga o servidor local
+          </div>
+          <p class="instrucao">Agora abra o navegador e acesse:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">http://localhost:8000/</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p class="instrucao">Para adicionar favoritos, clique no botão "+ Adicionar Favorito" e preencha o formulário.</p>
+          <div class="passo-concluido">✅ Passo 8 concluído! Seu catálogo está no ar!</div>
+        </div>
+
+      </section>
+
+      <div class="final-box">
+        <span class="check-grande">🎉</span>
+        <h2>Parabéns! Você criou seu Catálogo de Favoritos!</h2>
+        <p style="font-size:1.2rem;color:#065f46;">
+          Seu site Django está funcionando e mostrando seus favoritos na tela.
+        </p>
+        <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ App criado</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Model Favorito</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Formulário</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Views</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ URLs</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Templates</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Site rodando</span>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:30px;">
+        <strong>💡 Ideias para continuar:</strong>
+        <ul style="margin-top:8px;">
+          <li>Adicione mais categorias no model (filme, livro, música...)</li>
+          <li>Mude as cores dos cards no <code>lista.html</code></li>
+          <li>Coloque imagens nos favoritos (pesquise por <code>ImageField</code>)</li>
+          <li>Crie uma página de "detalhes" para cada favorito</li>
+        </ul>
+      </div>
+
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </body>
+</html>
