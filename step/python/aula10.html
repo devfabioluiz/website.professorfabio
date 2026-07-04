@@ -244,9 +244,37 @@ print(usuario.email)      # ana@nova.com
         <h2>3. Duck Typing</h2>
 
         <p>
-          Em Python, não importa o tipo do objeto — importa o que ele
-          <strong>faz</strong>. Se um objeto tem o método <code>quack()</code>,
-          ele pode ser tratado como pato.
+          Duck Typing é um dos conceitos mais característicos do Python e vem da
+          frase:
+        </p>
+
+        <blockquote>
+          <em
+            >"If it walks like a duck and quacks like a duck, then it's a
+            duck."</em
+          >
+          <br />
+          ("Se anda como um pato e faz <em>quack</em> como um pato, então é um
+          pato.")
+        </blockquote>
+
+        <p>
+          Em Python, normalmente não importa a <strong>classe</strong> do
+          objeto, mas sim o seu <strong>comportamento</strong>. Em vez de
+          perguntar <em>"esse objeto é da classe X?"</em>, o Python se preocupa
+          em saber
+          <em
+            >"esse objeto possui o que eu preciso para executar esta
+            função?"</em
+          >.
+        </p>
+
+        <p>
+          No exemplo abaixo, a função <code>imprimir_dados()</code> não exige
+          que o objeto seja um <code>Livro</code>, <code>Filme</code> ou
+          <code>Musica</code>. Ela apenas espera que o objeto possua os
+          atributos <code>titulo</code> e <code>autor</code>. Como todas as
+          classes possuem esses atributos, todas funcionam normalmente.
         </p>
 
         <div class="code-container">
@@ -275,9 +303,24 @@ class Musica:
 imprimir_dados(Livro("Dom Casmurro", "Machado de Assis"))
 imprimir_dados(Filme("O Poderoso Chefão", "Francis Ford Coppola"))
 imprimir_dados(Musica("Bohemian Rhapsody", "Queen"))
-          </code></pre>
+    </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <p>
+          Perceba que a função nunca verifica se o objeto é um
+          <code>Livro</code>, um <code>Filme</code> ou uma <code>Musica</code>.
+          Ela simplesmente utiliza os atributos <code>titulo</code> e
+          <code>autor</code>. Se um objeto possuir esses atributos, ele
+          funcionará. Caso contrário, o Python gerará um
+          <code>AttributeError</code> apenas no momento da execução.
+        </p>
+
+        <p>
+          Em resumo, no Duck Typing o que importa não é
+          <strong>o tipo do objeto</strong>, mas sim
+          <strong>o que ele é capaz de fazer</strong>.
+        </p>
       </section>
 
       <section>
@@ -725,6 +768,13 @@ git checkout -b aula10-poo-biblioteca
 
         <h3>Passo 1 — Criar a pasta da aula</h3>
 
+        <p>
+          Remova todo o conteúdo pelo vscode, exceto a pasta <code>venv</code>,
+          o arquivo <code>.gitignore</code> e o arquivo <code>readme.md</code>.
+        </p>
+
+        <p>Depois disso, abra o terminal e digite os comandos abaixo:</p>
+
         <div class="code-container">
           <pre><code class="language-bash">
 mkdir aula10_biblioteca
@@ -1087,7 +1137,6 @@ python biblioteca.py
 
         <div class="code-container">
           <pre><code class="language-bash">
-git status
 git add .
 git commit -m "aula10: POO em Python - Sistema de Biblioteca"
 git push origin aula10-poo-biblioteca
