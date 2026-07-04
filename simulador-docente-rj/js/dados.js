@@ -234,6 +234,32 @@ var DIESP = {
 
 var MAX_CARGA_SEMANAL = 65;   // Art. 8º, Dec. 46.920/20 — soma de cargos efetivos + GLP
 
+var INSS_FAIXAS = [
+  { ate: 1621.00, aliquota: 0.075, deducao: 0 },
+  { ate: 2902.84, aliquota: 0.09, deducao: 24.32 },
+  { ate: 4354.27, aliquota: 0.12, deducao: 111.40 },
+  { ate: 8475.55, aliquota: 0.14, deducao: 198.49 },
+  { ate: Infinity, aliquota: 0, deducao: 0, teto: 8475.55 },
+];
+
+var SALARIO_MINIMO = 1518.00;
+
+var FAIXAS_IRPF_ANUAL = [
+  { ate: 29143.20, aliquota: 0,       deducao: 0 },
+  { ate: 33919.80, aliquota: 0.075,   deducao: 2185.74 },
+  { ate: 45012.60, aliquota: 0.15,    deducao: 4729.94 },
+  { ate: 55976.16, aliquota: 0.225,   deducao: 8105.88 },
+  { ate: Infinity, aliquota: 0.275,   deducao: 10904.76 },
+];
+
+var LIMITE_DESCONTO_SIMPLIFICADO = 16754.34;
+
+var TIPO_OUTRA_RENDA = {
+  clt: { nome: "CLT (particular)" },
+  pj: { nome: "Pessoa Jurídica / MEI" },
+  rede_federal: { nome: "Rede Federal ou Municipal" },
+};
+
 var RECOMPOSICOES = [
   { id: "parcela1",  descricao: "1ª parcela IPCA (50%) — Lei 9.436/21", pct: 13.05, competencia: "2022-01", jaAplicado: true },
   { id: "extra2023", descricao: "Recomposição extra — Lei 9.952/23",      pct:  5.90, competencia: "2023-01", jaAplicado: true },
