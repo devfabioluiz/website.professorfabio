@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 10 - Programação Orientada a Objetos com Python - IT Step</title>
+    <title>
+      Aula 10 - Programação Orientada a Objetos com Python - IT Step
+    </title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -15,46 +17,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-
-    
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 10</h1>
       <h4 class="text-center">Python Backend</h4>
       <h4 class="text-center">Programação Orientada a Objetos em Python</h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Introdução a POO, Classes e Objetos, Métodos mágicos, Herança múltipla e MRO, Polimorfismo e operadores.
+        Introdução a POO, Classes e Objetos, Métodos mágicos, Herança múltipla e
+        MRO, Polimorfismo e operadores.
       </div>
     </header>
 
     <main class="container">
-
       <section>
         <h2>Objetivo da aula</h2>
         <p>
-          Nesta aula, vamos mergulhar em um dos pilares mais importantes da programação moderna:
-          <strong>Orientação a Objetos</strong>. Você vai aprender a modelar problemas do mundo
-          real usando classes, encapsular dados, reutilizar código com herança, aplicar
-          polimorfismo e usar métodos especiais do Python.
+          Nesta aula, vamos mergulhar em um dos pilares mais importantes da
+          programação moderna:
+          <strong>Orientação a Objetos</strong>. Você vai aprender a modelar
+          problemas do mundo real usando classes, encapsular dados, reutilizar
+          código com herança, aplicar polimorfismo e usar métodos especiais do
+          Python.
         </p>
         <p>
-          <strong>Projeto:</strong> Vamos construir um <strong>Sistema de Biblioteca</strong>
+          <strong>Projeto:</strong> Vamos construir um
+          <strong>Sistema de Biblioteca</strong>
           executável pelo terminal — sem framework, Python puro.
         </p>
 
         <h3>Conteúdos da aula</h3>
         <ul>
-          <li>Classes e Objetos — <code>class</code>, <code>__init__</code>, <code>self</code></li>
-          <li>Encapsulamento — <code>_protegido</code>, <code>__privado</code>, <code>@property</code></li>
+          <li>
+            Classes e Objetos — <code>class</code>, <code>__init__</code>,
+            <code>self</code>
+          </li>
+          <li>
+            Encapsulamento — <code>_protegido</code>, <code>__privado</code>,
+            <code>@property</code>
+          </li>
           <li>Duck Typing — "se anda como pato, é um pato"</li>
-          <li>Métodos mágicos — <code>__str__</code>, <code>__repr__</code>, <code>__eq__</code>, <code>__len__</code></li>
+          <li>
+            Métodos mágicos — <code>__str__</code>, <code>__repr__</code>,
+            <code>__eq__</code>, <code>__len__</code>
+          </li>
           <li>Herança — simples, múltipla e MRO</li>
           <li>Polimorfismo — mesmo método, comportamentos diferentes</li>
-          <li>Sobrecarga de operadores — <code>__add__</code>, <code>__gt__</code>, <code>__contains__</code></li>
+          <li>
+            Sobrecarga de operadores — <code>__add__</code>,
+            <code>__gt__</code>, <code>__contains__</code>
+          </li>
         </ul>
       </section>
 
@@ -62,8 +79,9 @@
         <h2>1. Classes e Objetos</h2>
 
         <p>
-          Uma <strong>classe</strong> é um molde. Um <strong>objeto</strong> é uma instância
-          concreta desse molde. Pense numa fôrma de bolo (classe) e nos bolos que saem dela (objetos).
+          Uma <strong>classe</strong> é um molde. Um <strong>objeto</strong> é
+          uma instância concreta desse molde. Pense numa fôrma de bolo (classe)
+          e nos bolos que saem dela (objetos).
         </p>
 
         <h3>Estrutura básica</h3>
@@ -112,20 +130,36 @@ print(Livro.total_livros)     # 2
 
         <h3>self — o que é?</h3>
         <p>
-          <code>self</code> representa a <strong>própria instância</strong>. Quando você chama
-          <code>livro1.emprestar()</code>, o Python traduz para <code>Livro.emprestar(livro1)</code>.
-          É assim que cada objeto sabe quais são seus próprios dados.
+          <code>self</code> representa a <strong>própria instância</strong>.
+          Quando você chama <code>livro1.emprestar()</code>, o Python traduz
+          para <code>Livro.emprestar(livro1)</code>. É assim que cada objeto
+          sabe quais são seus próprios dados.
         </p>
 
         <h3>Atributo de classe vs Atributo de instância</h3>
 
         <table>
           <thead>
-            <tr><th>Tipo</th><th>Definido com</th><th>Compartilhado?</th><th>Exemplo</th></tr>
+            <tr>
+              <th>Tipo</th>
+              <th>Definido com</th>
+              <th>Compartilhado?</th>
+              <th>Exemplo</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>De classe</td><td>Fora do <code>__init__</code></td><td>Sim (todos os objetos)</td><td><code>total_livros</code></td></tr>
-            <tr><td>De instância</td><td>Dentro do <code>__init__</code> com <code>self.</code></td><td>Não (cada um tem o seu)</td><td><code>titulo</code></td></tr>
+            <tr>
+              <td>De classe</td>
+              <td>Fora do <code>__init__</code></td>
+              <td>Sim (todos os objetos)</td>
+              <td><code>total_livros</code></td>
+            </tr>
+            <tr>
+              <td>De instância</td>
+              <td>Dentro do <code>__init__</code> com <code>self.</code></td>
+              <td>Não (cada um tem o seu)</td>
+              <td><code>titulo</code></td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -134,18 +168,34 @@ print(Livro.total_livros)     # 2
         <h2>2. Encapsulamento</h2>
 
         <p>
-          Encapsulamento é esconder detalhes internos do objeto e expor apenas
-          o que é necessário. Em Python, usamos convenções de nomenclatura.
+          Encapsulamento é esconder detalhes internos do objeto e expor apenas o
+          que é necessário. Em Python, usamos convenções de nomenclatura.
         </p>
 
         <table>
           <thead>
-            <tr><th>Convenção</th><th>Significado</th><th>Exemplo</th></tr>
+            <tr>
+              <th>Convenção</th>
+              <th>Significado</th>
+              <th>Exemplo</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td><code>atributo</code></td><td>Público — qualquer um pode acessar</td><td><code>self.titulo</code></td></tr>
-            <tr><td><code>_atributo</code></td><td>Protegido — "não mexa, mas se quiser..."</td><td><code>self._estoque</code></td></tr>
-            <tr><td><code>__atributo</code></td><td>Privado — Python renomeia (name mangling)</td><td><code>self.__senha</code></td></tr>
+            <tr>
+              <td><code>atributo</code></td>
+              <td>Público — qualquer um pode acessar</td>
+              <td><code>self.titulo</code></td>
+            </tr>
+            <tr>
+              <td><code>_atributo</code></td>
+              <td>Protegido — "não mexa, mas se quiser..."</td>
+              <td><code>self._estoque</code></td>
+            </tr>
+            <tr>
+              <td><code>__atributo</code></td>
+              <td>Privado — Python renomeia (name mangling)</td>
+              <td><code>self.__senha</code></td>
+            </tr>
           </tbody>
         </table>
 
@@ -194,8 +244,9 @@ print(usuario.email)      # ana@nova.com
         <h2>3. Duck Typing</h2>
 
         <p>
-          Em Python, não importa o tipo do objeto — importa o que ele <strong>faz</strong>.
-          Se um objeto tem o método <code>quack()</code>, ele pode ser tratado como pato.
+          Em Python, não importa o tipo do objeto — importa o que ele
+          <strong>faz</strong>. Se um objeto tem o método <code>quack()</code>,
+          ele pode ser tratado como pato.
         </p>
 
         <div class="code-container">
@@ -233,25 +284,61 @@ imprimir_dados(Musica("Bohemian Rhapsody", "Queen"))
         <h2>4. Métodos Mágicos (Dunder Methods)</h2>
 
         <p>
-          Métodos com <code>__nome__</code> são chamados automaticamente pelo Python
-          em situações específicas. Eles tornam seus objetos "nativos".
+          Métodos com <code>__nome__</code> são chamados automaticamente pelo
+          Python em situações específicas. Eles tornam seus objetos "nativos".
         </p>
 
         <h3>Os mais importantes</h3>
 
         <table>
           <thead>
-            <tr><th>Método</th><th>Quando é chamado</th><th>Gatilho</th></tr>
+            <tr>
+              <th>Método</th>
+              <th>Quando é chamado</th>
+              <th>Gatilho</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td><code>__init__</code></td><td>Ao criar o objeto</td><td><code>obj = Classe()</code></td></tr>
-            <tr><td><code>__str__</code></td><td>Representação para o usuário</td><td><code>print(obj)</code>, <code>str(obj)</code></td></tr>
-            <tr><td><code>__repr__</code></td><td>Representação para o desenvolvedor</td><td><code>repr(obj)</code>, console interativo</td></tr>
-            <tr><td><code>__eq__</code></td><td>Comparação de igualdade</td><td><code>obj1 == obj2</code></td></tr>
-            <tr><td><code>__len__</code></td><td>Tamanho do objeto</td><td><code>len(obj)</code></td></tr>
-            <tr><td><code>__iter__</code></td><td>Iteração em loop</td><td><code>for item in obj:</code></td></tr>
-            <tr><td><code>__getitem__</code></td><td>Acesso por índice</td><td><code>obj[0]</code></td></tr>
-            <tr><td><code>__contains__</code></td><td>Verificação de pertencimento</td><td><code>item in obj</code></td></tr>
+            <tr>
+              <td><code>__init__</code></td>
+              <td>Ao criar o objeto</td>
+              <td><code>obj = Classe()</code></td>
+            </tr>
+            <tr>
+              <td><code>__str__</code></td>
+              <td>Representação para o usuário</td>
+              <td><code>print(obj)</code>, <code>str(obj)</code></td>
+            </tr>
+            <tr>
+              <td><code>__repr__</code></td>
+              <td>Representação para o desenvolvedor</td>
+              <td><code>repr(obj)</code>, console interativo</td>
+            </tr>
+            <tr>
+              <td><code>__eq__</code></td>
+              <td>Comparação de igualdade</td>
+              <td><code>obj1 == obj2</code></td>
+            </tr>
+            <tr>
+              <td><code>__len__</code></td>
+              <td>Tamanho do objeto</td>
+              <td><code>len(obj)</code></td>
+            </tr>
+            <tr>
+              <td><code>__iter__</code></td>
+              <td>Iteração em loop</td>
+              <td><code>for item in obj:</code></td>
+            </tr>
+            <tr>
+              <td><code>__getitem__</code></td>
+              <td>Acesso por índice</td>
+              <td><code>obj[0]</code></td>
+            </tr>
+            <tr>
+              <td><code>__contains__</code></td>
+              <td>Verificação de pertencimento</td>
+              <td><code>item in obj</code></td>
+            </tr>
           </tbody>
         </table>
 
@@ -316,8 +403,9 @@ print("Harry Potter" in acervo)  # False
         <h2>5. Herança</h2>
 
         <p>
-          Herança permite que uma classe <strong>filha</strong> herde atributos e métodos
-          de uma classe <strong>pai</strong>, reutilizando e estendendo código.
+          Herança permite que uma classe <strong>filha</strong> herde atributos
+          e métodos de uma classe <strong>pai</strong>, reutilizando e
+          estendendo código.
         </p>
 
         <h3>5.1 — Herança Simples</h3>
@@ -385,9 +473,9 @@ print(fisico.emprestado)  # True
         <h3>5.2 — Herança Múltipla e MRO</h3>
 
         <p>
-          Python permite herdar de <strong>várias</strong> classes ao mesmo tempo.
-          O <strong>MRO (Method Resolution Order)</strong> define a ordem em que o Python
-          busca métodos quando há conflito de nomes.
+          Python permite herdar de <strong>várias</strong> classes ao mesmo
+          tempo. O <strong>MRO (Method Resolution Order)</strong> define a ordem
+          em que o Python busca métodos quando há conflito de nomes.
         </p>
 
         <div class="code-container">
@@ -442,8 +530,8 @@ print(livro.info())              # de ItemBiblioteca
         </div>
 
         <p>
-          <strong>Regra do MRO:</strong> Python segue a ordem da esquerda para direita
-          na declaração da classe, usando o algoritmo C3 Linearization.
+          <strong>Regra do MRO:</strong> Python segue a ordem da esquerda para
+          direita na declaração da classe, usando o algoritmo C3 Linearization.
           Classes mais à esquerda têm prioridade.
         </p>
       </section>
@@ -452,8 +540,9 @@ print(livro.info())              # de ItemBiblioteca
         <h2>6. Polimorfismo</h2>
 
         <p>
-          Polimorfismo significa "muitas formas". O <strong>mesmo nome de método</strong>
-          pode ter <strong>comportamentos diferentes</strong> em classes diferentes.
+          Polimorfismo significa "muitas formas". O
+          <strong>mesmo nome de método</strong> pode ter
+          <strong>comportamentos diferentes</strong> em classes diferentes.
         </p>
 
         <div class="code-container">
@@ -494,8 +583,8 @@ for item in itens:
         <h2>7. Sobrecarga de Operadores</h2>
 
         <p>
-          Você pode definir como os operadores (<code>+</code>, <code>-</code>, <code>></code>,
-          etc.) se comportam com seus objetos.
+          Você pode definir como os operadores (<code>+</code>, <code>-</code>,
+          <code>></code>, etc.) se comportam com seus objetos.
         </p>
 
         <div class="code-container">
@@ -545,19 +634,63 @@ print(livro1 == livro3)   # True (mesmo título)
 
         <table>
           <thead>
-            <tr><th>Operador</th><th>Método</th><th>Exemplo</th></tr>
+            <tr>
+              <th>Operador</th>
+              <th>Método</th>
+              <th>Exemplo</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td><code>+</code></td><td><code>__add__</code></td><td><code>a + b</code></td></tr>
-            <tr><td><code>-</code></td><td><code>__sub__</code></td><td><code>a - b</code></td></tr>
-            <tr><td><code>*</code></td><td><code>__mul__</code></td><td><code>a * b</code></td></tr>
-            <tr><td><code>==</code></td><td><code>__eq__</code></td><td><code>a == b</code></td></tr>
-            <tr><td><code>!=</code></td><td><code>__ne__</code></td><td><code>a != b</code></td></tr>
-            <tr><td><code>&lt;</code></td><td><code>__lt__</code></td><td><code>a &lt; b</code></td></tr>
-            <tr><td><code>&gt;</code></td><td><code>__gt__</code></td><td><code>a &gt; b</code></td></tr>
-            <tr><td><code>len()</code></td><td><code>__len__</code></td><td><code>len(a)</code></td></tr>
-            <tr><td><code>in</code></td><td><code>__contains__</code></td><td><code>x in a</code></td></tr>
-            <tr><td><code>[]</code></td><td><code>__getitem__</code></td><td><code>a[0]</code></td></tr>
+            <tr>
+              <td><code>+</code></td>
+              <td><code>__add__</code></td>
+              <td><code>a + b</code></td>
+            </tr>
+            <tr>
+              <td><code>-</code></td>
+              <td><code>__sub__</code></td>
+              <td><code>a - b</code></td>
+            </tr>
+            <tr>
+              <td><code>*</code></td>
+              <td><code>__mul__</code></td>
+              <td><code>a * b</code></td>
+            </tr>
+            <tr>
+              <td><code>==</code></td>
+              <td><code>__eq__</code></td>
+              <td><code>a == b</code></td>
+            </tr>
+            <tr>
+              <td><code>!=</code></td>
+              <td><code>__ne__</code></td>
+              <td><code>a != b</code></td>
+            </tr>
+            <tr>
+              <td><code>&lt;</code></td>
+              <td><code>__lt__</code></td>
+              <td><code>a &lt; b</code></td>
+            </tr>
+            <tr>
+              <td><code>&gt;</code></td>
+              <td><code>__gt__</code></td>
+              <td><code>a &gt; b</code></td>
+            </tr>
+            <tr>
+              <td><code>len()</code></td>
+              <td><code>__len__</code></td>
+              <td><code>len(a)</code></td>
+            </tr>
+            <tr>
+              <td><code>in</code></td>
+              <td><code>__contains__</code></td>
+              <td><code>x in a</code></td>
+            </tr>
+            <tr>
+              <td><code>[]</code></td>
+              <td><code>__getitem__</code></td>
+              <td><code>a[0]</code></td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -566,22 +699,26 @@ print(livro1 == livro3)   # True (mesmo título)
         <h2>Passo a passo: Sistema de Biblioteca</h2>
 
         <p>
-          Vamos construir um sistema completo de biblioteca executável pelo terminal.
-          Ele terá: cadastro de livros, empréstimos, devoluções, multas e busca.
+          Vamos construir um sistema completo de biblioteca executável pelo
+          terminal. Ele terá: cadastro de livros, empréstimos, devoluções,
+          multas e busca.
         </p>
 
         <h3>Passo 0 — Git</h3>
 
         <ul>
-          <li>Acesse o repositório <strong>projeto-python-step</strong> no GitHub</li>
+          <li>
+            Acesse o repositório <strong>projeto-python-step</strong> no GitHub
+          </li>
           <li>Crie a branch: <strong>aula10-poo-biblioteca</strong></li>
           <li>No VS Code, execute:</li>
         </ul>
 
         <div class="code-container">
-          <pre><code class="language-bash">
-git fetch
-git checkout aula10-poo-biblioteca
+          <pre><code class="language-bash">git fetch
+git checkout main
+git pull
+git checkout -b aula10-poo-biblioteca
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -941,7 +1078,10 @@ python biblioteca.py
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Interaja com o menu testando: listar acervo, emprestar um livro, devolver com atraso, buscar por título.</p>
+        <p>
+          Interaja com o menu testando: listar acervo, emprestar um livro,
+          devolver com atraso, buscar por título.
+        </p>
 
         <h3>Passo 5 — Salvar no Git</h3>
 
@@ -980,7 +1120,10 @@ git push origin aula10-poo-biblioteca
             </tr>
             <tr>
               <td>Encapsulamento</td>
-              <td><code>_protegido</code>, <code>__privado</code>, <code>@property</code></td>
+              <td>
+                <code>_protegido</code>, <code>__privado</code>,
+                <code>@property</code>
+              </td>
               <td>Getter/setter com validação</td>
             </tr>
             <tr>
@@ -990,8 +1133,14 @@ git push origin aula10-poo-biblioteca
             </tr>
             <tr>
               <td>Métodos mágicos</td>
-              <td><code>__str__</code>, <code>__len__</code>, <code>__eq__</code>, <code>__iter__</code></td>
-              <td><code>print(obj)</code>, <code>len(obj)</code>, <code>obj == outro</code></td>
+              <td>
+                <code>__str__</code>, <code>__len__</code>, <code>__eq__</code>,
+                <code>__iter__</code>
+              </td>
+              <td>
+                <code>print(obj)</code>, <code>len(obj)</code>,
+                <code>obj == outro</code>
+              </td>
             </tr>
             <tr>
               <td>Herança simples</td>
@@ -1015,8 +1164,13 @@ git push origin aula10-poo-biblioteca
             </tr>
             <tr>
               <td>Sobrecarga de operadores</td>
-              <td><code>__add__</code>, <code>__gt__</code>, <code>__contains__</code></td>
-              <td><code>a + b</code>, <code>a > b</code>, <code>x in a</code></td>
+              <td>
+                <code>__add__</code>, <code>__gt__</code>,
+                <code>__contains__</code>
+              </td>
+              <td>
+                <code>a + b</code>, <code>a > b</code>, <code>x in a</code>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -1026,14 +1180,14 @@ git push origin aula10-poo-biblioteca
         <h2>Dever de Casa</h2>
 
         <div id="question-container-casa">
-
           <div class="question">
             <h3>1. Adicione a classe AudioBook</h3>
             <p>
-              Crie uma nova classe <code>AudioBook</code> que herda de <code>ItemBiblioteca</code>,
-              com atributos <code>narrador</code> (str) e <code>duracao_horas</code> (float).
-              Implemente <code>calcular_multa</code> com valor de R$ 3,00 por dia de atraso.
-              Adicione ao acervo da biblioteca.
+              Crie uma nova classe <code>AudioBook</code> que herda de
+              <code>ItemBiblioteca</code>, com atributos
+              <code>narrador</code> (str) e <code>duracao_horas</code> (float).
+              Implemente <code>calcular_multa</code> com valor de R$ 3,00 por
+              dia de atraso. Adicione ao acervo da biblioteca.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -1065,8 +1219,9 @@ bib.adicionar_item(AudioBook("O Hobbit", "J.R.R. Tolkien", 1937, "Mauro Ramos", 
           <div class="question">
             <h3>2. Adicione histórico de empréstimos no Usuario</h3>
             <p>
-              Modifique a classe <code>Usuario</code> para manter um <strong>histórico completo</strong>
-              de empréstimos (incluindo os já devolvidos). Adicione o método <code>exibir_historico()</code>
+              Modifique a classe <code>Usuario</code> para manter um
+              <strong>histórico completo</strong> de empréstimos (incluindo os
+              já devolvidos). Adicione o método <code>exibir_historico()</code>
               que mostra todos os empréstimos do usuário, com data e status.
             </p>
 
@@ -1114,9 +1269,10 @@ class Usuario:
           <div class="question">
             <h3>3. Implemente o método __add__ na Biblioteca</h3>
             <p>
-              Sobrecarregue o operador <code>+</code> na classe <code>Biblioteca</code> para
-              que <code>biblioteca1 + biblioteca2</code> retorne uma nova biblioteca com o
-              acervo combinado das duas.
+              Sobrecarregue o operador <code>+</code> na classe
+              <code>Biblioteca</code> para que
+              <code>biblioteca1 + biblioteca2</code> retorne uma nova biblioteca
+              com o acervo combinado das duas.
             </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
@@ -1148,46 +1304,42 @@ print(bib3)  # 📚 Sala A + Sala B — 2 itens no acervo
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-        <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
-        <div class="alert-box-github">
-          <h2 class="alert-title-github">
-            📌 Confira o resultado da aplicação
-          </h2>
+      <h3>Último Passo - Conferindo resultado da nossa aplicação</h3>
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
 
-          <p>
-            Agora é importante que você valide se tudo está funcionando
-            corretamente na sua aplicação. Execute o projeto, teste os endpoints
-            e observe se os comportamentos estão de acordo com o esperado.
-          </p>
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente na sua aplicação. Execute o projeto, teste os endpoints e
+          observe se os comportamentos estão de acordo com o esperado.
+        </p>
 
-          <p>
-            Compare sua implementação com uma versão funcional da nossa aula em
-            <a
-              href="https://github.com/devfabioluiz/projeto-python-step"
-              target="_blank"
-              class="alert-link-github"
-            >
-              github.com/devfabioluiz/projeto-python-step
-            </a>
-          </p>
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/projeto-python-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-python-step
+          </a>
+        </p>
 
-          <p>
-            Dentro do repositório, selecione a branch correspondente à aula que
-            você está estudando. O padrão utilizado é:
-          </p>
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
 
-          <ul>
-            <li><code>aula1</code></li>
-            <li><code>aula2</code></li>
-            <li><code>aula3</code></li>
-            <li>...</li>
-          </ul>
-        </div>
-
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
     </main>
 
     <script src="../../scripts/copy-clipboard.js"></script>
