@@ -169,12 +169,6 @@ function montarCardOutraRenda(resultadoOutraRenda) {
     '<div class="border-t border-emerald-200 my-1"></div>' +
     '<div class="flex justify-between font-medium text-emerald-800"><span>Total Outra Renda</span><span>R$ ' +
     formatarReal(resultadoOutraRenda.liquido) + '</span></div>' +
-    (resultadoOutraRenda.decimoTerceiro > 0 ? '<div class="flex justify-between"><span>+13º proporcional</span><span class="text-green-600">R$ ' +
-      formatarReal(resultadoOutraRenda.decimoTerceiro) + '</span></div>' : '') +
-    (resultadoOutraRenda.ferias > 0 ? '<div class="flex justify-between"><span>+Férias proporcional</span><span class="text-green-600">R$ ' +
-      formatarReal(resultadoOutraRenda.ferias) + '</span></div>' : '') +
-    (resultadoOutraRenda.fgts > 0 ? '<div class="flex justify-between"><span>+FGTS</span><span class="text-green-600">R$ ' +
-      formatarReal(resultadoOutraRenda.fgts) + '</span></div>' : '') +
     '<div class="border-t border-emerald-200 my-1"></div>' +
     '<div class="flex justify-between font-bold text-emerald-800"><span>Líquido mensalizado</span><span>R$ ' +
     formatarReal(resultadoOutraRenda.liquidoMensalizado) + '</span></div>' +
@@ -227,18 +221,6 @@ function montarComparacao(seeducResult, outraRendaResult) {
   html += '</div>';
 
   html += '</div>';
-
-  if (outraRendaResult) {
-    var combinado = round2(outraRendaResult.liquidoMensalizado + liquidoSeeduc);
-    var diferenca = round2(combinado - liquidoSeeduc);
-    html += '<div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">';
-    html += 'Comparado a <strong>apenas SEEDUC (R$ ' + formatarReal(liquidoSeeduc) + ')</strong>, ';
-    html += 'com <strong>' + outraRendaResult.tipoNome + '</strong> você <strong>aumenta em R$ ' +
-      formatarReal(diferenca) + '</strong> sua renda mensal líquida';
-    html += '<br/><span class="text-amber-500">(considerando ' + outraRendaResult.tipoNome + ' como renda líquida mensalizada de R$ ' +
-      formatarReal(outraRendaResult.liquidoMensalizado) + ')</span>';
-    html += '</div>';
-  }
 
   html += '</div>';
 

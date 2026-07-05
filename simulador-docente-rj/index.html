@@ -26,6 +26,19 @@
   <body class="bg-gray-100 min-h-screen py-8 px-4">
     <div class="max-w-xl mx-auto">
       <div class="text-center mb-6">
+        <svg
+          class="w-10 h-10 text-seeduc-600 mx-auto mb-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
+          />
+        </svg>
         <div
           class="inline-block bg-seeduc-600 text-white text-xs font-semibold px-3 py-1 rounded-full mb-2"
         >
@@ -375,9 +388,10 @@
               </label>
             </div>
             <p id="msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
-              GLP, Difícil Provimento, Difícil Acesso, Grat. DIESP e gratificações
-              de função não se aplicam ao servidor cedido. Mantém-se
-              vencimento-base, triênio, AQ e auxílios (Dec. 47.469/21 para PROMURJ).
+              GLP, Difícil Provimento, Difícil Acesso, Grat. DIESP e
+              gratificações de função não se aplicam ao servidor cedido.
+              Mantém-se vencimento-base, triênio, AQ e auxílios (Dec. 47.469/21
+              para PROMURJ).
             </p>
           </div>
 
@@ -453,6 +467,62 @@
             </div>
           </div>
         </div>
+
+        <!-- Migração 18h → 30h (Decreto 49.026/2024) -->
+        <div id="migracao-30h-section" class="hidden mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Migrado do regime de 18h (Decreto 49.026/2024)?</label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="migrado-18h"
+                value="nao"
+                checked
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Não</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="migrado-18h"
+                value="sim"
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Sim</span>
+            </label>
+          </div>
+          <div id="rubrica-prev-section" class="hidden mt-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Incluir rubrica da migração na base de contribuição
+              previdenciária?</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="incluir-rubrica-prev"
+                  value="sim"
+                  checked
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="incluir-rubrica-prev"
+                  value="nao"
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <!-- close matricula1-section -->
 
         <!-- Dependentes -->
@@ -474,16 +544,23 @@
         <div class="mb-2">
           <label class="block text-sm font-semibold text-gray-700 mb-1"
             >Pensão Alimentícia (mensal)
-            <span class="text-gray-400 font-normal"></span></label
-          >
-          <input
-            type="number"
-            id="pensao-alimenticia"
-            min="0"
-            step="0.01"
-            value="0"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-          />
+            <span class="text-gray-400 font-normal"></span
+          ></label>
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none select-none"
+              >R$</span
+            >
+            <input
+              type="text"
+              id="pensao-alimenticia"
+              inputmode="decimal"
+              value=""
+              placeholder="0,00"
+              autocomplete="off"
+              class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            />
+          </div>
         </div>
       </div>
 
@@ -582,9 +659,7 @@
             id="m2-categoria-escola"
             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
           >
-            <option value="A">
-              A — mais de 50 turmas ou horário integral
-            </option>
+            <option value="A">A — mais de 50 turmas ou horário integral</option>
             <option value="B">B — 31 a 50 turmas</option>
             <option value="C">C — 16 a 30 turmas</option>
             <option value="D">D — 6 a 15 turmas</option>
@@ -820,9 +895,7 @@
                 value="sim"
                 class="accent-blue-600 m2-cedido-radio"
               />
-              <span class="text-sm text-gray-700"
-                >Sim (cessão/disposição)</span
-              >
+              <span class="text-sm text-gray-700">Sim (cessão/disposição)</span>
             </label>
           </div>
           <p id="m2-msg-cedido" class="text-xs text-amber-600 mt-1 hidden">
@@ -889,125 +962,8 @@
             />
           </div>
         </div>
-
-      </div>  <!-- fim bg-white card -->
-
-      <!-- OUTRAS RENDAS -->
-      <details id="outras-rendas-section" class="mt-5">
-        <summary class="text-sm font-bold text-emerald-700 cursor-pointer hover:text-emerald-800 transition select-none">
-          Outras Rendas — comparar cenários
-        </summary>
-        <div class="mt-3 space-y-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de outra renda</label>
-            <select
-              id="tipo-outra-renda"
-              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-            >
-              <option value="">Nenhuma</option>
-              <option value="clt">CLT (particular)</option>
-              <option value="pj">Pessoa Jurídica / MEI</option>
-              <option value="rede_federal">Rede Federal ou Municipal</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Renda Bruta Mensal</label>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none select-none">R$</span>
-              <input
-                type="text"
-                id="renda-outra"
-                inputmode="decimal"
-                value=""
-                placeholder="0,00"
-                autocomplete="off"
-                class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-              />
-            </div>
-          </div>
-          <div id="comparar-cenarios"></div>
-        </div>
-      </details>
-
-      <!-- IRPF ANUAL -->
-      <details id="irpf-anual-section" class="mt-5">
-        <summary
-          class="text-sm font-bold text-purple-700 cursor-pointer hover:text-purple-800 transition select-none"
-        >
-          IRPF Anual — Declaração de Ajuste
-        </summary>
-        <div
-          class="mt-3 space-y-3 p-3 bg-purple-50 rounded-lg border border-purple-200"
-        >
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-3 mt-2"
-                >Despesas com Saúde (mensal)</label
-              >
-              <div class="relative">
-                <span
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
-                  >R$</span
-                >
-                <input
-                  type="text"
-                  id="saude-mensal"
-                  inputmode="decimal"
-                  value=""
-                  placeholder="0,00"
-                  autocomplete="off"
-                  class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1"
-                >Despesas com Educação (mensal)</label
-              >
-              <div class="relative">
-                <span
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
-                  >R$</span
-                >
-                <input
-                  type="text"
-                  id="educacao-mensal"
-                  inputmode="decimal"
-                  value=""
-                  placeholder="0,00"
-                  autocomplete="off"
-                  class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1"
-                >Previdência Privada / PGBL (mensal)</label
-              >
-              <div class="relative">
-                <span
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
-                  >R$</span
-                >
-                <input
-                  type="text"
-                  id="previdencia-privada-mensal"
-                  inputmode="decimal"
-                  value=""
-                  placeholder="0,00"
-                  autocomplete="off"
-                  class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-            </div>
-          </div>
-          <div id="irpf-resultado" class="text-xs text-gray-600">
-            <div class="text-center text-gray-400 italic py-2">
-              Preencha os campos acima para ver a projeção anual do IRPF
-            </div>
-          </div>
-        </div>
-      </details>
+      </div>
+      <!-- fim bg-white card -->
 
       <!-- RESULTADO -->
       <div id="resultado" class="bg-white rounded-xl shadow-md p-6">
@@ -1018,6 +974,187 @@
         </h2>
 
         <div id="linhas-resultado" class="space-y-2 text-sm"></div>
+      </div>
+
+      <!-- Toggle IRPF Anual -->
+      <div class="mb-5 mt-5" id="irpf-toggle-section">
+        <label
+          class="flex items-center gap-3 cursor-pointer bg-purple-100 rounded-lg px-4 py-3 border border-purple-200"
+        >
+          <input
+            type="checkbox"
+            id="toggle-irpf-anual"
+            class="accent-purple-700 w-5 h-5"
+          />
+          <svg
+            class="w-5 h-5 text-purple-700 shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <span class="text-sm font-semibold text-gray-700"
+            >Simular IRPF anual a restituir ou pagar</span
+          >
+        </label>
+      </div>
+
+      <!-- IRPF Anual Section -->
+      <div
+        id="irpf-anual-section"
+        class="hidden bg-white rounded-xl shadow-md p-6 mb-6"
+      >
+        <h3
+          class="text-sm font-bold text-purple-800 mb-3 uppercase tracking-wide border-b border-purple-200 pb-1"
+        >
+          Simular IRPF anual a restituir ou pagar
+        </h3>
+        <div class="space-y-4">
+          <!-- Incluir outra renda no IRPF -->
+          <div class="border-t border-purple-200 pt-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Incluir outra renda no IRPF?</label
+            >
+            <div class="flex gap-4 mb-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="outra-renda-irpf"
+                  value="nao"
+                  checked
+                  class="accent-purple-700"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="outra-renda-irpf"
+                  value="sim"
+                  class="accent-purple-700"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+            <div id="outra-renda-irpf-fields" class="hidden mt-3 space-y-3">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Tipo de outra renda</label
+                >
+                <select
+                  id="tipo-outra-renda"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                >
+                  <option value="">Nenhuma</option>
+                  <option value="clt">CLT (particular)</option>
+                  <option value="pj">Pessoa Jurídica / MEI</option>
+                  <option value="rede_federal">
+                    Rede Federal ou Municipal
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Renda Bruta Mensal</label
+                >
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none select-none"
+                    >R$</span
+                  >
+                  <input
+                    type="text"
+                    id="renda-outra"
+                    inputmode="decimal"
+                    value=""
+                    placeholder="0,00"
+                    autocomplete="off"
+                    class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  />
+                </div>
+              </div>
+              <div id="comparar-cenarios"></div>
+            </div>
+          </div>
+
+          <div class="border-t border-purple-200 pt-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label
+                  class="block text-xs font-semibold text-gray-700 mb-3 mt-2"
+                  >Despesas com Saúde (mensal)</label
+                >
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
+                    >R$</span
+                  >
+                  <input
+                    type="text"
+                    id="saude-mensal"
+                    inputmode="decimal"
+                    value=""
+                    placeholder="0,00"
+                    autocomplete="off"
+                    class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1"
+                  >Despesas com Educação (mensal)</label
+                >
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
+                    >R$</span
+                  >
+                  <input
+                    type="text"
+                    id="educacao-mensal"
+                    inputmode="decimal"
+                    value=""
+                    placeholder="0,00"
+                    autocomplete="off"
+                    class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1"
+                  >Previdência Privada / PGBL (mensal)</label
+                >
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none select-none"
+                    >R$</span
+                  >
+                  <input
+                    type="text"
+                    id="previdencia-privada-mensal"
+                    inputmode="decimal"
+                    value=""
+                    placeholder="0,00"
+                    autocomplete="off"
+                    class="w-full border border-gray-300 rounded-lg pl-8 pr-2 py-2 text-xs bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="irpf-resultado" class="text-xs text-gray-600">
+            <div class="text-center text-gray-400 italic py-2">
+              Preencha os campos acima para ver a projeção anual do IRPF
+            </div>
+          </div>
+        </div>
       </div>
 
       <p class="text-center text-xs text-gray-400 mt-4">
@@ -1092,7 +1229,8 @@
           var dependentes = parseInt(elDependentes.value) || 0;
 
           var brutaFullMensalSEEDUC = resultadoAtual.bruta;
-          var rendaTributavelMensal = (resultadoAtual.basePrev || 0) + (resultadoAtual.glpValor || 0);
+          var rendaTributavelMensal =
+            (resultadoAtual.basePrev || 0) + (resultadoAtual.glpValor || 0);
           var prevMensalSEEDUC = resultadoAtual.previdencia;
           var irrfMensal = resultadoAtual.irrf;
           var auxiliosMensal = resultadoAtual.auxilios || 0;
@@ -1115,20 +1253,28 @@
           var rendaOutraBrutaAnual = 0;
           var prevOutraAnual = 0;
           var irrfOutraAnual = 0;
-          var outraRendaFator = 13;  // CLT e Rede Federal têm 13º
+          var outraRendaFator = 13; // CLT e Rede Federal têm 13º
           if (tipoOutraRenda === "pj") outraRendaFator = 12;
 
           if (tipoOutraRenda && rendaOutraMensal > 0) {
-            var outraRendaResult = calcularOutraRenda(tipoOutraRenda, rendaOutraMensal);
+            var outraRendaResult = calcularOutraRenda(
+              tipoOutraRenda,
+              rendaOutraMensal,
+            );
             if (outraRendaResult) {
               rendaOutraBrutaAnual = rendaOutraMensal * outraRendaFator;
-              prevOutraAnual = (outraRendaResult.inss || outraRendaResult.previdencia || outraRendaResult.inssPJ || 0) * outraRendaFator;
+              prevOutraAnual =
+                (outraRendaResult.inss ||
+                  outraRendaResult.previdencia ||
+                  outraRendaResult.inssPJ ||
+                  0) * outraRendaFator;
               irrfOutraAnual = (outraRendaResult.irrf || 0) * outraRendaFator;
             }
           }
 
           // ── Total Anual (SEEDUC + Outras Rendas) ──
-          var rendaBrutaAnualTotal = rendaTributavelAnual + rendaOutraBrutaAnual;
+          var rendaBrutaAnualTotal =
+            rendaTributavelAnual + rendaOutraBrutaAnual;
           var previdenciaAnualTotal = previdenciaAnual + prevOutraAnual;
           var irrfAnualTotal = irrfAnual + irrfOutraAnual;
 
@@ -1139,7 +1285,10 @@
             prevPrivadaAnual +
             pensaoAnual +
             dependentesAnual;
-          var baseCompleto = Math.max(0, rendaBrutaAnualTotal - deducoesCompleto);
+          var baseCompleto = Math.max(
+            0,
+            rendaBrutaAnualTotal - deducoesCompleto,
+          );
 
           var completo = calcularIRPFAnualCompleto({
             rendaBrutaAnual: rendaBrutaAnualTotal,
@@ -1207,13 +1356,13 @@
 
           var completoLabel =
             p.melhor === "completo"
-              ? '<span class="text-purple-700 font-bold">R$ ' +
+              ? '<span class="text-purple-800 font-bold">R$ ' +
                 formatarReal(p.completo.impostoDevido) +
                 '</span> <span class="text-green-600 text-[10px]">✓ melhor opção</span>'
               : "R$ " + formatarReal(p.completo.impostoDevido);
           var simplificadoLabel =
             p.melhor === "simplificado"
-              ? '<span class="text-purple-700 font-bold">R$ ' +
+              ? '<span class="text-purple-800 font-bold">R$ ' +
                 formatarReal(p.simplificado.imposto) +
                 '</span> <span class="text-green-600 text-[10px]">✓ melhor opção</span>'
               : "R$ " + formatarReal(p.simplificado.imposto);
@@ -1233,10 +1382,17 @@
 
           elIrpfResultado.innerHTML =
             '<div class="space-y-2 pt-2 border-t border-purple-200">' +
-            '<div class="text-xs font-bold text-purple-800 mb-2">Projeção Anual (renda tributável SEEDUC × 13' + (p.rendaOutraBrutaAnual > 0 ? ' + ' + getNomeTipoOutraRenda(p.tipoOutraRenda) + ' × ' + p.outraRendaFator : '') + ')</div>' +
+            '<div class="text-xs font-bold text-purple-800 mb-2">Projeção Anual (renda tributável SEEDUC × 13' +
+            (p.rendaOutraBrutaAnual > 0
+              ? " + " +
+                getNomeTipoOutraRenda(p.tipoOutraRenda) +
+                " × " +
+                p.outraRendaFator
+              : "") +
+            ")</div>" +
             '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
-            '<div class="bg-white rounded border border-purple-100 p-2.5 space-y-1">' +
-            '<div class="text-[11px] font-semibold text-purple-700 mb-1.5">Modelo Completo</div>' +
+            '<div class="bg-white rounded border border-purple-200 p-2.5 space-y-1">' +
+            '<div class="text-[11px] font-semibold text-purple-800 mb-1.5">Modelo Completo</div>' +
             '<div class="flex justify-between"><span>Base de cálculo</span><span>R$ ' +
             formatarReal(p.baseCompleto) +
             "</span></div>" +
@@ -1248,7 +1404,7 @@
                 formatarReal(p.completo.redutor) +
                 "</span></div>"
               : "") +
-            '<div class="border-t border-purple-100 my-1"></div>' +
+            '<div class="border-t border-purple-200 my-1"></div>' +
             '<div class="flex justify-between font-semibold text-sm">' +
             "<span>Imposto devido</span><span>" +
             completoLabel +
@@ -1257,15 +1413,15 @@
             formatarReal(p.completo.aliquotaEfetiva) +
             "%</span></div>" +
             "</div>" +
-            '<div class="bg-white rounded border border-purple-100 p-2.5 space-y-1">' +
-            '<div class="text-[11px] font-semibold text-purple-700 mb-1.5">Desconto Simplificado (20%)</div>' +
+            '<div class="bg-white rounded border border-purple-200 p-2.5 space-y-1">' +
+            '<div class="text-[11px] font-semibold text-purple-800 mb-1.5">Desconto Simplificado (20%)</div>' +
             '<div class="flex justify-between"><span>Base de cálculo</span><span>R$ ' +
             formatarReal(p.simplificado.base) +
             "</span></div>" +
             '<div class="flex justify-between"><span>Desconto aplicado</span><span class="text-green-600">-R$ ' +
             formatarReal(p.simplificado.desconto) +
             "</span></div>" +
-            '<div class="border-t border-purple-100 my-1"></div>' +
+            '<div class="border-t border-purple-200 my-1"></div>' +
             '<div class="flex justify-between font-semibold text-sm">' +
             "<span>Imposto devido</span><span>" +
             simplificadoLabel +
@@ -1273,17 +1429,27 @@
             "</div>" +
             "</div>" +
             '<div class="bg-white rounded border border-purple-200 p-2.5 mt-2 space-y-1">' +
-            '<div class="text-[11px] font-semibold text-purple-700 mb-1">Resumo Anual</div>' +
+            '<div class="text-[11px] font-semibold text-purple-800 mb-1">Resumo Anual</div>' +
             (p.auxiliosAnual > 0
-              ? '<div class="flex justify-between"><span>Renda bruta SEEDUC (anual)</span><span>R$ ' + formatarReal(p.brutaFullAnual) + '</span></div>' +
-                '<div class="flex justify-between"><span>(-) Auxílios não tributáveis</span><span class="text-gray-400">-R$ ' + formatarReal(p.auxiliosAnual) + '</span></div>' +
+              ? '<div class="flex justify-between"><span>Renda bruta SEEDUC (anual)</span><span>R$ ' +
+                formatarReal(p.brutaFullAnual) +
+                "</span></div>" +
+                '<div class="flex justify-between"><span>(-) Auxílios não tributáveis</span><span class="text-gray-400">-R$ ' +
+                formatarReal(p.auxiliosAnual) +
+                "</span></div>" +
                 '<div class="flex justify-between font-medium"><span>Renda tributável SEEDUC</span><span>R$ ' +
                 formatarReal(p.rendaTributavelAnual) +
                 "</span></div>"
-              : '<div class="flex justify-between"><span>Renda SEEDUC (anual)</span><span>R$ ' + formatarReal(p.rendaTributavelAnual) + '</span></div>') +
+              : '<div class="flex justify-between"><span>Renda SEEDUC (anual)</span><span>R$ ' +
+                formatarReal(p.rendaTributavelAnual) +
+                "</span></div>") +
             (p.rendaOutraBrutaAnual > 0
-              ? '<div class="flex justify-between"><span>+ Renda ' + getNomeTipoOutraRenda(p.tipoOutraRenda) + '</span><span>R$ ' + formatarReal(p.rendaOutraBrutaAnual) + '</span></div>'
-              : '') +
+              ? '<div class="flex justify-between"><span>+ Renda ' +
+                getNomeTipoOutraRenda(p.tipoOutraRenda) +
+                "</span><span>R$ " +
+                formatarReal(p.rendaOutraBrutaAnual) +
+                "</span></div>"
+              : "") +
             '<div class="flex justify-between font-semibold"><span>Renda bruta total</span><span>R$ ' +
             formatarReal(p.rendaBrutaAnualTotal) +
             "</span></div>" +
@@ -1291,28 +1457,49 @@
             formatarReal(p.previdenciaAnualTotal) +
             "</span></div>" +
             (p.pensaoAnual > 0
-              ? '<div class="flex justify-between"><span>(-) Pensão alimentícia (anual)</span><span class="text-red-500">-R$ ' + formatarReal(p.pensaoAnual) + '</span></div>'
-              : '') +
+              ? '<div class="flex justify-between"><span>(-) Pensão alimentícia (anual)</span><span class="text-red-500">-R$ ' +
+                formatarReal(p.pensaoAnual) +
+                "</span></div>"
+              : "") +
             (p.dependentesAnual > 0
-              ? '<div class="flex justify-between"><span>(-) Dependentes (anual)</span><span class="text-red-500">-R$ ' + formatarReal(p.dependentesAnual) + '</span></div>'
-              : '') +
+              ? '<div class="flex justify-between"><span>(-) Dependentes (anual)</span><span class="text-red-500">-R$ ' +
+                formatarReal(p.dependentesAnual) +
+                "</span></div>"
+              : "") +
             '<div class="border-t border-gray-200 my-1"></div>' +
             (p.irrfOutraAnual > 0
-              ? '<div class="flex justify-between"><span>IRRF SEEDUC (anual)</span><span>R$ ' + formatarReal(p.irrfAnual) + '</span></div>' +
-                '<div class="flex justify-between"><span>IRRF ' + getNomeTipoOutraRenda(p.tipoOutraRenda) + ' (anual)</span><span>R$ ' + formatarReal(p.irrfOutraAnual) + '</span></div>'
-              : '<div class="flex justify-between"><span>IRRF pago no ano</span><span>R$ ' + formatarReal(p.irrfAnual) + '</span></div>') +
+              ? '<div class="flex justify-between"><span>IRRF SEEDUC (anual)</span><span>R$ ' +
+                formatarReal(p.irrfAnual) +
+                "</span></div>" +
+                '<div class="flex justify-between"><span>IRRF ' +
+                getNomeTipoOutraRenda(p.tipoOutraRenda) +
+                " (anual)</span><span>R$ " +
+                formatarReal(p.irrfOutraAnual) +
+                "</span></div>"
+              : '<div class="flex justify-between"><span>IRRF pago no ano</span><span>R$ ' +
+                formatarReal(p.irrfAnual) +
+                "</span></div>") +
             '<div class="flex justify-between"><span>IRRF total pago no ano</span><span>R$ ' +
             formatarReal(p.irrfAnualTotal) +
             "</span></div>" +
-            '<div class="flex justify-between font-semibold"><span>IRPF anual devido</span><span class="text-purple-700">R$ ' +
+            '<div class="flex justify-between font-semibold"><span>IRPF anual devido</span><span class="text-purple-800">R$ ' +
             formatarReal(p.impostoDevido) +
             "</span></div>" +
             (p.saudeAnual > 0 && p.melhor === "completo"
-              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Despesas saúde (anual)</span><span>-R$ ' + formatarReal(p.saudeAnual) + '</span></div>' : '') +
+              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Despesas saúde (anual)</span><span>-R$ ' +
+                formatarReal(p.saudeAnual) +
+                "</span></div>"
+              : "") +
             (p.educacaoAnual > 0 && p.melhor === "completo"
-              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Despesas educação (anual)</span><span>-R$ ' + formatarReal(p.educacaoAnual) + '</span></div>' : '') +
+              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Despesas educação (anual)</span><span>-R$ ' +
+                formatarReal(p.educacaoAnual) +
+                "</span></div>"
+              : "") +
             (p.prevPrivadaAnual > 0 && p.melhor === "completo"
-              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Previdência privada (anual)</span><span>-R$ ' + formatarReal(p.prevPrivadaAnual) + '</span></div>' : '') +
+              ? '<div class="flex justify-between text-[10px] text-gray-400"><span>(-) Previdência privada (anual)</span><span>-R$ ' +
+                formatarReal(p.prevPrivadaAnual) +
+                "</span></div>"
+              : "") +
             '<div class="border-t border-purple-200 my-1"></div>' +
             restituirHtml +
             pagarHtml +
@@ -1417,6 +1604,22 @@
             diesp: getDiesp(prefix),
             cedido: getCedido(prefix),
             abonoPermanencia: getAbonoPermanencia(prefix),
+            migrado18h: (function () {
+              var r = document.querySelector(
+                'input[name="migrado-18h"]:checked',
+              );
+              return r && r.value === "sim";
+            })(),
+            incluirRubricaPrev: (function () {
+              var mig = document.querySelector(
+                'input[name="migrado-18h"]:checked',
+              );
+              if (!mig || mig.value === "nao") return true;
+              var r = document.querySelector(
+                'input[name="incluir-rubrica-prev"]:checked',
+              );
+              return r && r.value === "sim";
+            })(),
           };
         }
 
@@ -1491,7 +1694,8 @@
           var cargo = CARGOS[el(prefix, "cargo").value];
           var funcaoKey = getFuncaoKey(prefix);
           var temFuncaoGratificada = funcaoKey && funcaoKey !== "nenhuma";
-          var semRegencia = (cargo && cargo.regencia === false) || temFuncaoGratificada;
+          var semRegencia =
+            (cargo && cargo.regencia === false) || temFuncaoGratificada;
           var radioCom = el(prefix, "regencia-com");
           var radioDemais = el(prefix, "regencia-demais");
           var labelCom = el(prefix, "label-regencia-com");
@@ -1565,6 +1769,7 @@
           el(prefix, "msg-cedido").classList.toggle("hidden", !cedido);
 
           atualizarAuxilioTransporte(prefix);
+          atualizarVisibilidadeMigracao();
         }
 
         // ── RENDER ──
@@ -1720,7 +1925,13 @@
             '<div class="flex justify-between"><span>Base de contribuição previdenciária:</span><span class="font-medium">R$ ' +
             formatarReal(r.basePrev) +
             "</span></div>";
-          if (r.exibeGLP || r.exibeDP || r.exibeDA || r.exibeDIESP || r.exibeAjudaCusto) {
+          if (
+            r.exibeGLP ||
+            r.exibeDP ||
+            r.exibeDA ||
+            r.exibeDIESP ||
+            r.exibeAjudaCusto
+          ) {
             var notas = [];
             if (r.exibeGLP || r.exibeDP || r.exibeDA)
               notas.push("GLP, Difícil Provimento e Difícil Acesso");
@@ -1760,9 +1971,13 @@
             linha("Remuneração Bruta", r.bruta, "text-gray-800 font-bold"),
           );
           linhas.push({ html: '<div class="h-1"></div>' });
-          linhas.push(
-            linha("Previdência RPPS (14%)", -r.previdencia, "text-red-500"),
-          );
+          var prevLabel = "Previdência RPPS (14%)";
+          if (r.rubricaMigracao > 0) {
+            linhas.push({
+              html: '<div class="text-[11px] text-amber-700 mt-1 mb-1">Contribuição sem a rubrica da migração 18h→30h (Decreto 49.026/2024)</div>',
+            });
+          }
+          linhas.push(linha(prevLabel, -r.previdencia, "text-red-500"));
           if (r.exibeAbonoPermanencia) {
             linhas.push(
               linha(
@@ -1843,6 +2058,9 @@
               : "") +
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m1.bruta, "font-medium") +
+            (m1.rubricaMigracao > 0
+              ? '<div class="text-amber-700 text-[10px] mt-0.5">* contribuição sem rubrica migração 18h→30h</div>'
+              : "") +
             linhaSimples("Previdência", -m1.previdencia, "text-red-500") +
             (m1.exibeAbonoPermanencia
               ? linhaSimples(
@@ -1891,6 +2109,9 @@
               : "") +
             '<div class="border-t border-blue-200 my-1"></div>' +
             linhaSimples("Bruta indiv.", m2.bruta, "font-medium") +
+            (m2.rubricaMigracao > 0
+              ? '<div class="text-amber-700 text-[10px] mt-0.5">* contribuição sem rubrica migração 18h→30h</div>'
+              : "") +
             linhaSimples("Previdência", -m2.previdencia, "text-red-500") +
             (m2.exibeAbonoPermanencia
               ? linhaSimples(
@@ -2018,6 +2239,11 @@
             ),
           );
           linhas.push({ html: '<div class="h-1"></div>' });
+          if (m1.rubricaMigracao > 0 || m2.rubricaMigracao > 0) {
+            linhas.push({
+              html: '<div class="text-[11px] text-amber-700 mt-1 mb-1">Contribuição ajustada pela exclusão da rubrica de migração 18h→30h (Dec. 49.026/2024)</div>',
+            });
+          }
           linhas.push(
             linha(
               "Previdência RPPS Total (14%)",
@@ -2098,7 +2324,13 @@
             '<div class="flex justify-between"><span>Base previdenciária total:</span><span class="font-medium">R$ ' +
             formatarReal(c.basePrev) +
             "</span></div>";
-          if (c.exibeGLP || c.exibeDP || c.exibeDA || c.exibeDIESP || c.exibeAjudaCusto) {
+          if (
+            c.exibeGLP ||
+            c.exibeDP ||
+            c.exibeDA ||
+            c.exibeDIESP ||
+            c.exibeAjudaCusto
+          ) {
             var notasComb = [];
             if (c.exibeGLP || c.exibeDP || c.exibeDA)
               notasComb.push("GLP, Difícil Provimento e Difícil Acesso");
@@ -2331,6 +2563,40 @@
           atualizarResultado();
         });
 
+        // Listener para o toggle IRPF Anual
+        var elToggleIrpf = document.getElementById("toggle-irpf-anual");
+        var elIrpfSection = document.getElementById("irpf-anual-section");
+        var elOutraRendaIrpfFields = document.getElementById(
+          "outra-renda-irpf-fields",
+        );
+
+        elToggleIrpf.addEventListener("change", function () {
+          elIrpfSection.classList.toggle("hidden", !elToggleIrpf.checked);
+          elToggleIrpf
+            .closest("#irpf-toggle-section")
+            .querySelector("span").textContent = elToggleIrpf.checked
+            ? "Simulação IRPF anual (ativado)"
+            : "Simular IRPF anual a restituir ou pagar";
+          if (elToggleIrpf.checked) {
+            atualizarResultado();
+          }
+        });
+
+        document
+          .querySelectorAll("input[name='outra-renda-irpf']")
+          .forEach(function (radio) {
+            radio.addEventListener("change", function () {
+              var incluir = radio.value === "sim";
+              elOutraRendaIrpfFields.classList.toggle("hidden", !incluir);
+              if (!incluir) {
+                elTipoOutraRenda.value = "";
+                elRendaOutra.value = "";
+                elRendaOutra.dataset.raw = "0.00";
+              }
+              atualizarResultado();
+            });
+          });
+
         // Shared listeners
         elDependentes.addEventListener("input", atualizarResultado);
         elPensaoAlimenticia.addEventListener("input", function () {
@@ -2358,6 +2624,51 @@
         elSaudeMensal.addEventListener("input", onIrpfInput);
         elEducacaoMensal.addEventListener("input", onIrpfInput);
         elPrevPrivadaMensal.addEventListener("input", onIrpfInput);
+
+        // ── EVENTOS MIGRAÇÃO 18h → 30h ──
+        function atualizarVisibilidadeMigracao() {
+          var cargo1 = document.getElementById("cargo").value;
+          var dual = isDual();
+          var cargo2 = dual ? document.getElementById("m2-cargo").value : "";
+          var is30h =
+            cargo1 === "docente1_30h" || (dual && cargo2 === "docente1_30h");
+          var sec = document.getElementById("migracao-30h-section");
+          if (sec) {
+            sec.classList.toggle("hidden", !is30h);
+            if (!is30h) {
+              var naoRadio = document.querySelector(
+                'input[name="migrado-18h"][value="nao"]',
+              );
+              if (naoRadio) naoRadio.checked = true;
+              document
+                .getElementById("rubrica-prev-section")
+                .classList.add("hidden");
+            }
+          }
+        }
+
+        document
+          .querySelectorAll('input[name="migrado-18h"]')
+          .forEach(function (r) {
+            r.addEventListener("change", function () {
+              var isSim = r.value === "sim";
+              document
+                .getElementById("rubrica-prev-section")
+                .classList.toggle("hidden", !isSim);
+              if (!isSim) {
+                var simRadio = document.querySelector(
+                  'input[name="incluir-rubrica-prev"][value="sim"]',
+                );
+                if (simRadio) simRadio.checked = true;
+              }
+              atualizarResultado();
+            });
+          });
+        document
+          .querySelectorAll('input[name="incluir-rubrica-prev"]')
+          .forEach(function (r) {
+            r.addEventListener("change", atualizarResultado);
+          });
 
         // ── INICIALIZAÇÃO ──
         addListeners("");

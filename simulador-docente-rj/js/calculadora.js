@@ -116,6 +116,23 @@ function calcularVencimentos(params) {
   var basePrev = round2(total + trienioValor + aqValor + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
 
+  // ── Migração 18h → 30h (Decreto 49.026/2024) ──
+  var rubricaMigracao = 0;
+  if (params.migrado18h && cargoKey === "docente1_30h" && !params.incluirRubricaPrev) {
+    var cargo18h = CARGOS["docente1_18h"];
+    if (params.refIndex < cargo18h.referencias.length) {
+      var ref18h = cargo18h.referencias[params.refIndex];
+      var vb18h = aplicarRecomposicoes(ref18h.vb, dataSim);
+      var total18h = round2(vb18h + Math.max(0, round2(PISO[18] - vb18h)));
+      var trienioValor18h = trienioPct > 0 ? round2(total18h * trienioPct / 100) : 0;
+      var aq18h = params.qualificacao === "nenhuma" ? 0 : aplicarRecomposicoes(AQ[18][params.qualificacao], dataSim);
+      var basePrev18h = round2(total18h + trienioValor18h + aq18h + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
+      rubricaMigracao = round2(basePrev - basePrev18h);
+      basePrev = basePrev18h;
+      previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
+    }
+  }
+
   var abonoPermanenciaValor = params.abonoPermanencia ? previdencia : 0;
 
   var auxTransporte = params.comRegencia ? TRANSPORTE.comRegencia : TRANSPORTE.demais;
@@ -166,6 +183,7 @@ function calcularVencimentos(params) {
     exibeAdicionalFuncao: adicionalFuncao > 0,
     exibeAjudaCusto: ajudaCusto > 0,
     exibeConversao40h: false,
+    rubricaMigracao: rubricaMigracao,
   };
 }
 
@@ -224,6 +242,7 @@ function calcular(params) {
     exibeAdicionalFuncao: r.exibeAdicionalFuncao,
     exibeAjudaCusto: r.exibeAjudaCusto,
     exibeConversao40h: false,
+    rubricaMigracao: r.rubricaMigracao,
   };
 }
 
@@ -242,6 +261,8 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     diesp: params1.diesp,
     cedido: params1.cedido,
     abonoPermanencia: params1.abonoPermanencia,
+    migrado18h: params1.migrado18h,
+    incluirRubricaPrev: params1.incluirRubricaPrev,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });
@@ -260,6 +281,8 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     diesp: params2.diesp,
     cedido: params2.cedido,
     abonoPermanencia: params2.abonoPermanencia,
+    migrado18h: params2.migrado18h,
+    incluirRubricaPrev: params2.incluirRubricaPrev,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });
