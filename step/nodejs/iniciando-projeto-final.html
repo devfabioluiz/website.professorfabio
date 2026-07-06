@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciando nosso projeto Final - Node.js</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Iniciando nosso projeto Final</h1>
+      <h4 class="text-center">Node.js</h4>
+      <div class="topicos-aula">
+        <strong>Projeto Final:</strong>
+        API REST completa com Express, MongoDB, Autenticação JWT e CRUD de
+        produtos.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O Projeto Final</h2>
+
+        <p>
+          Neste projeto final você criará uma <strong>API REST completa</strong>
+          que servirá como backend para os projetos finais de
+          <strong>React</strong> e <strong>Angular</strong>.
+        </p>
+
+        <p>
+          A API deve ser criada dentro de uma branch chamada
+          <strong>projeto-final</strong> no repositório
+          <strong>projeto-node-step</strong>.
+        </p>
+
+        <p>A API terá os seguintes recursos:</p>
+
+        <ul>
+          <li>
+            <strong>Produtos</strong> — CRUD completo (listar, obter, criar,
+            atualizar, deletar)
+          </li>
+          <li>
+            <strong>Autenticação</strong> — registro de usuário, login com JWT e
+            perfil do usuário logado
+          </li>
+          <li>
+            <strong>Proteção de rotas</strong> — endpoints administrativos
+            protegidos por JWT e verificação de permissão (admin)
+          </li>
+        </ul>
+
+        <h2>Estrutura do Projeto</h2>
+
+        <div class="code-container">
+          <pre><code class="language-bash">projeto-node-step/
+│
+├── src/
+│   ├── models/
+│   │   ├── Produto.js
+│   │   └── Usuario.js
+│   ├── controllers/
+│   │   ├── produtoController.js
+│   │   └── authController.js
+│   ├── routes/
+│   │   ├── produtoRoutes.js
+│   │   └── authRoutes.js
+│   └── middlewares/
+│       ├── autenticar.js
+│       └── admin.js
+│
+├── seed.js
+├── app.js
+├── server.js
+├── package.json
+└── .env</code></pre>
+        </div>
+
+        <h2>Resumo dos Endpoints</h2>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Rota</th>
+              <th>Autenticação</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td><code>/</code></td>
+              <td>Pública</td>
+              <td>Informações da API e lista de endpoints</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/produtos</code></td>
+              <td>Pública</td>
+              <td>Listar todos os produtos</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/produtos/:id</code></td>
+              <td>Pública</td>
+              <td>Obter um produto pelo ID</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/produtos</code></td>
+              <td>JWT (admin)</td>
+              <td>Criar um novo produto</td>
+            </tr>
+            <tr>
+              <td>PUT</td>
+              <td><code>/produtos/:id</code></td>
+              <td>JWT (admin)</td>
+              <td>Atualizar um produto</td>
+            </tr>
+            <tr>
+              <td>DELETE</td>
+              <td><code>/produtos/:id</code></td>
+              <td>JWT (admin)</td>
+              <td>Remover um produto</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/registrar</code></td>
+              <td>Pública</td>
+              <td>Registrar novo usuário</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/login</code></td>
+              <td>Pública</td>
+              <td>Fazer login e receber token JWT</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/me</code></td>
+              <td>JWT</td>
+              <td>Obter dados do usuário logado</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🎉 Parabéns!</h2>
+
+          <p>
+            Sua API REST completa está no ar! Agora ela pode ser consumida pelos
+            projetos finais de <strong>React</strong> e
+            <strong>Angular</strong>.
+          </p>
+
+          <p>Resumo do que você implementou:</p>
+
+          <ul>
+            <li>✅ CRUD completo de produtos com MongoDB</li>
+            <li>✅ Autenticação com JWT (registro, login, perfil)</li>
+            <li>✅ Controle de acesso por role (admin/user)</li>
+            <li>✅ Middleware de autenticação e autorização</li>
+            <li>✅ Dados iniciais populados via seed</li>
+            <li>✅ Arquitetura MVC organizada</li>
+          </ul>
+
+          <p>
+            Use essa API como portfólio e como base para seus futuros projetos!
+            🚀
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
