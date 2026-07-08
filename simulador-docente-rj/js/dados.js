@@ -1,9 +1,17 @@
-var PISO = {
+var PISO_2025 = {
   18: 2190.50,
   22: 2677.27,
   25: 3042.36,
   30: 3650.83,
   40: 4867.77
+};
+
+var PISO_2026 = {
+  18: 2308.78,
+  22: 2821.85,
+  25: 3206.64,
+  30: 3847.97,
+  40: 5130.63
 };
 
 var CARGOS = {
@@ -12,10 +20,10 @@ var CARGOS = {
     carga: 18,
     extincao: false,
     referencias: [
-      { nivel: "C", ref: 3, vb: 1588.41, complemento: 602.09 },
-      { nivel: "D", ref: 4, vb: 1778.98, complemento: 411.52 },
-      { nivel: "D", ref: 5, vb: 1992.46, complemento: 198.04 },
-      { nivel: "D", ref: 6, vb: 2231.06, complemento: 0.0 },
+      { nivel: "C", ref: 3, vb: 1588.41, complemento: 720.37 },
+      { nivel: "D", ref: 4, vb: 1778.98, complemento: 529.80 },
+      { nivel: "D", ref: 5, vb: 1992.46, complemento: 316.32 },
+      { nivel: "D", ref: 6, vb: 2231.06, complemento: 77.72 },
       { nivel: "D", ref: 7, vb: 2499.36, complemento: 0.0 },
       { nivel: "D", ref: 8, vb: 2799.27, complemento: 0.0 },
       { nivel: "D", ref: 9, vb: 3135.19, complemento: 0.0 },
@@ -26,10 +34,10 @@ var CARGOS = {
     carga: 30,
     extincao: false,
     referencias: [
-      { nivel: "C", ref: 3, vb: 2647.3, complemento: 1003.53 },
-      { nivel: "D", ref: 4, vb: 2964.98, complemento: 685.85 },
-      { nivel: "D", ref: 5, vb: 3320.78, complemento: 330.05 },
-      { nivel: "D", ref: 6, vb: 3718.43, complemento: 0.0 },
+      { nivel: "C", ref: 3, vb: 2647.3, complemento: 1200.67 },
+      { nivel: "D", ref: 4, vb: 2964.98, complemento: 882.99 },
+      { nivel: "D", ref: 5, vb: 3320.78, complemento: 527.19 },
+      { nivel: "D", ref: 6, vb: 3718.43, complemento: 129.54 },
       { nivel: "D", ref: 7, vb: 4165.59, complemento: 0.0 },
       { nivel: "D", ref: 8, vb: 4665.47, complemento: 0.0 },
       { nivel: "D", ref: 9, vb: 5225.31, complemento: 0.0 },
@@ -40,15 +48,15 @@ var CARGOS = {
     carga: 22,
     extincao: true,
     referencias: [
-      { nivel: "A", ref: 1, vb: 1125.55, complemento: 1551.72 },
-      { nivel: "B", ref: 2, vb: 1260.61, complemento: 1416.66 },
-      { nivel: "C", ref: 3, vb: 1411.92, complemento: 1265.35 },
-      { nivel: "D", ref: 4, vb: 1581.31, complemento: 1095.96 },
-      { nivel: "D", ref: 5, vb: 1771.08, complemento: 906.19 },
-      { nivel: "D", ref: 6, vb: 1983.16, complemento: 694.11 },
-      { nivel: "D", ref: 7, vb: 2221.65, complemento: 455.62 },
-      { nivel: "D", ref: 8, vb: 2488.24, complemento: 189.03 },
-      { nivel: "D", ref: 9, vb: 2786.83, complemento: 0.0 },
+      { nivel: "A", ref: 1, vb: 1125.55, complemento: 1696.30 },
+      { nivel: "B", ref: 2, vb: 1260.61, complemento: 1561.24 },
+      { nivel: "C", ref: 3, vb: 1411.92, complemento: 1409.93 },
+      { nivel: "D", ref: 4, vb: 1581.31, complemento: 1240.54 },
+      { nivel: "D", ref: 5, vb: 1771.08, complemento: 1050.77 },
+      { nivel: "D", ref: 6, vb: 1983.16, complemento: 838.69 },
+      { nivel: "D", ref: 7, vb: 2221.65, complemento: 600.20 },
+      { nivel: "D", ref: 8, vb: 2488.24, complemento: 333.61 },
+      { nivel: "D", ref: 9, vb: 2786.83, complemento: 35.02 },
     ],
   },
   docente1_40h: {
@@ -56,10 +64,10 @@ var CARGOS = {
     carga: 40,
     extincao: true,
     referencias: [
-      { nivel: "C", ref: 3, vb: 3529.74, complemento: 1338.03 },
-      { nivel: "D", ref: 4, vb: 3953.34, complemento: 914.43 },
-      { nivel: "D", ref: 5, vb: 4427.72, complemento: 440.05 },
-      { nivel: "D", ref: 6, vb: 4959.06, complemento: 0.0 },
+      { nivel: "C", ref: 3, vb: 3529.74, complemento: 1600.89 },
+      { nivel: "D", ref: 4, vb: 3953.34, complemento: 1177.29 },
+      { nivel: "D", ref: 5, vb: 4427.72, complemento: 702.91 },
+      { nivel: "D", ref: 6, vb: 4959.06, complemento: 171.57 },
       { nivel: "D", ref: 7, vb: 5554.11, complemento: 0.0 },
       { nivel: "D", ref: 8, vb: 6220.64, complemento: 0.0 },
       { nivel: "D", ref: 9, vb: 6967.11, complemento: 0.0 },
@@ -70,15 +78,15 @@ var CARGOS = {
     carga: 40,
     extincao: true,
     referencias: [
-      { nivel: "A", ref: 1, vb: 2251.11, complemento: 0 },
-      { nivel: "B", ref: 2, vb: 2521.26, complemento: 0 },
-      { nivel: "C", ref: 3, vb: 2823.80, complemento: 0 },
-      { nivel: "D", ref: 4, vb: 3162.63, complemento: 0 },
-      { nivel: "D", ref: 5, vb: 3542.17, complemento: 0 },
-      { nivel: "D", ref: 6, vb: 3967.24, complemento: 0 },
-      { nivel: "D", ref: 7, vb: 4443.30, complemento: 0 },
-      { nivel: "D", ref: 8, vb: 4976.50, complemento: 0 },
-      { nivel: "D", ref: 9, vb: 5573.66, complemento: 0 },
+      { nivel: "A", ref: 1, vb: 2251.11, complemento: 2879.52 },
+      { nivel: "B", ref: 2, vb: 2521.26, complemento: 2609.37 },
+      { nivel: "C", ref: 3, vb: 2823.80, complemento: 2306.83 },
+      { nivel: "D", ref: 4, vb: 3162.63, complemento: 1968.00 },
+      { nivel: "D", ref: 5, vb: 3542.17, complemento: 1588.46 },
+      { nivel: "D", ref: 6, vb: 3967.24, complemento: 1163.39 },
+      { nivel: "D", ref: 7, vb: 4443.30, complemento: 687.33 },
+      { nivel: "D", ref: 8, vb: 4976.50, complemento: 154.13 },
+      { nivel: "D", ref: 9, vb: 5573.66, complemento: 0.0 },
     ],
   },
   supervisor_oe_ie_25h: {
@@ -88,10 +96,10 @@ var CARGOS = {
     regencia: false,
     glp: false,
     referencias: [
-      { nivel: "C", ref: 3, vb: 2206.08, complemento: 836.28 },
-      { nivel: "D", ref: 4, vb: 2470.83, complemento: 571.53 },
-      { nivel: "D", ref: 5, vb: 2767.32, complemento: 275.04 },
-      { nivel: "D", ref: 6, vb: 3099.40, complemento: 0.0 },
+      { nivel: "C", ref: 3, vb: 2206.08, complemento: 1000.56 },
+      { nivel: "D", ref: 4, vb: 2470.83, complemento: 735.81 },
+      { nivel: "D", ref: 5, vb: 2767.32, complemento: 439.32 },
+      { nivel: "D", ref: 6, vb: 3099.40, complemento: 107.24 },
       { nivel: "D", ref: 7, vb: 3471.32, complemento: 0.0 },
       { nivel: "D", ref: 8, vb: 3887.89, complemento: 0.0 },
       { nivel: "D", ref: 9, vb: 4354.44, complemento: 0.0 },

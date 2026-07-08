@@ -70,7 +70,8 @@ function calcularVencimentos(params) {
 
   var vb = aplicarRecomposicoes(ref.vb, dataSim);
 
-  var piso = PISO[cargaEfetiva];
+  var pisoKey = params.usarPiso2026 !== false ? PISO_2026 : PISO_2025;
+  var piso = pisoKey[cargaEfetiva];
   var complemento = Math.max(0, round2(piso - vb));
   var total = round2(vb + complemento);
 
@@ -123,13 +124,12 @@ function calcularVencimentos(params) {
     if (params.refIndex < cargo18h.referencias.length) {
       var ref18h = cargo18h.referencias[params.refIndex];
       var vb18h = aplicarRecomposicoes(ref18h.vb, dataSim);
-      var total18h = round2(vb18h + Math.max(0, round2(PISO[18] - vb18h)));
+      var total18h = round2(vb18h + Math.max(0, round2(pisoKey[18] - vb18h)));
       var trienioValor18h = trienioPct > 0 ? round2(total18h * trienioPct / 100) : 0;
       var aq18h = params.qualificacao === "nenhuma" ? 0 : aplicarRecomposicoes(AQ[18][params.qualificacao], dataSim);
       var basePrev18h = round2(total18h + trienioValor18h + aq18h + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
       rubricaMigracao = round2(basePrev - basePrev18h);
-      basePrev = basePrev18h;
-      previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
+      previdencia = round2(basePrev18h * PREVIDENCIA_ALIQUOTA);
     }
   }
 
@@ -263,6 +263,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     abonoPermanencia: params1.abonoPermanencia,
     migrado18h: params1.migrado18h,
     incluirRubricaPrev: params1.incluirRubricaPrev,
+    usarPiso2026: params1.usarPiso2026,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });
@@ -283,6 +284,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     abonoPermanencia: params2.abonoPermanencia,
     migrado18h: params2.migrado18h,
     incluirRubricaPrev: params2.incluirRubricaPrev,
+    usarPiso2026: params2.usarPiso2026,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
   });

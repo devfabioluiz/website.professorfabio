@@ -525,6 +525,25 @@
 
         <!-- close matricula1-section -->
 
+        <!-- Decreto 50.361/2026 — Piso do Magistério -->
+        <div class="mb-4 mt-4 pt-4 border-t border-gray-200">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              id="chk-usar-piso-2026"
+              checked
+              class="accent-blue-600 w-4 h-4"
+            />
+            <span class="text-sm font-semibold text-gray-700"
+              >Aplicar Decreto 50.361/2026 (piso R$ 5.130,63)
+              <span class="text-gray-400 font-normal"
+                >— desmarque para simular com o piso anterior de R$
+                4.867,77</span
+              ></span
+            >
+          </label>
+        </div>
+
         <!-- Dependentes -->
         <div class="mb-2 mt-4">
           <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -1000,7 +1019,8 @@
             />
           </svg>
           <span class="text-sm font-semibold text-gray-700"
-            >Simular IRPF anual a restituir ou pagar</span
+            >Simular IRPF anual a restituir ou pagar (em testes - calculos
+            divergentes)</span
           >
         </label>
       </div>
@@ -1013,7 +1033,8 @@
         <h3
           class="text-sm font-bold text-purple-800 mb-3 uppercase tracking-wide border-b border-purple-200 pb-1"
         >
-          Simular IRPF anual a restituir ou pagar
+          Simular IRPF anual a restituir ou pagar (em testes - calculos
+          divergentes)
         </h3>
         <div class="space-y-4">
           <!-- Incluir outra renda no IRPF -->
@@ -1620,6 +1641,7 @@
               );
               return r && r.value === "sim";
             })(),
+            usarPiso2026: document.getElementById("chk-usar-piso-2026").checked,
           };
         }
 
@@ -2576,7 +2598,7 @@
             .closest("#irpf-toggle-section")
             .querySelector("span").textContent = elToggleIrpf.checked
             ? "Simulação IRPF anual (ativado)"
-            : "Simular IRPF anual a restituir ou pagar";
+            : "Simular IRPF anual a restituir ou pagar (em testes - calculos divergentes)";
           if (elToggleIrpf.checked) {
             atualizarResultado();
           }
@@ -2608,6 +2630,11 @@
 
         var elSimPeriodo = document.getElementById("sim-periodo");
         elSimPeriodo.addEventListener("change", atualizarResultado);
+
+        // Checkbox Decreto 50.361/2026
+        document
+          .getElementById("chk-usar-piso-2026")
+          .addEventListener("change", atualizarResultado);
 
         // ── EVENTOS OUTRAS RENDAS ──
         elTipoOutraRenda.addEventListener("change", atualizarResultado);
