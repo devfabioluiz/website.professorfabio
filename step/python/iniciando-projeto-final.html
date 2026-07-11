@@ -1,0 +1,1852 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciando nosso Projeto Final - Python Backend</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+
+    <header>
+      <h1>Iniciando nosso Projeto Final</h1>
+      <h4 class="text-center">Python Backend</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O Projeto Final</h2>
+
+        <p>
+          Neste projeto final você criará uma
+          <strong>API REST completa</strong> que servirá como backend para
+          aplicações web e mobile. Você pode escolher entre
+          <strong>FastAPI</strong> (leve, moderno, type hints) ou
+          <strong>Django REST Framework</strong> (estrutura completa,
+          batteries-included).
+        </p>
+
+        <p>
+          A API deve ser criada dentro de uma branch chamada
+          <strong>projeto-final-python</strong> no repositório do seu curso.
+        </p>
+
+        <p>A API terá os seguintes recursos:</p>
+
+        <ul>
+          <li>
+            <strong>Sistema a sua escolha</strong> — você define os models,
+            rotas e regras de negócio do seu próprio sistema (biblioteca,
+            e-commerce, blog, etc.)
+          </li>
+          <li>
+            <strong>Autenticação</strong> — registro de usuário, login com JWT e
+            perfil do usuário logado
+          </li>
+          <li>
+            <strong>Proteção de rotas</strong> — endpoints protegidos por JWT e
+            verificação de permissão (admin)
+          </li>
+          <li>
+            <strong>Banco PostgreSQL no Supabase</strong> — banco de dados
+            profissional grátis na nuvem
+          </li>
+          <li>
+            <strong>Deploy no Vercel</strong> — publicação automática via GitHub
+          </li>
+        </ul>
+
+        <h2>Estrutura do Projeto</h2>
+
+        <p>
+          Escolha o framework e siga a estrutura correspondente. Os passos de
+          deploy são idênticos para ambos.
+        </p>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap">
+          <div style="flex: 1; min-width: 280px">
+            <h3 style="text-align: center">🅰️ FastAPI</h3>
+            <div class="code-container">
+              <pre><code class="language-bash">projeto-python-step/
+│
+├── api/
+│   └── index.py            # entrada ASGI (Vercel)
+│
+├── app/
+│   ├── __init__.py
+│   ├── database.py          # SQLAlchemy + Supabase
+│   ├── models.py
+│   ├── schemas.py           # Pydantic
+│   ├── routes.py
+│   └── middlewares.py
+│
+├── seed.py
+├── pyproject.toml
+├── vercel.json
+├── .env
+├── .env.example
+└── .gitignore</code></pre>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 280px">
+            <h3 style="text-align: center">🅱️ Django</h3>
+            <div class="code-container">
+              <pre><code class="language-bash">projeto-python-step/
+│
+├── api/
+│   └── index.py            # entrada WSGI (Vercel)
+│
+├── config/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── core/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── serializers.py      # DRF
+│   ├── views.py
+│   └── urls.py
+│
+├── manage.py
+├── seed.py
+├── pyproject.toml
+├── vercel.json
+├── .env
+├── .env.example
+└── .gitignore</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="alert-explicando-codigo"
+          style="border-left: 5px solid #9c27b0"
+        >
+          <p>
+            <strong>📌 Importante:</strong> Os arquivos <code>models.py</code>,
+            <code>schemas.py</code> e <code>routes.py</code> são os arquivos
+            <strong>base</strong> do projeto. Nesta aula fornecemos apenas o
+            necessário para autenticação.
+            <strong>Você criará seus próprios models e rotas</strong> para o
+            sistema que escolher desenvolver.
+          </p>
+        </div>
+
+        <h2>Passo a Passo</h2>
+
+        <h3>Passo 0 — Criar a branch do projeto final</h3>
+
+        <p>Partindo da branch <strong>main</strong>, crie uma nova branch:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git pull
+git checkout -b projeto-final-python</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ESCOLHA DO FRAMEWORK -->
+        <div
+          class="alert-explicando-codigo"
+          style="border-left: 5px solid #ff9800"
+        >
+          <h2 class="alert-explicando-codigo-title">
+            ⚡ Escolha seu Framework
+          </h2>
+
+          <p>
+            Você já aprendeu <strong>FastAPI</strong> e <strong>Django</strong>
+            nas aulas anteriores. Agora é hora de escolher qual usar no projeto
+            final. Veja a comparação:
+          </p>
+
+          <table border="1" cellpadding="8">
+            <thead>
+              <tr>
+                <th>Critério</th>
+                <th>🅰️ FastAPI</th>
+                <th>🅱️ Django</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Estilo</td>
+                <td>Leve, explícito, type hints</td>
+                <td>Estrutura completa, batteries-included</td>
+              </tr>
+              <tr>
+                <td>ORM</td>
+                <td>SQLAlchemy (configuração manual)</td>
+                <td>Django ORM (integrado, migrations automáticas)</td>
+              </tr>
+              <tr>
+                <td>Validação</td>
+                <td>Pydantic (automática por type hints)</td>
+                <td>DRF Serializers (manual, mas poderoso)</td>
+              </tr>
+              <tr>
+                <td>Rotas</td>
+                <td>Decoradores @app.get()</td>
+                <td>urlpatterns + ViewSets</td>
+              </tr>
+              <tr>
+                <td>Deploy Vercel</td>
+                <td>✅ Sim (api/index.py ASGI)</td>
+                <td>✅ Sim (api/index.py WSGI)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p style="margin-top: 15px">
+            <strong>Não tem escolha errada.</strong> Escolha o que você mais
+            gostou durante o curso. Os passos comuns (deploy, env, etc.) são
+            idênticos para ambos.
+          </p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 1 — SUPABASE (COMUM)                                    -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #9c27b0;
+            padding-bottom: 8px;
+          "
+        >
+          ☁️ PASSO 1 — CRIAR BANCO NO SUPABASE (COMUM)
+        </h2>
+
+        <p>
+          Antes de escrever qualquer código, vamos criar o banco de dados.
+          Usaremos o <strong>Supabase</strong>, que oferece PostgreSQL grátis na
+          nuvem. Esse banco será usado tanto em desenvolvimento quanto em
+          produção.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            📦 Passo a passo: Criar banco no Supabase
+          </h2>
+          <ol>
+            <li>
+              <strong>Acesse</strong> <code>https://supabase.com</code> e clique
+              em <strong>"Start your project"</strong>
+            </li>
+            <li>
+              <strong>Faça login com GitHub</strong> — é a conta mais rápida.
+              Após o login, clique em <strong>"New project"</strong>
+            </li>
+            <li>
+              <strong>Dê um nome</strong> para o projeto (ex:
+              <code>projeto-python-step</code>)
+            </li>
+            <li>
+              <strong>Crie uma senha forte</strong> para o banco (guarde essa
+              senha!)
+            </li>
+            <li>
+              <strong>Escolha a região</strong> mais próxima de você (ex: South
+              America — São Paulo)
+            </li>
+            <li>
+              Clique em <strong>"Create new project"</strong> e aguarde ~1
+              minuto enquanto o banco é criado
+            </li>
+            <li>
+              <strong
+                >Vá em Project Settings → Database → Connection string</strong
+              >
+            </li>
+            <li>
+              Selecione a opção <strong>"URI"</strong> e clique em
+              <strong>"Copy"</strong> — a string copiada se parece com:
+              <div class="code-container">
+                <pre><code class="language-bash">postgresql://postgres:senha@db.supabase.co:5432/postgres</code></pre>
+              </div>
+            </li>
+            <li>
+              <strong>Cole essa URL em um bloco de notas</strong> — você vai
+              usar nos próximos passos
+            </li>
+          </ol>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Entendendo a DATABASE_URL
+          </h2>
+
+          <p>
+            A string que você copiou tem partes bem definidas. Vamos entender
+            cada uma:
+          </p>
+
+          <table border="1" cellpadding="8">
+            <thead>
+              <tr>
+                <th>Parte</th>
+                <th>Exemplo</th>
+                <th>Significado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>postgresql://</code></td>
+                <td><code>postgresql://</code></td>
+                <td>Protocolo — diz que é PostgreSQL</td>
+              </tr>
+              <tr>
+                <td><code>usuário</code></td>
+                <td><code>postgres</code></td>
+                <td>Nome do usuário do banco (geralmente "postgres")</td>
+              </tr>
+              <tr>
+                <td><code>senha</code></td>
+                <td><code>abc123!</code></td>
+                <td>A senha que você criou no passo 4</td>
+              </tr>
+              <tr>
+                <td><code>host</code></td>
+                <td><code>db.supabase.co</code></td>
+                <td>Endereço do servidor onde o banco está rodando</td>
+              </tr>
+              <tr>
+                <td><code>porta</code></td>
+                <td><code>5432</code></td>
+                <td>Porta padrão do PostgreSQL</td>
+              </tr>
+              <tr>
+                <td><code>banco</code></td>
+                <td><code>postgres</code></td>
+                <td>Nome do banco de dados</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p style="margin-top: 15px">
+            <strong>Visualmente:</strong>
+            <code
+              >postgresql://<span style="color: #4caf50">usuario</span>:<span
+                style="color: #2196f3"
+                >senha</span
+              >@<span style="color: #ff9800">host</span>:<span
+                style="color: #9c27b0"
+                >5432</span
+              >/<span style="color: #f44336">banco</span></code
+            >
+          </p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 🅰️ CAMINHO FASTAPI                                            -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 8px;
+          "
+        >
+          🅰️ CAMINHO FASTAPI
+        </h2>
+
+        <p>
+          Se você escolheu <strong>FastAPI</strong>, siga os passos abaixo. Se
+          escolheu Django, vá direto para a seção
+          <a href="#caminho-django">🅱️ CAMINHO DJANGO</a>.
+        </p>
+
+        <h3>Passo 2A — Inicializar o projeto com pyproject.toml</h3>
+
+        <p>
+          Crie o arquivo <strong>pyproject.toml</strong> na raiz do projeto.
+          Note que <code>psycopg2-binary</code> já está incluso nas dependências
+          principais — ele é obrigatório para conectar ao PostgreSQL do
+          Supabase.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > pyproject.toml</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-bash">[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "projeto-python-step"
+version = "1.0.0"
+description = "API REST com FastAPI para o projeto final"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "sqlalchemy>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "pyjwt>=2.9.0",
+    "bcrypt>=4.0.0",
+    "slowapi>=0.1.9",
+    "pydantic>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Instale as dependências:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip install -e .</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Entendendo as Dependências 📦
+          </h2>
+
+          <h3>🔹 O que são dependências?</h3>
+          <p>
+            Dependências são pacotes/bibliotecas externas que seu projeto
+            precisa para funcionar. Em vez de reescrever tudo do zero, você
+            reusa código pronto (FastAPI, SQLAlchemy, etc.).
+          </p>
+
+          <h3>🔹 Onde declarar?</h3>
+          <p>
+            O formato moderno é o <code>pyproject.toml</code> (PEP 621). A seção
+            <code>[project] dependencies</code> lista os pacotes necessários.
+            Cada linha é um pacote com sua versão mínima (<code>>=</code>).
+          </p>
+
+          <h3>🔹 psycopg2-binary</h3>
+          <p>
+            Esse pacote é o <strong>driver do PostgreSQL</strong>. Ele permite
+            que o Python se comunique com o banco. Como todo nosso projeto usa
+            Supabase (PostgreSQL), ele é obrigatório.
+          </p>
+
+          <h3>🔹 Como instalar?</h3>
+          <p>
+            Com o <code>pyproject.toml</code> pronto, instale o projeto em modo
+            editável:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-bash">pip install -e .</code></pre>
+          </div>
+          <p>
+            O <code>-e</code> (editável) faz com que alterações no código sejam
+            refletidas imediatamente, sem precisar reinstalar.
+          </p>
+
+          <h3>🔹 E o requirements.txt?</h3>
+          <p>
+            O <code>requirements.txt</code> ainda é usado, principalmente no
+            Vercel (que o lê automaticamente). A abordagem moderna é:
+          </p>
+          <ol>
+            <li>Declarar tudo no <code>pyproject.toml</code></li>
+            <li>
+              Gerar o <code>requirements.txt</code> com
+              <code>pip freeze</code> apenas para o Vercel
+            </li>
+          </ol>
+        </div>
+
+        <h3>Passo 3A — Criar a estrutura de pastas (FastAPI)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir api app
+
+type nul > api\__init__.py
+type nul > app\__init__.py
+type nul > app\database.py
+type nul > app\models.py
+type nul > app\schemas.py
+type nul > app\routes.py
+type nul > app\middlewares.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4A — Configurar o banco de dados (Supabase + SQLAlchemy)</h3>
+
+        <p>
+          O SQLAlchemy precisa da <code>DATABASE_URL</code> do Supabase para se
+          conectar. Essa URL será lida do arquivo <code>.env</code>.
+        </p>
+
+        <p>Conteúdo de <strong>app/database.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL não encontrada. "
+        "Crie um banco no Supabase e coloque a URL no .env"
+    )
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(bind=engine)
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Verificação obrigatória</h3>
+          <p>
+            Diferente de aulas anteriores, aqui <strong>exigimos</strong> que a
+            variável <code>DATABASE_URL</code> exista. Se não estiver
+            configurada, o programa para com um erro claro, evitando que o aluno
+            tente rodar sem banco.
+          </p>
+
+          <h3>🔹 create_engine() sem argumentos extras</h3>
+          <p>
+            Como agora usamos PostgreSQL (não SQLite), não precisamos de
+            <code>check_same_thread</code>. O PostgreSQL já lida com múltiplas
+            threads naturalmente.
+          </p>
+
+          <h3>🔹 get_db()</h3>
+          <p>
+            Função geradora que cria uma sessão do SQLAlchemy, cede para a rota
+            que a chamou e fecha automaticamente após o uso.
+          </p>
+        </div>
+
+        <h3>Passo 5A — Criar os Models (FastAPI)</h3>
+
+        <p>Abra <strong>app/models.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from sqlalchemy import Column, Integer, String
+from app.database import Base
+
+
+        class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    senha = Column(String, nullable=False)
+    role = Column(String, default="user")  # "user" ou "admin"
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 SQLAlchemy Column</h3>
+          <p>
+            Cada atributo da classe é uma coluna no banco.
+            <code>Integer</code> para números inteiros (ex: <code>id</code>),
+            <code>String</code> para textos (ex: <code>nome</code>,
+            <code>email</code>). O <code>primary_key=True</code> define a chave
+            primária.
+          </p>
+
+          <h3>🔹 role</h3>
+          <p>
+            O campo <code>role</code> define o tipo de usuário:
+            <code>"user"</code> (comum) ou <code>"admin"</code> (administrador).
+            Apenas usuários com role <code>admin</code> podem acessar rotas
+            administrativas.
+          </p>
+        </div>
+
+        <h3>Passo 6A — Criar os Schemas Pydantic</h3>
+
+        <p>Abra <strong>app/schemas.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from pydantic import BaseModel
+
+
+        class UsuarioRegistrar(BaseModel):
+    nome: str
+    email: str
+    senha: str
+    role: str = "user"
+
+
+class UsuarioLogin(BaseModel):
+    email: str
+    senha: str
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Pydantic BaseModel</h3>
+          <p>
+            Schemas Pydantic definem a forma dos dados que entram (request) e
+            saem (response) da API. O FastAPI valida automaticamente contra
+            esses schemas.
+          </p>
+        </div>
+
+        <h3>Passo 7A — Criar os Middlewares</h3>
+
+        <p>Abra <strong>app/middlewares.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">import jwt
+from fastapi import Request, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+JWT_SECRET = os.getenv("JWT_SECRET", "minha-chave-secreta-super-segura")
+
+limiter = Limiter(key_func=get_remote_address)
+
+
+def autenticar(request: Request):
+    auth_header = request.headers.get("Authorization")
+
+    if not auth_header:
+        raise HTTPException(status_code=401, detail="Token não informado")
+
+    try:
+        token = auth_header.split(" ")[1]
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        request.state.usuario_id = payload["id"]
+        request.state.usuario_email = payload["email"]
+        request.state.usuario_role = payload.get("role", "user")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+
+def admin(request: Request):
+    if request.state.usuario_role != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Acesso restrito a administradores",
+        )
+
+
+def registrar_exception_handlers(app):
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        return JSONResponse(
+            status_code=500,
+            content={"erro": "Erro interno do servidor"},
+        )
+
+    app.add_exception_handler(429, _rate_limit_exceeded_handler)
+
+
+def configurar_cors(app):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 autenticar()</h3>
+          <p>
+            Lê o header <code>Authorization: Bearer TOKEN</code>, decodifica o
+            JWT e armazena os dados do usuário no <code>request.state</code>. Se
+            o token for inválido ou expirado, retorna erro 401.
+          </p>
+
+          <h3>🔹 admin()</h3>
+          <p>
+            Verifica se o <code>role</code> do usuário logado é
+            <code>"admin"</code>. Retorna 403 (proibido) se não for.
+          </p>
+
+          <h3>🔹 limiter (slowapi)</h3>
+          <p>Adiciona rate limiting baseado no IP do cliente.</p>
+        </div>
+
+        <h3>Passo 8A — Criar as Rotas</h3>
+
+        <p>Abra <strong>app/routes.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">import bcrypt
+import jwt
+from fastapi import APIRouter, Depends, Request
+from sqlalchemy.orm import Session
+
+        from app.database import get_db
+from app.models import Usuario
+from app.schemas import UsuarioRegistrar, UsuarioLogin
+from app.middlewares import JWT_SECRET, autenticar, admin, limiter
+
+router = APIRouter()
+
+
+@router.get("/api")
+@limiter.limit("100/minute")
+async def root(request: Request):
+    return {
+        "mensagem": "API do Projeto Final Python funcionando!",
+        "versao": "1.0.0",
+    }
+
+
+        @router.post("/api/registrar")
+@limiter.limit("10/minute")
+async def registrar(
+    dados: UsuarioRegistrar,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    existe = db.query(Usuario).filter(Usuario.email == dados.email).first()
+
+    if existe:
+        return {"erro": "Email já cadastrado"}, 400
+
+    senha_hash = bcrypt.hashpw(
+        dados.senha.encode("utf-8"), bcrypt.gensalt()
+    ).decode("utf-8")
+
+    usuario = Usuario(
+        nome=dados.nome,
+        email=dados.email,
+        senha=senha_hash,
+        role=dados.role,
+    )
+    db.add(usuario)
+    db.commit()
+    db.refresh(usuario)
+
+    token = jwt.encode(
+        {
+            "id": usuario.id,
+            "email": usuario.email,
+            "role": usuario.role,
+        },
+        JWT_SECRET,
+        algorithm="HS256",
+    )
+
+    return {
+        "mensagem": "Usuário registrado com sucesso",
+        "token": token,
+        "usuario": {
+            "id": usuario.id,
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "role": usuario.role,
+        },
+    }, 201
+
+
+@router.post("/api/login")
+@limiter.limit("10/minute")
+async def login(
+    dados: UsuarioLogin,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    usuario = db.query(Usuario).filter(Usuario.email == dados.email).first()
+
+    if not usuario:
+        return {"erro": "Email ou senha inválidos"}, 401
+
+    senha_valida = bcrypt.checkpw(
+        dados.senha.encode("utf-8"), usuario.senha.encode("utf-8")
+    )
+
+    if not senha_valida:
+        return {"erro": "Email ou senha inválidos"}, 401
+
+    token = jwt.encode(
+        {
+            "id": usuario.id,
+            "email": usuario.email,
+            "role": usuario.role,
+        },
+        JWT_SECRET,
+        algorithm="HS256",
+    )
+
+    return {
+        "mensagem": "Login realizado com sucesso",
+        "token": token,
+        "usuario": {
+            "id": usuario.id,
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "role": usuario.role,
+        },
+    }
+
+
+@router.get("/api/me")
+async def perfil(
+    request: Request,
+    db: Session = Depends(get_db),
+    _=Depends(autenticar),
+):
+    usuario = db.query(Usuario).filter(
+        Usuario.id == request.state.usuario_id
+    ).first()
+
+    if not usuario:
+        return {"erro": "Usuário não encontrado"}, 404
+
+    return {
+        "usuario": {
+            "id": usuario.id,
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "role": usuario.role,
+        },
+    }
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9A — Criar o app principal (api/index.py)</h3>
+
+        <p>Este é o ponto de entrada que o Vercel vai usar.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from fastapi import FastAPI
+from app.database import Base, engine
+from app.routes import router
+from app.middlewares import (
+    configurar_cors,
+    registrar_exception_handlers,
+    limiter,
+)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = FastAPI(title="API Python - Projeto Final", version="1.0.0")
+
+configurar_cors(app)
+registrar_exception_handlers(app)
+
+app.state.limiter = limiter
+
+app.include_router(router)
+
+@app.on_event("startup")
+def criar_tabelas():
+    Base.metadata.create_all(bind=engine)
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10A — Criar o Seed de dados (FastAPI)</h3>
+
+        <p>
+          O arquivo <strong>seed.py</strong> popula o banco com dados iniciais:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > seed.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python">from dotenv import load_dotenv
+        from app.database import Base, engine, SessionLocal
+from app.models import Usuario
+import bcrypt
+
+load_dotenv()
+
+
+def seed():
+    Base.metadata.create_all(bind=engine)
+
+    db = SessionLocal()
+
+    if db.query(Usuario).count() > 0:
+        print("Banco já populado. Pulando seed.")
+        db.close()
+        return
+
+    senha_hash = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode("utf-8")
+
+    db.add_all([
+        Usuario(nome="Admin", email="admin@email.com", senha=senha_hash, role="admin"),
+        Usuario(nome="Usuário Teste", email="usuario@email.com", senha=senha_hash, role="user"),
+    ])
+
+    db.commit()
+    db.close()
+
+    print("Seed concluído!")
+    print("Admin: admin@email.com / senha: admin123")
+    print("User:  usuario@email.com / senha: admin123")
+
+
+if __name__ == "__main__":
+    seed()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Execute o seed para popular o banco:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python seed.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 🅱️ CAMINHO DJANGO                                             -->
+        <!-- ============================================================ -->
+        <h2
+          id="caminho-django"
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          🅱️ CAMINHO DJANGO
+        </h2>
+
+        <p>
+          Se você escolheu <strong>Django REST Framework</strong>, siga os
+          passos abaixo.
+        </p>
+
+        <h3>Passo 2B — Inicializar o projeto com pyproject.toml</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > pyproject.toml</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-bash">[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "projeto-python-step"
+version = "1.0.0"
+description = "API REST com Django para o projeto final"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=5.1.0",
+    "djangorestframework>=3.15.0",
+    "djangorestframework-simplejwt>=5.3.0",
+    "django-cors-headers>=4.3.0",
+    "python-dotenv>=1.0.0",
+    "psycopg2-binary>=2.9.0",
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Instale as dependências:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip install -e .</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3B — Criar a estrutura de pastas (Django)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir api config core
+
+type nul > api\__init__.py
+type nul > config\__init__.py
+type nul > config\settings.py
+type nul > config\urls.py
+type nul > config\wsgi.py
+type nul > core\__init__.py
+type nul > core\models.py
+type nul > core\serializers.py
+type nul > core\views.py
+type nul > core\urls.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4B — Configurar settings.py com Supabase</h3>
+
+        <p>
+          No Django, precisamos converter a <code>DATABASE_URL</code> do
+          Supabase em campos separados: <code>ENGINE</code>, <code>NAME</code>,
+          <code>USER</code>, <code>PASSWORD</code>, <code>HOST</code>,
+          <code>PORT</code>. Para isso, usamos a função <code>urlparse</code> da
+          biblioteca padrão do Python.
+        </p>
+
+        <p>Abra <strong>config/settings.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from dotenv import load_dotenv
+from urllib.parse import urlparse
+from pathlib import Path
+import os
+
+load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = os.getenv("JWT_SECRET", "minha-chave-secreta-super-segura")
+
+DEBUG = False
+
+ALLOWED_HOSTS = ["*"]
+
+INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
+    "rest_framework",
+    "corsheaders",
+    "core",
+]
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+]
+
+ROOT_URLCONF = "config.urls"
+
+# ──────────────────────────────────────────────
+# CONFIGURAÇÃO DO BANCO — SUPABASE (PostgreSQL)
+# ──────────────────────────────────────────────
+# A DATABASE_URL do Supabase se parece com:
+#   postgresql://usuario:senha@host:5432/nome-do-banco
+#
+# Usamos urlparse() para quebrar essa string em partes:
+#   url.username → "usuario"
+#   url.password → "senha"
+#   url.hostname → "host"
+#   url.port     → 5432
+#   url.path     → "/nome-do-banco"  (precisamos remover a / do início)
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL não encontrada. "
+        "Crie um banco no Supabase e coloque a URL no .env"
+    )
+
+url = urlparse(DATABASE_URL)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": url.path[1:],       # remove a "/" do início do path
+        "USER": url.username,
+        "PASSWORD": url.password,
+        "HOST": url.hostname,
+        "PORT": url.port,
+    }
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 urlparse() — Quebrando a URL em partes</h3>
+          <p>
+            A função <code>urlparse</code> é da biblioteca padrão do Python
+            (<code>urllib.parse</code>). Ela pega uma URL como
+            <code>postgresql://usuario:senha@host:5432/banco</code> e separa em
+            partes:
+          </p>
+          <ul>
+            <li><code>url.username</code> → <code>"usuario"</code></li>
+            <li><code>url.password</code> → <code>"senha"</code></li>
+            <li><code>url.hostname</code> → <code>"host"</code></li>
+            <li><code>url.port</code> → <code>5432</code></li>
+            <li><code>url.path</code> → <code>"/banco"</code></li>
+          </ul>
+          <p>
+            O Django precisa desses campos separados no dicionário
+            <code>DATABASES</code>. O <code>url.path[1:]</code> remove a barra
+            do início (<code>/banco</code> → <code>banco</code>).
+          </p>
+
+          <h3>🔹 Validação</h3>
+          <p>
+            Se a variável <code>DATABASE_URL</code> não estiver configurada, o
+            programa para com um erro claro, avisando o aluno.
+          </p>
+
+          <h3>🔹 ENGINE</h3>
+          <p>
+            <code>django.db.backends.postgresql</code> é o backend do Django
+            para PostgreSQL. Ele usa o <code>psycopg2</code> internamente (por
+            isso instalamos o <code>psycopg2-binary</code>).
+          </p>
+        </div>
+
+        <h3>Passo 5B — Configurar urls.py do projeto</h3>
+
+        <p>Abra <strong>config/urls.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from django.urls import path, include
+
+urlpatterns = [
+    path("api/", include("core.urls")),
+]
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6B — Criar os Models (Django)</h3>
+
+        <p>Abra <strong>core/models.py</strong> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">        from django.db import models
+
+
+class Usuario(models.Model):
+    nome = models.CharField(max_length=200)
+    email = models.EmailField(unique=True)
+    senha = models.CharField(max_length=200)
+    role = models.CharField(max_length=10, default="user")
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Django Models</h3>
+          <p>
+            Cada classe vira uma tabela no banco Supabase. O Django ORM gerencia
+            automaticamente a criação das tabelas via
+            <code>makemigrations</code> e <code>migrate</code>.
+          </p>
+        </div>
+
+        <h3>Passo 7B — Criar os Serializers (DRF)</h3>
+
+        <p>Abra <strong>core/serializers.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">        from rest_framework import serializers
+from core.models import Usuario
+
+
+class UsuarioRegistrarSerializer(serializers.Serializer):
+    nome = serializers.CharField()
+    email = serializers.EmailField()
+    senha = serializers.CharField()
+    role = serializers.CharField(default="user")
+
+
+class UsuarioLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    senha = serializers.CharField()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8B — Criar as Views</h3>
+
+        <p>Abra <strong>core/views.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">        import bcrypt
+import jwt
+from datetime import timedelta, datetime
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
+
+from core.models import Usuario
+from core.serializers import (
+    UsuarioRegistrarSerializer,
+    UsuarioLoginSerializer,
+)
+
+
+@api_view(["POST"])
+def registrar(request):
+    serializer = UsuarioRegistrarSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    dados = serializer.validated_data
+
+    if Usuario.objects.filter(email=dados["email"]).exists():
+        return Response({"erro": "Email já cadastrado"}, status=400)
+
+    senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    usuario = Usuario.objects.create(
+        nome=dados["nome"], email=dados["email"], senha=senha_hash, role=dados.get("role", "user"),
+    )
+
+    token = jwt.encode(
+        {"id": usuario.id, "email": usuario.email, "role": usuario.role, "exp": datetime.utcnow() + timedelta(days=7)},
+        settings.SECRET_KEY, algorithm="HS256",
+    )
+
+    return Response({"mensagem": "Usuário registrado com sucesso", "token": token, "usuario": {"id": usuario.id, "nome": usuario.nome, "email": usuario.email, "role": usuario.role}}, status=201)
+
+
+@api_view(["POST"])
+def login(request):
+    serializer = UsuarioLoginSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    dados = serializer.validated_data
+
+    try:
+        usuario = Usuario.objects.get(email=dados["email"])
+    except Usuario.DoesNotExist:
+        return Response({"erro": "Email ou senha inválidos"}, status=401)
+
+    if not bcrypt.checkpw(dados["senha"].encode("utf-8"), usuario.senha.encode("utf-8")):
+        return Response({"erro": "Email ou senha inválidos"}, status=401)
+
+    token = jwt.encode(
+        {"id": usuario.id, "email": usuario.email, "role": usuario.role, "exp": datetime.utcnow() + timedelta(days=7)},
+        settings.SECRET_KEY, algorithm="HS256",
+    )
+
+    return Response({"mensagem": "Login realizado com sucesso", "token": token, "usuario": {"id": usuario.id, "nome": usuario.nome, "email": usuario.email, "role": usuario.role}})
+
+
+@api_view(["GET"])
+def perfil(request):
+    auth = request.headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return Response({"erro": "Token não informado"}, status=401)
+
+    try:
+        token = auth.split(" ")[1]
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        return Response({"erro": "Token expirado"}, status=401)
+    except jwt.InvalidTokenError:
+        return Response({"erro": "Token inválido"}, status=401)
+
+    try:
+        usuario = Usuario.objects.get(id=payload["id"])
+    except Usuario.DoesNotExist:
+        return Response({"erro": "Usuário não encontrado"}, status=404)
+
+    return Response({"usuario": {"id": usuario.id, "nome": usuario.nome, "email": usuario.email, "role": usuario.role}})
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9B — Configurar as urls do app core</h3>
+
+        <p>Abra <strong>core/urls.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">        from django.urls import path
+from core.views import registrar, login, perfil
+
+urlpatterns = [
+    path("registrar", registrar, name="registrar"),
+    path("login", login, name="login"),
+    path("me", perfil, name="perfil"),
+]
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10B — Configurar o wsgi.py</h3>
+
+        <p>Abra <strong>config/wsgi.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+application = get_wsgi_application()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 11B — Criar o entry point para Vercel (api/index.py)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">import os
+import sys
+from django.core.wsgi import get_wsgi_application
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+
+app = get_wsgi_application()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 sys.path.insert</h3>
+          <p>
+            No Vercel, o diretório de trabalho é diferente. Precisamos adicionar
+            a raiz do projeto ao Python path para que o Django encontre o módulo
+            <code>config.settings</code>.
+          </p>
+          <h3>🔹 get_wsgi_application()</h3>
+          <p>
+            Cria a aplicação WSGI do Django. O Vercel procura por uma variável
+            <code>app</code> e a usa como entry point.
+          </p>
+        </div>
+
+        <h3>Passo 12B — Criar o manage.py</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > manage.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python">import os
+import sys
+from django.core.management import execute_from_command_line
+
+
+def main():
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+    execute_from_command_line(sys.argv)
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 13B — Rodar migrations e criar o seed</h3>
+
+        <p>Crie as tabelas no banco Supabase:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python manage.py makemigrations core
+python manage.py migrate</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Crie o <strong>seed.py</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > seed.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python">import os
+import django
+import bcrypt
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+django.setup()
+
+        from core.models import Usuario
+
+
+def seed():
+    if Usuario.objects.count() > 0:
+        print("Banco já populado. Pulando seed.")
+        return
+
+    senha_hash = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode("utf-8")
+    Usuario.objects.create(nome="Admin", email="admin@email.com", senha=senha_hash, role="admin")
+    Usuario.objects.create(nome="Usuário Teste", email="usuario@email.com", senha=senha_hash, role="user")
+
+    print(f"Seed concluído!")
+    print("Admin: admin@email.com / senha: admin123")
+    print("User:  usuario@email.com / senha: admin123")
+
+
+if __name__ == "__main__":
+    seed()
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Execute o seed:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python seed.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- COMUM A AMBOS                                                 -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #9c27b0;
+            padding-bottom: 8px;
+          "
+        >
+          ✅ PASSOS COMUNS — FASTAPI E DJANGO
+        </h2>
+
+        <p>
+          Os próximos passos são <strong>idênticos</strong> para quem escolheu
+          FastAPI ou Django. O deploy no Vercel funciona da mesma forma para
+          ambos os frameworks.
+        </p>
+
+        <h3>Passo 14 — Criar .env, .gitignore e .env.example</h3>
+
+        <p>
+          <strong>.env</strong> — cole a URL do Supabase que você copiou no
+          Passo 1:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">DATABASE_URL=postgresql://postgres:senha@db.supabase.co:5432/postgres
+JWT_SECRET=minha-chave-secreta-super-segura
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Importante sobre a DATABASE_URL
+          </h2>
+          <p>
+            Substitua os valores de exemplo pela URL real que você copiou do
+            Supabase. A variável <code>DATABASE_URL</code> é a única forma de
+            conectar ao banco — sem ela, a aplicação não funciona.
+          </p>
+        </div>
+
+        <p><strong>.env.example</strong> — modelo para compartilhar:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">DATABASE_URL=postgresql://usuario:senha@host:5432/nome-do-banco
+JWT_SECRET=uma-string-longa-e-aleatoria
+ALLOWED_ORIGINS=http://localhost:3000</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>.gitignore</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">venv/
+.env
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+*.egg-info/
+dist/
+build/</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Importante!</h2>
+          <p>
+            <strong>NUNCA</strong> commite o arquivo <code>.env</code>. Ele
+            contém a senha do seu banco Supabase e a chave JWT.
+          </p>
+        </div>
+
+        <h3>Passo 15 — Configurar o Vercel</h3>
+
+        <p>O <strong>vercel.json</strong> é igual para FastAPI e Django:</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "api/index.py" }
+  ]
+}
+</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+          <p>
+            O <code>vercel.json</code> funciona igual para ASGI (FastAPI) e WSGI
+            (Django). O Vercel detecta o tipo de app automaticamente.
+          </p>
+        </div>
+
+        <h3>Passo 16 — Gerar requirements.txt para o Vercel</h3>
+
+        <p>O Vercel lê o <code>requirements.txt</code> automaticamente.</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip freeze > requirements.txt</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>FastAPI:</strong> verifique se contém ao menos:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">fastapi>=0.115.0
+uvicorn>=0.32.0
+sqlalchemy>=2.0.0
+python-dotenv>=1.0.0
+pyjwt>=2.9.0
+bcrypt>=4.0.0
+slowapi>=0.1.9
+pydantic>=2.0.0
+psycopg2-binary>=2.9.0</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>Django:</strong></p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">django>=5.1.0
+djangorestframework>=3.15.0
+djangorestframework-simplejwt>=5.3.0
+django-cors-headers>=4.3.0
+python-dotenv>=1.0.0
+psycopg2-binary>=2.9.0</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 17 — Testar localmente</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm install -g vercel
+
+vercel dev</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Teste as rotas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">curl http://localhost:3000/api/</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 18 — Fazer deploy na Vercel (pelo site)</h3>
+
+        <ol>
+          <li>
+            <strong>Publique o código no GitHub</strong>:
+            <div class="code-container">
+              <pre><code class="language-bash">git add .
+git commit -m "cria api completa do projeto final python"
+git push --set-upstream origin projeto-final-python</code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </li>
+          <li>
+            Acesse <code>https://vercel.com</code> e faça login com GitHub
+          </li>
+          <li>Clique em <strong>Add New → Project</strong></li>
+          <li>Selecione o repositório</li>
+          <li>Clique em <strong>Deploy</strong></li>
+          <li>
+            Após o deploy, vá em
+            <strong>Settings → Environment Variables</strong>
+            e adicione:
+            <ul>
+              <li><code>DATABASE_URL</code> — a URL do Supabase</li>
+              <li><code>JWT_SECRET</code> — uma string aleatória e segura</li>
+              <li><code>ALLOWED_ORIGINS</code> — <code>*</code> para testes</li>
+            </ul>
+          </li>
+          <li>
+            Vá em <strong>Deployments</strong>, clique em <strong>...</strong> e
+            selecione <strong>Redeploy</strong>
+          </li>
+        </ol>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 DATABASE_URL no Vercel
+          </h2>
+          <p>
+            A mesma URL que você usou no <code>.env</code> local deve ser
+            adicionada nas variáveis de ambiente do Vercel. Sem ela, a API não
+            consegue conectar ao banco.
+          </p>
+        </div>
+
+        <h3>Passo 19 — Testar a API no ar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">curl https://seu-projeto.vercel.app/api/
+
+curl -X POST https://seu-projeto.vercel.app/api/registrar \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Maria\",\"email\":\"maria@email.com\",\"senha\":\"123456\"}"
+
+curl -X POST https://seu-projeto.vercel.app/api/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"admin@email.com\",\"senha\":\"admin123\"}
+
+curl https://seu-projeto.vercel.app/api/me \
+  -H "Authorization: Bearer TOKEN"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subir para o Git (main)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git merge projeto-final-python
+git push</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>Resumo dos Endpoints</h2>
+
+        <h3>🅰️ FastAPI</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Rota</th>
+              <th>Autenticação</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td><code>/api</code></td>
+              <td>Pública</td>
+              <td>Informações da API</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/registrar</code></td>
+              <td>Pública</td>
+              <td>Registrar novo usuário</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/login</code></td>
+              <td>Pública</td>
+              <td>Fazer login e receber token JWT</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/api/me</code></td>
+              <td>JWT</td>
+              <td>Obter dados do usuário logado</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>🅱️ Django</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Rota</th>
+              <th>Autenticação</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/registrar</code></td>
+              <td>Pública</td>
+              <td>Registrar novo usuário</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/login</code></td>
+              <td>Pública</td>
+              <td>Fazer login e receber token JWT</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/api/me</code></td>
+              <td>JWT</td>
+              <td>Obter dados do usuário logado</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Checklist Pré-Deploy</h2>
+
+        <ol>
+          <li>✅ <code>.env</code> está no <code>.gitignore</code></li>
+          <li>
+            ✅ <code>DATABASE_URL</code> do Supabase configurada no
+            <code>.env</code>
+          </li>
+          <li>✅ Não há senhas ou chaves hardcoded no código</li>
+          <li>✅ <code>requirements.txt</code> está gerado e atualizado</li>
+          <li>✅ <code>api/index.py</code> existe com o entry point correto</li>
+          <li>
+            ✅ <code>vercel.json</code> está configurado com builds e rotas
+          </li>
+          <li>
+            ✅ <code>DATABASE_URL</code> configurada nas variáveis de ambiente
+            do Vercel
+          </li>
+          <li>✅ Testou localmente com <code>vercel dev</code></li>
+        </ol>
+
+        <h2>Boas Práticas em Produção</h2>
+
+        <h3>🔹 Variáveis de Ambiente</h3>
+        <p>
+          <strong>NUNCA</strong> coloque senhas, chaves de API ou URLs de banco
+          no código. A <code>DATABASE_URL</code> do Supabase deve ficar apenas
+          no <code>.env</code> local e nas variáveis de ambiente do Vercel.
+        </p>
+
+        <h3>🔹 CORS</h3>
+        <p>
+          Em FastAPI usamos <code>CORSMiddleware</code>. Em Django usamos
+          <code>django-cors-headers</code>. Ambos controlam quais domínios podem
+          acessar sua API.
+        </p>
+
+        <h3>🔹 JWT_SECRET forte</h3>
+        <p>
+          Use uma string longa e aleatória. No Supabase, a senha do banco também
+          deve ser forte — ela protege seus dados na nuvem.
+        </p>
+
+        <section>
+          <h2>📤 Entrega do Projeto</h2>
+
+          <div class="alert-explicando-codigo">
+            <ol>
+              <li>
+                <strong>Grave um vídeo</strong> apresentando seu projeto (máximo
+                5 minutos). Mostre o código, a API funcionando no Vercel e
+                explique as escolhas que fez.
+                <strong>Não precisa aparecer seu rosto</strong> — apenas a tela
+                do computador.
+              </li>
+              <li>
+                <strong>Coloque o vídeo</strong> dentro do repositório do
+                projeto (ex: <code>video-apresentacao.mp4</code> ou
+                <code>video/</code>).
+              </li>
+              <li>
+                <strong>Envie um email</strong> com o link do repositório até o
+                dia <strong>29/08</strong>.
+              </li>
+            </ol>
+
+            <p>
+              O assunto do email deve ser:
+              <strong>"Projeto Final Python - [SEU NOME]"</strong>.
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
