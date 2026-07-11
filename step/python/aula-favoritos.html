@@ -285,6 +285,8 @@
           <span class="linha"></span><span class="circulo"></span>Páginas
         </span><span class="progresso-item" data-step="8">
           <span class="linha"></span><span class="circulo"></span>Rodar!
+        </span><span class="progresso-item" data-step="9">
+          <span class="linha"></span><span class="circulo"></span>Git
         </span>
       </div>
     </header>
@@ -695,6 +697,412 @@ python manage.py runserver</code></pre>
           <div class="passo-concluido">✅ Passo 8 concluído! Seu catálogo está no ar!</div>
         </div>
 
+        <div class="passo" id="passo9">
+          <div class="passo-header">
+            <span class="passo-numero">9</span>
+            <h3>Publicar no GitHub</h3>
+          </div>
+
+          <p class="instrucao">
+            Agora vamos colocar seu catálogo de favoritos <strong>na nuvem</strong>!
+            O GitHub é um site que guarda seu código e mostra para todo mundo.
+            Pense como um <strong>backup na internet</strong> do seu projeto. 📤
+          </p>
+
+          <!-- 9.1 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.1 — Criar o repositório no GitHub</h4>
+
+          <p class="instrucao">Siga estes passos no <strong>site do GitHub</strong>:</p>
+
+          <ol style="font-size:19px;line-height:2;">
+            <li>Abra o navegador e acesse <code>https://github.com</code></li>
+            <li>Faça <strong>login</strong> com seu usuário e senha</li>
+            <li>Clique no botão verde <strong>"New"</strong> (canto superior esquerdo)</li>
+            <li>Em <strong>"Repository name"</strong>, digite: <code>meu-catalogo-favoritos</code></li>
+            <li>Marque a opção <strong>"Add a README file"</strong></li>
+            <li>Deixe o resto como está e clique em <strong>"Create repository"</strong></li>
+          </ol>
+
+          <div class="explica-box">
+            <strong>📖 O que é um repositório?</strong><br>
+            Um repositório é como uma <strong>pasta especial</strong> que o GitHub
+            cria pra guardar seu projeto. Dentro dela vão ficar todos os arquivos
+            do seu catálogo de favoritos.
+          </div>
+
+          <div class="dica-box">
+            💡 <strong>Importante:</strong> O nome <code>meu-catalogo-favoritos</code>
+            precisa ser exato. Se você digitar algo diferente, os comandos abaixo
+            vão precisar ser ajustados.
+          </div>
+
+          <div class="passo-concluido">✅ 9.1 concluído! Repositório criado no GitHub.</div>
+
+          <!-- 9.2 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.2 — Clonar o repositório para o computador</h4>
+
+          <p class="instrucao">
+            Agora vamos <strong>baixar</strong> o repositório vazio para o seu computador.
+            O GitHub cria uma pasta em <code>C:/</code> com o nome do repositório.
+          </p>
+
+          <p class="instrucao">No GitHub:</p>
+          <ol style="font-size:19px;line-height:2;">
+            <li>Clique no botão verde <strong>"Code"</strong></li>
+            <li>Certifique-se de que está na aba <strong>"HTTPS"</strong></li>
+            <li>Clique no ícone 📋 ao lado do link para <strong>copiar</strong></li>
+          </ol>
+
+          <p class="instrucao">O link copiado é parecido com este:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">https://github.com/seu-usuario/meu-catalogo-favoritos.git</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="dica-box">
+            💡 <strong>Dica:</strong> Troque <code>seu-usuario</code> pelo seu
+            nome de usuário do GitHub. Ex: se seu usuário for
+            <code>ana-dev</code>, o link fica
+            <code>https://github.com/ana-dev/meu-catalogo-favoritos.git</code>
+          </div>
+
+          <p class="instrucao">Agora abra o <strong>terminal</strong> e digite:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">cd C:/
+git clone https://github.com/seu-usuario/meu-catalogo-favoritos.git</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="explica-box">
+            <strong>📖 O que esse comando faz:</strong><br>
+            <strong>cd C:/</strong> → vai para a raiz do disco C:<br>
+            <strong>git clone [link]</strong> → baixa o repositório e cria a
+            pasta <code>C:/meu-catalogo-favoritos/</code>
+          </div>
+
+          <p class="instrucao">
+            Após rodar, você vai ver uma mensagem parecida com:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-bash">Cloning into 'meu-catalogo-favoritos'...
+remote: Enumerating objects: 3, done.
+Receiving objects: 100% (3/3), done.</code></pre>
+          </div>
+
+          <p class="instrucao">
+            Abra o <strong>File Explorer</strong> e vá em <code>C:/</code>.
+            Você vai ver a pasta <strong>meu-catalogo-favoritos</strong> apareceu!
+            Dentro dela já tem um arquivo <code>README.md</code>.
+          </p>
+
+          <div class="passo-concluido">✅ 9.2 concluído! Pasta clonada em C:/meu-catalogo-favoritos.</div>
+
+          <!-- 9.3 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.3 — Criar o .gitignore</h4>
+
+          <p class="instrucao">
+            O arquivo <code>.gitignore</code> diz ao Git: <strong>"estes arquivos
+            aqui NÃO devem ser enviados"</strong>. Isso é importante porque
+            alguns arquivos são muito grandes (como o ambiente virtual) ou
+            contêm dados locais (como o banco SQLite).
+          </p>
+
+          <p class="instrucao">
+            Abra o <strong>Bloco de Notas</strong> e digite exatamente isto:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">venv/
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+.DS_Store</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p class="instrucao">
+            Agora salve o arquivo dentro da pasta
+            <code>C:/meu-catalogo-favoritos/</code> com o nome:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">.gitignore</code></pre>
+          </div>
+
+          <div class="dica-box">
+            💡 <strong>Atenção:</strong> O nome é <code>.gitignore</code>.
+            <strong>COM</strong> o ponto na frente. O Windows pode reclamar que
+            "o nome está vazio" — nesse caso, salve como
+            <code>".gitignore"</code> (com aspas). Se não conseguir, veja o
+            <strong>Passo Alternativo</strong> abaixo.
+          </div>
+
+          <p class="instrucao" style="margin-top:15px;">
+            <strong>🔧 Passo Alternativo — criar pelo terminal:</strong>
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">cd C:/meu-catalogo-favoritos
+echo venv/ > .gitignore
+echo __pycache__/ >> .gitignore
+echo *.pyc >> .gitignore
+echo db.sqlite3 >> .gitignore
+echo .env >> .gitignore
+echo .DS_Store >> .gitignore</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="explica-box">
+            <strong>📖 Entendendo cada linha do .gitignore:</strong><br>
+
+            <table border="1" cellpadding="8" style="margin-top:10px;border-collapse:collapse;font-size:17px;width:100%;">
+              <tr style="background:#1a56db;color:white;">
+                <th style="padding:8px;">Linha</th>
+                <th style="padding:8px;">O que ignora</th>
+                <th style="padding:8px;">Por que ignorar?</th>
+              </tr>
+              <tr>
+                <td><code>venv/</code></td>
+                <td>Pasta do ambiente virtual</td>
+                <td>Muito grande (>100 MB), cada computador tem a sua</td>
+              </tr>
+              <tr>
+                <td><code>__pycache__/</code></td>
+                <td>Arquivos de cache do Python</td>
+                <td>Só servem para acelerar o Python local</td>
+              </tr>
+              <tr>
+                <td><code>*.pyc</code></td>
+                <td>Arquivos compilados pelo Python</td>
+                <td>São gerados automaticamente, não precisam ser salvos</td>
+              </tr>
+              <tr>
+                <td><code>db.sqlite3</code></td>
+                <td>Banco de dados local</td>
+                <td>Só tem dados de teste; em produção usa-se outro banco</td>
+              </tr>
+              <tr>
+                <td><code>.env</code></td>
+                <td>Variáveis de ambiente (senhas, chaves)</td>
+                <td><strong>NUNCA</strong> compartilhe senhas!</td>
+              </tr>
+              <tr>
+                <td><code>.DS_Store</code></td>
+                <td>Arquivo de configuração do Mac</td>
+                <td>Só serve para o Finder do Mac</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="passo-concluido">✅ 9.3 concluído! .gitignore criado.</div>
+
+          <!-- 9.4 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.4 — Copiar os arquivos do projeto</h4>
+
+          <p class="instrucao">
+            Agora vamos copiar TODOS os arquivos do seu projeto Django para a
+            pasta clonada. Use o <strong>robocopy</strong>, um comando do Windows
+            que copia pastas inteiras de forma segura.
+          </p>
+
+          <p class="instrucao">
+            <strong>Passo 1:</strong> Descubra onde está a pasta do seu projeto.
+            Abra o <strong>File Explorer</strong>, navegue até a pasta
+            <code>projeto_django_mvt</code>, clique na <strong>barra de
+            endereços</strong> (ela mostra o caminho completo) e pressione
+            <strong>Ctrl + C</strong> para copiar.
+          </p>
+
+          <div class="explica-box">
+            <strong>📖 Exemplo de caminho:</strong><br>
+            Pode ser algo como <code>C:\Users\Aluno\projeto_django_mvt</code>
+            ou <code>C:\projeto_django_mvt</code>. Onde quer que esteja, é esse
+            caminho que você vai usar.
+          </div>
+
+          <p class="instrucao">
+            <strong>Passo 2:</strong> No terminal, digite o comando abaixo
+            <strong>substituindo CAMINHO pelo caminho que você copiou</strong>:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">robocopy "CAMINHO\projeto_django_mvt" "C:\meu-catalogo-favoritos" /E /XD venv __pycache__ /XF "*.pyc" "db.sqlite3" ".env"</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p class="instrucao">Exemplo com o caminho já preenchido:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">robocopy "C:\Users\Aluno\projeto_django_mvt" "C:\meu-catalogo-favoritos" /E /XD venv __pycache__ /XF "*.pyc" "db.sqlite3" ".env"</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="explica-box">
+            <strong>📖 Entendendo o comando robocopy:</strong><br>
+
+            <table border="1" cellpadding="8" style="margin-top:10px;border-collapse:collapse;font-size:17px;width:100%;">
+              <tr style="background:#1a56db;color:white;">
+                <th style="padding:8px;">Parte</th>
+                <th style="padding:8px;">O que faz</th>
+              </tr>
+              <tr>
+                <td><code>robocopy</code></td>
+                <td>Comando do Windows para copiar pastas</td>
+              </tr>
+              <tr>
+                <td><code>"CAMINHO\projeto_django_mvt"</code></td>
+                <td>Pasta DE ONDE copiar (seu projeto original)</td>
+              </tr>
+              <tr>
+                <td><code>"C:\meu-catalogo-favoritos"</code></td>
+                <td>Pasta PARA ONDE copiar (a do GitHub)</td>
+              </tr>
+              <tr>
+                <td><code>/E</code></td>
+                <td>Copia também as subpastas (vazias inclusive)</td>
+              </tr>
+              <tr>
+                <td><code>/XD venv __pycache__</code></td>
+                <td>PULAS as pastas venv e __pycache__</td>
+              </tr>
+              <tr>
+                <td><code>/XF "*.pyc" "db.sqlite3"</code></td>
+                <td>PULAS os arquivos .pyc e db.sqlite3</td>
+              </tr>
+            </table>
+          </div>
+
+          <p class="instrucao" style="margin-top:15px;">
+            Depois que o robocopy terminar, abra a pasta
+            <code>C:/meu-catalogo-favoritos/</code> no File Explorer e confira
+            se os arquivos estão lá. Você deve ver:
+          </p>
+
+          <div class="explica-box">
+            ✅ <code>manage.py</code> — o gerenciador do Django<br>
+            ✅ <code>projeto_django_mvt/</code> — a pasta com as configurações<br>
+            ✅ <code>favoritos/</code> — a pasta do seu catálogo<br>
+            ✅ <code>.gitignore</code> — o arquivo que você criou<br>
+            ✅ <code>README.md</code> — o arquivo que veio do GitHub<br>
+            ❌ <code>venv/</code> — NÃO deve estar aqui (foi ignorado) ✅
+          </div>
+
+          <div class="passo-concluido">✅ 9.4 concluído! Arquivos copiados para a pasta do GitHub.</div>
+
+          <!-- 9.5 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.5 — Enviar para o GitHub</h4>
+
+          <p class="instrucao">
+            Agora vamos <strong>empacotar</strong> os arquivos e
+            <strong>enviar</strong> para o GitHub. São 3 comandos apenas:
+          </p>
+
+          <p class="instrucao">Primeiro, entre na pasta do repositório:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">cd C:/meu-catalogo-favoritos</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p class="instrucao">
+            Agora digite os 3 comandos, <strong>um de cada vez</strong>:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">git add .
+git commit -m "Meu catálogo de favoritos"
+git push</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <div class="explica-box">
+            <strong>📖 O que cada comando faz:</strong><br>
+
+            <table border="1" cellpadding="8" style="margin-top:10px;border-collapse:collapse;font-size:17px;width:100%;">
+              <tr style="background:#1a56db;color:white;">
+                <th style="padding:8px;">Comando</th>
+                <th style="padding:8px;">O que faz</th>
+                <th style="padding:8px;">É como...</th>
+              </tr>
+              <tr>
+                <td><code>git add .</code></td>
+                <td>Adiciona TODOS os arquivos (o ponto significa "tudo")</td>
+                <td>Colocar os documentos dentro da caixa 📦</td>
+              </tr>
+              <tr>
+                <td><code>git commit -m "..."</code></td>
+                <td>Empacota os arquivos com uma etiqueta explicando o que foi feito</td>
+                <td>Fechar a caixa e escrever o que tem dentro 🏷️</td>
+              </tr>
+              <tr>
+                <td><code>git push</code></td>
+                <td>Envia o pacote para o GitHub</td>
+                <td>Entregar a caixa pelos Correios 🚚</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="dica-box">
+            💡 <strong>Na primeira vez:</strong> O GitHub pode pedir seu
+            <strong>usuário e senha</strong> (ou um "token"). Se aparecer uma
+            janela pedindo login, digite seu usuário do GitHub e sua senha.
+            Se pedir um "token", siga as instruções da tela do GitHub para
+            gerar um.
+          </div>
+
+          <p class="instrucao">
+            Depois de rodar <code>git push</code>, você vai ver uma mensagem
+            parecida com:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">Enumerating objects: 15, done.
+Writing objects: 100% (15/15), done.
+To https://github.com/seu-usuario/meu-catalogo-favoritos.git
+ * [new branch]      main -> main</code></pre>
+          </div>
+
+          <p class="instrucao">
+            Essa mensagem significa que <strong>deu certo!</strong> 🎉
+            Os 15 objetos (arquivos) foram enviados para o GitHub.
+          </p>
+
+          <div class="passo-concluido">✅ 9.5 concluído! Código enviado para o GitHub.</div>
+
+          <!-- 9.6 -->
+          <h4 style="margin-top:25px;color:#1a56db;">🔹 9.6 — Ver o resultado no GitHub</h4>
+
+          <p class="instrucao">
+            Última parte! Vamos ver seu projeto <strong>no ar</strong>:
+          </p>
+
+          <ol style="font-size:19px;line-height:2;">
+            <li>Abra o navegador e acesse:
+              <code>https://github.com/seu-usuario/meu-catalogo-favoritos</code>
+            </li>
+            <li>Você vai ver todos os arquivos do seu projeto na tela!</li>
+            <li>Clique em cima de cada pasta para ver o conteúdo</li>
+            <li>Clique em <code>README.md</code> para ver a descrição do projeto</li>
+          </ol>
+
+          <div class="explica-box">
+            <strong>📖 O que você está vendo:</strong><br>
+            Esta é a página do seu repositório no GitHub. Qualquer pessoa com
+            o link pode ver seu código. Pense como se fosse seu
+            <strong>portfólio</strong> — mostre para amigos, professores e
+            entrevistadores de emprego! 🌟
+          </div>
+
+          <div class="dica-box">
+            💡 <strong>Guarde este link!</strong> Você pode colocar no seu
+            currículo. Empresas adoram ver projetos no GitHub.
+          </div>
+
+          <div class="passo-concluido">✅ 9.6 concluído! Seu projeto está no GitHub!</div>
+        </div>
+
       </section>
 
       <div class="final-box">
@@ -702,6 +1110,7 @@ python manage.py runserver</code></pre>
         <h2>Parabéns! Você criou seu Catálogo de Favoritos!</h2>
         <p style="font-size:1.2rem;color:#065f46;">
           Seu site Django está funcionando e mostrando seus favoritos na tela.
+          E o código está salvo no GitHub para sempre! 🌟
         </p>
         <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
           <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ App criado</span>
@@ -711,6 +1120,8 @@ python manage.py runserver</code></pre>
           <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ URLs</span>
           <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Templates</span>
           <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Site rodando</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ GitHub configurado</span>
+          <span style="background:#059669;color:white;padding:8px 18px;border-radius:30px;">✅ Código na nuvem ☁️</span>
         </div>
       </div>
 
@@ -721,6 +1132,13 @@ python manage.py runserver</code></pre>
           <li>Mude as cores dos cards no <code>lista.html</code></li>
           <li>Coloque imagens nos favoritos (pesquise por <code>ImageField</code>)</li>
           <li>Crie uma página de "detalhes" para cada favorito</li>
+          <li>
+            Edite o <code>README.md</code> pelo site do GitHub e veja como
+            fica bonito com Markdown
+          </li>
+          <li>
+            Compartilhe o link do seu repositório com um amigo!
+          </li>
         </ul>
       </div>
 
