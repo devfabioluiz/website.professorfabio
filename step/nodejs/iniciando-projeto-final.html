@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciando nosso projeto Final - Node.js</title>
+    <title>Iniciando nosso Projeto Final - Node.js Backend</title>
 
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
 
@@ -27,14 +27,10 @@
     <button class="back-btn" onclick="history.back()">
       ← Voltar ao índice
     </button>
+
     <header>
-      <h1>Iniciando nosso projeto Final</h1>
+      <h1>Iniciando nosso Projeto Final</h1>
       <h4 class="text-center">Node.js</h4>
-      <div class="topicos-aula">
-        <strong>Projeto Final:</strong>
-        API REST completa com Express, MongoDB, Autenticação JWT e CRUD de
-        produtos.
-      </div>
     </header>
 
     <main class="container">
@@ -68,6 +64,13 @@
             <strong>Proteção de rotas</strong> — endpoints administrativos
             protegidos por JWT e verificação de permissão (admin)
           </li>
+          <li>
+            <strong>Banco MongoDB no Atlas</strong> — banco de dados
+            profissional grátis na nuvem
+          </li>
+          <li>
+            <strong>Deploy no Vercel</strong> — publicação automática via GitHub
+          </li>
         </ul>
 
         <h2>Estrutura do Projeto</h2>
@@ -75,7 +78,12 @@
         <div class="code-container">
           <pre><code class="language-bash">projeto-node-step/
 │
+├── api/
+│   └── index.js              # ponto de entrada (Vercel)
+│
 ├── src/
+│   ├── database/
+│   │   └── connect.js
 │   ├── models/
 │   │   ├── Produto.js
 │   │   └── Usuario.js
@@ -92,11 +100,1188 @@
 ├── seed.js
 ├── app.js
 ├── server.js
+├── vercel.json
 ├── package.json
-└── .env</code></pre>
+├── .env
+├── .env.example
+└── .gitignore</code></pre>
         </div>
 
-        <h2>Resumo dos Endpoints</h2>
+        <h2>Passo a Passo</h2>
+
+        <h3>Passo 0 — Criar a branch do projeto final</h3>
+
+        <p>Partindo da branch <strong>main</strong>, crie uma nova branch:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git pull
+git checkout -b projeto-final</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 1 — MONGODB ATLAS                                       -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 8px;
+          "
+        >
+          ☁️ PASSO 1 — CRIAR BANCO NO MONGODB ATLAS
+        </h2>
+
+        <p>
+          Antes de escrever qualquer código, vamos criar o banco de dados.
+          Usaremos o <strong>MongoDB Atlas</strong>, que oferece MongoDB grátis
+          na nuvem (tier M0). Esse banco será usado tanto em desenvolvimento
+          quanto em produção.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            📦 Passo a passo: Criar banco no MongoDB Atlas
+          </h2>
+          <ol>
+            <li>
+              <strong>Acesse</strong> <code>https://mongodb.com/atlas</code> e
+              clique em <strong>"Try Free"</strong>
+            </li>
+            <li>
+              <strong>Faça login com GitHub</strong> ou crie uma conta. Após o
+              login, clique em <strong>"Create a cluster"</strong>
+            </li>
+            <li>
+              Escolha o plano <strong>M0 Sandbox</strong> (grátis), selecione
+              <strong>AWS</strong> e a região mais próxima (ex: South America —
+              São Paulo)
+            </li>
+            <li>
+              Clique em <strong>"Create Cluster"</strong> e aguarde ~3 minutos
+              enquanto o cluster é provisionado
+            </li>
+            <li>
+              <strong>Crie um usuário</strong> no banco: vá em
+              <strong>Database Access → Add New Database User</strong>, defina
+              usuário e senha (guarde essa senha!)
+            </li>
+            <li>
+              <strong>Libere o acesso de IPs:</strong> vá em
+              <strong>Network Access → Add IP Address</strong> e clique em
+              <strong>"Allow Access from Anywhere"</strong> (0.0.0.0/0)
+            </li>
+            <li>
+              <strong>Obtenha a string de conexão:</strong> vá em
+              <strong>Database → Connect → Connect your application</strong>
+              <div class="code-container">
+                <pre><code class="language-bash">mongodb+srv://seuusuario:senha@cluster0.xxxxx.mongodb.net/projeto-final?retryWrites=true&w=majority</code></pre>
+              </div>
+            </li>
+            <li>
+              <strong>Cole essa URL em um bloco de notas</strong> — você vai
+              usar nos próximos passos. Substitua
+              <code>seuusuario</code> e <code>senha</code> pelos dados que você
+              criou.
+            </li>
+          </ol>
+        </div>
+
+        <h3>Passo 2 — Inicializar o projeto e instalar dependências</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm init -y</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Instale as dependências necessárias:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm install express mongoose bcryptjs jsonwebtoken cors dotenv helmet compression express-rate-limit</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Entendendo as Dependências 📦
+          </h2>
+
+          <h3>🔹 express</h3>
+          <p>Framework web para criar rotas e middlewares.</p>
+
+          <h3>🔹 mongoose</h3>
+          <p>ODM (Object Document Mapper) para conectar e interagir com o MongoDB.</p>
+
+          <h3>🔹 bcryptjs</h3>
+          <p>Biblioteca para criptografar senhas com hash seguro.</p>
+
+          <h3>🔹 jsonwebtoken</h3>
+          <p>Cria e verifica tokens JWT para autenticação.</p>
+
+          <h3>🔹 cors</h3>
+          <p>Libera o acesso de outras origens à sua API.</p>
+
+          <h3>🔹 dotenv</h3>
+          <p>Carrega variáveis de ambiente do arquivo .env.</p>
+
+          <h3>🔹 helmet</h3>
+          <p>Adiciona headers de segurança HTTP automaticamente.</p>
+
+          <h3>🔹 compression</h3>
+          <p>Comprime as respostas HTTP com gzip, reduzindo o tráfego.</p>
+
+          <h3>🔹 express-rate-limit</h3>
+          <p>Limita o número de requisições para proteger contra abusos.</p>
+        </div>
+
+        <h3>Passo 3 — Criar a estrutura de pastas</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir src\database src\models src\controllers src\routes src\middlewares api</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar o arquivo .env</h3>
+
+        <p>
+          Cole a URL do MongoDB Atlas que você copiou no Passo 1:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > .env</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-bash">MONGODB_URL=mongodb+srv://seuusuario:senha@cluster0.xxxxx.mongodb.net/projeto-final?retryWrites=true&w=majority
+JWT_SECRET=minha-chave-secreta-super-segura
+PORT=3000
+NODE_ENV=development</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando as variáveis 📝
+          </h2>
+
+          <h3>🔹 MONGODB_URL</h3>
+          <p>
+            URL de conexão com o MongoDB Atlas. Substitua pelos dados do seu
+            cluster. Em ambiente local, você pode usar
+            <code>mongodb://localhost:27017/projeto-final</code>.
+          </p>
+
+          <h3>🔹 JWT_SECRET</h3>
+          <p>
+            Chave secreta usada para assinar os tokens JWT. Nunca compartilhe
+            essa chave. Em produção, use uma string longa e aleatória.
+          </p>
+
+          <h3>🔹 PORT</h3>
+          <p>Porta onde o servidor será executado localmente. Padrão: 3000.</p>
+
+          <h3>🔹 NODE_ENV</h3>
+          <p>
+            Define o ambiente: <code>development</code> ou
+            <code>production</code>. Em produção, erros detalhados não são
+            expostos.
+          </p>
+        </div>
+
+        <h3>Passo 5 — Criar o arquivo de conexão com o banco</h3>
+
+        <p>
+          Diferente das aulas anteriores, aqui usamos um padrão de
+          <strong>conexão cacheada</strong>. Isso permite que o MongoDB
+          funcione tanto no servidor local quanto no ambiente serverless do
+          Vercel sem criar múltiplas conexões.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\database\connect.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const mongoose = require("mongoose");
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function conectar() {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    const MONGODB_URL =
+      process.env.MONGODB_URL ||
+      "mongodb://localhost:27017/projeto-final";
+
+    cached.promise = mongoose.connect(MONGODB_URL);
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+module.exports = conectar;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Conexão cacheada</h3>
+          <p>
+            Em ambiente serverless (Vercel), cada requisição pode rodar em um
+            processo diferente. O padrão de cache com <code>global.mongoose</code>
+            garante que a conexão seja reutilizada enquanto o processo estiver
+            ativo, evitando criar uma nova conexão a cada requisição.
+          </p>
+
+          <h3>🔹 fallback local</h3>
+          <p>
+            Se a variável <code>MONGODB_URL</code> não estiver configurada, o
+            código usa <code>mongodb://localhost:27017/projeto-final</code> como
+            fallback para desenvolvimento local.
+          </p>
+        </div>
+
+        <h3>Passo 6 — Criar o Model de Produto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\models\Produto.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const mongoose = require("mongoose");
+
+const produtoSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  preco: { type: Number, required: true },
+  descricao: { type: String },
+  categoria: { type: String },
+  imagem: { type: String },
+  avaliacao: {
+    nota: { type: Number, default: 0 },
+    quantidade: { type: Number, default: 0 },
+  },
+});
+
+module.exports = mongoose.model("Produto", produtoSchema);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 Schema</h3>
+          <p>
+            Define a estrutura dos produtos no MongoDB. O campo
+            <code>avaliacao</code> é um objeto aninhado com
+            <code>nota</code> (avaliação média) e <code>quantidade</code>
+            (total de avaliações).
+          </p>
+        </div>
+
+        <h3>Passo 7 — Criar o Model de Usuário</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\models\Usuario.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const mongoose = require("mongoose");
+
+const usuarioSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  senha: { type: String, required: true },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+});
+
+module.exports = mongoose.model("Usuario", usuarioSchema);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Criar o Controller de Produtos</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\controllers\produtoController.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const Produto = require("../models/Produto");
+
+const listarProdutos = async (req, res) => {
+  const produtos = await Produto.find();
+  res.json(produtos);
+};
+
+const obterProduto = async (req, res) => {
+  const { id } = req.params;
+  const produto = await Produto.findById(id);
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  res.json(produto);
+};
+
+const criarProduto = async (req, res) => {
+  const produto = await Produto.create(req.body);
+  res.status(201).json(produto);
+};
+
+const atualizarProduto = async (req, res) => {
+  const { id } = req.params;
+  const produto = await Produto.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  res.json(produto);
+};
+
+const deletarProduto = async (req, res) => {
+  const { id } = req.params;
+  const produto = await Produto.findByIdAndDelete(id);
+  if (!produto) {
+    return res.status(404).json({ erro: "Produto não encontrado" });
+  }
+  res.json({ mensagem: "Produto removido com sucesso" });
+};
+
+module.exports = {
+  listarProdutos,
+  obterProduto,
+  criarProduto,
+  atualizarProduto,
+  deletarProduto,
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Criar o Controller de Autenticação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\controllers\authController.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const Usuario = require("../models/Usuario");
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo";
+
+const registrar = async (req, res) => {
+  const { nome, email, senha, role } = req.body;
+
+  const existe = await Usuario.findOne({ email });
+  if (existe) {
+    return res.status(400).json({ erro: "Email já cadastrado" });
+  }
+
+  const senhaHash = await bcrypt.hash(senha, 10);
+  const usuario = await Usuario.create({
+    nome, email, senha: senhaHash, role: role || "user",
+  });
+
+  const token = jwt.sign(
+    { id: usuario._id, email: usuario.email, role: usuario.role },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.status(201).json({
+    mensagem: "Usuário registrado com sucesso",
+    token,
+    usuario: { id: usuario._id, nome: usuario.nome, email: usuario.email, role: usuario.role },
+  });
+};
+
+const login = async (req, res) => {
+  const { email, senha } = req.body;
+
+  const usuario = await Usuario.findOne({ email });
+  if (!usuario) {
+    return res.status(401).json({ erro: "Email ou senha inválidos" });
+  }
+
+  const senhaValida = await bcrypt.compare(senha, usuario.senha);
+  if (!senhaValida) {
+    return res.status(401).json({ erro: "Email ou senha inválidos" });
+  }
+
+  const token = jwt.sign(
+    { id: usuario._id, email: usuario.email, role: usuario.role },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.json({
+    mensagem: "Login realizado com sucesso",
+    token,
+    usuario: { id: usuario._id, nome: usuario.nome, email: usuario.email, role: usuario.role },
+  });
+};
+
+const perfil = async (req, res) => {
+  const usuario = await Usuario.findById(req.usuarioId).select("-senha");
+  if (!usuario) {
+    return res.status(404).json({ erro: "Usuário não encontrado" });
+  }
+  res.json({
+    usuario: { id: usuario._id, nome: usuario.nome, email: usuario.email, role: usuario.role },
+  });
+};
+
+module.exports = { registrar, login, perfil };</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Criar o Middleware de Autenticação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\middlewares\autenticar.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const jwt = require("jsonwebtoken");
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo";
+
+const autenticar = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ erro: "Token não informado" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.usuarioId = payload.id;
+    req.usuarioEmail = payload.email;
+    req.usuarioRole = payload.role;
+    next();
+  } catch (erro) {
+    return res.status(401).json({ erro: "Token inválido ou expirado" });
+  }
+};
+
+module.exports = autenticar;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 11 — Criar o Middleware de Admin</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\middlewares\admin.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const admin = (req, res, next) => {
+  if (req.usuarioRole !== "admin") {
+    return res.status(403).json({ erro: "Acesso restrito a administradores" });
+  }
+  next();
+};
+
+module.exports = admin;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 12 — Criar as Rotas de Produtos</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\routes\produtoRoutes.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  listarProdutos, obterProduto, criarProduto,
+  atualizarProduto, deletarProduto,
+} = require("../controllers/produtoController");
+
+const autenticar = require("../middlewares/autenticar");
+const admin = require("../middlewares/admin");
+
+router.get("/produtos", listarProdutos);
+router.get("/produtos/:id", obterProduto);
+router.post("/produtos", autenticar, admin, criarProduto);
+router.put("/produtos/:id", autenticar, admin, atualizarProduto);
+router.delete("/produtos/:id", autenticar, admin, deletarProduto);
+
+module.exports = router;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 13 — Criar as Rotas de Autenticação</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\routes\authRoutes.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const { registrar, login, perfil } = require("../controllers/authController");
+const autenticar = require("../middlewares/autenticar");
+
+router.post("/registrar", registrar);
+router.post("/login", login);
+router.get("/me", autenticar, perfil);
+
+module.exports = router;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 14 — Criar o app.js (aplicação Express)</h3>
+
+        <p>
+          O <strong>app.js</strong> configura o Express com todos os
+          middlewares de segurança e as rotas. Este arquivo é compartilhado
+          entre o servidor local e o Vercel.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > app.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+
+const produtoRoutes = require("./src/routes/produtoRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+
+const app = express();
+
+// ─── Middlewares de Segurança ─────────────────────────
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
+app.use(compression());
+
+// ─── Rate Limiting ────────────────────────────────────
+const limitador = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { erro: "Muitas requisições. Tente novamente mais tarde." },
+});
+app.use("/api/", limitador);
+
+app.use(express.json());
+
+// ─── Rota Raiz ────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.json({
+    mensagem: "API do Projeto Final funcionando!",
+    versao: "1.0.0",
+    endpoints: {
+      produtos: {
+        listar: "GET /produtos",
+        obter: "GET /produtos/:id",
+        criar: "POST /produtos",
+        atualizar: "PUT /produtos/:id",
+        deletar: "DELETE /produtos/:id",
+      },
+      autenticacao: {
+        registrar: "POST /registrar",
+        login: "POST /login",
+        perfil: "GET /me",
+      },
+    },
+  });
+});
+
+// ─── Rotas da API ─────────────────────────────────────
+app.use(produtoRoutes);
+app.use(authRoutes);
+
+// ─── Middleware de Erro Global ─────────────────────────
+app.use((erro, req, res, next) => {
+  console.error("Erro interno:", erro.message);
+  res.status(erro.status || 500).json({
+    erro:
+      process.env.NODE_ENV === "production"
+        ? "Erro interno do servidor"
+        : erro.message,
+  });
+});
+
+module.exports = app;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+
+          <h3>🔹 helmet()</h3>
+          <p>
+            Adiciona automaticamente headers de segurança HTTP que protegem
+            contra XSS, clickjacking, sniffing de MIME type e outras
+            vulnerabilidades comuns.
+          </p>
+
+          <h3>🔹 cors()</h3>
+          <p>
+            Por padrão, navegadores bloqueiam requisições entre origens
+            diferentes. O CORS libera isso de forma controlada. Em produção,
+            restrinja a origin ao domínio do seu frontend.
+          </p>
+
+          <h3>🔹 compression()</h3>
+          <p>
+            Comprime respostas com gzip, reduzindo o tráfego em até 70%. Isso
+            acelera o carregamento e reduz custos de banda.
+          </p>
+
+          <h3>🔹 rateLimit()</h3>
+          <p>
+            Limita a 100 requisições por 15 minutos. Protege contra ataques de
+            brute force e DoS.
+          </p>
+
+          <h3>🔹 Middleware de erro</h3>
+          <p>
+            Captura qualquer erro não tratado nos controllers. Em produção, não
+            expõe detalhes internos do erro.
+          </p>
+        </div>
+
+        <h3>Passo 15 — Criar o server.js (servidor local)</h3>
+
+        <p>
+          O <strong>server.js</strong> é usado para rodar a API localmente.
+          Ele conecta ao MongoDB e inicia o servidor Express.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > server.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const conectar = require("./src/database/connect");
+const app = require("./app");
+
+const PORT = process.env.PORT || 3000;
+
+conectar()
+  .then(() => {
+    console.log("MongoDB conectado com sucesso");
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando em http://localhost:${PORT}`);
+    });
+  })
+  .catch((erro) => {
+    console.error("Erro ao conectar no MongoDB:", erro.message);
+    process.exit(1);
+  });</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 16 — Criar o entry point para Vercel (api/index.js)</h3>
+
+        <p>
+          Este é o ponto de entrada que o Vercel vai usar. Ele simplesmente
+          importa e exporta a aplicação Express do <strong>app.js</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > api\index.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const app = require("../app");
+
+module.exports = app;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 17 — Popular o banco com dados iniciais (seed)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > seed.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const conectar = require("./src/database/connect");
+const Produto = require("./src/models/Produto");
+const Usuario = require("./src/models/Usuario");
+const bcrypt = require("bcryptjs");
+
+async function seed() {
+  await conectar();
+  console.log("MongoDB conectado — populando dados...");
+
+  await Produto.deleteMany({});
+  await Usuario.deleteMany({});
+
+  await Produto.insertMany([
+    {
+      nome: "Mochila Fjallraven Foldsack No. 1",
+      preco: 109.95,
+      descricao: "Sua mochila perfeita para o dia a dia e viagens.",
+      categoria: "masculino",
+      imagem: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+      avaliacao: { nota: 3.9, quantidade: 120 },
+    },
+    {
+      nome: "Camiseta Casual Premium",
+      preco: 22.3,
+      descricao: "Camiseta de algodão com estilo casual.",
+      categoria: "masculino",
+      imagem: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
+      avaliacao: { nota: 4.1, quantidade: 259 },
+    },
+    {
+      nome: "Jaqueta de Inverno Masculina",
+      preco: 55.99,
+      descricao: "Jaqueta quente e estilosa para o inverno.",
+      categoria: "masculino",
+      imagem: "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg",
+      avaliacao: { nota: 4.7, quantidade: 500 },
+    },
+    {
+      nome: "Vestido Feminino Floral",
+      preco: 29.95,
+      descricao: "Vestido leve e confortável para o verão.",
+      categoria: "feminino",
+      imagem: "https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg",
+      avaliacao: { nota: 3.8, quantidade: 240 },
+    },
+    {
+      nome: "Bolsa Feminina de Couro",
+      preco: 89.99,
+      descricao: "Bolsa elegante em couro legítimo.",
+      categoria: "feminino",
+      imagem: "https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_.jpg",
+      avaliacao: { nota: 4.2, quantidade: 180 },
+    },
+    {
+      nome: "Relógio Digital Esportivo",
+      preco: 49.99,
+      descricao: "Relógio resistente à água com cronômetro.",
+      categoria: "eletronicos",
+      imagem: "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg",
+      avaliacao: { nota: 4.5, quantidade: 320 },
+    },
+    {
+      nome: "Fone de Ouvido Bluetooth",
+      preco: 79.99,
+      descricao: "Fone sem fio com cancelamento de ruído.",
+      categoria: "eletronicos",
+      imagem: "https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_.jpg",
+      avaliacao: { nota: 4.3, quantidade: 410 },
+    },
+    {
+      nome: "Anel de Prata 925",
+      preco: 15.99,
+      descricao: "Anel elegante em prata 925.",
+      categoria: "joias",
+      imagem: "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      avaliacao: { nota: 3.9, quantidade: 70 },
+    },
+  ]);
+
+  console.log("8 produtos inseridos!");
+
+  const senhaHash = await bcrypt.hash("admin123", 10);
+
+  await Usuario.create({ nome: "Admin", email: "admin@email.com", senha: senhaHash, role: "admin" });
+  await Usuario.create({ nome: "Usuário Teste", email: "usuario@email.com", senha: senhaHash, role: "user" });
+
+  console.log("Usuários criados!");
+  console.log("Admin: admin@email.com / senha: admin123");
+  console.log("User:  usuario@email.com / senha: admin123");
+  console.log("Banco populado com sucesso!");
+
+  await mongoose.disconnect();
+}
+
+seed().catch((erro) => {
+  console.error("Erro ao popular banco:", erro);
+  process.exit(1);
+});</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Execute o seed para popular o banco:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node seed.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 18 — Configurar o Vercel (vercel.json)</h3>
+
+        <p>
+          O <strong>vercel.json</strong> na raiz do projeto configura o Vercel
+          para usar o arquivo <code>api/index.js</code> como ponto de entrada.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > vercel.json</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "api/index.js" }
+  ]
+}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 19 — Criar .gitignore e .env.example</h3>
+
+        <p><strong>.gitignore</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node_modules/
+.env
+logs/
+uploads/*
+!uploads/.gitkeep
+*.log</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><strong>.env.example</strong> — modelo para compartilhar:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">MONGODB_URL=mongodb+srv://usuario:senha@cluster0.xxxxx.mongodb.net/projeto-final?retryWrites=true&w=majority
+JWT_SECRET=uma-string-longa-e-aleatoria
+PORT=3000
+NODE_ENV=development
+CORS_ORIGIN=*</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Importante!</h2>
+          <p>
+            <strong>NUNCA</strong> commite o arquivo <code>.env</code>. Ele
+            contém a senha do seu banco MongoDB Atlas e a chave JWT.
+          </p>
+        </div>
+
+        <h3>Passo 20 — Adicionar scripts no package.json</h3>
+
+        <p>
+          Abra o <strong>package.json</strong> e adicione os scripts:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node seed.js"
+  }
+}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 21 — Testar localmente</h3>
+
+        <p>Execute o seed (se não tiver feito) e inicie o servidor:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node seed.js
+node server.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Teste as rotas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">curl http://localhost:3000
+
+curl http://localhost:3000/produtos
+
+curl -X POST http://localhost:3000/registrar \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Maria\",\"email\":\"maria@email.com\",\"senha\":\"123456\"}"
+
+curl -X POST http://localhost:3000/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"admin@email.com\",\"senha\":\"admin123\"}"
+
+curl http://localhost:3000/me \
+  -H "Authorization: Bearer TOKEN"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 22 — Fazer deploy na Vercel (pelo site)</h3>
+
+        <ol>
+          <li>
+            <strong>Publique o código no GitHub</strong>:
+            <div class="code-container">
+              <pre><code class="language-bash">git add .
+git commit -m "cria api completa do projeto final"
+git push --set-upstream origin projeto-final</code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </li>
+          <li>
+            Acesse <code>https://vercel.com</code> e faça login com GitHub
+          </li>
+          <li>Clique em <strong>Add New → Project</strong></li>
+          <li>Selecione o repositório <strong>projeto-node-step</strong></li>
+          <li>
+            Em <strong>Build and Output Settings</strong>, o Vercel detecta
+            automaticamente o Node.js. Mantenha as configurações padrão.
+          </li>
+          <li>Clique em <strong>Deploy</strong></li>
+          <li>
+            Após o deploy, vá em
+            <strong>Settings → Environment Variables</strong>
+            e adicione:
+            <ul>
+              <li><code>MONGODB_URL</code> — a URL do MongoDB Atlas</li>
+              <li><code>JWT_SECRET</code> — uma string aleatória e segura</li>
+              <li><code>NODE_ENV</code> — <code>production</code></li>
+              <li><code>CORS_ORIGIN</code> — <code>*</code> para testes</li>
+            </ul>
+          </li>
+          <li>
+            Vá em <strong>Deployments</strong>, clique em <strong>...</strong> e
+            selecione <strong>Redeploy</strong>
+          </li>
+        </ol>
+
+        <h3>Passo 23 — Testar a API no ar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">curl https://seu-projeto.vercel.app
+
+curl https://seu-projeto.vercel.app/produtos
+
+curl -X POST https://seu-projeto.vercel.app/registrar \
+  -H "Content-Type: application/json" \
+  -d "{\"nome\":\"Maria\",\"email\":\"maria@email.com\",\"senha\":\"123456\"}"
+
+curl -X POST https://seu-projeto.vercel.app/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"admin@email.com\",\"senha\":\"admin123\"}"
+
+curl https://seu-projeto.vercel.app/me \
+  -H "Authorization: Bearer TOKEN"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git (main)</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git merge projeto-final
+git push</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- BOAS PRÁTICAS EM PRODUÇÃO                                      -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 8px;
+          "
+        >
+          🛡️ Boas Práticas em Produção
+        </h2>
+
+        <h3>1. Variáveis de Ambiente</h3>
+
+        <p>
+          <strong>NUNCA</strong> coloque senhas, chaves de API ou URLs de banco
+          no código. Use variáveis de ambiente com o arquivo <code>.env</code> e
+          o pacote <strong>dotenv</strong>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">MONGODB_URL=mongodb+srv://usuario:senha@cluster0.xxxxx.mongodb.net/projeto-final
+JWT_SECRET=uma-string-longa-e-aleatoria
+PORT=3000
+NODE_ENV=production
+CORS_ORIGIN=https://meu-frontend.com</code></pre>
+        </div>
+
+        <p>
+          <strong>IMPORTANTE:</strong> adicione o arquivo <code>.env</code> ao
+          <code>.gitignore</code>. Ele NUNCA deve ser commitado.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node_modules/
+.env
+logs/
+uploads/
+*.log</code></pre>
+        </div>
+
+        <h3>2. Scripts npm úteis</h3>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node seed.js",
+    "migrate": "node src/database/migrate.js"
+  }
+}</code></pre>
+        </div>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>Convenção</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>npm start</code></td>
+              <td>Inicia a aplicação em produção</td>
+            </tr>
+            <tr>
+              <td><code>npm run dev</code></td>
+              <td>Inicia em modo desenvolvimento</td>
+            </tr>
+            <tr>
+              <td><code>npm run seed</code></td>
+              <td>Popula o banco com dados iniciais</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>3. Helmet — Segurança HTTP Headers</h3>
+
+        <p>
+          O <strong>helmet</strong> já está configurado no <code>app.js</code>.
+          Ele adiciona automaticamente 11 headers de segurança, incluindo:
+          <code>X-Content-Type-Options</code>,
+          <code>X-Frame-Options</code>,
+          <code>Strict-Transport-Security</code>,
+          <code>X-XSS-Protection</code> e
+          <code>Content-Security-Policy</code>.
+        </p>
+
+        <h3>4. CORS — Controle de Acesso</h3>
+
+        <p>
+          O <strong>cors</strong> já está configurado no <code>app.js</code>.
+          Em produção, restrinja a origin ao domínio do seu frontend via
+          variável de ambiente <code>CORS_ORIGIN</code>.
+        </p>
+
+        <h3>5. Compression — Reduzindo o Tamanho das Respostas</h3>
+
+        <p>
+          O <strong>compression</strong> já está configurado no
+          <code>app.js</code>. Ele comprime respostas com gzip, reduzindo
+          o tráfego em até 70%.
+        </p>
+
+        <h3>6. Rate Limiting — Proteção contra Abusos</h3>
+
+        <p>
+          O <strong>express-rate-limit</strong> já está configurado no
+          <code>app.js</code> com limite de 100 requisições a cada 15 minutos.
+        </p>
+
+        <h3>7. Tratamento de Erros Global</h3>
+
+        <p>
+          O Node.js permite capturar erros não tratados em todo o processo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">process.on("uncaughtException", (erro) => {
+  console.error("Erro não tratado:", erro);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (erro) => {
+  console.error("Promise rejeitada sem catch:", erro);
+  process.exit(1);
+});</code></pre>
+        </div>
+
+        <h3>8. Middleware de Erro no Express</h3>
+
+        <p>
+          O middleware de erro global já está configurado no
+          <code>app.js</code>. O Express reconhece middlewares com 4 parâmetros
+          como <strong>error handlers</strong>. Eles só são executados quando
+          <code>next(erro)</code> é chamado.
+        </p>
+
+        <!-- ============================================================ -->
+        <!-- RESUMO DOS ENDPOINTS                                          -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          📋 Resumo dos Endpoints
+        </h2>
 
         <table border="1" cellpadding="10">
           <thead>
@@ -165,35 +1350,75 @@
           </tbody>
         </table>
 
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">🎉 Parabéns!</h2>
+        <!-- ============================================================ -->
+        <!-- CHECKLIST PRÉ-DEPLOY                                           -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #9c27b0;
+            padding-bottom: 8px;
+          "
+        >
+          ✅ Checklist Pré-Deploy
+        </h2>
 
-          <p>
-            Sua API REST completa está no ar! Agora ela pode ser consumida pelos
-            projetos finais de <strong>React</strong> e
-            <strong>Angular</strong>.
-          </p>
+        <ol>
+          <li>✅ <code>.env</code> está no <code>.gitignore</code></li>
+          <li>✅ <code>MONGODB_URL</code> do Atlas configurada no <code>.env</code></li>
+          <li>✅ Não há senhas ou chaves hardcoded no código</li>
+          <li>✅ <code>api/index.js</code> existe com o entry point correto</li>
+          <li>✅ <code>vercel.json</code> está configurado com builds e rotas</li>
+          <li>✅ <code>MONGODB_URL</code> configurada nas variáveis de ambiente do Vercel</li>
+          <li>✅ <code>JWT_SECRET</code> configurada nas variáveis de ambiente do Vercel</li>
+          <li>✅ <code>NODE_ENV=production</code> configurada no Vercel</li>
+          <li>✅ Testou localmente com <code>node server.js</code></li>
+        </ol>
 
-          <p>Resumo do que você implementou:</p>
+        <!-- ============================================================ -->
+        <!-- ENTREGA DO PROJETO                                            -->
+        <!-- ============================================================ -->
+        <section>
+          <h2
+            style="
+              margin-top: 40px;
+              border-bottom: 3px solid #e91e63;
+              padding-bottom: 8px;
+            "
+          >
+            📤 Entrega do Projeto
+          </h2>
 
-          <ul>
-            <li>✅ CRUD completo de produtos com MongoDB</li>
-            <li>✅ Autenticação com JWT (registro, login, perfil)</li>
-            <li>✅ Controle de acesso por role (admin/user)</li>
-            <li>✅ Middleware de autenticação e autorização</li>
-            <li>✅ Dados iniciais populados via seed</li>
-            <li>✅ Arquitetura MVC organizada</li>
-          </ul>
+          <div class="alert-explicando-codigo">
+            <ol>
+              <li>
+                <strong>Grave um vídeo</strong> apresentando seu projeto (máximo
+                5 minutos). Mostre o código, a API funcionando no Vercel e
+                explique as escolhas que fez.
+                <strong>Não precisa aparecer seu rosto</strong> — apenas a tela
+                do computador.
+              </li>
+              <li>
+                <strong>Coloque o vídeo</strong> dentro do repositório do
+                projeto (ex: <code>video-apresentacao.mp4</code> ou
+                <code>video/</code>).
+              </li>
+              <li>
+                <strong>Envie um email</strong> com o link do repositório até o
+                20/07.
+              </li>
+            </ol>
 
-          <p>
-            Use essa API como portfólio e como base para seus futuros projetos!
-            🚀
-          </p>
-        </div>
+            <p>
+              O assunto do email deve ser:
+              <strong>"Projeto Final Node.js - [SEU NOME]"</strong>.
+            </p>
+          </div>
+        </section>
+
       </section>
     </main>
 
     <script src="../../scripts/copy-clipboard.js"></script>
-    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

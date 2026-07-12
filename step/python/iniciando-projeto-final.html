@@ -1793,27 +1793,264 @@ git push</code></pre>
           <li>✅ Testou localmente com <code>vercel dev</code></li>
         </ol>
 
-        <h2>Boas Práticas em Produção</h2>
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 8px;
+          "
+        >
+          🛡️ Boas Práticas em Produção
+        </h2>
 
-        <h3>🔹 Variáveis de Ambiente</h3>
+        <h3>1. Variáveis de Ambiente</h3>
+
         <p>
           <strong>NUNCA</strong> coloque senhas, chaves de API ou URLs de banco
           no código. A <code>DATABASE_URL</code> do Supabase deve ficar apenas
           no <code>.env</code> local e nas variáveis de ambiente do Vercel.
         </p>
 
-        <h3>🔹 CORS</h3>
+        <div class="code-container">
+          <pre><code class="language-bash">DATABASE_URL=postgresql://postgres:senha@db.supabase.co:5432/postgres
+JWT_SECRET=uma-string-longa-e-aleatoria
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173</code></pre>
+        </div>
+
         <p>
-          Em FastAPI usamos <code>CORSMiddleware</code>. Em Django usamos
-          <code>django-cors-headers</code>. Ambos controlam quais domínios podem
-          acessar sua API.
+          <strong>IMPORTANTE:</strong> adicione o arquivo <code>.env</code> ao
+          <code>.gitignore</code>. Ele NUNCA deve ser commitado.
         </p>
 
-        <h3>🔹 JWT_SECRET forte</h3>
+        <h3>2. Scripts úteis no pyproject.toml</h3>
+
+        <p>Organize tarefas comuns como scripts no <code>pyproject.toml</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">[project.scripts]
+seed = "seed:main"
+start = "uvicorn api.index:app"
+dev = "uvicorn api.index:app --reload"</code></pre>
+        </div>
+
+        <p>Ou crie um arquivo <code>Makefile</code> como alternativa:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">dev:
+	uvicorn api.index:app --reload
+
+seed:
+	python seed.py
+
+deploy:
+	vercel --prod</code></pre>
+        </div>
+
+        <h3>3. Tratamento de Erros Global</h3>
+
         <p>
-          Use uma string longa e aleatória. No Supabase, a senha do banco também
-          deve ser forte — ela protege seus dados na nuvem.
+          No <strong>FastAPI</strong>, o exception handler global já está
+          configurado no <code>app/middlewares.py</code>. Ele captura qualquer
+          exceção não tratada e retorna uma resposta JSON segura (sem expor
+          detalhes internos).
         </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"erro": "Erro interno do servidor"},
+    )</code></pre>
+        </div>
+
+        <p>
+          No <strong>Django</strong>, defina handlers customizados no
+          <code>settings.py</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python"># config/settings.py
+DEBUG = False
+ALLOWED_HOSTS = ["*"]</code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python"># config/urls.py — handler de erro 500
+handler500 = "core.views.erro_interno"</code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python"># core/views.py
+from django.http import JsonResponse
+
+def erro_interno(request):
+    return JsonResponse({"erro": "Erro interno do servidor"}, status=500)</code></pre>
+        </div>
+
+        <h3>4. Headers de Segurança (equivalente ao Helmet)</h3>
+
+        <p>
+          O Node.js tem o pacote <strong>Helmet</strong> que adiciona headers de
+          segurança automaticamente. No ecossistema Python, fazemos isso de
+          forma diferente em cada framework:
+        </p>
+
+        <p><strong>FastAPI</strong> — use <code>TrustedHostMiddleware</code> e configure manualmente:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from fastapi.middleware.trustedhost import TrustedHostMiddleware
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"],
+)
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response</code></pre>
+        </div>
+
+        <p><strong>Django</strong> — ative as configurações de segurança no <code>settings.py</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python"># config/settings.py
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True  # apenas se tiver SSL
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True</code></pre>
+        </div>
+
+        <h3>5. CORS — Controle de Acesso</h3>
+
+        <p>
+          O CORS já está configurado em ambos os frameworks:
+        </p>
+
+        <p><strong>FastAPI</strong> — <code>CORSMiddleware</code> no <code>app/middlewares.py</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)</code></pre>
+        </div>
+
+        <p><strong>Django</strong> — <code>django-cors-headers</code> no <code>settings.py</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">CORS_ALLOW_ALL_ORIGINS = True  # apenas para desenvolvimento
+# Em produção, restrinja:
+CORS_ALLOWED_ORIGINS = [
+    "https://meu-frontend.vercel.app",
+]</code></pre>
+        </div>
+
+        <h3>6. Compression — Reduzindo o Tamanho das Respostas</h3>
+
+        <p><strong>Django</strong> — adicione <code>GZipMiddleware</code> no <code>settings.py</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">MIDDLEWARE = [
+    "django.middleware.gzip.GZipMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+]</code></pre>
+        </div>
+
+        <p>
+          O <code>GZipMiddleware</code> comprime respostas com gzip, reduzindo
+          o tráfego em até 70%.
+        </p>
+
+        <p>
+          No <strong>FastAPI</strong>, a compressão pode ser feita com o pacote
+          <code>starlette-middleware</code> ou configurando o servidor ASGI
+          (Uvicorn já suporta gzip por configuração).
+        </p>
+
+        <h3>7. Rate Limiting — Proteção contra Abusos</h3>
+
+        <p>
+          O rate limiting já está configurado com <strong>slowapi</strong> no
+          <code>app/middlewares.py</code> do FastAPI:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)</code></pre>
+        </div>
+
+        <p>Uso nas rotas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">@router.get("/api")
+@limiter.limit("100/minute")
+async def root(request: Request):
+    return {"mensagem": "API funcionando!"}</code></pre>
+        </div>
+
+        <p>
+          No <strong>Django</strong>, use o pacote
+          <code>django-ratelimit</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip install django-ratelimit</code></pre>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-python">from django_ratelimit.decorators import ratelimit
+
+@ratelimit(key="ip", rate="100/m", method="POST")
+def registrar(request):
+    # ...</code></pre>
+        </div>
+
+        <h3>8. Validação de Entrada</h3>
+
+        <p>
+          <strong>FastAPI</strong> usa <strong>Pydantic</strong> para validar
+          automaticamente os dados de entrada baseado nos type hints:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from pydantic import BaseModel, EmailStr
+
+class UsuarioRegistrar(BaseModel):
+    nome: str
+    email: EmailStr
+    senha: str
+    role: str = "user"</code></pre>
+        </div>
+
+        <p>
+          <strong>Django REST Framework</strong> usa <strong>Serializers</strong>
+          para validação:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from rest_framework import serializers
+
+class UsuarioRegistrarSerializer(serializers.Serializer):
+    nome = serializers.CharField(min_length=3)
+    email = serializers.EmailField()
+    senha = serializers.CharField(min_length=6)</code></pre>
+        </div>
 
         <section>
           <h2>📤 Entrega do Projeto</h2>
