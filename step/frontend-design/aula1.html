@@ -310,6 +310,102 @@ h1, h2, h3 {
 
         <h3>Transitions</h3>
 
+        <p>
+          A propriedade <code>transition</code> permite que mudanças de estilo ocorram
+          de forma <strong>suave ao longo do tempo</strong>, em vez de instantaneamente.
+          Isso transforma uma interface "mecânica" em uma experiência fluida e natural.
+        </p>
+
+        <h4>Sintaxe completa</h4>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* transition: <property> <duration> <timing-function> <delay>; */
+
+.btn {
+  transition: background 0.2s ease 0s;
+  /*        propriedade duração   curva   delay */
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <ul>
+          <li><strong>property</strong> — qual propriedade animar (ex: <code>background</code>, <code>transform</code>, <code>opacity</code>). Evite <code>all</code>.</li>
+          <li><strong>duration</strong> — quanto tempo dura a transição (ex: <code>0.2s</code>, <code>300ms</code>)</li>
+          <li><strong>timing-function</strong> — a curva de aceleração</li>
+          <li><strong>delay</strong> — tempo de espera antes de começar (opcional)</li>
+        </ul>
+
+        <h4>Funções de temporização (timing functions)</h4>
+
+        <p>
+          A <strong>curva de aceleração</strong> define como a animação se comporta
+          ao longo do tempo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.ease       { transition: all 0.3s ease; }       /* suave no início e fim — padrão */
+.linear     { transition: all 0.3s linear; }     /* velocidade constante */
+.ease-in    { transition: all 0.3s ease-in; }    /* começa lento, acelera */
+.ease-out   { transition: all 0.3s ease-out; }   /* começa rápido, desacelera */
+.ease-in-out{ transition: all 0.3s ease-in-out; }/* lento nos dois extremos */
+.cubic      { transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); } /* curva customizada */
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Por que 0.2s?</h4>
+
+        <p>
+          Estudos de UX mostram que a duração da transição impacta diretamente a
+          percepção do usuário:
+        </p>
+
+        <ul>
+          <li>Abaixo de <strong>100ms</strong> — a transição é imperceptível, o usuário não "sente" o feedback</li>
+          <li>Entre <strong>100ms e 300ms</strong> — é o <em>sweet spot</em>: rápido o suficiente para não atrasar, lento o suficiente para ser notado</li>
+          <li>Acima de <strong>400ms</strong> — parece <em>lag</em>, o usuário sente o sistema lento</li>
+        </ul>
+
+        <h4>Performance: transform e opacity são seus melhores amigos</h4>
+
+        <p>
+          Nem toda propriedade CSS deve ser animada. <code>transform</code> e
+          <code>opacity</code> são <strong>GPU-accelerated</strong> — o navegador
+          consegue animá-las sem precisar recalcular o layout (sem reflow). Já
+          animar <code>width</code>, <code>height</code>, <code>margin</code> ou
+          <code>padding</code> dispara reflow, o que é caro e pode causar engasgos
+          (<em>jank</em>) na interface.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* ✅ BOM — GPU-accelerated, sem reflow */
+.card {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* ❌ EVITAR — causa reflow a cada frame */
+.card {
+  transition: width 0.2s ease, height 0.2s ease;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Evite transition: all</h4>
+
+        <p>
+          Usar <code>transition: all 0.2s</code> é tentador, mas prejudica a
+          performance e o comportamento previsível. Especifique sempre as
+          propriedades que serão animadas. Isso também comunica a intenção do
+          código para outros desenvolvedores.
+        </p>
+
+        <h4>Exemplo completo</h4>
+
         <div class="code-container">
           <pre><code class="language-css">
 .card {
@@ -349,6 +445,57 @@ h1, h2, h3 {
 
         <h3>Loading Skeleton com @keyframes</h3>
 
+        <p>
+          O <strong>skeleton loading</strong> é um placeholder visual que aparece
+          enquanto o conteúdo real está sendo carregado (requisições AJAX, imagens
+          pesadas, etc.). Ele melhora a <strong>percepção de performance</strong>:
+          o usuário vê que algo está acontecendo, em vez de encarar uma tela em
+          branco.
+        </p>
+
+        <h4>Como funciona o efeito "shimmer" (brilho)</h4>
+
+        <p>O efeito de brilho deslizante é criado com três propriedades:</p>
+
+        <ol>
+          <li>
+            <code>background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%)</code>
+            — cria um gradiente com uma faixa central mais clara (o "brilho")
+          </li>
+          <li>
+            <code>background-size: 200% 100%</code> — faz o gradiente ocupar o
+            <strong>dobro da largura</strong> do elemento. Isso cria espaço para
+            o brilho "viajar" sem desaparecer
+          </li>
+          <li>
+            <code>@keyframes shimmer</code> — anima o <code>background-position</code>
+            de <code>200% 0</code> (brilho à direita, fora da tela) até
+            <code>-200% 0</code> (brilho à esquerda, fora da tela). O gradiente
+            desliza da direita para a esquerda como um holofote
+          </li>
+        </ol>
+
+        <h4>Estrutura HTML do skeleton</h4>
+
+        <p>
+          Cada elemento do conteúdo real tem um <strong>placeholder</strong>
+          correspondente com classes específicas:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;!-- Placeholder para um card de mensagem --&gt;
+&lt;div class="card skeleton-card"&gt;
+  &lt;div class="skeleton skeleton-title"&gt;&lt;/div&gt;
+  &lt;div class="skeleton skeleton-text"&gt;&lt;/div&gt;
+  &lt;div class="skeleton skeleton-text" style="width: 80%;"&gt;&lt;/div&gt;
+&lt;/div&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h4>Código CSS completo</h4>
+
         <div class="code-container">
           <pre><code class="language-css">
 .skeleton {
@@ -375,6 +522,18 @@ h1, h2, h3 {
 }
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 E se o usuário prefere movimento reduzido?
+          </h2>
+          <p>
+            Como vimos na seção de <strong>Acessibilidade</strong>, use
+            <code>@media (prefers-reduced-motion: reduce)</code> para desligar
+            a animação do skeleton e mostrar um placeholder estático. Assim,
+            a interface continua funcional sem causar desconforto.
+          </p>
         </div>
 
         <h2>Responsividade (Mobile-First)</h2>
@@ -412,6 +571,224 @@ h1, h2, h3 {
     margin-inline: auto;
   }
 }
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>Acessibilidade</h2>
+
+        <p>
+          Acessibilidade na web significa projetar interfaces que <strong>todas as pessoas</strong>
+          possam usar — incluindo usuários com deficiências visuais, motoras, auditivas ou cognitivas.
+          No Brasil, a <strong>Lei nº 13.146/2015</strong> (Estatuto da Pessoa com Deficiência) e a
+          <strong>WCAG</strong> (Web Content Accessibility Guidelines) estabelecem diretrizes para
+          isso. Aplicar acessibilidade não é opcional — é um princípio fundamental de UX e,
+          em muitos casos, uma exigência legal.
+        </p>
+
+        <h3>HTML Semântico</h3>
+
+        <p>
+          O HTML5 oferece tags que descrevem o <strong>significado</strong> do conteúdo, não apenas
+          sua aparência. Isso ajuda leitores de tela e navegadores a entenderem a estrutura da página.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;!-- ❌ Ruim: tudo com div --&gt;
+&lt;div class="header"&gt;...&lt;/div&gt;
+&lt;div class="main"&gt;...&lt;/div&gt;
+&lt;div class="footer"&gt;...&lt;/div&gt;
+
+&lt;!-- ✅ Bom: HTML semântico --&gt;
+&lt;header&gt;...&lt;/header&gt;
+&lt;main&gt;...&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;
+&lt;nav&gt;...&lt;/nav&gt;
+&lt;article&gt;...&lt;/article&gt;
+&lt;section&gt;...&lt;/section&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>ARIA Attributes (Accessible Rich Internet Applications)</h3>
+
+        <p>
+          Atributos <code>aria-*</code> complementam o HTML semântico fornecendo informações
+          adicionais para tecnologias assistivas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;!-- aria-label: descreve um elemento sem texto visível --&gt;
+&lt;button aria-label="Fechar janela"&gt;×&lt;/button&gt;
+
+&lt;!-- aria-hidden: esconde elementos decorativos de leitores de tela --&gt;
+&lt;span aria-hidden="true"&gt;📬&lt;/span&gt;
+
+&lt;!-- aria-labelledby: associa um rótulo visível a um elemento --&gt;
+&lt;h2 id="titulo-card"&gt;Mensagens&lt;/h2&gt;
+&lt;div aria-labelledby="titulo-card"&gt;...&lt;/div&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Foco Visível e Navegação por Teclado</h3>
+
+        <p>
+          Nem todo mundo usa mouse. Usuários com deficiências motoras ou power users
+          navegam com a tecla <kbd>Tab</kbd>. Por isso, o <strong>foco</strong> deve
+          ser sempre visível.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* ✅ Bom: foco visível e estilizado */
+.btn:focus-visible {
+  outline: 3px solid #6c5ce7;
+  outline-offset: 2px;
+}
+
+/* ⚠️ Cuidado: nunca faça outline: none sem substituto */
+.btn:focus {
+  outline: none;           /* ❌ tira o foco padrão */
+  box-shadow: 0 0 0 3px #6c5ce7;  /* ✅ substitui por algo visível */
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Dica: Navegação por teclado
+          </h2>
+          <p>
+            Pressione <kbd>Tab</kbd> e <kbd>Shift + Tab</kbd> para navegar entre
+            elementos interativos. Use <kbd>Enter</kbd> ou <kbd>Espaço</kbd> para ativar.
+            Elementos com <code>tabindex="0"</code> entram na ordem natural do tab.
+            Evite <code>tabindex</code> positivo (ex: <code>tabindex="5"</code>),
+            pois isso quebra a ordem esperada.
+          </p>
+        </div>
+
+        <h3>prefers-reduced-motion</h3>
+
+        <p>
+          Animações podem causar náusea, tontura e desconforto em pessoas com
+          distúrbios vestibulares (como labirintite). A media query
+          <code>prefers-reduced-motion</code> detecta se o usuário configurou
+          seu sistema para reduzir movimentos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* Desliga animações e transições para quem prefere movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          No Windows, essa configuração está em <strong>Configurações → Facilidade de Acesso → Exibição → Mostrar animações</strong>.
+          No macOS: <strong>Acessibilidade → Tela → Reduzir movimento</strong>.
+        </p>
+
+        <h3>prefers-color-scheme (Tema Automático)</h3>
+
+        <p>
+          Além do botão manual de alternar tema, podemos detectar
+          <strong>automaticamente</strong> se o sistema do usuário está em modo
+          claro ou escuro com a media query <code>prefers-color-scheme</code>.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* Tema escuro automático baseado na preferência do sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cor-fundo: #1a1a2e;
+    --cor-texto: #eaeaea;
+    --cor-card: #2d2d44;
+    --cor-sombra: rgba(0, 0, 0, 0.3);
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Skip to Content (Pular para o Conteúdo)</h3>
+
+        <p>
+          Um link invisível no topo da página permite que usuários de leitores de
+          tela e navegação por teclado <strong>pulem direto</strong> para o conteúdo
+          principal, sem passar por menus repetitivos.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;!-- Coloque como primeiro elemento após &lt;body&gt; --&gt;
+&lt;a href="#main-content" class="skip-link"&gt;Pular para o conteúdo&lt;/a&gt;
+
+&lt;main id="main-content"&gt;
+  &lt;!-- conteúdo principal aqui --&gt;
+&lt;/main&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* Skip link: invisível até receber foco */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #6c5ce7;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Contraste e Legibilidade (Revisitado)</h3>
+
+        <p>
+          Como vimos na seção de cores, o contraste mínimo recomendado pela WCAG é:
+        </p>
+
+        <ul>
+          <li><strong>4.5:1</strong> para texto normal (abaixo de 18px)</li>
+          <li><strong>3:1</strong> para texto grande (acima de 18px / negrito acima de 14px)</li>
+        </ul>
+
+        <p>
+          Use ferramentas como o <strong>WebAIM Contrast Checker</strong> ou o
+          próprio <strong>DevTools do Chrome</strong> (aba "Elements" → "Styles" →
+          seletor de cores) para verificar se suas cores atendem ao mínimo.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* ✅ Bom contraste: texto escuro (#1a1a2e) sobre fundo claro (#fff) */
+/*    Proporção: ~14.3:1 — excede o mínimo de 4.5:1 */
+
+/* ❌ Mau contraste: texto cinza (#999) sobre fundo claro (#fff) */
+/*    Proporção: ~2.3:1 — abaixo do mínimo de 4.5:1 — ILEGÍVEL */
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -456,8 +833,8 @@ type nul > style.css
 &lt;/head&gt;
 &lt;body&gt;
   &lt;header class="navbar"&gt;
-    &lt;h1&gt;📬 Dashboard&lt;/h1&gt;
-    &lt;button class="btn" id="toggle-tema"&gt;Alternar Tema&lt;/button&gt;
+    &lt;h1&gt;&lt;span aria-hidden="true"&gt;📬&lt;/span&gt; Dashboard&lt;/h1&gt;
+    &lt;button class="btn" id="toggle-tema" aria-label="Alternar entre tema claro e escuro"&gt;Alternar Tema&lt;/button&gt;
   &lt;/header&gt;
 
   &lt;main class="dashboard"&gt;
@@ -615,6 +992,26 @@ body {
 .btn:active {
   transform: scale(0.97);
 }
+
+/* ========== ACESSIBILIDADE ========== */
+
+/* Foco visível para navegação por teclado */
+.btn:focus-visible,
+.card:focus-visible {
+  outline: 3px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+/* Respeita a preferência do usuário por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
             </code></pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
@@ -712,6 +1109,65 @@ toggleBtn.addEventListener('click', () => {
               </p>
             </div>
           </section>
+        </section>
+
+        <section>
+          <h2>Resumo: CSS3 + UX para Navegabilidade</h2>
+
+          <p>
+            Cada técnica de CSS3 apresentada nesta aula atende a um ou mais princípios
+            de UX. O quadro abaixo mostra como elas se conectam e por que são
+            importantes para a navegabilidade do usuário.
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Princípio UX</th>
+                  <th>Técnica CSS3</th>
+                  <th>Impacto na Navegabilidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Hierarquia Visual</strong></td>
+                  <td><code>font-size</code>, <code>font-weight</code>, cor, espaçamento</td>
+                  <td>Guia o olhar do usuário na ordem correta: título → subtítulo → conteúdo. Reduz a carga cognitiva ao organizar a informação.</td>
+                </tr>
+                <tr>
+                  <td><strong>Consistência</strong></td>
+                  <td>Variáveis CSS (<code>:root</code>)</td>
+                  <td>O usuário não precisa reaprender a interface. Botões, cores e espaçamentos iguais em toda a aplicação geram confiança e previsibilidade.</td>
+                </tr>
+                <tr>
+                  <td><strong>Feedback Visual</strong></td>
+                  <td><code>transition</code>, <code>:hover</code>, <code>:active</code></td>
+                  <td>Cada ação gera uma reação visível. O usuário sabe que sua interação foi registrada, reduzindo a incerteza e prevenindo erros.</td>
+                </tr>
+                <tr>
+                  <td><strong>Affordance</strong></td>
+                  <td><code>cursor: pointer</code>, sombra, <code>border-radius</code></td>
+                  <td>O elemento "diz" visualmente sua função. Um botão parece clicável, um link é reconhecível, um card convida ao toque.</td>
+                </tr>
+                <tr>
+                  <td><strong>Responsividade</strong></td>
+                  <td>CSS Grid, Flexbox, <code>clamp()</code>, media queries</td>
+                  <td>A interface se adapta a qualquer dispositivo sem perder funcionalidade. O usuário navega confortavelmente em mobile, tablet ou desktop.</td>
+                </tr>
+                <tr>
+                  <td><strong>Acessibilidade</strong></td>
+                  <td><code>:focus-visible</code>, <code>aria-*</code>, <code>prefers-reduced-motion</code></td>
+                  <td>Inclusão de todos os usuários, independentemente de limitações motoras, visuais ou cognitivas. Navegabilidade universal.</td>
+                </tr>
+                <tr>
+                  <td><strong>Percepção de Performance</strong></td>
+                  <td>Skeleton loading (<code>@keyframes</code>)</td>
+                  <td>Reduz o tempo percebido de espera. O cérebro processa a animação como "algo está carregando", evitando frustração e abandono da página.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <!-- DEVER -->
