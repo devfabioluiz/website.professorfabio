@@ -86,13 +86,11 @@
               <pre><code class="language-bash">projeto-python-step/
 │
 ├── api/
-│   └── index.py            # entrada ASGI (Vercel)
-│
-├── app/
 │   ├── __init__.py
-│   ├── database.py          # SQLAlchemy + Supabase
+│   ├── index.py              # entrada ASGI (Vercel)
+│   ├── database.py           # SQLAlchemy + Supabase
 │   ├── models.py
-│   ├── schemas.py           # Pydantic
+│   ├── schemas.py            # Pydantic
 │   ├── routes.py
 │   └── middlewares.py
 │
@@ -392,7 +390,7 @@ git checkout -b projeto-final-python</code></pre>
         <div class="code-container">
           <pre><code class="language-bash">[build-system]
 requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "projeto-python-step"
@@ -476,15 +474,15 @@ dependencies = [
         <h3>Passo 3A — Criar a estrutura de pastas (FastAPI)</h3>
 
         <div class="code-container">
-          <pre><code class="language-bash">mkdir api app
+          <pre><code class="language-bash">mkdir api
 
 type nul > api\__init__.py
-type nul > app\__init__.py
-type nul > app\database.py
-type nul > app\models.py
-type nul > app\schemas.py
-type nul > app\routes.py
-type nul > app\middlewares.py</code></pre>
+type nul > api\index.py
+type nul > api\database.py
+type nul > api\models.py
+type nul > api\schemas.py
+type nul > api\routes.py
+type nul > api\middlewares.py</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -495,7 +493,7 @@ type nul > app\middlewares.py</code></pre>
           conectar. Essa URL será lida do arquivo <code>.env</code>.
         </p>
 
-        <p>Conteúdo de <strong>app/database.py</strong>:</p>
+        <p>Conteúdo de <strong>api/database.py</strong>:</p>
 
         <div class="code-container">
           <pre><code class="language-python">from sqlalchemy import create_engine
@@ -561,11 +559,11 @@ def get_db():
 
         <h3>Passo 5A — Criar os Models (FastAPI)</h3>
 
-        <p>Abra <strong>app/models.py</strong> e adicione:</p>
+        <p>Abra <strong>api/models.py</strong> e adicione:</p>
 
         <div class="code-container">
           <pre><code class="language-python">from sqlalchemy import Column, Integer, String
-from app.database import Base
+from api.database import Base
 
 
         class Usuario(Base):
@@ -605,7 +603,7 @@ from app.database import Base
 
         <h3>Passo 6A — Criar os Schemas Pydantic</h3>
 
-        <p>Abra <strong>app/schemas.py</strong> e adicione:</p>
+        <p>Abra <strong>api/schemas.py</strong> e adicione:</p>
 
         <div class="code-container">
           <pre><code class="language-python">from pydantic import BaseModel
@@ -640,7 +638,7 @@ class UsuarioLogin(BaseModel):
 
         <h3>Passo 7A — Criar os Middlewares</h3>
 
-        <p>Abra <strong>app/middlewares.py</strong> e adicione:</p>
+        <p>Abra <strong>api/middlewares.py</strong> e adicione:</p>
 
         <div class="code-container">
           <pre><code class="language-python">import jwt
@@ -732,18 +730,19 @@ def configurar_cors(app):
 
         <h3>Passo 8A — Criar as Rotas</h3>
 
-        <p>Abra <strong>app/routes.py</strong> e adicione:</p>
+        <p>Abra <strong>api/routes.py</strong> e adicione:</p>
 
         <div class="code-container">
           <pre><code class="language-python">import bcrypt
 import jwt
 from fastapi import APIRouter, Depends, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-        from app.database import get_db
-from app.models import Usuario
-from app.schemas import UsuarioRegistrar, UsuarioLogin
-from app.middlewares import JWT_SECRET, autenticar, admin, limiter
+from api.database import get_db
+from api.models import Usuario
+from api.schemas import UsuarioRegistrar, UsuarioLogin
+from api.middlewares import JWT_SECRET, autenticar, admin, limiter
 
 router = APIRouter()
 
@@ -757,7 +756,7 @@ async def root(request: Request):
     }
 
 
-        @router.post("/api/registrar")
+@router.post("/api/registrar")
 @limiter.limit("10/minute")
 async def registrar(
     dados: UsuarioRegistrar,
@@ -767,7 +766,7 @@ async def registrar(
     existe = db.query(Usuario).filter(Usuario.email == dados.email).first()
 
     if existe:
-        return {"erro": "Email já cadastrado"}, 400
+        return JSONResponse(status_code=400, content={"erro": "Email já cadastrado"})
 
     senha_hash = bcrypt.hashpw(
         dados.senha.encode("utf-8"), bcrypt.gensalt()
@@ -793,7 +792,7 @@ async def registrar(
         algorithm="HS256",
     )
 
-    return {
+    return JSONResponse(status_code=201, content={
         "mensagem": "Usuário registrado com sucesso",
         "token": token,
         "usuario": {
@@ -802,7 +801,7 @@ async def registrar(
             "email": usuario.email,
             "role": usuario.role,
         },
-    }, 201
+    })
 
 
 @router.post("/api/login")
@@ -815,14 +814,14 @@ async def login(
     usuario = db.query(Usuario).filter(Usuario.email == dados.email).first()
 
     if not usuario:
-        return {"erro": "Email ou senha inválidos"}, 401
+        return JSONResponse(status_code=401, content={"erro": "Email ou senha inválidos"})
 
     senha_valida = bcrypt.checkpw(
         dados.senha.encode("utf-8"), usuario.senha.encode("utf-8")
     )
 
     if not senha_valida:
-        return {"erro": "Email ou senha inválidos"}, 401
+        return JSONResponse(status_code=401, content={"erro": "Email ou senha inválidos"})
 
     token = jwt.encode(
         {
@@ -857,7 +856,7 @@ async def perfil(
     ).first()
 
     if not usuario:
-        return {"erro": "Usuário não encontrado"}, 404
+        return JSONResponse(status_code=404, content={"erro": "Usuário não encontrado"})
 
     return {
         "usuario": {
@@ -877,9 +876,9 @@ async def perfil(
 
         <div class="code-container">
           <pre><code class="language-python">from fastapi import FastAPI
-from app.database import Base, engine
-from app.routes import router
-from app.middlewares import (
+from api.database import Base, engine
+from api.routes import router
+from api.middlewares import (
     configurar_cors,
     registrar_exception_handlers,
     limiter,
@@ -917,8 +916,8 @@ def criar_tabelas():
 
         <div class="code-container">
           <pre><code class="language-python">from dotenv import load_dotenv
-        from app.database import Base, engine, SessionLocal
-from app.models import Usuario
+from api.database import Base, engine, SessionLocal
+from api.models import Usuario
 import bcrypt
 
 load_dotenv()
@@ -938,7 +937,7 @@ def seed():
 
     db.add_all([
         Usuario(nome="Admin", email="admin@email.com", senha=senha_hash, role="admin"),
-        Usuario(nome="Usuário Teste", email="usuario@email.com", senha=senha_hash, role="user"),
+        Usuario(nome="Usuário Teste", email="user@email.com", senha=senha_hash, role="user"),
     ])
 
     db.commit()
@@ -946,7 +945,7 @@ def seed():
 
     print("Seed concluído!")
     print("Admin: admin@email.com / senha: admin123")
-    print("User:  usuario@email.com / senha: admin123")
+    print("User:  user@email.com / senha: admin123")
 
 
 if __name__ == "__main__":
@@ -991,7 +990,7 @@ if __name__ == "__main__":
         <div class="code-container">
           <pre><code class="language-bash">[build-system]
 requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "projeto-python-step"
@@ -1447,11 +1446,11 @@ def seed():
 
     senha_hash = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode("utf-8")
     Usuario.objects.create(nome="Admin", email="admin@email.com", senha=senha_hash, role="admin")
-    Usuario.objects.create(nome="Usuário Teste", email="usuario@email.com", senha=senha_hash, role="user")
+    Usuario.objects.create(nome="Usuário Teste", email="user@email.com", senha=senha_hash, role="user")
 
     print(f"Seed concluído!")
     print("Admin: admin@email.com / senha: admin123")
-    print("User:  usuario@email.com / senha: admin123")
+    print("User:  user@email.com / senha: admin123")
 
 
 if __name__ == "__main__":
@@ -1850,7 +1849,7 @@ deploy:
 
         <p>
           No <strong>FastAPI</strong>, o exception handler global já está
-          configurado no <code>app/middlewares.py</code>. Ele captura qualquer
+          configurado no <code>api/middlewares.py</code>. Ele captura qualquer
           exceção não tratada e retorna uma resposta JSON segura (sem expor
           detalhes internos).
         </p>
@@ -1936,7 +1935,7 @@ SESSION_COOKIE_SECURE = True</code></pre>
           O CORS já está configurado em ambos os frameworks:
         </p>
 
-        <p><strong>FastAPI</strong> — <code>CORSMiddleware</code> no <code>app/middlewares.py</code>:</p>
+        <p><strong>FastAPI</strong> — <code>CORSMiddleware</code> no <code>api/middlewares.py</code>:</p>
 
         <div class="code-container">
           <pre><code class="language-python">app.add_middleware(
@@ -1985,7 +1984,7 @@ CORS_ALLOWED_ORIGINS = [
 
         <p>
           O rate limiting já está configurado com <strong>slowapi</strong> no
-          <code>app/middlewares.py</code> do FastAPI:
+          <code>api/middlewares.py</code> do FastAPI:
         </p>
 
         <div class="code-container">

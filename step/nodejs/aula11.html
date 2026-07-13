@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Aula de Integração Front-End e Back-End — React + Vite + Node.js
+    </title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Web Development</h1>
+      <h4 class="text-center">Node.js + React</h4>
+      <h4 class="text-center">Integração Front-End e Back-End</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Integração front-end com back-end, API REST, Express, React com Vite,
+        Proxy, CORS, fetch API.
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Integração Front-End com Back-End</h2>
+
+        <p>
+          Até agora trabalhamos apenas no lado do servidor com Node.js. Nesta
+          aula vamos conectar o front-end (React com Vite) ao back-end (Node.js
+          com Express), criando uma aplicação completa que troca dados em tempo
+          real.
+        </p>
+
+        <p>
+          A comunicação entre front-end e back-end acontece através de
+          requisições HTTP. O front-end envia uma requisição para o servidor,
+          que processa e retorna os dados — geralmente no formato JSON. O
+          front-end então renderiza essas informações na tela.
+        </p>
+
+        <h3>Fluxo da comunicação</h3>
+
+        <ol>
+          <li>O usuário acessa a página React no navegador</li>
+          <li>
+            O React faz uma requisição <strong>fetch</strong> para o servidor
+            Node.js
+          </li>
+          <li>O Express recebe a requisição e consulta os dados</li>
+          <li>O servidor retorna os dados em <strong>JSON</strong></li>
+          <li>O React atualiza a interface com os dados recebidos</li>
+        </ol>
+
+        <h3>O que vamos construir</h3>
+
+        <p>Vamos criar dois projetos lado a lado:</p>
+
+        <ul>
+          <li>
+            <strong>Backend:</strong> servidor Express com uma rota GET que
+            retorna uma lista de mensagens
+          </li>
+          <li>
+            <strong>Frontend:</strong> aplicação React criada com Vite que
+            consome essa API e exibe as mensagens
+          </li>
+        </ul>
+
+        <p>
+          Toda a comunicação será feita via JSON, e vamos aprender a configurar
+          o proxy do Vite para evitar problemas com CORS durante o
+          desenvolvimento.
+        </p>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Integrando React com Node.js</h2>
+
+          <h3>Passo 0 — Criar o repositório e a branch</h3>
+
+          <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+projeto-integracao-step
+    </code></pre>
+          </div>
+
+          <p>
+            Agora crie uma branch chamada
+            <strong>aula11-integracao-react-node</strong>
+          </p>
+
+          <p>
+            Depois, clone o repositório no seu computador pelo terminal do
+            VSCode:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git clone https://github.com/{{SEU-USERNAME}}/projeto-integracao-step.git
+cd projeto-integracao-step
+git fetch
+git checkout aula11-integracao-react-node
+git pull
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Criar o Backend (Node.js + Express)</h3>
+
+          <p>Dentro da pasta do projeto, crie uma pasta para o backend:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+mkdir backend
+cd backend
+npm init -y
+npm install express cors
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Agora crie o arquivo <strong>server.js</strong> dentro da pasta
+            <code>backend</code>:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+type nul > server.js
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Abra o arquivo <strong>backend/server.js</strong> e insira o código
+            abaixo:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+const mensagens = [
+  { id: 1, titulo: 'Bem-vindo!', texto: 'Esta é a primeira mensagem do servidor.' },
+  { id: 2, titulo: 'Integração', texto: 'Front-end e Back-end conectados com sucesso!' },
+  { id: 3, titulo: 'React + Node', texto: 'Trabalhando juntos com dados em JSON.' }
+];
+
+app.get('/api/mensagens', (req, res) => {
+  res.json(mensagens);
+});
+
+app.listen(3001, () => {
+  console.log('Backend rodando em http://localhost:3001');
+});
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Teste o backend executando:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+node server.js
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Acesse <code>http://localhost:3001/api/mensagens</code> no
+            navegador. Você deve ver o JSON com as mensagens.
+          </p>
+
+          <p>Pressione <strong>Ctrl + C</strong> para parar o servidor.</p>
+
+          <!-- EXPLICANDO O BACKEND -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 Explicando o código do backend 📝
+              </h2>
+
+              <p>
+                Vamos entender cada parte do arquivo <code>server.js</code>:
+              </p>
+
+              <h3>🔹 Importação dos módulos</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const express = require('express');
+const cors = require('cors');
+        </code></pre>
+              </div>
+
+              <p>
+                Importamos o <strong>express</strong> para criar o servidor web
+                e o <strong>cors</strong> para permitir que o front-end acesse o
+                backend de forma segura.
+              </p>
+
+              <h3>🔹 Middlewares</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.use(cors());
+app.use(express.json());
+        </code></pre>
+              </div>
+
+              <p>
+                <code>app.use(cors())</code> libera o acesso de qualquer origem
+                ao nosso backend. <code>app.use(express.json())</code> permite
+                que o servidor entenda requisições com corpo em JSON (útil para
+                POST, PUT).
+              </p>
+
+              <h3>🔹 Array de dados</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const mensagens = [
+  { id: 1, titulo: 'Bem-vindo!', texto: 'Primeira mensagem.' },
+  { id: 2, titulo: 'Integração', texto: 'Conectados com sucesso!' },
+];
+        </code></pre>
+              </div>
+
+              <p>
+                Simulamos um banco de dados com um array de objetos. Em projetos
+                reais, esses dados viriam de um banco como MongoDB ou
+                PostgreSQL.
+              </p>
+
+              <h3>🔹 Rota GET /api/mensagens</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.get('/api/mensagens', (req, res) => {
+  res.json(mensagens);
+});
+        </code></pre>
+              </div>
+
+              <p>
+                Quando o front-end fizer uma requisição GET para
+                <code>/api/mensagens</code>, o servidor responde com o array de
+                mensagens convertido automaticamente para JSON.
+              </p>
+
+              <h3>🔹 Inicialização do servidor</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+app.listen(3001, () => {
+  console.log('Backend rodando em http://localhost:3001');
+});
+        </code></pre>
+              </div>
+
+              <p>
+                O servidor escuta na porta <strong>3001</strong>. Escolhemos uma
+                porta diferente da padrão do React (3000) para que os dois
+                possam rodar ao mesmo tempo.
+              </p>
+            </div>
+          </section>
+
+          <h3>Passo 2 — Criar o Frontend (React + Vite)</h3>
+
+          <p>
+            Volte para a raiz do projeto e execute o comando abaixo para criar o
+            frontend com Vite:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+cd ..
+npm create vite@latest frontend -- --template react
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>
+            Durante a execução, o <strong>create-vite</strong> fará algumas
+            perguntas. Responda assim:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+Need to install the following packages:
+create-vite@9.1.1
+Ok to proceed? (y) y
+
+&gt; npx
+&gt; create-vite frontend --template react
+
+◇  Which linter to use?
+│  ESLint
+│
+◇  Install with npm and start now?
+│  Yes
+│
+◇  Scaffolding project in ...frontend...
+
+◇  Installing dependencies with npm...
+
+added 135 packages, and audited 136 packages in 22s
+
+found 0 vulnerabilities
+
+◇  Starting dev server...
+    </code></pre>
+          </div>
+
+          <p>
+            Se o servidor de desenvolvimento tiver iniciado automaticamente
+            (após "Starting dev server..."), pressione
+            <strong>Ctrl + C</strong> no terminal para pará-lo. Vamos precisar
+            configurar o proxy antes de rodar novamente.
+          </p>
+
+          <h3>Passo 3 — Configurar o Proxy no Vite</h3>
+
+          <p>
+            Abra o arquivo <strong>frontend/vite.config.js</strong> e substitua
+            o conteúdo pelo código abaixo. O proxy vai redirecionar as
+            requisições que começam com <code>/api</code> para o backend na
+            porta 3001.
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001'
+    }
+  }
+})
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <!-- EXPLICANDO O PROXY -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 Entendendo o Proxy do Vite 📝
+              </h2>
+
+              <p>
+                Durante o desenvolvimento, o front-end roda em
+                <code>http://localhost:5173</code> (porta padrão do Vite) e o
+                backend em <code>http://localhost:3001</code>. Se o React tentar
+                acessar <code>http://localhost:3001/api/mensagens</code>
+                diretamente, o navegador bloqueia por causa da política de
+                <strong>CORS</strong> (origens diferentes).
+              </p>
+
+              <p>
+                O proxy do Vite funciona como um intermediário: quando o React
+                faz uma requisição para <code>/api/mensagens</code>, o Vite
+                redireciona automaticamente para
+                <code>http://localhost:3001/api/mensagens</code> sem que o
+                navegador perceba a mudança de origem.
+              </p>
+
+              <p>
+                Dessa forma, durante o desenvolvimento, não precisamos
+                configurar o CORS manualmente no front-end — o proxy resolve o
+                problema para nós.
+              </p>
+
+              <p>
+                Em produção, o front-end compilado (HTML + CSS + JS estático)
+                seria servido pelo próprio Express ou por um serviço como
+                Vercel, e aí o CORS precisaria estar configurado corretamente no
+                backend.
+              </p>
+            </div>
+          </section>
+
+          <h3>Passo 4 — Criar o componente App.jsx</h3>
+
+          <p>
+            Abra o arquivo <strong>frontend/src/App.jsx</strong> e substitua
+            todo o conteúdo pelo código abaixo:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState, useEffect } from 'react'
+
+function App() {
+  const [mensagens, setMensagens] = useState([])
+
+  useEffect(() => {
+    fetch('/api/mensagens')
+      .then((res) => res.json())
+      .then((data) => setMensagens(data))
+      .catch((err) => console.error('Erro ao buscar mensagens:', err))
+  }, [])
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt; Mensagens do Servidor&lt;/h1&gt;
+      {mensagens.length === 0 ? (
+        &lt;p&gt;Carregando mensagens...&lt;/p&gt;
+      ) : (
+        &lt;ul&gt;
+          {mensagens.map((msg) => (
+            &lt;li key={msg.id}&gt;
+              &lt;h3&gt;{msg.titulo}&lt;/h3&gt;
+              &lt;p&gt;{msg.texto}&lt;/p&gt;
+            &lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  )
+}
+
+export default App
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <!-- EXPLICANDO O FRONTEND -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 Explicando o código do frontend 📝
+              </h2>
+
+              <h3>🔹 useState</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+const [mensagens, setMensagens] = useState([])
+        </code></pre>
+              </div>
+
+              <p>
+                <code>useState</code> é um hook do React que cria um estado
+                chamado <code>mensagens</code>, inicializado como array vazio.
+                Quando chamamos <code>setMensagens(data)</code>, o React
+                re-renderiza o componente automaticamente com os novos dados.
+              </p>
+
+              <h3>🔹 useEffect</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+useEffect(() => {
+  fetch('/api/mensagens')
+    .then((res) => res.json())
+    .then((data) => setMensagens(data))
+    .catch((err) => console.error('Erro ao buscar mensagens:', err))
+}, [])
+        </code></pre>
+              </div>
+
+              <p>
+                O <code>useEffect</code> executa o código dentro dele uma única
+                vez quando o componente é montado em tela (o array vazio
+                <code>[]</code> no final garante isso).
+              </p>
+
+              <p>
+                Dentro dele, usamos a <strong>fetch API</strong> do navegador
+                para fazer uma requisição GET para <code>/api/mensagens</code>.
+                O Vite redireciona essa requisição para o backend graças ao
+                proxy configurado anteriormente.
+              </p>
+
+              <p>
+                A resposta vem em JSON, e armazenamos os dados no estado
+                <code>mensagens</code> chamando <code>setMensagens(data)</code>.
+              </p>
+
+              <h3>🔹 Renderização condicional</h3>
+
+              <div class="code-container">
+                <pre><code class="language-javascript">
+{mensagens.length === 0 ? (
+  <p>Carregando mensagens...</p>
+) : (
+  <ul>
+    {mensagens.map((msg) => (
+      <li key={msg.id}>
+        <h3>{msg.titulo}</h3>
+        <p>{msg.texto}</p>
+      </li>
+    ))}
+  </ul>
+)}
+        </code></pre>
+              </div>
+
+              <p>
+                Enquanto os dados não chegam, exibimos "Carregando
+                mensagens...". Assim que as mensagens são carregadas, usamos
+                <code>map</code> para percorrer o array e renderizar cada item
+                como um <code>&lt;li&gt;</code>.
+              </p>
+
+              <p>
+                O atributo <code>key={msg.id}</code> é obrigatório no React para
+                identificar de forma única cada elemento da lista.
+              </p>
+            </div>
+          </section>
+
+          <h3>Passo 5 — Rodar a aplicação completa</h3>
+
+          <p>Agora vamos subir os dois servidores ao mesmo tempo.</p>
+
+          <p><strong>Terminal 1 — Backend:</strong></p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+cd backend
+node server.js
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p><strong>Terminal 2 — Frontend:</strong></p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+cd frontend
+npm run dev
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <p>Acesse no navegador:</p>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+http://localhost:5173
+    </code></pre>
+          </div>
+
+          <p>
+            Você verá a aplicação React exibindo as mensagens que vieram do
+            servidor Node.js! 🎉
+          </p>
+
+          <h3>Passo 6 — Testar alterações</h3>
+
+          <ul>
+            <li>
+              Adicione novas mensagens no array <code>mensagens</code> do
+              backend
+            </li>
+            <li>
+              Reinicie o servidor Node.js (Ctrl + C e
+              <code>node server.js</code>)
+            </li>
+            <li>Atualize a página do frontend e veja as novas mensagens</li>
+            <li>Modifique o estilo ou a estrutura do componente React</li>
+          </ul>
+
+          <h3>Passo 7 — Subindo para o Git</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+git add .
+git commit -m "aula 11: integracao front-end react com backend node"
+git push
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar uma nova rota e exibir no frontend</h3>
+              <p>
+                Crie uma branch chamada <strong>dever-de-casa-aula11</strong> e
+                nela desenvolva as seguintes tarefas:
+              </p>
+              <ol>
+                <li>
+                  No backend, crie uma nova rota
+                  <code>GET /api/usuarios</code> que retorne uma lista de
+                  usuários (cada um com <code>id</code>, <code>nome</code> e
+                  <code>email</code>).
+                </li>
+                <li>
+                  No frontend, crie um novo componente <code>Usuarios.jsx</code>
+                  que consuma essa nova rota e exiba os dados na tela.
+                </li>
+                <li>
+                  Importe e renderize o componente <code>Usuarios</code> dentro
+                  do <code>App.jsx</code>.
+                </li>
+              </ol>
+              <p>
+                <strong>Obs:</strong> Não se esqueça de subir o projeto para o
+                Git na branch do dever após terminar.
+              </p>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <p>
+                  <b>1. Backend — adicione no <code>server.js</code>:</b>
+                </p>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+const usuarios = [
+  { id: 1, nome: 'Ana Silva', email: 'ana@email.com' },
+  { id: 2, nome: 'Carlos Souza', email: 'carlos@email.com' },
+  { id: 3, nome: 'Julia Costa', email: 'julia@email.com' }
+];
+
+app.get('/api/usuarios', (req, res) => {
+  res.json(usuarios);
+});
+        </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <p>
+                  <b>2. Frontend — crie <code>src/Usuarios.jsx</code>:</b>
+                </p>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+import { useState, useEffect } from 'react'
+
+function Usuarios() {
+  const [usuarios, setUsuarios] = useState([])
+
+  useEffect(() => {
+    fetch('/api/usuarios')
+      .then((res) => res.json())
+      .then((data) => setUsuarios(data))
+      .catch((err) => console.error('Erro:', err))
+  }, [])
+
+  return (
+    <div>
+      <h2>👥 Lista de Usuários</h2>
+      {usuarios.length === 0 ? (
+        <p>Carregando...</p>
+      ) : (
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usuarios.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.nome}</td>
+                <td>{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+export default Usuarios
+        </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <p>
+                  <b>3. Frontend — em <code>App.jsx</code>, importe e use:</b>
+                </p>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+import Usuarios from './Usuarios'
+
+// dentro do return do App, adicione:
+&lt;Usuarios /&gt;
+        </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

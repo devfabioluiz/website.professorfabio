@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1 : Estilização com CSS3 e Experiência do Usuário</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+      
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 1</h1>
+      <h4 class="text-center">Frontend Design</h4>
+      <h4 class="text-center">Estilização com CSS3 e Experiência do Usuário</h4>
+    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> UX e usabilidade, Hierarquia visual, CSS3 moderno (variáveis, Flexbox, Grid), Tipografia e cores, Micro-interações, Responsividade.</div>
+    </header>
+
+    <main class="container"><section>
+        <h2>Estilização de Interface com CSS3 e UX</h2>
+
+        <p>
+          Criar uma interface bonita é apenas parte do trabalho. O verdadeiro
+          objetivo da estilização é proporcionar uma <strong>experiência</strong>
+          — o usuário deve encontrar o que precisa sem esforço, entender como
+          interagir com cada elemento e sentir que a界面 é confiável.
+        </p>
+
+        <p>
+          Nesta aula vamos unir <strong>CSS3 moderno</strong> com
+          <strong>princípios de Experiência do Usuário (UX)</strong> para criar
+          interfaces funcionais, acessíveis e agradáveis.
+        </p>
+
+        <h3>O que é Experiência do Usuário (UX)?</h3>
+
+        <p>
+          UX é a percepção que o usuário tem ao interagir com um produto. Uma
+          boa experiência significa que a interface é:
+        </p>
+
+        <ul>
+          <li><strong>Intuitiva</strong> — o usuário sabe onde clicar sem pensar</li>
+          <li><strong>Consistente</strong> — botões, cores e comportamentos se repetem</li>
+          <li><strong>Responsiva</strong> — funciona bem em qualquer tela</li>
+          <li><strong>Acessível</strong> — pode ser usada por todas as pessoas</li>
+          <li><strong>Feedback</strong> — cada ação gera uma reação visível</li>
+        </ul>
+
+        <p>
+          O CSS3 é a ferramenta que traduz esses princípios em realidade visual.
+          Uma boa estilização baseada em UX reduz a carga cognitiva, guia o
+          olhar do usuário e torna a navegação fluida.
+        </p>
+
+        <h3>Princípios de UX aplicados ao CSS</h3>
+
+        <h4>🔹 Hierarquia Visual</h4>
+        <p>
+          O usuário deve saber para onde olhar primeiro. Use tamanhos de fonte,
+          pesos (bold), cores de destaque e espaçamento para criar uma hierarquia
+          clara entre título, subtítulo e conteúdo.
+        </p>
+
+        <h4>🔹 Consistência</h4>
+        <p>
+          Botões com a mesma função devem ter a mesma aparência em toda a
+          aplicação. Use variáveis CSS para garantir consistência de cores,
+          bordas, sombras e espaçamentos.
+        </p>
+
+        <h4>🔹 Feedback Visual</h4>
+        <p>
+          Toda interação deve gerar uma resposta: um botão muda de cor ao
+          passar o mouse, um card levanta ao clicar, um formulário exibe
+          validação em tempo real. Use <code>transition</code> e
+          <code>:hover</code> para isso.
+        </p>
+
+        <h4>🔹 Affordance</h4>
+        <p>
+          Um elemento deve "dizer" para que serve. Um botão parece clicável
+          (sombra, cor, cursor pointer), um link é sublinhado, um card tem
+          borda arredondada que convida ao toque.
+        </p>
+
+        <h2>CSS3 Moderno</h2>
+
+        <p>
+          Vamos conhecer os recursos do CSS3 que nos ajudam a aplicar os
+          princípios de UX de forma prática.
+        </p>
+
+        <h3>Variáveis CSS (Custom Properties)</h3>
+
+        <p>
+          Variáveis CSS permitem definir valores reutilizáveis e garantir
+          consistência em toda a interface. Além disso, facilitam a criação
+          de temas (claro/escuro).
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+:root {
+  --cor-primaria: #6c5ce7;
+  --cor-fundo: #f5f6fa;
+  --cor-texto: #2d3436;
+  --cor-card: #ffffff;
+  --borda-raio: 12px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: 'Inter', sans-serif;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Flexbox</h3>
+
+        <p>
+          Flexbox é o método mais simples para alinhar e distribuir elementos
+          em uma direção (linha ou coluna). Ideal para barras de navegação,
+          linhas de cards e centralização.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.card-container {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>CSS Grid</h3>
+
+        <p>
+          Grid é o método mais poderoso para criar layouts bidimensionais
+          (linhas e colunas ao mesmo tempo). Perfeito para dashboards,
+          galerias e páginas completas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Unidades modernas</h3>
+
+        <ul>
+          <li><code>rem</code> — relativo ao tamanho da fonte raiz (acessível)</li>
+          <li><code>clamp()</code> — valor fluido entre mínimo e máximo</li>
+          <li><code>vw / vh</code> — porcentagem da viewport</li>
+          <li><code>min() / max()</code> — escolhe o menor ou maior valor</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.titulo {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+.container {
+  width: min(90%, 1200px);
+  margin-inline: auto;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>Tipografia e Cores</h2>
+
+        <h3>Tipografia</h3>
+
+        <p>
+          A escolha da fonte impacta diretamente a legibilidade e a
+          personalidade da interface. Prefira fontes com boa legibilidade
+          em tela e use no máximo 2 famílias tipográficas.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.texto-corpo {
+  font-size: 1rem;
+  color: #555;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Cores e Contraste (WCAG)</h3>
+
+        <p>
+          O contraste entre texto e fundo deve ser suficiente para garantir
+          legibilidade. A WCAG recomenda:
+        </p>
+
+        <ul>
+          <li>Texto normal: contraste mínimo de <strong>4.5:1</strong></li>
+          <li>Texto grande (acima de 18px): contraste mínimo de <strong>3:1</strong></li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+:root {
+  /* Fundo claro com texto escuro — alto contraste */
+  --bg: #ffffff;
+  --text: #1a1a2e;
+
+  /* Fundo escuro com texto claro — alto contraste */
+  --bg-dark: #1a1a2e;
+  --text-dark: #eaeaea;
+}
+
+.btn {
+  background: #6c5ce7;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Dica: Paletas harmônicas 🎨
+          </h2>
+          <p>
+            Use ferramentas como <strong>Coolors.co</strong>,
+            <strong>Adobe Color</strong> ou
+            <strong>Colorhunt.co</strong> para gerar paletas de cores.
+            Escolha uma cor primária (destaque), uma neutra (fundo/texto)
+            e uma de acento (call-to-action).
+          </p>
+          <p>
+            Exemplo de paleta:<br />
+            <code>#6c5ce7</code> (roxo — primária),
+            <code>#f5f6fa</code> (cinza claro — fundo),
+            <code>#2d3436</code> (grafite — texto),
+            <code>#00b894</code> (verde — sucesso)
+          </p>
+        </div>
+
+        <h2>Micro-interações</h2>
+
+        <p>
+          Pequenas animações transformam uma界面 estática em uma experiência
+          viva. Elas dão feedback, guiam a atenção e tornam o uso mais
+          agradável.
+        </p>
+
+        <h3>Transitions</h3>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.card {
+  background: var(--cor-card);
+  border-radius: var(--borda-raio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.btn {
+  background: var(--cor-primaria);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+  background: #5a4bd1;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Loading Skeleton com @keyframes</h3>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 1rem;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h2>Responsividade (Mobile-First)</h2>
+
+        <p>
+          Mais da metade dos acessos web vêm de dispositivos móveis. Por isso,
+          devemos projetar primeiro para telas pequenas e depois adaptar para
+          telas maiores.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+/* Mobile-first: layout padrão para celular */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 2rem;
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- PASSO A PASSO -->
+        <section>
+          <h2>Passo a Passo: Estilizando um Dashboard de Mensagens</h2>
+
+          <p>
+            Vamos pegar o projeto que criamos na aula 11 de Node.js (ou criar
+            um novo projeto HTML/CSS) e aplicar tudo que aprendemos.
+          </p>
+
+          <h3>Passo 0 — Criar o projeto</h3>
+
+          <div class="code-container">
+            <pre><code class="language-bash">
+mkdir frontend-design-aula1
+cd frontend-design-aula1
+type nul > index.html
+type nul > style.css
+    </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 1 — Estrutura HTML</h3>
+
+          <p>
+            Crie um arquivo <strong>index.html</strong> com a estrutura abaixo:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-markup">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Dashboard de Mensagens&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css" /&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header class="navbar"&gt;
+    &lt;h1&gt;📬 Dashboard&lt;/h1&gt;
+    &lt;button class="btn" id="toggle-tema"&gt;Alternar Tema&lt;/button&gt;
+  &lt;/header&gt;
+
+  &lt;main class="dashboard"&gt;
+    &lt;div class="card"&gt;
+      &lt;h2 class="card-title"&gt;Bem-vindo!&lt;/h2&gt;
+      &lt;p class="card-text"&gt;Esta é a primeira mensagem do servidor.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card"&gt;
+      &lt;h2 class="card-title"&gt;Integração&lt;/h2&gt;
+      &lt;p class="card-text"&gt;Front-end e Back-end conectados com sucesso!&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card"&gt;
+      &lt;h2 class="card-title"&gt;React + Node&lt;/h2&gt;
+      &lt;p class="card-text"&gt;Trabalhando juntos com dados em JSON.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 2 — CSS completo com UX</h3>
+
+          <p>
+            Agora crie o arquivo <strong>style.css</strong> com todo o
+            conteúdo abaixo. Observe como cada regra aplica um princípio
+            de UX.
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-css">
+/* ========== VARIÁVEIS E TEMA ========== */
+:root {
+  --cor-primaria: #6c5ce7;
+  --cor-primaria-hover: #5a4bd1;
+  --cor-fundo: #f5f6fa;
+  --cor-texto: #2d3436;
+  --cor-card: #ffffff;
+  --cor-sombra: rgba(0, 0, 0, 0.08);
+  --borda-raio: 12px;
+  --espacamento: 1.5rem;
+  --fonte: 'Inter', sans-serif;
+}
+
+[data-tema="escuro"] {
+  --cor-fundo: #1a1a2e;
+  --cor-texto: #eaeaea;
+  --cor-card: #2d2d44;
+  --cor-sombra: rgba(0, 0, 0, 0.3);
+}
+
+/* ========== RESET E BASE ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fonte);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+}
+
+/* ========== NAVBAR ========== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--cor-card);
+  box-shadow: 0 2px 8px var(--cor-sombra);
+  transition: background 0.3s;
+}
+
+.navbar h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ========== DASHBOARD GRID ========== */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacamento);
+  padding: 2rem;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ========== CARD ========== */
+.card {
+  background: var(--cor-card);
+  border-radius: var(--borda-raio);
+  padding: var(--espacamento);
+  box-shadow: 0 2px 8px var(--cor-sombra);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--cor-sombra);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--cor-primaria);
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: var(--cor-texto);
+  opacity: 0.85;
+}
+
+/* ========== BOTÃO ========== */
+.btn {
+  background: var(--cor-primaria);
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--fonte);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+  background: var(--cor-primaria-hover);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 3 — JavaScript para alternar tema</h3>
+
+          <p>
+            Crie o arquivo <strong>script.js</strong> para implementar a
+            troca de tema claro/escuro:
+          </p>
+
+          <div class="code-container">
+            <pre><code class="language-javascript">
+const toggleBtn = document.getElementById('toggle-tema');
+
+toggleBtn.addEventListener('click', () => {
+  const temaAtual = document.documentElement.getAttribute('data-tema');
+  if (temaAtual === 'escuro') {
+    document.documentElement.removeAttribute('data-tema');
+    toggleBtn.textContent = 'Alternar Tema';
+  } else {
+    document.documentElement.setAttribute('data-tema', 'escuro');
+    toggleBtn.textContent = 'Modo Claro';
+  }
+});
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+
+          <h3>Passo 4 — Testar</h3>
+
+          <p>Abra o arquivo <code>index.html</code> no navegador.</p>
+
+          <ul>
+            <li>Você deve ver 3 cards lado a lado (em desktop)</li>
+            <li>Ao passar o mouse sobre um card, ele levanta com sombra</li>
+            <li>Ao clicar em "Alternar Tema", a界面 muda para dark mode</li>
+            <li>Reduza a janela e veja os cards se adaptarem (1 coluna em mobile)</li>
+          </ul>
+
+          <!-- EXPLICANDO O CSS -->
+          <section>
+            <div class="alert-explicando-codigo">
+              <h2 class="alert-explicando-codigo-title">
+                🤓 O que cada parte faz — aplicando UX 📝
+              </h2>
+
+              <h3>🔹 Variáveis CSS (:root)</h3>
+              <p>
+                Centralizam todas as cores, espaçamentos e bordas. Isso garante
+                <strong>consistência</strong>: se precisar mudar o tom de roxo,
+                altera em um só lugar.
+              </p>
+
+              <h3>🔹 data-tema="escuro"</h3>
+              <p>
+                Aplica <strong>preferência do usuário</strong> — um princípio
+                fundamental de UX. O tema escuro reduz o cansaço visual em
+                ambientes com pouca luz.
+              </p>
+
+              <h3>🔹 Flexbox na navbar</h3>
+              <p>
+                <code>justify-content: space-between</code> cria uma
+                <strong>hierarquia clara</strong>: título à esquerda, ação à
+                direita.
+              </p>
+
+              <h3>🔹 Grid responsivo</h3>
+              <p>
+                Com <code>repeat(3, 1fr)</code> em desktop e
+                <code>1fr</code> em mobile, garantimos
+                <strong>navegabilidade</strong> em qualquer tela.
+              </p>
+
+              <h3>🔹 Card com :hover</h3>
+              <p>
+                <code>translateY(-4px)</code> e sombra maior dão
+                <strong>feedback visual</strong> — o usuário sente que o card
+                é interativo.
+              </p>
+
+              <h3>🔹 Transition suave</h3>
+              <p>
+                <code>transition: 0.2s</code> evita mudanças bruscas. A
+                interface responde de forma natural, melhorando a
+                <strong>experiência</strong>.
+              </p>
+
+              <h3>🔹 Mobile-first</h3>
+              <p>
+                Começamos com 1 coluna (padrão) e aumentamos com media queries.
+                Isso garante que a interface funcione bem em
+                <strong>qualquer dispositivo</strong>.
+              </p>
+            </div>
+          </section>
+        </section>
+
+        <!-- DEVER -->
+        <section>
+          <h2>Dever de Casa</h2>
+          <div id="question-container-casa">
+            <div class="question">
+              <h3>Criar uma página de perfil com tema escuro</h3>
+              <p>
+                Crie uma página HTML com um cartão de perfil de usuário
+                (foto, nome, bio, redes sociais) estilizada com:
+              </p>
+              <ol>
+                <li>Variáveis CSS para cores e espaçamentos</li>
+                <li>Flexbox para alinhar os elementos do cartão</li>
+                <li>Transitions ao passar o mouse nos links sociais</li>
+                <li>Tema claro/escuro alternável por botão</li>
+                <li>Responsividade (cartão centralizado, adaptável)</li>
+              </ol>
+              <p>
+                <strong>Justifique</strong> em um comentário no HTML ou CSS
+                quais princípios de UX você aplicou em cada parte.
+              </p>
+
+              <button class="btn-gabarito">Ver gabarito</button>
+              <div class="gabarito">
+                <b>Gabarito:</b>
+
+                <p><b>HTML (index.html):</b></p>
+
+                <div class="code-container">
+                  <pre><code class="language-markup">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Perfil do Usuário&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css" /&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;button class="btn-tema" id="toggle-tema"&gt;🌙 Modo Escuro&lt;/button&gt;
+
+  &lt;div class="perfil-card"&gt;
+    &lt;img class="perfil-foto" src="https://via.placeholder.com/120" alt="Foto do usuário" /&gt;
+    &lt;h2 class="perfil-nome"&gt;Ana Silva&lt;/h2&gt;
+    &lt;p class="perfil-bio"&gt;Desenvolvedora Full-Stack apaixonada por UX e CSS.&lt;/p&gt;
+    &lt;div class="perfil-redes"&gt;
+      &lt;a href="#" class="rede-link"&gt;GitHub&lt;/a&gt;
+      &lt;a href="#" class="rede-link"&gt;LinkedIn&lt;/a&gt;
+      &lt;a href="#" class="rede-link"&gt;Twitter&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                    </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <p><b>CSS (style.css):</b></p>
+
+                <div class="code-container">
+                  <pre><code class="language-css">
+:root {
+  --bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --text: #2d3436;
+  --primary: #6c5ce7;
+  --radius: 16px;
+}
+
+[data-tema="escuro"] {
+  --bg: #1a1a2e;
+  --card-bg: #2d2d44;
+  --text: #eaeaea;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btn-tema {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-tema:hover { background: #5a4bd1; }
+
+.perfil-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  max-width: 360px;
+  width: 100%;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.perfil-foto {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 4px solid var(--primary);
+}
+
+.perfil-nome {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.perfil-bio {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+.perfil-redes {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.rede-link {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.rede-link:hover {
+  background: var(--primary);
+  color: #fff;
+}
+                    </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+
+                <p><b>JavaScript (script.js):</b></p>
+
+                <div class="code-container">
+                  <pre><code class="language-javascript">
+const toggleBtn = document.getElementById('toggle-tema');
+
+toggleBtn.addEventListener('click', () => {
+  const tema = document.documentElement.getAttribute('data-tema');
+  if (tema === 'escuro') {
+    document.documentElement.removeAttribute('data-tema');
+    toggleBtn.textContent = '🌙 Modo Escuro';
+  } else {
+    document.documentElement.setAttribute('data-tema', 'escuro');
+    toggleBtn.textContent = '☀️ Modo Claro';
+  }
+});
+                    </code></pre>
+                  <button class="btn-copy">Copiar Código</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
