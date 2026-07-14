@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,43 +20,7 @@
       <h1>Aula 7</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Requisições HTTP no React</h4>
-      <div class="alert alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ❌ useContext e ContextAPI
-            <strong>- movido para a Aula 10</strong>
-          </p>
-        </div>
-      </div>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ✔️
-            <strong>
-              Mais detalhes e explicações sobre React Query e SWR e
-              links</strong
-            >
-          </p>
-        </div>
-      </div>
+
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -269,21 +235,327 @@ export default App;
           >
         </p>
       </section>
-      <div id="question-container-aula">
-        <h2>Exercício para fazer em aula</h2>
-        <div class="question">
-          <b
-            >Faça um componente Dog e DogCards com requisições utilizando esse
-            codigo de base:
-          </b>
-          <a
-            class="link-estilizado"
-            href="https://github.com/devfabioluiz/aulasReact/tree/main/my-app/src/components/Aula%204"
-            >Clique aqui</a
-          >
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>
+          Acesse o GitHub e crie uma nova branch baseada na branch <strong>aula6</strong> com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula7-requisicoes-http
+          </code></pre>
         </div>
-      </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula7-requisicoes-http
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto React</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest jsonplaceholder-app -- --template react
+cd jsonplaceholder-app
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Fazer requisição GET com fetch</h3>
+
+        <p>
+          No componente <strong>App.jsx</strong>, use <code>useEffect</code> e
+          <code>fetch</code> para buscar dados da JSONPlaceholder API:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erro na requisição');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return &lt;p&gt;Carregando...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Usuários&lt;/h1&gt;
+      &lt;ul&gt;
+        {users.map((user) => (
+          &lt;li key={user.id}&gt;
+            {user.name} - {user.email}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Refatorar com Axios</h3>
+
+        <p>Instale o Axios:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm install axios
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Refatore o <strong>App.jsx</strong> para usar Axios:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function App() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        setUsers(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return &lt;p&gt;Carregando...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Usuários (Axios)&lt;/h1&gt;
+      &lt;ul&gt;
+        {users.map((user) => (
+          &lt;li key={user.id}&gt;
+            {user.name} - {user.email} - {user.phone}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar um componente separado para a lista</h3>
+
+        <p>Crie o componente <strong>UserList.jsx</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const UserList = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        setUsers(response.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return &lt;p&gt;Carregando...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Usuários&lt;/h2&gt;
+      {users.map((user) => (
+        &lt;div key={user.id} className="user-card"&gt;
+          &lt;h3&gt;{user.name}&lt;/h3&gt;
+          &lt;p&gt;Email: {user.email}&lt;/p&gt;
+          &lt;p&gt;Cidade: {user.address.city}&lt;/p&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+};
+
+export default UserList;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Usar o componente no App</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import UserList from './UserList';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;JSONPlaceholder App&lt;/h1&gt;
+      &lt;UserList /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar tudo no repositório:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 7 requisicoes http"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Buscar e exibir posts da JSONPlaceholder</h3>
+            <p>
+              Crie um componente <strong>PostList</strong> que busque a lista de
+              posts da API <code>https://jsonplaceholder.typicode.com/posts</code>
+              e os exiba em formato de cartões.
+            </p>
+            <p><b>Requisitos do dever de casa:</b></p>
+            <ul>
+              <li>Usar Axios para fazer a requisição GET</li>
+              <li>Exibir o <code>title</code> e o <code>body</code> de cada post</li>
+              <li>Mostrar o <code>userId</code> como badge no cartão</li>
+              <li>Adicionar um input de busca que filtre os posts pelo título</li>
+              <li>Exibir "Nenhum post encontrado" quando o filtro não tiver resultados</li>
+              <li>Tratar estados de loading e erro</li>
+            </ul>
+            <p>
+              <b>Obs:</b> Não se esqueça de subir as alterações para o Git na
+              branch dessa aula após terminar o dever.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const PostList = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
+        setPosts(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return &lt;p&gt;Carregando posts...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Posts&lt;/h2&gt;
+      &lt;input
+        type="text"
+        placeholder="Buscar por título..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      /&gt;
+
+      {filteredPosts.length === 0 ? (
+        &lt;p&gt;Nenhum post encontrado&lt;/p&gt;
+      ) : (
+        filteredPosts.map((post) => (
+          &lt;div key={post.id} className="post-card"&gt;
+            &lt;span className="badge"&gt;User {post.userId}&lt;/span&gt;
+            &lt;h3&gt;{post.title}&lt;/h3&gt;
+            &lt;p&gt;{post.body}&lt;/p&gt;
+          &lt;/div&gt;
+        ))
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default PostList;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

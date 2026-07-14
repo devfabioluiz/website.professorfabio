@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,20 +20,7 @@
       <h1>Aula 8</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Formulários em React</h4>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 18/06/2025</b>
-          </p>
-          <p>Nessa versão foram incluídos os seguintes tópicos:</p>
-            <p>✔️ Como funcionam os Formulários em React</p>
-            <p>✔️ Gerenciando Inputs com Estado</p>
-            <p>✔️ Estilizando Formulários com Material UI</p>
-        </div>
-      </div>
+
 
     <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Conexão entre componentes e formulários, Manipulação de dados de formulários, Validação, Binding bidirecional.</div>
     </header>
@@ -390,7 +379,429 @@ export default FormularioSelectCheckbox;
 </ul>
 
     </div>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>
+          Acesse o GitHub e crie uma nova branch baseada na branch <strong>aula7</strong> com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula8-formularios-react
+          </code></pre>
+        </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula8-formularios-react
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto React</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest registration-form -- --template react
+cd registration-form
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar formulário de registro controlado</h3>
+
+        <p>
+          Crie o componente <strong>RegistrationForm.jsx</strong> com campos
+          controlados e validação:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Senhas não conferem';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      alert('Cadastro realizado com sucesso!');
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nome:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        /&gt;
+        {errors.name && &lt;span className="error"&gt;{errors.name}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Email:&lt;/label&gt;
+        &lt;input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        /&gt;
+        {errors.email && &lt;span className="error"&gt;{errors.email}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Senha:&lt;/label&gt;
+        &lt;input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+        /&gt;
+        {errors.password && &lt;span className="error"&gt;{errors.password}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Confirmar Senha:&lt;/label&gt;
+        &lt;input
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+        /&gt;
+        {errors.confirmPassword && (
+          &lt;span className="error"&gt;{errors.confirmPassword}&lt;/span&gt;
+        )}
+      &lt;/div&gt;
+
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default RegistrationForm;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Adicionar campo de seleção (select)</h3>
+
+        <p>Adicione um campo de seleção de país ao formulário:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    country: '',
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Senhas não conferem';
+    }
+
+    if (!formData.country) newErrors.country = 'Selecione um país';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      alert('Cadastro realizado com sucesso!');
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nome:&lt;/label&gt;
+        &lt;input type="text" name="name" value={formData.name} onChange={handleChange} /&gt;
+        {errors.name && &lt;span className="error"&gt;{errors.name}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Email:&lt;/label&gt;
+        &lt;input type="email" name="email" value={formData.email} onChange={handleChange} /&gt;
+        {errors.email && &lt;span className="error"&gt;{errors.email}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Senha:&lt;/label&gt;
+        &lt;input type="password" name="password" value={formData.password} onChange={handleChange} /&gt;
+        {errors.password && &lt;span className="error"&gt;{errors.password}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Confirmar Senha:&lt;/label&gt;
+        &lt;input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} /&gt;
+        {errors.confirmPassword && &lt;span className="error"&gt;{errors.confirmPassword}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;País:&lt;/label&gt;
+        &lt;select name="country" value={formData.country} onChange={handleChange}&gt;
+          &lt;option value=""&gt;Selecione...&lt;/option&gt;
+          &lt;option value="br"&gt;Brasil&lt;/option&gt;
+          &lt;option value="us"&gt;Estados Unidos&lt;/option&gt;
+          &lt;option value="pt"&gt;Portugal&lt;/option&gt;
+        &lt;/select&gt;
+        {errors.country && &lt;span className="error"&gt;{errors.country}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default RegistrationForm;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Usar o formulário no App</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import RegistrationForm from './RegistrationForm';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Formulário de Cadastro&lt;/h1&gt;
+      &lt;RegistrationForm /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar tudo no repositório:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 8 formularios react"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um formulário de feedback</h3>
+            <p>
+              Crie um componente <strong>FeedbackForm</strong> com campos de
+              nome, email e mensagem. O formulário deve ser controlado, com
+              validação e exibição dos dados enviados abaixo do formulário.
+            </p>
+            <p><b>Requisitos do dever de casa:</b></p>
+            <ul>
+              <li>Campos controlados: <code>name</code>, <code>email</code>, <code>message</code></li>
+              <li>Validar que todos os campos são obrigatórios</li>
+              <li>Validar formato do email com regex</li>
+              <li>Validar que a mensagem tenha no mínimo 10 caracteres</li>
+              <li>Ao enviar, armazenar o feedback em um estado <code>submitted</code> e exibi-lo abaixo do formulário</li>
+              <li>Ter um botão "Limpar" que reseta o formulário</li>
+            </ul>
+            <p>
+              <b>Obs:</b> Não se esqueça de subir as alterações para o Git na
+              branch dessa aula após terminar o dever.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const FeedbackForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(null);
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Mensagem é obrigatória';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Mensagem deve ter no mínimo 10 caracteres';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      setSubmitted(formData);
+      setFormData({ name: '', email: '', message: '' });
+      setErrors({});
+    }
+  };
+
+  const handleClear = () => {
+    setFormData({ name: '', email: '', message: '' });
+    setErrors({});
+    setSubmitted(null);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;div&gt;
+          &lt;label&gt;Nome:&lt;/label&gt;
+          &lt;input type="text" name="name" value={formData.name} onChange={handleChange} /&gt;
+          {errors.name && &lt;span className="error"&gt;{errors.name}&lt;/span&gt;}
+        &lt;/div&gt;
+
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input type="email" name="email" value={formData.email} onChange={handleChange} /&gt;
+          {errors.email && &lt;span className="error"&gt;{errors.email}&lt;/span&gt;}
+        &lt;/div&gt;
+
+        &lt;div&gt;
+          &lt;label&gt;Mensagem:&lt;/label&gt;
+          &lt;textarea name="message" value={formData.message} onChange={handleChange} /&gt;
+          {errors.message && &lt;span className="error"&gt;{errors.message}&lt;/span&gt;}
+        &lt;/div&gt;
+
+        &lt;button type="submit"&gt;Enviar Feedback&lt;/button&gt;
+        &lt;button type="button" onClick={handleClear}&gt;Limpar&lt;/button&gt;
+      &lt;/form&gt;
+
+      {submitted && (
+        &lt;div className="feedback-submitted"&gt;
+          &lt;h3&gt;Feedback Enviado:&lt;/h3&gt;
+          &lt;p&gt;&lt;strong&gt;Nome:&lt;/strong&gt; {submitted.name}&lt;/p&gt;
+          &lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; {submitted.email}&lt;/p&gt;
+          &lt;p&gt;&lt;strong&gt;Mensagem:&lt;/strong&gt; {submitted.message}&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default FeedbackForm;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

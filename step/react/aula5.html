@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,42 +20,7 @@
       <h1>Aula 5</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Renderização Condicional e Re-renderização</h4>
-      <div class="alert alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
-          </p>
-          <p>❌ Passagem de dados <strong>- movido para a Aula 3</strong></p>
-          <p>
-            ❌ Iteração sobre arrays <strong>- movido para a Aula 4</strong>
-          </p>
-        </div>
-      </div>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
-          </p>
-          <p>✔️ Renderização Condicional <strong>- movido da Aula 6</strong></p>
-          <p>
-            ✔️ Renderização Condicional
-            <strong>- mais explicações sobre o operador &&</strong>
-          </p>
-          <p>✔️ Re-renderização <strong>- movido da Aula 6</strong></p>
-        </div>
-      </div>
+
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -205,7 +172,245 @@ const App() => {
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>
+          Acesse o GitHub e crie uma nova branch baseada na branch <strong>aula4</strong> com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula5-renderizacao-condicional
+          </code></pre>
+        </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula5-renderizacao-condicional
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto React</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest login-app -- --template react
+cd login-app
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o componente de login</h3>
+
+        <p>
+          Crie um componente <strong>LoginStatus.jsx</strong> que exibe uma
+          mensagem diferente dependendo se o usuário está logado ou não:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const LoginStatus = ({ isLoggedIn }) => {
+  return (
+    &lt;div&gt;
+      {isLoggedIn ? (
+        &lt;h1&gt;Bem-vindo de volta!&lt;/h1&gt;
+      ) : (
+        &lt;h1&gt;Por favor, faça login.&lt;/h1&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default LoginStatus;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Adicionar botão de login/logout</h3>
+
+        <p>
+          No componente <strong>App.jsx</strong>, adicione um estado para
+          controlar o login e um botão para alternar entre logado e deslogado:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+import LoginStatus from './LoginStatus';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  return (
+    &lt;div&gt;
+      &lt;LoginStatus isLoggedIn={isLoggedIn} /&gt;
+      &lt;button onClick={() => setIsLoggedIn(!isLoggedIn)}&gt;
+        {isLoggedIn ? 'Logout' : 'Login'}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Usar short-circuit para notificação</h3>
+
+        <p>
+          Adicione uma notificação que só aparece quando o usuário está logado,
+          usando o operador <code>&&</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const Notification = ({ showNotification }) => {
+  return (
+    &lt;div&gt;
+      {showNotification && &lt;p&gt;Você tem novas mensagens!&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+};
+
+export default Notification;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+import LoginStatus from './LoginStatus';
+import Notification from './Notification';
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showNotif, setShowNotif] = useState(false);
+
+  return (
+    &lt;div&gt;
+      &lt;LoginStatus isLoggedIn={isLoggedIn} /&gt;
+      &lt;Notification showNotification={showNotif} /&gt;
+      &lt;button onClick={() => setIsLoggedIn(!isLoggedIn)}&gt;
+        {isLoggedIn ? 'Logout' : 'Login'}
+      &lt;/button&gt;
+      &lt;button onClick={() => setShowNotif(!showNotif)}&gt;
+        {showNotif ? 'Ocultar' : 'Mostrar'} Notificação
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar tudo no repositório:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 5 renderizacao condicional"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um painel de notificações</h3>
+            <p>
+              Crie um componente <strong>NotificationPanel</strong> que exibe
+              uma lista de mensagens de notificação. O painel deve poder ser
+              mostrado ou escondido com um botão, e as notificações individuais
+              devem poder ser removidas uma a uma.
+            </p>
+            <p><b>Requisitos do dever de casa:</b></p>
+            <ul>
+              <li>Criar um estado <code>notifications</code> como array de mensagens</li>
+              <li>Usar renderização condicional com <code>&&</code> para mostrar/esconder o painel</li>
+              <li>Renderizar a lista com <code>.map()</code> e usar ternário para indicar prioridade</li>
+              <li>Cada notificação deve ter um botão "Remover" que a exclua do array</li>
+              <li>Exibir uma mensagem "Nenhuma notificação" quando o array estiver vazio</li>
+            </ul>
+            <p>
+              <b>Obs:</b> Não se esqueça de subir as alterações para o Git na
+              branch dessa aula após terminar o dever.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const NotificationPanel = () => {
+  const [showPanel, setShowPanel] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'Novo comentário', priority: 'alta' },
+    { id: 2, text: 'Atualização disponível', priority: 'media' },
+    { id: 3, text: 'Bem-vindo!', priority: 'baixa' },
+  ]);
+
+  const removeNotification = (id) => {
+    setNotifications(notifications.filter(n => n.id !== id));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() => setShowPanel(!showPanel)}&gt;
+        {showPanel ? 'Ocultar' : 'Mostrar'} Notificações
+      &lt;/button&gt;
+
+      {showPanel && (
+        &lt;div className="panel"&gt;
+          &lt;h3&gt;Notificações&lt;/h3&gt;
+          {notifications.length === 0 ? (
+            &lt;p&gt;Nenhuma notificação&lt;/p&gt;
+          ) : (
+            &lt;ul&gt;
+              {notifications.map(notif => (
+                &lt;li key={notif.id}&gt;
+                  {notif.priority === 'alta' ? '🔴' : notif.priority === 'media' ? '🟡' : '🟢'}
+                  {notif.text}
+                  &lt;button onClick={() => removeNotification(notif.id)}&gt;Remover&lt;/button&gt;
+                &lt;/li&gt;
+              ))}
+            &lt;/ul&gt;
+          )}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default NotificationPanel;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

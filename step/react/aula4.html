@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,41 +20,7 @@
       <h1>Aula 4</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Iteração sobre arrays</h4>
-      <div class="alert alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
-          </p>
-          <p>❌ Hooks <strong>- movido para a Aula 2</strong></p>
-        </div>
-      </div>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>inclúidos</strong> os seguintes tópicos:
-          </p>
-          <p>✔️ Iteração sobre arrays <strong>- movido da Aula 5</strong></p>
-          <p>
-            ✔️
-            <strong
-              >Inserida uma explicação mais detalhada e adicionados mais
-              exemplos </strong
-            >sobre iteração em arrays.
-          </p>
-        </div>
-      </div>
+
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -234,8 +202,208 @@ export default ListaDeProdutos;
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <ul>
+          <li>Acesse o repositório projeto-react-step no GitHub</li>
+          <li>Clique em <strong>1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>No campo New branch name digite <b>aula4-react</b></li>
+          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o terminal no VSCode e digite</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula4-react
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o componente ListaDeProdutos</h3>
+
+        <p>Crie o arquivo <code>src/components/ListaDeProdutos.jsx</code> com um array de produtos e utilize o método <code>.map()</code> para renderizar a lista:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+
+const ListaDeProdutos = () => {
+  const produtos = [
+    { id: 1, nome: 'Notebook', preco: 4500 },
+    { id: 2, nome: 'Smartphone', preco: 2500 },
+    { id: 3, nome: 'Monitor', preco: 1200 },
+    { id: 4, nome: 'Teclado', preco: 200 },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Produtos&lt;/h1&gt;
+      &lt;table border="1"&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Nome&lt;/th&gt;
+            &lt;th&gt;Preço&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {produtos.map((produto) => (
+            &lt;tr key={produto.id}&gt;
+              &lt;td&gt;{produto.nome}&lt;/td&gt;
+              &lt;td&gt;R$ {produto.preco.toFixed(2)}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ListaDeProdutos;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Renderizar o componente no App</h3>
+
+        <p>No <code>src/App.jsx</code>, importe e renderize o ListaDeProdutos:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import ListaDeProdutos from './components/ListaDeProdutos';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;ListaDeProdutos /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Rodar o projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse <code>http://localhost:5173</code> e veja a tabela de produtos sendo renderizada dinamicamente com <code>.map()</code>.</p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Execute os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 4 react iteracao sobre arrays com map"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Lista filtrada com .filter() e .map()</h3>
+            <p>Crie um componente chamado <b>ListaFiltrada</b> que contenha um array de produtos (nome, preco, categoria). Utilize <code>.filter()</code> para exibir apenas produtos com preço acima de R$ 1000 e <code>.map()</code> para renderizá-los em uma tabela.</p>
+            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Componente <code>ListaFiltrada.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+
+const ListaFiltrada = () => {
+  const produtos = [
+    { id: 1, nome: 'Notebook', preco: 4500, categoria: 'Eletrônicos' },
+    { id: 2, nome: 'Smartphone', preco: 2500, categoria: 'Eletrônicos' },
+    { id: 3, nome: 'Monitor', preco: 1200, categoria: 'Eletrônicos' },
+    { id: 4, nome: 'Teclado', preco: 200, categoria: 'Eletrônicos' },
+    { id: 5, nome: 'Mousepad', preco: 50, categoria: 'Acessórios' },
+    { id: 6, nome: 'Cadeira Gamer', preco: 1800, categoria: 'Móveis' },
+  ];
+
+  const produtosCaros = produtos.filter(
+    (produto) => produto.preco > 1000
+  );
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Produtos com preço acima de R$ 1000&lt;/h1&gt;
+      &lt;table border="1"&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Nome&lt;/th&gt;
+            &lt;th&gt;Preço&lt;/th&gt;
+            &lt;th&gt;Categoria&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {produtosCaros.map((produto) => (
+            &lt;tr key={produto.id}&gt;
+              &lt;td&gt;{produto.nome}&lt;/td&gt;
+              &lt;td&gt;R$ {produto.preco.toFixed(2)}&lt;/td&gt;
+              &lt;td&gt;{produto.categoria}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ListaFiltrada;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+import ListaFiltrada from './components/ListaFiltrada';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;ListaFiltrada /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

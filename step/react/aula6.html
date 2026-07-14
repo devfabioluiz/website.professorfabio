@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,41 +20,7 @@
         <h1>Aula 6</h1>
         <h4 class="text-center">React</h4>
         <h4 class="text-center">Estilização de componentes e Material-UI</h4>
-        <div class="alert alert-container new-alert">
-          <div class="pin-message">
-            <span>📌</span>
-          </div>
-          <div class="alert-text">
-            <p class="alert-title">
-              <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-            </p>
-            <p>
-              Nessa versão foram <strong>excluídos</strong> os seguintes
-              tópicos:
-            </p>
-            <p>
-              ❌ Renderização Condicional
-              <strong>- movido para a Aula 5</strong>
-            </p>
-            <p>❌ Re-renderização <strong>- movido para a Aula 5</strong></p>
-          </div>
-        </div>
-        <div class="alert-update alert-container new-alert">
-          <div class="pin-message">
-            <span>📌</span>
-          </div>
-          <div class="alert-text">
-            <p class="alert-title">
-              <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-            </p>
-            <p>
-              Nessa versão foram <strong>incluídos</strong> os seguintes
-              tópicos:
-            </p>
-            <p>✔️ <strong>Mais detalhes, explicações e links</strong></p>
-            <p>✔️ <strong>Vanilla Extract</strong></p>
-          </div>
-        </div>
+
         <div
           class="topicos-aula">
           <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -449,7 +417,338 @@ const App = () => {
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>
+          Acesse o GitHub e crie uma nova branch baseada na branch <strong>aula5</strong> com o nome:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+aula6-estilizacao-componentes
+          </code></pre>
+        </div>
+
+        <p>Depois, no terminal do VSCode, execute:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula6-estilizacao-componentes
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto React</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest styled-button -- --template react
+cd styled-button
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Estilizar botão com CSS externo</h3>
+
+        <p>Crie o arquivo <strong>Button.css</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-css">
+.btn-custom {
+  background-color: #6200ea;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-custom:hover {
+  background-color: #3700b3;
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Depois crie o componente <strong>ButtonCSS.jsx</strong>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import './Button.css';
+
+const ButtonCSS = ({ label }) => {
+  return &lt;button className="btn-custom"&gt;{label}&lt;/button&gt;;
+};
+
+export default ButtonCSS;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Estilizar botão com Inline Styles</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const ButtonInline = ({ label, primary }) => {
+  const styles = {
+    backgroundColor: primary ? '#1976d2' : '#9e9e9e',
+    color: 'white',
+    padding: '12px 24px',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '16px',
+    cursor: 'pointer',
+    margin: '4px',
+  };
+
+  return &lt;button style={styles}&gt;{label}&lt;/button&gt;;
+};
+
+export default ButtonInline;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Estilizar botão com Styled Components</h3>
+
+        <p>Instale a biblioteca:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm install styled-components
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import styled from 'styled-components';
+
+const StyledBtn = styled.button`
+  background: ${(props) => (props.primary ? '#6200ea' : '#9e9e9e')};
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 4px;
+  transition: background 0.3s;
+
+  &:hover {
+    background: ${(props) => (props.primary ? '#3700b3' : '#757575')};
+  }
+`;
+
+const ButtonStyled = ({ label, primary }) => {
+  return &lt;StyledBtn primary={primary}&gt;{label}&lt;/StyledBtn&gt;;
+};
+
+export default ButtonStyled;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Usar todos os botões no App</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import ButtonCSS from './ButtonCSS';
+import ButtonInline from './ButtonInline';
+import ButtonStyled from './ButtonStyled';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Botão com CSS Externo&lt;/h1&gt;
+      &lt;ButtonCSS label="CSS Externo" /&gt;
+
+      &lt;h1&gt;Botão com Inline Styles&lt;/h1&gt;
+      &lt;ButtonInline label="Primário" primary /&gt;
+      &lt;ButtonInline label="Secundário" /&gt;
+
+      &lt;h1&gt;Botão com Styled Components&lt;/h1&gt;
+      &lt;ButtonStyled label="Primário" primary /&gt;
+      &lt;ButtonStyled label="Secundário" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos salvar tudo no repositório:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 6 estilizacao de componentes"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um componente de card temático</h3>
+            <p>
+              Crie um componente <strong>ThemedCard</strong> que aceite as props
+              <code>title</code>, <code>description</code> e <code>theme</code>
+              (<code>"light"</code> ou <code>"dark"</code>). O card deve ser
+              estilizado de forma diferente conforme o tema, usando CSS Modules
+              ou Styled Components.
+            </p>
+            <p><b>Requisitos do dever de casa:</b></p>
+            <ul>
+              <li>Criar dois arquivos CSS Module: <code>ThemedCardLight.module.css</code> e <code>ThemedCardDark.module.css</code></li>
+              <li>Importar o CSS Module correspondente com base na prop <code>theme</code></li>
+              <li>O card deve ter border-radius, sombra (box-shadow), padding e transição suave</li>
+              <li>Exibir <code>title</code> em destaque e <code>description</code> abaixo</li>
+              <li>Renderizar dois cards no App, um para cada tema</li>
+            </ul>
+            <p>
+              <b>Obs:</b> Não se esqueça de subir as alterações para o Git na
+              branch dessa aula após terminar o dever.
+            </p>
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>1. ThemedCardLight.module.css</b></p>
+              <div class="code-container">
+                <pre><code class="language-css">
+.card {
+  background-color: #ffffff;
+  color: #333333;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 16px;
+  max-width: 300px;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 14px;
+  color: #666666;
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>2. ThemedCardDark.module.css</b></p>
+              <div class="code-container">
+                <pre><code class="language-css">
+.card {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  margin: 16px;
+  max-width: 300px;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.description {
+  font-size: 14px;
+  color: #aaaaaa;
+}
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>3. ThemedCard.jsx</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import lightStyles from './ThemedCardLight.module.css';
+import darkStyles from './ThemedCardDark.module.css';
+
+const ThemedCard = ({ title, description, theme }) => {
+  const styles = theme === 'dark' ? darkStyles : lightStyles;
+
+  return (
+    &lt;div className={styles.card}&gt;
+      &lt;h3 className={styles.title}&gt;{title}&lt;/h3&gt;
+      &lt;p className={styles.description}&gt;{description}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ThemedCard;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>4. App.jsx</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import ThemedCard from './ThemedCard';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;ThemedCard
+        title="Card Claro"
+        description="Este card usa o tema claro com fundo branco."
+        theme="light"
+      /&gt;
+      &lt;ThemedCard
+        title="Card Escuro"
+        description="Este card usa o tema escuro com fundo preto."
+        theme="dark"
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

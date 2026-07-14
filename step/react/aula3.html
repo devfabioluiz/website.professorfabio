@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,45 +20,7 @@
       <h1>Aula 3</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Props e Passagem de dados (Pai/Filho)</h4>
-      <div class="alert alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
-          </p>
-          <p>❌ Fragments <strong>- movido para a Aula 2</strong></p>
-          <p>
-            ❌ Explicação mais detalhada sobre Estados (useState)
-            <strong>- movido para a Aula 2</strong>
-          </p>
-        </div>
-      </div>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ✔️ Props
-            <strong>- movido da Aula 2</strong>
-          </p>
-          <p>
-            ✔️ Passagem de dados (Pai/Filho)
-            <strong>- movido da Aula 5</strong>
-          </p>
-        </div>
-      </div>
+
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -186,20 +150,221 @@ export default Parent;
         </ul>
       </section>
 
-      <h2>Exercício para fazer em aula</h2>
-      <section id="question-container-aula">
-        <div class="question">
-          <b
-            >Crie dois componentes (Pai e Filho) e implemente as duas formas de
-            comunicação vistas nesta aula.</b
-          >
-          <a
-            href="https://github.com/devfabioluiz/aulasReact/tree/main/my-app/src/components/Aula%203"
-            >Siga este modelo</a
-          >
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <ul>
+          <li>Acesse o repositório projeto-react-step no GitHub</li>
+          <li>Clique em <strong>1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>No campo New branch name digite <b>aula3-react</b></li>
+          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o terminal no VSCode e digite</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula3-react
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o componente Filho</h3>
+
+        <p>Crie o arquivo <code>src/components/Filho.jsx</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+
+const Filho = ({ message, sendDataToParent }) => {
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Mensagem do pai: {message}&lt;/p&gt;
+      &lt;button onClick={() => sendDataToParent('Dados do Filho')}&gt;
+        Enviar dados para o pai
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Filho;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o componente Pai</h3>
+
+        <p>Crie o arquivo <code>src/components/Pai.jsx</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useState } from 'react';
+import Filho from './Filho';
+
+const Pai = () => {
+  const [dadosDoFilho, setDadosDoFilho] = useState('');
+
+  const receberDados = (dados) => {
+    setDadosDoFilho(dados);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Componente Pai&lt;/h2&gt;
+      &lt;p&gt;Dados recebidos do filho: {dadosDoFilho}&lt;/p&gt;
+      &lt;Filho message="Olá do Pai!" sendDataToParent={receberDados} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Pai;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Renderizar o componente no App</h3>
+
+        <p>No <code>src/App.jsx</code>, importe e renderize o componente Pai:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import Pai from './components/Pai';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;Pai /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Rodar o projeto e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Observe que o Pai envia uma mensagem para o Filho via prop <code>message</code>, e o Filho envia dados de volta para o Pai chamando a função <code>sendDataToParent</code>.</p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Execute os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 3 react props e comunicacao pai filho"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Formulário com comunicação Pai/Filho</h3>
+            <p>Crie um componente <b>FormularioFilho</b> que contenha um campo de input e um botão. Quando o botão for clicado, o valor do input deve ser enviado para o <b>Pai</b> e exibido na tela.</p>
+            <p>O Pai deve gerenciar o estado do dado recebido e exibi-lo.</p>
+            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Componente <code>FormularioFilho.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React, { useState } from 'react';
+
+const FormularioFilho = ({ enviarDados }) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSubmit = () => {
+    enviarDados(inputValue);
+    setInputValue('');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Digite algo"
+      /&gt;
+      &lt;button onClick={handleSubmit}&gt;Enviar&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default FormularioFilho;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>Componente <code>PaiFormulario.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React, { useState } from 'react';
+import FormularioFilho from './FormularioFilho';
+
+const PaiFormulario = () => {
+  const [dados, setDados] = useState('');
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Dados recebidos: {dados}&lt;/h2&gt;
+      &lt;FormularioFilho enviarDados={setDados} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default PaiFormulario;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+import PaiFormulario from './components/PaiFormulario';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;PaiFormulario /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

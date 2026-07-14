@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     
   </head>
 
@@ -401,7 +403,295 @@ const App = () => {
           </tbody>
         </table>
       </section>
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>Passo a Passo: Criando um App Multi-Páginas com React Router</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+projeto-react-router
+          </code></pre>
+        </div>
+
+        <p>Agora crie uma branch chamada <strong>aula9-react-router</strong></p>
+
+        <p>Depois, clone o repositório no seu computador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git clone https://github.com/{{SEU-USERNAME}}/projeto-react-router.git
+cd projeto-react-router
+git fetch
+git checkout aula9-react-router
+git pull
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Instalar React Router</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest . -- --template react
+npm install react-router-dom
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar as páginas</h3>
+
+        <p>Crie os arquivos dentro da pasta <code>src</code>:</p>
+
+        <p><b>Home.jsx</b></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const Home = () => {
+  return &lt;h1&gt;Página Inicial&lt;/h1&gt;;
+};
+
+export default Home;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><b>About.jsx</b></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const About = () => {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
+};
+
+export default About;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p><b>Contact.jsx</b></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const Contact = () => {
+  return &lt;h1&gt;Contato&lt;/h1&gt;;
+};
+
+export default Contact;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Configurar o Router no App.jsx</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Adicionar navegação com Links</h3>
+
+        <p>Crie um componente <b>Navbar.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { Link } from 'react-router-dom';
+
+const Navbar = () => {
+  return (
+    &lt;nav&gt;
+      &lt;Link to="/"&gt;Home&lt;/Link&gt;
+      &lt;Link to="/about"&gt;Sobre&lt;/Link&gt;
+      &lt;Link to="/contact"&gt;Contato&lt;/Link&gt;
+    &lt;/nav&gt;
+  );
+};
+
+export default Navbar;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Atualize o <b>App.jsx</b> para incluir a Navbar:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
+import Navbar from './Navbar';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Navbar /&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Rodar e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:5173
+          </code></pre>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 9: react router com multi paginas"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um blog com rotas dinâmicas</h3>
+            <p>Crie uma branch chamada <strong>dever-de-casa-aula9</strong> e nela desenvolva:</p>
+            <ol>
+              <li>Crie um componente <b>Post.jsx</b> que use <code>useParams</code> para exibir o título e conteúdo de um post baseado no ID da URL.</li>
+              <li>Crie um componente <b>Blog.jsx</b> que liste links para posts (ex: /post/1, /post/2, /post/3).</li>
+              <li>Configure as rotas no <b>App.jsx</b>.</li>
+            </ol>
+            <p><strong>Obs:</strong> Não se esqueça de subir o projeto para o Git na branch do dever após terminar.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>1. Blog.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { Link } from 'react-router-dom';
+
+const posts = [
+  { id: 1, titulo: 'React é incrível' },
+  { id: 2, titulo: 'Aprendendo React Router' },
+  { id: 3, titulo: 'Hooks na prática' },
+];
+
+const Blog = () => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Blog&lt;/h1&gt;
+      &lt;ul&gt;
+        {posts.map(post => (
+          &lt;li key={post.id}&gt;
+            &lt;Link to={`/post/${post.id}`}&gt;{post.titulo}&lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Blog;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>2. Post.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useParams } from 'react-router-dom';
+
+const posts = [
+  { id: 1, titulo: 'React é incrível', conteudo: 'React é uma biblioteca para construir interfaces...' },
+  { id: 2, titulo: 'Aprendendo React Router', conteudo: 'React Router permite navegação SPA...' },
+  { id: 3, titulo: 'Hooks na prática', conteudo: 'Hooks como useState e useEffect são essenciais...' },
+];
+
+const Post = () => {
+  const { id } = useParams();
+  const post = posts.find(p => p.id === Number(id));
+
+  if (!post) return &lt;h2&gt;Post não encontrado&lt;/h2&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.titulo}&lt;/h1&gt;
+      &lt;p&gt;{post.conteudo}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Post;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>3. App.jsx — rotas atualizadas:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Blog from './Blog';
+import Post from './Post';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Blog /&gt;} /&gt;
+        &lt;Route path="/post/:id" element={&lt;Post /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

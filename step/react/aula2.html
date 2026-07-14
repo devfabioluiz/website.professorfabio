@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -20,45 +22,7 @@
       <h4 class="text-center">
         Fragments, Tipos de Componentes e Hooks (useState e useEffect)
       </h4>
-      <div class="alert alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>excluídos</strong> os seguintes tópicos:
-          </p>
-          <p>❌ Props <strong>- movido para a Aula 3</strong></p>
-        </div>
-      </div>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ✔️ Fragments
-            <strong>- movido da Aula 3</strong>
-          </p>
-          <p>
-            ✔️ Hooks
-            <strong>- movido da Aula 4</strong>
-          </p>
-          <p>
-            ✔️ Explicação mais detalhada sobre Estados (useState)
-            <strong>- movido da Aula 3</strong>
-          </p>
-        </div>
-      </div>
+
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
@@ -350,8 +314,237 @@ export default Relogio;
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <ul>
+          <li>Acesse o repositório projeto-react-step no GitHub</li>
+          <li>Clique em <strong>1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>No campo New branch name digite <b>aula2-react</b></li>
+          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o terminal no VSCode e digite</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula2-react
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o componente PlacarDoJogo</h3>
+
+        <p>Crie um arquivo <code>src/components/PlacarDoJogo.jsx</code> e insira a estrutura inicial:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useState, useEffect } from 'react';
+
+const PlacarDoJogo = () => {
+  return (
+    &lt;div style={{ textAlign: 'center', fontFamily: 'Arial' }}&gt;
+      &lt;h1&gt;Placar do Jogo&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default PlacarDoJogo;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Adicionar o cronômetro (useState + useEffect)</h3>
+
+        <p>Adicione o estado do cronômetro que conta até 90 minutos:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const [minutos, setMinutos] = useState(0);
+const [segundos, setSegundos] = useState(0);
+const [jogando, setJogando] = useState(false);
+
+useEffect(() => {
+  let intervalo;
+  if (jogando && minutos < 90) {
+    intervalo = setInterval(() => {
+      setSegundos((prev) => {
+        if (prev === 59) {
+          setMinutos((m) => m + 1);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+  }
+  return () => clearInterval(intervalo);
+}, [jogando, minutos]);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Adicionar botão de intervalo</h3>
+
+        <p>O botão de intervalo para a contagem em 15 minutos e depois retorna de onde parou:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const [intervaloAtivo, setIntervaloAtivo] = useState(false);
+
+const pausarJogo = () => {
+  setJogando(false);
+  setIntervaloAtivo(true);
+};
+
+const voltarJogo = () => {
+  setIntervaloAtivo(false);
+  setJogando(true);
+};
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Adicionar acréscimos de 5 minutos</h3>
+
+        <p>Após o minuto 90, o botão de acréscimos permite adicionar até 5 minutos extras:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const [acrescimos, setAcrescimos] = useState(0);
+
+const adicionarAcrescimo = () => {
+  if (minutos >= 90 && acrescimos < 5) {
+    setAcrescimos((prev) => prev + 1);
+    setMinutos(90);
+    setJogando(true);
+  }
+};
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Montar o placar com gols</h3>
+
+        <p>Adicione o estado dos gols e os botões para aumentar:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const [golsCasa, setGolsCasa] = useState(0);
+const [golsVisitante, setGolsVisitante] = useState(0);
+
+const golCasa = () => setGolsCasa((prev) => prev + 1);
+const golVisitante = () => setGolsVisitante((prev) => prev + 1);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Renderizar o componente no App</h3>
+
+        <p>No <code>src/App.jsx</code>, importe e renderize o PlacarDoJogo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import PlacarDoJogo from './components/PlacarDoJogo';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;PlacarDoJogo /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Execute os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 2 react hooks e placar do jogo"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um relógio digital</h3>
+            <p>Crie um componente <b>RelogioDigital</b> que exiba a hora atualizada a cada segundo usando <code>useState</code> e <code>useEffect</code>.</p>
+            <p>Dica: Utilize <code>new Date()</code> e <code>toLocaleTimeString()</code>.</p>
+            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Componente <code>RelogioDigital.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React, { useState, useEffect } from 'react';
+
+const RelogioDigital = () => {
+  const [horario, setHorario] = useState(new Date());
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setHorario(new Date());
+    }, 1000);
+    return () => clearInterval(intervalo);
+  }, []);
+
+  return (
+    &lt;div style={{ textAlign: 'center', fontSize: '3rem', fontFamily: 'monospace' }}&gt;
+      {horario.toLocaleTimeString()}
+    &lt;/div&gt;
+  );
+};
+
+export default RelogioDigital;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+import RelogioDigital from './components/RelogioDigital';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;RelogioDigital /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

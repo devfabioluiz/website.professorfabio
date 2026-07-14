@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -144,7 +146,254 @@ function Contador() {
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>Passo a Passo: Criando um Theme Toggler com Context API</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+projeto-theme-context
+          </code></pre>
+        </div>
+
+        <p>Agora crie uma branch chamada <strong>aula10-theme-context</strong></p>
+
+        <p>Depois, clone o repositório no seu computador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git clone https://github.com/{{SEU-USERNAME}}/projeto-theme-context.git
+cd projeto-theme-context
+git fetch
+git checkout aula10-theme-context
+git pull
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest . -- --template react
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o ThemeContext</h3>
+
+        <p>Crie o arquivo <b>src/ThemeContext.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { createContext, useState, useContext } from 'react';
+
+const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+
+export const useTheme = () => useContext(ThemeContext);
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar um componente que use o tema</h3>
+
+        <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useTheme } from './ThemeContext';
+
+const ThemeSwitcher = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    &lt;div style={{
+      background: theme === 'light' ? '#fff' : '#333',
+      color: theme === 'light' ? '#000' : '#fff',
+      padding: '20px',
+      minHeight: '100vh',
+    }}&gt;
+      &lt;h1&gt;Tema atual: {theme}&lt;/h1&gt;
+      &lt;button onClick={toggleTheme}&gt;
+        Alternar para {theme === 'light' ? 'dark' : 'light'}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ThemeSwitcher;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Usar o Provider no App.jsx</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { ThemeProvider } from './ThemeContext';
+import ThemeSwitcher from './ThemeSwitcher';
+
+const App = () => {
+  return (
+    &lt;ThemeProvider&gt;
+      &lt;ThemeSwitcher /&gt;
+    &lt;/ThemeProvider&gt;
+  );
+};
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Rodar e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:5173
+          </code></pre>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 10: theme toggler com context api"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar uma Todo List com useReducer</h3>
+            <p>Crie uma branch chamada <strong>dever-de-casa-aula10</strong> e nela desenvolva:</p>
+            <ol>
+              <li>Crie um componente <b>TodoList.jsx</b> que use <code>useReducer</code> para gerenciar uma lista de tarefas.</li>
+              <li>Implemente as ações: <code>ADD_TASK</code>, <code>TOGGLE_TASK</code> e <code>REMOVE_TASK</code>.</li>
+              <li>Renderize um input para adicionar tarefas e a lista com opção de marcar como concluída e remover.</li>
+            </ol>
+            <p><strong>Obs:</strong> Não se esqueça de subir o projeto para o Git na branch do dever após terminar.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>TodoList.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useReducer, useState } from 'react';
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return [...state, { id: Date.now(), text: action.payload, completed: false }];
+    case 'TOGGLE_TASK':
+      return state.map(task =>
+        task.id === action.payload
+          ? { ...task, completed: !task.completed }
+          : task
+      );
+    case 'REMOVE_TASK':
+      return state.filter(task => task.id !== action.payload);
+    default:
+      return state;
+  }
+};
+
+const TodoList = () => {
+  const [tasks, dispatch] = useReducer(reducer, []);
+  const [input, setInput] = useState('');
+
+  const addTask = () => {
+    if (input.trim()) {
+      dispatch({ type: 'ADD_TASK', payload: input });
+      setInput('');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Tarefas&lt;/h1&gt;
+      &lt;input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Nova tarefa"
+      /&gt;
+      &lt;button onClick={addTask}&gt;Adicionar&lt;/button&gt;
+      &lt;ul&gt;
+        {tasks.map(task => (
+          &lt;li key={task.id}
+            style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+          &gt;
+            {task.text}
+            &lt;button onClick={() => dispatch({ type: 'TOGGLE_TASK', payload: task.id })}&gt;
+              {task.completed ? 'Desmarcar' : 'Concluir'}
+            &lt;/button&gt;
+            &lt;button onClick={() => dispatch({ type: 'REMOVE_TASK', payload: task.id })}&gt;
+              Remover
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default TodoList;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import TodoList from './TodoList';
+
+const App = () => {
+  return &lt;TodoList /&gt;;
+};
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

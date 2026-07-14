@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -18,49 +20,7 @@
       <h1>Aula 1</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">O que é o React e montando o ambiente</h4>
-      <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>atualizados</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ✔️ Configurando o Ambiente com Vite - <strong>
-              inseridas imagens para ilustrar
-            </strong>
-          </p>
-        </div>
-      </div>
-       <div class="alert-update alert-container new-alert">
-        <div class="pin-message">
-          <span>📌</span>
-        </div>
-        <div class="alert-text">
-          <p class="alert-title">
-            <b>📅 Versão atualizada em 19/06/2025 (versão 2)</b>
-          </p>
-          <p>
-            Nessa versão foram <strong>incluídos</strong> os seguintes tópicos:
-          </p>
-          <p>
-            ✔️ Para que Serve o React?
-          </p>
-          <p>
-            ✔️ Como o React Funciona?
-          </p>
-          <p>
-            ✔️ Como o React Funciona?
-          </p>
-          <p>
-            ✔️ Live Reload e HMR
-          </p>
-        </div>
-      </div>
+
     <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> O que é React, Objetivos do React, JSX, Virtual DOM, Componentes (funcionais e de classe), Configurando o ambiente.</div>
     </header>
     <div class="container">
@@ -307,8 +267,175 @@ export default Welcome;
           <button class="btn-copy">Copiar Texto</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <ul>
+          <li>
+            Crie o repositório no GitHub chamado projeto-react-step clicando
+            no botão "Create repository"
+          </li>
+          <li>
+            Adicione um arquivo .gitignore e um README conforme aparece na etapa
+            de criação de repositório no github
+          </li>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique em <strong>1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>No campo New branch name digite <b>aula1-react</b></li>
+          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o VSCode, abra o terminal e digite</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd C:/
+git clone https://github.com/SEU USUARIO AQUI/projeto-react-step.git
+cd projeto-react-step
+git fetch
+git checkout aula1-react
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar projeto Vite</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest my-react-app --template react
+cd my-react-app
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o componente Welcome</h3>
+
+        <p>Crie um arquivo <code>Welcome.jsx</code> dentro da pasta <code>src/components</code> e insira o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+
+const Welcome = ({ name }) => (
+  &lt;div&gt;
+    &lt;h1&gt;Bem-vindo, {name}!&lt;/h1&gt;
+  &lt;/div&gt;
+);
+
+export default Welcome;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Renderizar o componente no App</h3>
+
+        <p>Abra o arquivo <code>src/App.jsx</code> e substitua o conteúdo pelo código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import Welcome from './components/Welcome';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;Welcome name="Fabio" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Rodar o projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse <code>http://localhost:5173</code> e veja o resultado.</p>
+
+        <h3>Último Passo - Subindo para o Git</h3>
+
+        <p>Agora vamos subir as alterações para o repositório do Git. Execute os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 1 react fundamentos"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar componente BoasVindas</h3>
+            <p>Crie um componente chamado <b>BoasVindas</b> que recebe uma prop <code>nome</code> e exibe a mensagem "Bem-vindo, {nome}!" na tela.</p>
+            <p>Em seguida, renderize o componente no <code>App.jsx</code> passando seu nome como prop.</p>
+            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Componente <code>BoasVindas.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+
+const BoasVindas = ({ nome }) => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Bem-vindo, {nome}!&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default BoasVindas;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+import BoasVindas from './components/BoasVindas';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;BoasVindas nome="Fabio" /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>

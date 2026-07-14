@@ -10,6 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
       
   </head>
   <body>
@@ -327,7 +329,258 @@ const Filho = forwardRef((props, ref) =&gt; {
           </div>
         </section>
       </div>
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>Passo a Passo: Criando um Modal com Portal e useRef</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+projeto-portal-modal
+          </code></pre>
+        </div>
+
+        <p>Agora crie uma branch chamada <strong>aula11-portal-modal</strong></p>
+
+        <p>Depois, clone o repositório no seu computador:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git clone https://github.com/{{SEU-USERNAME}}/projeto-portal-modal.git
+cd projeto-portal-modal
+git fetch
+git checkout aula11-portal-modal
+git pull
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 1 — Criar o projeto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm create vite@latest . -- --template react
+npm install
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Adicionar o elemento modal-root no index.html</h3>
+
+        <p>Abra o arquivo <b>index.html</b> e adicione <code>&lt;div id="modal-root"&gt;&lt;/div&gt;</code> logo após a <code>&lt;div id="root"&gt;</code>:</p>
+        <div class="code-container">
+          <pre><code class="language-markup">
+&lt;div id="root"&gt;&lt;/div&gt;
+&lt;div id="modal-root"&gt;&lt;/div&gt;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o componente Modal com Portal</h3>
+
+        <p>Crie o arquivo <b>src/Modal.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
+
+const Modal = ({ isOpen, onClose, children }) => {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(
+    &lt;div
+      ref={modalRef}
+      tabIndex={-1}
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    &gt;
+      &lt;div
+        style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          minWidth: '300px',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      &gt;
+        {children}
+        &lt;button onClick={onClose}&gt;Fechar&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;,
+    document.getElementById('modal-root')
+  );
+};
+
+export default Modal;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Usar o Modal no App.jsx</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+import Modal from './Modal';
+
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    &lt;div style={{ padding: '50px' }}&gt;
+      &lt;h1&gt;Exemplo de Modal com Portal&lt;/h1&gt;
+      &lt;button onClick={() => setIsOpen(true)}&gt;Abrir Modal&lt;/button&gt;
+      &lt;Modal isOpen={isOpen} onClose={() => setIsOpen(false)}&gt;
+        &lt;h2&gt;Modal Aberto!&lt;/h2&gt;
+        &lt;p&gt;Este modal usa Portal e gerenciamento de foco com useRef.&lt;/p&gt;
+      &lt;/Modal&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Rodar e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:5173
+          </code></pre>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 11: modal com portal e useref"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um Tooltip com Portal</h3>
+            <p>Crie uma branch chamada <strong>dever-de-casa-aula11</strong> e nela desenvolva:</p>
+            <ol>
+              <li>Crie um componente <b>Tooltip.jsx</b> que use <code>ReactDOM.createPortal</code> para renderizar um tooltip posicionado próximo a um elemento alvo.</li>
+              <li>O tooltip deve aparecer ao passar o mouse sobre o elemento e desaparecer ao remover o mouse.</li>
+              <li>Use <code>useRef</code> para capturar a posição do elemento alvo.</li>
+            </ol>
+            <p><strong>Obs:</strong> Não se esqueça de subir o projeto para o Git na branch do dever após terminar.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Tooltip.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import ReactDOM from 'react-dom';
+
+const Tooltip = ({ text, targetRef }) => {
+  if (!targetRef.current) return null;
+
+  const rect = targetRef.current.getBoundingClientRect();
+
+  return ReactDOM.createPortal(
+    &lt;div
+      style={{
+        position: 'fixed',
+        top: rect.bottom + 8,
+        left: rect.left + rect.width / 2,
+        transform: 'translateX(-50%)',
+        backgroundColor: '#333',
+        color: '#fff',
+        padding: '6px 12px',
+        borderRadius: '4px',
+        fontSize: '13px',
+        whiteSpace: 'nowrap',
+        zIndex: 1000,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+      }}
+    &gt;
+      {text}
+    &lt;/div&gt;,
+    document.body
+  );
+};
+
+export default Tooltip;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { useRef, useState } from 'react';
+import Tooltip from './Tooltip';
+
+const App = () => {
+  const btnRef = useRef(null);
+  const [hover, setHover] = useState(false);
+
+  return (
+    &lt;div style={{ padding: '50px' }}&gt;
+      &lt;h1&gt;Tooltip com Portal&lt;/h1&gt;
+      &lt;button
+        ref={btnRef}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{ padding: '10px 20px', fontSize: '16px' }}
+      &gt;
+        Passe o mouse aqui
+      &lt;/button&gt;
+      {hover && &lt;Tooltip text="Tooltip via Portal!" targetRef={btnRef} /&gt;}
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
   </body>
 </html>
