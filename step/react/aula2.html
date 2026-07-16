@@ -12,10 +12,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-      
   </head>
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">React</h4>
@@ -23,8 +24,7 @@
         Fragments, Tipos de Componentes e Hooks (useState e useEffect)
       </h4>
 
-      <div
-        class="topicos-aula">
+      <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
         Componentes funcionais, Hooks (useState e useEffect), React Fragments.
       </div>
@@ -320,27 +320,22 @@ export default Relogio;
 
         <h3>Passo 0 — Criar a branch no GitHub</h3>
 
-        <ul>
-          <li>Acesse o repositório projeto-react-step no GitHub</li>
-          <li>Clique em <strong>1 branch</strong></li>
-          <li>Clique em <strong>New Branch</strong></li>
-          <li>No campo New branch name digite <b>aula2-react</b></li>
-          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
-          <li>Clique em <strong>Create branch</strong></li>
-          <li>Abra o terminal no VSCode e digite</li>
-        </ul>
+        <p>Abra o terminal do VSCode e digite o comando abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula2-react
+git checkout -b aula2-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Passo 1 — Criar o componente PlacarDoJogo</h3>
 
-        <p>Crie um arquivo <code>src/components/PlacarDoJogo.jsx</code> e insira a estrutura inicial:</p>
+        <p>
+          Crie um arquivo <code>src/components/PlacarDoJogo.jsx</code> e insira
+          a estrutura inicial:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -390,7 +385,10 @@ useEffect(() => {
 
         <h3>Passo 3 — Adicionar botão de intervalo</h3>
 
-        <p>O botão de intervalo para a contagem em 15 minutos e depois retorna de onde parou:</p>
+        <p>
+          O botão de intervalo para a contagem em 15 minutos e depois retorna de
+          onde parou:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -411,7 +409,10 @@ const voltarJogo = () => {
 
         <h3>Passo 4 — Adicionar acréscimos de 5 minutos</h3>
 
-        <p>Após o minuto 90, o botão de acréscimos permite adicionar até 5 minutos extras:</p>
+        <p>
+          Após o minuto 90, o botão de acréscimos permite adicionar até 5
+          minutos extras:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -485,15 +486,27 @@ git push
         <div id="question-container-casa">
           <div class="question">
             <h3>Criar um relógio digital</h3>
-            <p>Crie um componente <b>RelogioDigital</b> que exiba a hora atualizada a cada segundo usando <code>useState</code> e <code>useEffect</code>.</p>
-            <p>Dica: Utilize <code>new Date()</code> e <code>toLocaleTimeString()</code>.</p>
-            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+            <p>
+              Crie um componente <b>RelogioDigital</b> que exiba a hora
+              atualizada a cada segundo usando <code>useState</code> e
+              <code>useEffect</code>.
+            </p>
+            <p>
+              Dica: Utilize <code>new Date()</code> e
+              <code>toLocaleTimeString()</code>.
+            </p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Componente <code>RelogioDigital.jsx</code>:</b></p>
+              <p>
+                <b>Componente <code>RelogioDigital.jsx</code>:</b>
+              </p>
               <div class="code-container">
                 <pre><code class="language-javascript">
 import React, { useState, useEffect } from 'react';

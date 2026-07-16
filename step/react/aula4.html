@@ -12,17 +12,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-      
   </head>
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 4</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Iteração sobre arrays</h4>
 
-      <div
-        class="topicos-aula">
+      <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
         Exibindo listas de dados, Uso de keys.
       </div>
@@ -208,27 +208,23 @@ export default ListaDeProdutos;
 
         <h3>Passo 0 — Criar a branch no GitHub</h3>
 
-        <ul>
-          <li>Acesse o repositório projeto-react-step no GitHub</li>
-          <li>Clique em <strong>1 branch</strong></li>
-          <li>Clique em <strong>New Branch</strong></li>
-          <li>No campo New branch name digite <b>aula4-react</b></li>
-          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
-          <li>Clique em <strong>Create branch</strong></li>
-          <li>Abra o terminal no VSCode e digite</li>
-        </ul>
+        <p>Abra o terminal do VSCode e digite o comando abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula4-react
+git checkout -b aula4-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Passo 1 — Criar o componente ListaDeProdutos</h3>
 
-        <p>Crie o arquivo <code>src/components/ListaDeProdutos.jsx</code> com um array de produtos e utilize o método <code>.map()</code> para renderizar a lista:</p>
+        <p>
+          Crie o arquivo <code>src/components/ListaDeProdutos.jsx</code> com um
+          array de produtos e utilize o método <code>.map()</code> para
+          renderizar a lista:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -272,7 +268,9 @@ export default ListaDeProdutos;
 
         <h3>Passo 2 — Renderizar o componente no App</h3>
 
-        <p>No <code>src/App.jsx</code>, importe e renderize o ListaDeProdutos:</p>
+        <p>
+          No <code>src/App.jsx</code>, importe e renderize o ListaDeProdutos:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -301,7 +299,10 @@ npm run dev
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Acesse <code>http://localhost:5173</code> e veja a tabela de produtos sendo renderizada dinamicamente com <code>.map()</code>.</p>
+        <p>
+          Acesse <code>http://localhost:5173</code> e veja a tabela de produtos
+          sendo renderizada dinamicamente com <code>.map()</code>.
+        </p>
 
         <h3>Último Passo - Subindo para o Git</h3>
 
@@ -323,14 +324,24 @@ git push
         <div id="question-container-casa">
           <div class="question">
             <h3>Lista filtrada com .filter() e .map()</h3>
-            <p>Crie um componente chamado <b>ListaFiltrada</b> que contenha um array de produtos (nome, preco, categoria). Utilize <code>.filter()</code> para exibir apenas produtos com preço acima de R$ 1000 e <code>.map()</code> para renderizá-los em uma tabela.</p>
-            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+            <p>
+              Crie um componente chamado <b>ListaFiltrada</b> que contenha um
+              array de produtos (nome, preco, categoria). Utilize
+              <code>.filter()</code> para exibir apenas produtos com preço acima
+              de R$ 1000 e <code>.map()</code> para renderizá-los em uma tabela.
+            </p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Componente <code>ListaFiltrada.jsx</code>:</b></p>
+              <p>
+                <b>Componente <code>ListaFiltrada.jsx</code>:</b>
+              </p>
               <div class="code-container">
                 <pre><code class="language-javascript">
 import React from 'react';

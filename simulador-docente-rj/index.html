@@ -120,6 +120,61 @@
             </select>
           </div>
 
+          <!-- Migração 18h → 30h (Decreto 49.026/2024) -->
+          <div id="migracao-30h-section" class="hidden mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Migrado do regime de 18h (Decreto 49.026/2024)?</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="migrado-18h"
+                  value="nao"
+                  checked
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="migrado-18h"
+                  value="sim"
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+            <div id="rubrica-prev-section" class="hidden mt-3">
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >Incluir rubrica da migração na base de contribuição
+                previdenciária?</label
+              >
+              <div class="flex gap-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="incluir-rubrica-prev"
+                    value="sim"
+                    checked
+                    class="accent-blue-600"
+                  />
+                  <span class="text-sm text-gray-700">Sim</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="incluir-rubrica-prev"
+                    value="nao"
+                    class="accent-blue-600"
+                  />
+                  <span class="text-sm text-gray-700">Não</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <!-- Referência -->
           <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -487,61 +542,6 @@
           </div>
         </div>
 
-        <!-- Migração 18h → 30h (Decreto 49.026/2024) -->
-        <div id="migracao-30h-section" class="hidden mb-4">
-          <label class="block text-sm font-semibold text-gray-700 mb-2"
-            >Migrado do regime de 18h (Decreto 49.026/2024)?</label
-          >
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="migrado-18h"
-                value="nao"
-                checked
-                class="accent-blue-600"
-              />
-              <span class="text-sm text-gray-700">Não</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="migrado-18h"
-                value="sim"
-                class="accent-blue-600"
-              />
-              <span class="text-sm text-gray-700">Sim</span>
-            </label>
-          </div>
-          <div id="rubrica-prev-section" class="hidden mt-3">
-            <label class="block text-sm font-semibold text-gray-700 mb-2"
-              >Incluir rubrica da migração na base de contribuição
-              previdenciária?</label
-            >
-            <div class="flex gap-4">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="incluir-rubrica-prev"
-                  value="sim"
-                  checked
-                  class="accent-blue-600"
-                />
-                <span class="text-sm text-gray-700">Sim</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="incluir-rubrica-prev"
-                  value="nao"
-                  class="accent-blue-600"
-                />
-                <span class="text-sm text-gray-700">Não</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
         <!-- close matricula1-section -->
 
         <!-- Dependentes -->
@@ -628,6 +628,61 @@
               Prof. Supervisor/Orient./Inspetor Escolar - 25h
             </option>
           </select>
+        </div>
+
+        <!-- m2: Migração 18h → 30h (Decreto 49.026/2024) -->
+        <div id="m2-migracao-30h-section" class="hidden mb-4">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Migrado do regime de 18h (Decreto 49.026/2024)?</label
+          >
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="m2-migrado-18h"
+                value="nao"
+                checked
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Não</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="m2-migrado-18h"
+                value="sim"
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Sim</span>
+            </label>
+          </div>
+          <div id="m2-rubrica-prev-section" class="hidden mt-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Incluir rubrica da migração na base de contribuição
+              previdenciária?</label
+            >
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="m2-incluir-rubrica-prev"
+                  value="sim"
+                  checked
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="m2-incluir-rubrica-prev"
+                  value="nao"
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Não</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <!-- m2: Referência -->
@@ -1627,17 +1682,17 @@
             abonoPermanencia: getAbonoPermanencia(prefix),
             migrado18h: (function () {
               var r = document.querySelector(
-                'input[name="migrado-18h"]:checked',
+                'input[name="' + prefix + 'migrado-18h"]:checked',
               );
               return r && r.value === "sim";
             })(),
             incluirRubricaPrev: (function () {
               var mig = document.querySelector(
-                'input[name="migrado-18h"]:checked',
+                'input[name="' + prefix + 'migrado-18h"]:checked',
               );
               if (!mig || mig.value === "nao") return true;
               var r = document.querySelector(
-                'input[name="incluir-rubrica-prev"]:checked',
+                'input[name="' + prefix + 'incluir-rubrica-prev"]:checked',
               );
               return r && r.value === "sim";
             })(),
@@ -2657,18 +2712,35 @@
           var cargo1 = document.getElementById("cargo").value;
           var dual = isDual();
           var cargo2 = dual ? document.getElementById("m2-cargo").value : "";
-          var is30h =
-            cargo1 === "docente1_30h" || (dual && cargo2 === "docente1_30h");
-          var sec = document.getElementById("migracao-30h-section");
-          if (sec) {
-            sec.classList.toggle("hidden", !is30h);
-            if (!is30h) {
-              var naoRadio = document.querySelector(
+
+          // M1
+          var is30h1 = cargo1 === "docente1_30h";
+          var sec1 = document.getElementById("migracao-30h-section");
+          if (sec1) {
+            sec1.classList.toggle("hidden", !is30h1);
+            if (!is30h1) {
+              var nao1 = document.querySelector(
                 'input[name="migrado-18h"][value="nao"]',
               );
-              if (naoRadio) naoRadio.checked = true;
+              if (nao1) nao1.checked = true;
               document
                 .getElementById("rubrica-prev-section")
+                .classList.add("hidden");
+            }
+          }
+
+          // M2
+          var is30h2 = dual && cargo2 === "docente1_30h";
+          var sec2 = document.getElementById("m2-migracao-30h-section");
+          if (sec2) {
+            sec2.classList.toggle("hidden", !is30h2);
+            if (!is30h2) {
+              var nao2 = document.querySelector(
+                'input[name="m2-migrado-18h"][value="nao"]',
+              );
+              if (nao2) nao2.checked = true;
+              document
+                .getElementById("m2-rubrica-prev-section")
                 .classList.add("hidden");
             }
           }
@@ -2693,6 +2765,29 @@
           });
         document
           .querySelectorAll('input[name="incluir-rubrica-prev"]')
+          .forEach(function (r) {
+            r.addEventListener("change", atualizarResultado);
+          });
+
+        document
+          .querySelectorAll('input[name="m2-migrado-18h"]')
+          .forEach(function (r) {
+            r.addEventListener("change", function () {
+              var isSim = r.value === "sim";
+              document
+                .getElementById("m2-rubrica-prev-section")
+                .classList.toggle("hidden", !isSim);
+              if (!isSim) {
+                var simRadio = document.querySelector(
+                  'input[name="m2-incluir-rubrica-prev"][value="sim"]',
+                );
+                if (simRadio) simRadio.checked = true;
+              }
+              atualizarResultado();
+            });
+          });
+        document
+          .querySelectorAll('input[name="m2-incluir-rubrica-prev"]')
           .forEach(function (r) {
             r.addEventListener("change", atualizarResultado);
           });

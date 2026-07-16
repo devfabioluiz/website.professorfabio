@@ -12,17 +12,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-      
   </head>
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 3</h1>
       <h4 class="text-center">React</h4>
       <h4 class="text-center">Props e Passagem de dados (Pai/Filho)</h4>
 
-      <div
-        class="topicos-aula">
+      <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
         Props, PropTypes, Interação entre componentes filhos e pais.
       </div>
@@ -155,20 +155,12 @@ export default Parent;
 
         <h3>Passo 0 — Criar a branch no GitHub</h3>
 
-        <ul>
-          <li>Acesse o repositório projeto-react-step no GitHub</li>
-          <li>Clique em <strong>1 branch</strong></li>
-          <li>Clique em <strong>New Branch</strong></li>
-          <li>No campo New branch name digite <b>aula3-react</b></li>
-          <li>No campo <strong>Source</strong> escolha <strong>main</strong></li>
-          <li>Clique em <strong>Create branch</strong></li>
-          <li>Abra o terminal no VSCode e digite</li>
-        </ul>
+        <p>Abra o terminal do VSCode e digite o comando abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula3-react
+git checkout -b aula3-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -229,7 +221,9 @@ export default Pai;
 
         <h3>Passo 3 — Renderizar o componente no App</h3>
 
-        <p>No <code>src/App.jsx</code>, importe e renderize o componente Pai:</p>
+        <p>
+          No <code>src/App.jsx</code>, importe e renderize o componente Pai:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -258,7 +252,11 @@ npm run dev
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Observe que o Pai envia uma mensagem para o Filho via prop <code>message</code>, e o Filho envia dados de volta para o Pai chamando a função <code>sendDataToParent</code>.</p>
+        <p>
+          Observe que o Pai envia uma mensagem para o Filho via prop
+          <code>message</code>, e o Filho envia dados de volta para o Pai
+          chamando a função <code>sendDataToParent</code>.
+        </p>
 
         <h3>Último Passo - Subindo para o Git</h3>
 
@@ -280,15 +278,24 @@ git push
         <div id="question-container-casa">
           <div class="question">
             <h3>Formulário com comunicação Pai/Filho</h3>
-            <p>Crie um componente <b>FormularioFilho</b> que contenha um campo de input e um botão. Quando o botão for clicado, o valor do input deve ser enviado para o <b>Pai</b> e exibido na tela.</p>
+            <p>
+              Crie um componente <b>FormularioFilho</b> que contenha um campo de
+              input e um botão. Quando o botão for clicado, o valor do input
+              deve ser enviado para o <b>Pai</b> e exibido na tela.
+            </p>
             <p>O Pai deve gerenciar o estado do dado recebido e exibi-lo.</p>
-            <p><strong>Obs</strong>: Não se esqueça de subir as alterações para o Git na branch dessa aula após terminar o dever.</p>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
 
             <button class="btn-gabarito">Ver gabarito</button>
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Componente <code>FormularioFilho.jsx</code>:</b></p>
+              <p>
+                <b>Componente <code>FormularioFilho.jsx</code>:</b>
+              </p>
               <div class="code-container">
                 <pre><code class="language-javascript">
 import React, { useState } from 'react';
@@ -319,7 +326,9 @@ export default FormularioFilho;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
-              <p><b>Componente <code>PaiFormulario.jsx</code>:</b></p>
+              <p>
+                <b>Componente <code>PaiFormulario.jsx</code>:</b>
+              </p>
               <div class="code-container">
                 <pre><code class="language-javascript">
 import React, { useState } from 'react';
