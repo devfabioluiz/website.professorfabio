@@ -338,7 +338,7 @@ git checkout -b aula2-react
 
         <p>
           Crie um arquivo <code>src/components/PlacarDoJogo.jsx</code> e insira
-          a estrutura inicial:
+          o código abaixo:
         </p>
 
         <div class="code-container">
@@ -346,27 +346,35 @@ git checkout -b aula2-react
 import React, { useState, useEffect } from 'react';
 
 const PlacarDoJogo = () => {
-  return (
-    &lt;div style={{ textAlign: 'center', fontFamily: 'Arial' }}&gt;
-      &lt;h1&gt;Placar do Jogo&lt;/h1&gt;
-    &lt;/div&gt;
-  );
-};
-
-export default PlacarDoJogo;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Adicionar o cronômetro (useState + useEffect)</h3>
-
-        <p>Adicione o estado do cronômetro que conta até 90 minutos:</p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-const [minutos, setMinutos] = useState(0);
+  const [minutos, setMinutos] = useState(0);
 const [segundos, setSegundos] = useState(0);
 const [jogando, setJogando] = useState(false);
+const [intervaloAtivo, setIntervaloAtivo] = useState(false);
+const [golsCasa, setGolsCasa] = useState(0);
+const [golsVisitante, setGolsVisitante] = useState(0);
+
+const golCasa = () => setGolsCasa((prev) => prev + 1);
+const golVisitante = () => setGolsVisitante((prev) => prev + 1);
+
+const pausarJogo = () => {
+  setJogando(false);
+  setIntervaloAtivo(true);
+};
+
+const voltarJogo = () => {
+  setIntervaloAtivo(false);
+  setJogando(true);
+};
+
+const [acrescimos, setAcrescimos] = useState(0);
+
+const adicionarAcrescimo = () => {
+  if (minutos >= 90 && acrescimos < 5) {
+    setAcrescimos((prev) => prev + 1);
+    setMinutos(90);
+    setJogando(true);
+  }
+};
 
 useEffect(() => {
   let intervalo;
@@ -383,72 +391,20 @@ useEffect(() => {
   }
   return () => clearInterval(intervalo);
 }, [jogando, minutos]);
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
 
-        <h3>Passo 3 — Adicionar botão de intervalo</h3>
-
-        <p>
-          O botão de intervalo para a contagem em 15 minutos e depois retorna de
-          onde parou:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-const [intervaloAtivo, setIntervaloAtivo] = useState(false);
-
-const pausarJogo = () => {
-  setJogando(false);
-  setIntervaloAtivo(true);
+  return (
+    &lt;div style={{ textAlign: 'center', fontFamily: 'Arial' }}&gt;
+      &lt;h1&gt;Placar do Jogo&lt;/h1&gt;
+    &lt;/div&gt;
+  );
 };
 
-const voltarJogo = () => {
-  setIntervaloAtivo(false);
-  setJogando(true);
-};
+export default PlacarDoJogo;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 4 — Adicionar acréscimos de 5 minutos</h3>
-
-        <p>
-          Após o minuto 90, o botão de acréscimos permite adicionar até 5
-          minutos extras:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-const [acrescimos, setAcrescimos] = useState(0);
-
-const adicionarAcrescimo = () => {
-  if (minutos >= 90 && acrescimos < 5) {
-    setAcrescimos((prev) => prev + 1);
-    setMinutos(90);
-    setJogando(true);
-  }
-};
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 5 — Montar o placar com gols</h3>
-
-        <p>Adicione o estado dos gols e os botões para aumentar:</p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-const [golsCasa, setGolsCasa] = useState(0);
-const [golsVisitante, setGolsVisitante] = useState(0);
-
-const golCasa = () => setGolsCasa((prev) => prev + 1);
-const golVisitante = () => setGolsVisitante((prev) => prev + 1);
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 6 — Renderizar o componente no App</h3>
+        <h3>Passo 2 — Renderizar o componente no App</h3>
 
         <p>No <code>src/App.jsx</code>, importe e renderize o PlacarDoJogo:</p>
 
