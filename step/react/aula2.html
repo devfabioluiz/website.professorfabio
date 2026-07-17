@@ -403,8 +403,42 @@ useEffect(() => {
 }, [jogando, minutos]);
 
   return (
-    &lt;div style={{ textAlign: 'center', fontFamily: 'Arial' }}&gt;
+    &lt;div style={{ textAlign: 'center', fontFamily: 'Arial', padding: '20px' }}&gt;
       &lt;h1&gt;Placar do Jogo&lt;/h1&gt;
+
+      &lt;h2&gt;
+        {minutos.toString().padStart(2, '0')}:
+        {segundos.toString().padStart(2, '0')}
+        {acrescimos &gt; 0 &amp;&amp; ` +${acrescimos}`}
+      &lt;/h2&gt;
+
+      &lt;p&gt;
+        {jogando ? 'Jogo em andamento' : intervaloAtivo ? 'Jogo pausado' : 'Jogo parado'}
+      &lt;/p&gt;
+
+      &lt;div style={{ display: 'flex', justifyContent: 'center', gap: '40px', fontSize: '2rem' }}&gt;
+        &lt;div&gt;
+          &lt;p&gt;Casa&lt;/p&gt;
+          &lt;p&gt;{golsCasa}&lt;/p&gt;
+          &lt;button onClick={golCasa}&gt;Gol Casa&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;p&gt;Visitante&lt;/p&gt;
+          &lt;p&gt;{golsVisitante}&lt;/p&gt;
+          &lt;button onClick={golVisitante}&gt;Gol Visitante&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div style={{ marginTop: '20px' }}&gt;
+        {jogando ? (
+          &lt;button onClick={pausarJogo}&gt;Pausar Jogo&lt;/button&gt;
+        ) : (
+          &lt;button onClick={voltarJogo}&gt;Voltar Jogo&lt;/button&gt;
+        )}
+        {minutos &gt;= 90 &amp;&amp; acrescimos &lt; 5 &amp;&amp; (
+          &lt;button onClick={adicionarAcrescimo}&gt;Adicionar Acréscimo&lt;/button&gt;
+        )}
+      &lt;/div&gt;
     &lt;/div&gt;
   );
 };
@@ -414,7 +448,7 @@ export default PlacarDoJogo;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2 — Renderizar o componente no App</h3>
+        <h3>Passo 3 — Renderizar o componente no App</h3>
 
         <p>No <code>src/App.jsx</code>, importe e renderize o PlacarDoJogo:</p>
 
