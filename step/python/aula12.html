@@ -1,0 +1,1343 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 12: Integração Python + React - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">&#8592; Voltar ao índice</button>
+    <header>
+      <h1>Aula 12</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">
+        Integração Python + React: FastAPI e Django como Backend
+      </h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Criação de APIs REST, FastAPI, Django REST Framework
+      </div>
+    </header>
+
+    <main class="container">
+
+      <!-- ============================================================ -->
+      <!-- INTRODUÇÃO                                                     -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Introdução: Python como Backend para React</h2>
+
+        <p>
+          Nas aulas anteriores, aprendemos a criar APIs REST com <strong>FastAPI</strong>
+          (Aula 1) e <strong>Django REST Framework</strong> (Aulas 4 e 9).
+        </p>
+
+        <p>
+          Nesta aula vamos conectar esses mundos: <strong>usar Python como backend
+          para React</strong>. Você verá que o React não se importa com a tecnologia
+          do servidor — ele só precisa de uma API REST que retorne JSON.
+        </p>
+
+        <p>
+          Vamos construir a <strong>mesma API</strong> de duas formas diferentes:
+        </p>
+
+        <ul>
+          <li><strong>Opção A — FastAPI:</strong> leve, moderno, mínimo de código</li>
+          <li><strong>Opção B — Django REST Framework:</strong> completo, cheio de recursos, ORM incluso</li>
+        </ul>
+
+        <p>
+          O <strong>frontend React</strong> será o mesmo para ambas as opções —
+          provando que a escolha do backend não afeta o frontend.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 FastAPI vs Django REST Framework — Quando usar cada um?
+          </h2>
+
+          <h3>Use FastAPI quando:</h3>
+          <ul>
+            <li>Quer uma API simples e rápida de criar</li>
+            <li>Precisa de alta performance (async nativo)</li>
+            <li>Quer documentação automática (Swagger /docs)</li>
+            <li>O projeto é uma API pura (sem frontend integrado)</li>
+            <li>Valoriza tipo e validação automática com Pydantic</li>
+          </ul>
+
+          <h3>Use Django REST Framework quando:</h3>
+          <ul>
+            <li>Já tem um projeto Django e quer adicionar uma API</li>
+            <li>Precisa de um admin nativo (django-admin)</li>
+            <li>Quer um ORM maduro e migrations automáticas</li>
+            <li>O sistema envolve modelos de dados complexos com relacionamentos</li>
+            <li>Precisa de autenticação, permissões e filtros já prontos</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- O QUE VAMOS CONSTRUIR                                          -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>O que vamos construir</h2>
+
+        <p>Vamos criar uma API com uma única rota que retorna mensagens:</p>
+
+        <div class="code-container">
+          <pre><code class="language-json">GET /api/mensagens
+
+[
+  { "id": 1, "titulo": "Bem-vindo!", "texto": "Python + React funcionando!" },
+  { "id": 2, "titulo": "Integração", "texto": "FastAPI e Django servindo React" },
+  { "id": 3, "titulo": "Sucesso", "texto": "Mesmo frontend, dois backends!" }
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>O frontend React vai consumir essa API e exibir as mensagens na tela.</p>
+
+        <p><strong>Fluxo da comunicação:</strong></p>
+
+        <ol>
+          <li>O usuário acessa a página React no navegador</li>
+          <li>O React faz uma requisição <strong>fetch</strong> para <code>/api/mensagens</code></li>
+          <li>O Vite proxy redireciona para o backend Python (FastAPI ou Django)</li>
+          <li>O servidor retorna os dados em <strong>JSON</strong></li>
+          <li>O React atualiza a interface com as mensagens recebidas</li>
+        </ol>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Estrutura do Projeto
+          </h2>
+
+          <div class="code-container">
+            <pre><code class="language-bash">projeto-integracao-python-react/
+│
+├── backend-fastapi/              # Opção A
+│   ├── main.py                   # App FastAPI
+│   └── requirements.txt
+│
+├── backend-django/               # Opção B
+│   ├── backend/
+│   │   ├── settings.py
+│   │   └── urls.py
+│   ├── mensagens/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   └── urls.py
+│   ├── manage.py
+│   └── requirements.txt
+│
+├── frontend/                     # React + Vite (comum aos dois)
+│   ├── src/
+│   │   └── App.jsx
+│   ├── vite.config.js
+│   └── package.json
+│
+└── README.md</code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- OPÇÃO A — FASTAPI                                              -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Opção A — Backend com FastAPI</h2>
+
+        <h3>Passo 1 — Criar a branch no Git</h3>
+
+        <p>
+          Crie uma branch no repositório <strong>projeto-python-step</strong> chamada
+          <strong>aula12-fastapi-react</strong>, clone e entre na pasta:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git fetch
+git checkout main
+git checkout -b aula12-fastapi-react</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a pasta e o ambiente virtual</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir backend-fastapi
+cd backend-fastapi
+python -m venv venv
+venv\Scripts\activate</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Instalar dependências</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip install fastapi uvicorn</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Crie o arquivo <code>requirements.txt</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip freeze > requirements.txt</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar o main.py</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > main.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Abra o <code>main.py</code> e insira o código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+MENSAGENS = [
+    {"id": 1, "titulo": "Bem-vindo!", "texto": "Python + React com FastAPI!"},
+    {"id": 2, "titulo": "Integração", "texto": "Front-end e Back-end conectados com sucesso!"},
+    {"id": 3, "titulo": "FastAPI + React", "texto": "Trabalhando juntos com dados em JSON."},
+]
+
+@app.get("/api/mensagens")
+def listar_mensagens():
+    return MENSAGENS</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código do FastAPI
+          </h2>
+
+          <h3><code>from fastapi import FastAPI</code></h3>
+          <p>Importa o framework FastAPI para criar o servidor web.</p>
+
+          <h3><code>CORSMiddleware</code></h3>
+          <p>
+            Libera o acesso de outras origens (como o React em <code>localhost:5173</code>)
+            à nossa API. Sem isso, o navegador bloquearia as requisições por segurança.
+          </p>
+
+          <h3><code>MENSAGENS</code></h3>
+          <p>
+            Array fixo simulando um banco de dados. Em projetos reais, esses dados
+            viriam de um banco SQLite/PostgreSQL com SQLAlchemy.
+          </p>
+
+          <h3><code>@app.get("/api/mensagens")</code></h3>
+          <p>
+            Define uma rota GET. Quando o frontend acessar <code>/api/mensagens</code>,
+            o FastAPI retorna o array em formato JSON automaticamente.
+          </p>
+        </div>
+
+        <h3>Passo 5 — Testar o backend</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">uvicorn main:app --reload --port 8000</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Acesse <code>http://localhost:8000/api/mensagens</code> no navegador.
+          Você deve ver o JSON com as mensagens.
+        </p>
+
+        <p>
+          Acesse também <code>http://localhost:8000/docs</code> para ver a
+          documentação automática do Swagger gerada pelo FastAPI.
+        </p>
+
+        <p>Pressione <strong>Ctrl + C</strong> para parar o servidor.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- OPÇÃO B — DJANGO REST                                          -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Opção B — Backend com Django REST Framework</h2>
+
+        <h3>Passo 1 — Criar a branch no Git</h3>
+
+        <p>
+          Se você já fez a Opção A em outra branch, crie uma nova branch para
+          esta opção: <strong>aula12-django-react</strong>
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git checkout -b aula12-django-react</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar a pasta e o ambiente virtual</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir backend-django
+cd backend-django
+python -m venv venv
+venv\Scripts\activate</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Instalar dependências</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">pip install django djangorestframework django-cors-headers</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Criar o projeto Django</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">django-admin startproject backend .
+python manage.py startapp mensagens</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Crie os arquivos que vamos precisar:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > mensagens\serializers.py
+type nul > mensagens\urls.py</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 5 — Configurar o settings.py</h3>
+
+        <p>Abra <code>backend/settings.py</code> e adicione os apps:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # acrescente abaixo:
+    'rest_framework',
+    'corsheaders',
+    'mensagens',
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Adicione o middleware do CORS (no meio da lista <code>MIDDLEWARE</code>):</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',      # coloque aqui
+    'django.middleware.common.CommonMiddleware',
+    # ... resto dos middlewares
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>No final do <code>settings.py</code>, acrescente a permissão CORS:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">CORS_ALLOW_ALL_ORIGINS = True</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 6 — Criar o Model</h3>
+
+        <p>Arquivo: <code>mensagens/models.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from django.db import models
+
+class Mensagem(models.Model):
+    titulo = models.CharField(max_length=100)
+    texto = models.TextField()
+
+    def __str__(self):
+        return self.titulo</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 7 — Criar o Serializer</h3>
+
+        <p>Arquivo: <code>mensagens/serializers.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from rest_framework import serializers
+from .models import Mensagem
+
+class MensagemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mensagem
+        fields = '__all__'</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 8 — Criar a View com ViewSet</h3>
+
+        <p>Arquivo: <code>mensagens/views.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from rest_framework import viewsets
+from .models import Mensagem
+from .serializers import MensagemSerializer
+
+class MensagemViewSet(viewsets.ModelViewSet):
+    queryset = Mensagem.objects.all()
+    serializer_class = MensagemSerializer</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 9 — Configurar as URLs do app</h3>
+
+        <p>Arquivo: <code>mensagens/urls.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import MensagemViewSet
+
+router = DefaultRouter()
+router.register(r'mensagens', MensagemViewSet, basename='mensagem')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 10 — Configurar as URLs do projeto</h3>
+
+        <p>Arquivo: <code>backend/urls.py</code></p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('mensagens.urls')),
+]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 11 — Migrar e popular o banco</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora vamos criar as mensagens no banco. Abra o shell do Django:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python manage.py shell</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Dentro do shell, insira:</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">from mensagens.models import Mensagem
+
+Mensagem.objects.create(titulo="Bem-vindo!", texto="Python + React com Django REST Framework!")
+Mensagem.objects.create(titulo="Integração", texto="Front-end e Back-end conectados com sucesso!")
+Mensagem.objects.create(titulo="Django + React", texto="Trabalhando juntos com dados em JSON.")
+
+exit()</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 12 — Testar o backend</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">python manage.py runserver 8000</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Acesse <code>http://localhost:8000/api/mensagens/</code> no navegador.
+          Você deve ver o JSON com as mensagens vindas do banco de dados.
+        </p>
+
+        <p>Pressione <strong>Ctrl + C</strong> para parar o servidor.</p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código do Django REST
+          </h2>
+
+          <h3>Model</h3>
+          <p>
+            Define a estrutura da tabela no banco de dados. Cada <code>CharField</code>
+            ou <code>TextField</code> vira uma coluna no banco. O Django ORM cuida
+            da criação das tabelas automaticamente via migrations.
+          </p>
+
+          <h3>Serializer</h3>
+          <p>
+            Converte os objetos Python (models) para JSON e vice-versa. O
+            <code>ModelSerializer</code> já descobre automaticamente os campos
+            a partir do model.
+          </p>
+
+          <h3>ViewSet</h3>
+          <p>
+            Substitui as funções manuais de CRUD. Com <code>ModelViewSet</code>,
+            ganhamos automaticamente: listar, criar, obter, atualizar e deletar
+            — tudo com apenas 3 linhas de código.
+          </p>
+
+          <h3>Router</h3>
+          <p>
+            Gera automaticamente todas as URLs do CRUD a partir do ViewSet.
+            Sem router, precisaríamos criar cada rota manualmente no urls.py.
+          </p>
+
+          <h3>CORS</h3>
+          <p>
+            O <code>django-cors-headers</code> adiciona um middleware que inclui
+            os headers necessários para o navegador permitir requisições de
+            origens diferentes (como o React em <code>localhost:5173</code>).
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- FRONTEND REACT (COMUM)                                         -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Frontend React (comum para ambos os backends)</h2>
+
+        <p>
+          Agora vamos criar o frontend React. Ele será <strong>exatamente o mesmo</strong>
+          para os dois backends — a única diferença será a porta configurada no proxy.
+        </p>
+
+        <h3>Passo 1 — Criar o projeto com Vite</h3>
+
+        <p>Na raiz do repositório:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm create vite@latest frontend -- --template react</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Durante a execução, o Vite pode perguntar algumas coisas. Responda
+          <strong>Yes</strong> quando perguntar se deseja instalar e iniciar.
+        </p>
+
+        <p>
+          Se o servidor de desenvolvimento iniciar automaticamente, pressione
+          <strong>Ctrl + C</strong> para pará-lo. Vamos configurar o proxy primeiro.
+        </p>
+
+        <h3>Passo 2 — Configurar o Proxy no Vite</h3>
+
+        <p>
+          Abra o arquivo <code>frontend/vite.config.js</code> e substitua pelo
+          código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8000'
+    }
+  }
+})</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          <strong>Importante:</strong> Se você estiver testando com o FastAPI,
+          a porta é <code>8000</code>. Se for com Django, use a mesma porta
+          <code>8000</code> — já configuramos os dois para rodar na porta 8000.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Entendendo o Proxy do Vite
+          </h2>
+
+          <p>
+            Durante o desenvolvimento, o frontend roda em
+            <code>http://localhost:5173</code> (porta padrão do Vite) e o backend
+            em <code>http://localhost:8000</code>. Se o React tentar acessar
+            <code>http://localhost:8000/api/mensagens</code> diretamente, o navegador
+            bloqueia por causa da política de <strong>CORS</strong> (origens diferentes).
+          </p>
+
+          <p>
+            O proxy do Vite funciona como um intermediário: quando o React faz uma
+            requisição para <code>/api/mensagens</code>, o Vite redireciona
+            automaticamente para <code>http://localhost:8000/api/mensagens</code>
+            sem que o navegador perceba a mudança de origem.
+          </p>
+
+          <p>
+            Dessa forma, durante o desenvolvimento, não precisamos nos preocupar
+            com CORS — o proxy resolve o problema para nós. Já configuramos o CORS
+            no backend para quando formos fazer o deploy em produção.
+          </p>
+        </div>
+
+        <h3>Passo 3 — Criar o componente App.jsx</h3>
+
+        <p>
+          Abra o arquivo <code>frontend/src/App.jsx</code> e substitua todo o
+          conteúdo pelo código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { useState, useEffect } from 'react'
+
+function App() {
+  const [mensagens, setMensagens] = useState([])
+
+  useEffect(() => {
+    fetch('/api/mensagens')
+      .then((res) => res.json())
+      .then((data) => setMensagens(data))
+      .catch((err) => console.error('Erro ao buscar mensagens:', err))
+  }, [])
+
+  return (
+    <div>
+      <h1>&#128172; Mensagens do Servidor</h1>
+      {mensagens.length === 0 ? (
+        <p>Carregando mensagens...</p>
+      ) : (
+        <ul>
+          {mensagens.map((msg) => (
+            <li key={msg.id}>
+              <h3>{msg.titulo}</h3>
+              <p>{msg.texto}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+export default App</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Perceba que o componente usa <code>fetch('/api/mensagens')</code> —
+          o mesmo código da aula de integração do Node.js. O React não sabe
+          (e não precisa saber) se o backend é FastAPI, Django ou Express.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código do frontend
+          </h2>
+
+          <h3><code>useState([])</code></h3>
+          <p>
+            Cria um estado chamado <code>mensagens</code> inicializado como array
+            vazio. Quando chamamos <code>setMensagens(data)</code>, o React
+            re-renderiza o componente automaticamente com os novos dados.
+          </p>
+
+          <h3><code>useEffect(() => {{ ... }}, [])</code></h3>
+          <p>
+            Executa o código dentro dele uma única vez quando o componente é
+            montado em tela (o array vazio <code>[]</code> garante isso).
+          </p>
+
+          <h3><code>fetch('/api/mensagens')</code></h3>
+          <p>
+            Faz uma requisição GET para a API. Como configuramos o proxy no Vite,
+            essa requisição é redirecionada para <code>http://localhost:8000/api/mensagens</code>.
+          </p>
+
+          <h3>Renderização condicional</h3>
+          <p>
+            Enquanto os dados não chegam, exibimos "Carregando mensagens...".
+            Assim que as mensagens são carregadas, usamos <code>map</code> para
+            percorrer o array e renderizar cada item.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- RODANDO OS PROJETOS                                            -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Rodando os Projetos</h2>
+
+        <p>
+          Agora vamos subir o backend e o frontend ao mesmo tempo. Você precisará
+          de <strong>dois terminais</strong>.
+        </p>
+
+        <h3>Com FastAPI</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Terminal</th>
+              <th>Comando</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Backend (Terminal 1)</td>
+              <td>
+                <code>
+                  cd backend-fastapi<br />
+                  venv\Scripts\activate<br />
+                  uvicorn main:app --reload --port 8000
+                </code>
+              </td>
+            </tr>
+            <tr>
+              <td>Frontend (Terminal 2)</td>
+              <td>
+                <code>
+                  cd frontend<br />
+                  npm run dev
+                </code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Com Django</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Terminal</th>
+              <th>Comando</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Backend (Terminal 1)</td>
+              <td>
+                <code>
+                  cd backend-django<br />
+                  venv\Scripts\activate<br />
+                  python manage.py runserver 8000
+                </code>
+              </td>
+            </tr>
+            <tr>
+              <td>Frontend (Terminal 2)</td>
+              <td>
+                <code>
+                  cd frontend<br />
+                  npm run dev
+                </code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          Acesse <code>http://localhost:5173</code> no navegador. Você verá
+          a aplicação React exibindo as mensagens que vieram do servidor Python!
+        </p>
+
+        <p>
+          <strong>Teste:</strong> Adicione novas mensagens no backend (no array
+          do FastAPI ou no banco do Django), reinicie o servidor e atualize o
+          frontend. As novas mensagens aparecerão automaticamente.
+        </p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TABELA COMPARATIVA                                             -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Tabela Comparativa: FastAPI vs Django REST vs Express</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>FastAPI (Python)</th>
+              <th>Django REST (Python)</th>
+              <th>Express (Node.js)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Linhas de código (API mínima)</td>
+              <td>~15</td>
+              <td>~60 (distribuídos em 4+ arquivos)</td>
+              <td>~15</td>
+            </tr>
+            <tr>
+              <td>Documentação automática</td>
+              <td>/docs (Swagger)</td>
+              <td>com drf-spectacular</td>
+              <td>Não nativa</td>
+            </tr>
+            <tr>
+              <td>Validação de dados</td>
+              <td>Automática (Pydantic)</td>
+              <td>Serializers</td>
+              <td>Manual</td>
+            </tr>
+            <tr>
+              <td>Async nativo</td>
+              <td>Sim</td>
+              <td>Async (parcial)</td>
+              <td>Sim (callbacks/promises)</td>
+            </tr>
+            <tr>
+              <td>ORM incluído</td>
+              <td>Não (usa SQLAlchemy)</td>
+              <td>Sim (Django ORM)</td>
+              <td>Não (usa Mongoose/Prisma)</td>
+            </tr>
+            <tr>
+              <td>Admin nativo</td>
+              <td>Não</td>
+              <td>Sim (django-admin)</td>
+              <td>Não</td>
+            </tr>
+            <tr>
+              <td>Ideal para</td>
+              <td>APIs rápidas e modernas</td>
+              <td>Sistemas completos com admin</td>
+              <td>APIs rápidas com JS</td>
+            </tr>
+            <tr>
+              <td>Onde já vimos no curso</td>
+              <td>Aula 1</td>
+              <td>Aulas 4, 6, 7, 8, 9</td>
+              <td>Curso de Node.js</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PROJETO FINAL / DEVER DE CASA                                  -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>&#128293; Projeto Final / Dever de Casa: Deploy no Vercel</h2>
+
+        <p>
+          Durante a aula, usamos o proxy do Vite para conectar o frontend ao backend.
+          Isso funciona muito bem para desenvolvimento, mas em produção precisamos
+          de uma abordagem diferente.
+        </p>
+
+        <p>
+          Neste projeto, você vai fazer o <strong>deploy da API no Vercel</strong>
+          e configurar o React para consumir a URL real do backend — sem depender
+          do proxy.
+        </p>
+
+        <h3>Passo a passo</h3>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            &#127760; Fluxo do deploy
+          </h2>
+          <ol>
+            <li><strong>Escolha</strong> um dos backends (FastAPI ou Django)</li>
+            <li><strong>Faça o deploy da API no Vercel</strong></li>
+            <li><strong>Crie</strong> um arquivo <code>.env</code> no frontend com a URL da API</li>
+            <li><strong>Altere</strong> o fetch para usar a URL dinâmica via <code>import.meta.env.VITE_API_URL</code></li>
+            <li><strong>Remova</strong> o proxy do <code>vite.config.js</code></li>
+            <li><strong>Faça o build</strong> do frontend e deploy também no Vercel</li>
+          </ol>
+        </div>
+
+        <h3>1. Deploy do backend no Vercel</h3>
+
+        <p>
+          Acesse <a href="https://vercel.com" target="_blank">vercel.com</a>,
+          faça login com seu GitHub e clique em <strong>Add New → Project</strong>.
+          Selecione o repositório do seu projeto.
+        </p>
+
+        <p><strong>Para FastAPI:</strong> O Vercel detecta automaticamente o Python. Configure:</p>
+
+        <ul>
+          <li><strong>Framework:</strong> Other</li>
+          <li><strong>Build Command:</strong> (deixe vazio)</li>
+          <li><strong>Output Directory:</strong> (deixe vazio)</li>
+          <li><strong>Install Command:</strong> <code>pip install -r requirements.txt</code></li>
+          <li><strong>Run Command:</strong> <code>uvicorn main:app --host 0.0.0.0 --port $PORT</code></li>
+        </ul>
+
+        <p><strong>Para Django:</strong> Configure:</p>
+        <ul>
+          <li><strong>Framework:</strong> Other</li>
+          <li><strong>Build Command:</strong> <code>python manage.py migrate</code></li>
+          <li><strong>Run Command:</strong> <code>python manage.py runserver 0.0.0.0:$PORT</code></li>
+        </ul>
+
+        <p>Após o deploy, o Vercel fornecerá uma URL como:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">https://seu-projeto.vercel.app</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>2. Configurar o .env no frontend</h3>
+
+        <p>Na pasta <code>frontend/</code>, crie um arquivo <code>.env</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > .env</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-bash">VITE_API_URL=https://seu-projeto.vercel.app</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Crie também um <code>.env.example</code> para compartilhar o modelo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">VITE_API_URL=http://localhost:8000</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>3. Alterar o fetch no App.jsx</h3>
+
+        <p>
+          Substitua o <code>fetch('/api/mensagens')</code> por uma URL dinâmica
+          que usa a variável de ambiente:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { useState, useEffect } from 'react'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+function App() {
+  const [mensagens, setMensagens] = useState([])
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/mensagens`)
+      .then((res) => res.json())
+      .then((data) => setMensagens(data))
+      .catch((err) => console.error('Erro ao buscar mensagens:', err))
+  }, [])
+
+  return (
+    <div>
+      <h1>&#128172; Mensagens do Servidor</h1>
+      {mensagens.length === 0 ? (
+        <p>Carregando mensagens...</p>
+      ) : (
+        <ul>
+          {mensagens.map((msg) => (
+            <li key={msg.id}>
+              <h3>{msg.titulo}</h3>
+              <p>{msg.texto}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+export default App</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora o frontend funciona com qualquer backend, em qualquer ambiente:
+        </p>
+        <ul>
+          <li><strong>Em desenvolvimento:</strong> se o <code>.env</code> não existir, usa <code>http://localhost:8000</code></li>
+          <li><strong>Em produção:</strong> usa a URL do Vercel definida no <code>.env</code> ou nas variáveis de ambiente do Vercel</li>
+        </ul>
+
+        <h3>4. Remover o proxy do vite.config.js</h3>
+
+        <p>
+          Como agora o frontend chama a URL completa do backend, não precisamos
+          mais do proxy. Remova a configuração do proxy:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+})</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>5. Fazer o deploy do frontend</h3>
+
+        <p>
+          Agora faça o build e deploy do frontend no Vercel também:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">cd frontend
+npm run build</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Acesse o Vercel, clique em <strong>Add New → Project</strong>, selecione
+          a pasta <code>frontend</code> (ou o repositório inteiro e configure o
+          diretório raiz como <code>frontend</code>). O Vite será detectado
+          automaticamente.
+        </p>
+
+        <p>
+          Nas variáveis de ambiente do Vercel, adicione:
+          <code>VITE_API_URL=https://seu-projeto.vercel.app</code>
+        </p>
+
+        <h3>6. Testar a aplicação completa no ar</h3>
+
+        <p>
+          Agora você tem dois projetos no Vercel:
+        </p>
+
+        <ul>
+          <li><strong>Backend:</strong> <code>https://api-projeto.vercel.app/api/mensagens</code></li>
+          <li><strong>Frontend:</strong> <code>https://frontend.vercel.app</code></li>
+        </ul>
+
+        <p>
+          O frontend faz fetch para a URL do backend, e tudo funciona sem proxy,
+          exatamente como em um sistema profissional.
+        </p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- DEVER DE CASA                                                  -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>1. Criar uma nova rota e exibir no frontend</h3>
+            <p>
+              Crie uma branch chamada <strong>dever-de-casa-aula12</strong> e nela desenvolva:
+            </p>
+            <ol>
+              <li>
+                No backend (FastAPI ou Django — escolha um), crie uma nova rota
+                <code>GET /api/usuarios</code> que retorne uma lista de usuários
+                (cada um com <code>id</code>, <code>nome</code> e <code>email</code>).
+              </li>
+              <li>
+                No frontend, crie um novo componente <code>Usuarios.jsx</code>
+                que consuma essa nova rota e exiba os dados em uma tabela.
+              </li>
+              <li>
+                Importe e renderize o componente <code>Usuarios</code> dentro do
+                <code>App.jsx</code>.
+              </li>
+            </ol>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito — Backend FastAPI:</b>
+              <p>Adicione no <code>main.py</code>:</p>
+              <div class="code-container">
+                <pre><code class="language-python">USUARIOS = [
+    {"id": 1, "nome": "Ana Silva", "email": "ana@email.com"},
+    {"id": 2, "nome": "Carlos Souza", "email": "carlos@email.com"},
+    {"id": 3, "nome": "Julia Costa", "email": "julia@email.com"},
+]
+
+@app.get("/api/usuarios")
+def listar_usuarios():
+    return USUARIOS</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <b>Gabarito — Backend Django:</b>
+              <p>No arquivo <code>mensagens/views.py</code>, adicione:</p>
+              <div class="code-container">
+                <pre><code class="language-python">from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+USUARIOS = [
+    {"id": 1, "nome": "Ana Silva", "email": "ana@email.com"},
+    {"id": 2, "nome": "Carlos Souza", "email": "carlos@email.com"},
+    {"id": 3, "nome": "Julia Costa", "email": "julia@email.com"},
+]
+
+@api_view(['GET'])
+def listar_usuarios(request):
+    return Response(USUARIOS)</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <p>No <code>mensagens/urls.py</code>, adicione a rota:</p>
+              <div class="code-container">
+                <pre><code class="language-python">from .views import listar_usuarios
+
+urlpatterns = [
+    path('usuarios/', listar_usuarios),  # adicione esta linha
+    path('', include(router.urls)),
+]</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <b>Gabarito — Frontend React (comum para ambos):</b>
+              <p>Crie <code>src/Usuarios.jsx</code>:</p>
+              <div class="code-container">
+                <pre><code class="language-javascript">import { useState, useEffect } from 'react'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+function Usuarios() {
+  const [usuarios, setUsuarios] = useState([])
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/usuarios`)
+      .then((res) => res.json())
+      .then((data) => setUsuarios(data))
+      .catch((err) => console.error('Erro:', err))
+  }, [])
+
+  return (
+    <div>
+      <h2>&#128101; Lista de Usuários</h2>
+      {usuarios.length === 0 ? (
+        <p>Carregando...</p>
+      ) : (
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usuarios.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.nome}</td>
+                <td>{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+export default Usuarios</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <p>No <code>App.jsx</code>, importe e use:</p>
+              <div class="code-container">
+                <pre><code class="language-javascript">import Usuarios from './Usuarios'
+
+// dentro do return do App, adicione:
+&lt;Usuarios /&gt;</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. Deploy no Vercel com URL direta</h3>
+            <p>
+              Siga os passos da seção "Projeto Final" acima:
+            </p>
+            <ol>
+              <li>Faça o deploy da API no Vercel</li>
+              <li>Configure o <code>.env</code> com <code>VITE_API_URL</code></li>
+              <li>Remova o proxy do <code>vite.config.js</code></li>
+              <li>Faça o build e deploy do frontend</li>
+              <li>Teste a aplicação funcionando com os dois deploys</li>
+            </ol>
+            <p>
+              <strong>Dica:</strong> use o <code>.env.example</code> para
+              compartilhar as variáveis necessárias sem expor senhas.
+              Adicione o <code>.env</code> ao <code>.gitignore</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- RESUMO                                                         -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>Resumo da Aula</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Conceito</th>
+              <th>FastAPI</th>
+              <th>Django REST Framework</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Framework</td>
+              <td>FastAPI</td>
+              <td>Django + djangorestframework</td>
+            </tr>
+            <tr>
+              <td>Rota GET</td>
+              <td><code>@app.get("/api/mensagens")</code></td>
+              <td><code>ModelViewSet</code> + <code>Router</code></td>
+            </tr>
+            <tr>
+              <td>CORS</td>
+              <td><code>CORSMiddleware</code></td>
+              <td><code>django-cors-headers</code></td>
+            </tr>
+            <tr>
+              <td>Servidor</td>
+              <td><code>uvicorn main:app --reload</code></td>
+              <td><code>python manage.py runserver</code></td>
+            </tr>
+            <tr>
+              <td>Proxy Vite</td>
+              <td colspan="2">Configurado em <code>vite.config.js</code></td>
+            </tr>
+            <tr>
+              <td>URI dinâmica</td>
+              <td colspan="2"><code>import.meta.env.VITE_API_URL</code></td>
+            </tr>
+            <tr>
+              <td>Deploy</td>
+              <td colspan="2">Vercel (ou Railway, Render)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- ENTREGA                                                        -->
+      <!-- ============================================================ -->
+      <section>
+        <h2>&#128228; Entrega do Projeto</h2>
+
+        <div class="alert-explicando-codigo">
+          <ol>
+            <li>
+              <strong>Grave um vídeo</strong> apresentando seu projeto (máximo
+              5 minutos). Mostre o código do backend (FastAPI ou Django), o
+              frontend React funcionando com a API no ar (Vercel) e explique
+              as escolhas que fez.
+              <strong>Não precisa aparecer seu rosto</strong> — apenas a tela
+              do computador.
+            </li>
+            <li>
+              <strong>Coloque o vídeo</strong> dentro do repositório do projeto
+              (ex: <code>video-apresentacao.mp4</code> ou <code>video/</code>).
+            </li>
+            <li>
+              <strong>Envie um email</strong> com o link do repositório até a
+              data combinada.
+            </li>
+          </ol>
+
+          <p>
+            O assunto do email deve ser:
+            <strong>"Projeto Final Python - [SEU NOME]"</strong>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- CONFERINDO O RESULTADO                                         -->
+      <!-- ============================================================ -->
+      <div class="alert-box-github">
+        <h2 class="alert-title-github">
+          &#128204; Confira o resultado da aplicação
+        </h2>
+
+        <p>
+          Agora é importante que você valide se tudo está funcionando
+          corretamente na sua aplicação. Execute o projeto, teste os endpoints
+          e observe se os comportamentos estão de acordo com o esperado.
+        </p>
+
+        <p>
+          Compare sua implementação com uma versão funcional da nossa aula em
+          <a
+            href="https://github.com/devfabioluiz/projeto-python-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-python-step
+          </a>
+        </p>
+
+        <p>
+          Dentro do repositório, selecione a branch correspondente à aula que
+          você está estudando. O padrão utilizado é:
+        </p>
+
+        <ul>
+          <li><code>aula1</code></li>
+          <li><code>aula2</code></li>
+          <li><code>aula3</code></li>
+          <li>...</li>
+        </ul>
+      </div>
+
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>
