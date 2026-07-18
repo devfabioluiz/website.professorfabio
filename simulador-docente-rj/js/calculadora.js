@@ -95,13 +95,13 @@ function calcularVencimentos(params) {
 
   var gratFuncao = 0;
   if (funcao.categorias && params.categoriaEscola && funcao.categorias[params.categoriaEscola]) {
-    gratFuncao = aplicarRecomposicoes(funcao.categorias[params.categoriaEscola], dataSim);
+    gratFuncao = funcao.categorias[params.categoriaEscola];
   } else if (funcao.gratificacao > 0) {
-    gratFuncao = aplicarRecomposicoes(funcao.gratificacao, dataSim);
+    gratFuncao = funcao.gratificacao;
   }
   var ajudaCusto = funcao.ajudaCusto;
   var adicionalFuncao = (funcao.adicionalCatD && params.categoriaEscola === "D")
-    ? aplicarRecomposicoes(funcao.adicionalCatD, dataSim) : 0;
+    ? funcao.adicionalCatD : 0;
 
   if (params.cedido) {
     glpTempos = 0;

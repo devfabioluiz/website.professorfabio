@@ -161,64 +161,7 @@ git checkout -b projeto-final-python</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <!-- ESCOLHA DO FRAMEWORK -->
-        <div
-          class="alert-explicando-codigo"
-          style="border-left: 5px solid #ff9800"
-        >
-          <h2 class="alert-explicando-codigo-title">
-            ⚡ Escolha seu Framework
-          </h2>
 
-          <p>
-            Você já aprendeu <strong>FastAPI</strong> e <strong>Django</strong>
-            nas aulas anteriores. Agora é hora de escolher qual usar no projeto
-            final. Veja a comparação:
-          </p>
-
-          <table border="1" cellpadding="8">
-            <thead>
-              <tr>
-                <th>Critério</th>
-                <th>🅰️ FastAPI</th>
-                <th>🅱️ Django</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Estilo</td>
-                <td>Leve, explícito, type hints</td>
-                <td>Estrutura completa, batteries-included</td>
-              </tr>
-              <tr>
-                <td>ORM</td>
-                <td>SQLAlchemy (configuração manual)</td>
-                <td>Django ORM (integrado, migrations automáticas)</td>
-              </tr>
-              <tr>
-                <td>Validação</td>
-                <td>Pydantic (automática por type hints)</td>
-                <td>DRF Serializers (manual, mas poderoso)</td>
-              </tr>
-              <tr>
-                <td>Rotas</td>
-                <td>Decoradores @app.get()</td>
-                <td>urlpatterns + ViewSets</td>
-              </tr>
-              <tr>
-                <td>Deploy Vercel</td>
-                <td>✅ Sim (api/index.py ASGI)</td>
-                <td>✅ Sim (api/index.py WSGI)</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <p style="margin-top: 15px">
-            <strong>Não tem escolha errada.</strong> Escolha o que você mais
-            gostou durante o curso. Os passos comuns (deploy, env, etc.) são
-            idênticos para ambos.
-          </p>
-        </div>
 
         <!-- ============================================================ -->
         <!-- PASSO 1 — SUPABASE (COMUM)                                    -->
@@ -726,6 +669,15 @@ def configurar_cors(app):
 
           <h3>🔹 limiter (slowapi)</h3>
           <p>Adiciona rate limiting baseado no IP do cliente.</p>
+
+          <h3>🔹 configurar_cors()</h3>
+          <p>
+            Por padrão, navegadores bloqueiam requisições entre origens
+            diferentes (ex: seu frontend no Vite → sua API no Vercel).
+            O <code>CORSMiddleware</code> libera isso de forma controlada
+            através da variável de ambiente <code>ALLOWED_ORIGINS</code>.
+            Em produção, restrinja ao domínio do seu frontend.
+          </p>
         </div>
 
         <h3>Passo 8A — Criar as Rotas</h3>
@@ -1163,6 +1115,14 @@ SIMPLE_JWT = {
             <code>django.db.backends.postgresql</code> é o backend do Django
             para PostgreSQL. Ele usa o <code>psycopg2</code> internamente (por
             isso instalamos o <code>psycopg2-binary</code>).
+          </p>
+
+          <h3>🔹 CORS</h3>
+          <p>
+            O <code>CORS_ALLOW_ALL_ORIGINS = True</code> libera requisições de
+            qualquer origem. É útil durante o desenvolvimento, mas em produção
+            você deve restringir com <code>CORS_ALLOWED_ORIGINS</code> para
+            permitir apenas o domínio do seu frontend.
           </p>
         </div>
 
@@ -1667,6 +1627,27 @@ git push --set-upstream origin projeto-final-python</code></pre>
             A mesma URL que você usou no <code>.env</code> local deve ser
             adicionada nas variáveis de ambiente do Vercel. Sem ela, a API não
             consegue conectar ao banco.
+          </p>
+        </div>
+
+        <div
+          class="alert-explicando-codigo"
+          style="border-left: 5px solid #2196f3"
+        >
+          <h2 class="alert-explicando-codigo-title">
+            🌐 ALLOWED_ORIGINS — Controle de CORS
+          </h2>
+          <p>
+            A variável <code>ALLOWED_ORIGINS</code> define quais frontends podem
+            acessar sua API. O <code>*</code> libera qualquer origem (útil para
+            testes). Em produção, defina o domínio do seu frontend, ex:
+          </p>
+          <p>
+            <code>ALLOWED_ORIGINS=https://meu-frontend.vercel.app</code>
+          </p>
+          <p>
+            Sem essa variável configurada corretamente, o navegador pode bloquear
+            as requisições do seu frontend para a API por segurança (erro de CORS).
           </p>
         </div>
 
