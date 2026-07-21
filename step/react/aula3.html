@@ -162,6 +162,8 @@ export default Parent;
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
+git checkout aula2-react
+git pull
 git checkout -b aula3-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -173,8 +175,6 @@ git checkout -b aula3-react
 
         <div class="code-container">
           <pre><code class="language-javascript">
-import React from 'react';
-
 const Filho = ({ message, sendDataToParent }) => {
   return (
     &lt;div&gt;
@@ -197,7 +197,7 @@ export default Filho;
 
         <div class="code-container">
           <pre><code class="language-javascript">
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Filho from './Filho';
 
 const Pai = () => {
@@ -229,7 +229,6 @@ export default Pai;
 
         <div class="code-container">
           <pre><code class="language-javascript">
-import React from 'react';
 import Pai from './components/Pai';
 
 function App() {
