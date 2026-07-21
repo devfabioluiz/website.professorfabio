@@ -324,18 +324,29 @@ cd projeto-integrador-back-front-sql</code></pre>
         <div class="code-container">
           <pre><code class="language-bash">mkdir backend
 cd backend
-mkdir src\database src\repositories src\controllers src\routes
+mkdir src/database src/repositories src/controllers src/routes
 npm init -y
 npm install express pg dotenv
 type nul > .gitignore
-type nul > src\database\pg.js
+type nul > src/database/pg.js
 type nul > .env</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Passo 2.2 — Configurar o arquivo .env</h3>
 
-        <p>Insira no arquivo <code>.env</code> todos os valores que se encontram na <a href="aula13.html">Aula 13</a>:</p>
+        <p>Insira no arquivo <code>.env</code> as variáveis de ambiente:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">DATABASE_URL=postgresql://seu_usuario: sua_senha@localhost:5432/escola
+PORT=3000</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Substitua <code>seu_usuario</code> e <code>sua_senha</code> pelas
+          credenciais do seu PostgreSQL.
+        </p>
 
         <h3>Passo 2.3 — Criar o Pool de conexão</h3>
 
@@ -477,7 +488,7 @@ module.exports = {
         <p>No terminal coloque o código abaixo:</p>
 
         <div class="code-container">
-          <pre><code class="language-bash">type nul > src\repositories\boletimRepository.js</code></pre>
+          <pre><code class="language-bash">type nul > src/repositories/boletimRepository.js</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -662,8 +673,15 @@ module.exports = {
         </div>
 
         <p>
-          Crie controllers similares para as demais entidades, além de
-          <strong>src/controllers/boletimController.js</strong>:
+          Crie controllers similares para as demais entidades:
+        </p>
+        <ul>
+          <li><strong>src/controllers/professorController.js</strong></li>
+          <li><strong>src/controllers/turmaController.js</strong></li>
+          <li><strong>src/controllers/notaController.js</strong></li>
+        </ul>
+        <p>
+          Além de <strong>src/controllers/boletimController.js</strong>:
         </p>
 
         <div class="code-container">
@@ -709,11 +727,11 @@ module.exports = { boletim, media };</code></pre>
         </p>
 
         <div class="code-container">
-          <pre><code class="language-bash">type nul > src\routes\alunoRoutes.js
-type nul > src\routes\professorRoutes.js
-type nul > src\routes\turmaRoutes.js
-type nul > src\routes\notaRoutes.js
-type nul > src\routes\boletimRoutes.js</code></pre>
+          <pre><code class="language-bash">type nul > src/routes/alunoRoutes.js
+type nul > src/routes/professorRoutes.js
+type nul > src/routes/turmaRoutes.js
+type nul > src/routes/notaRoutes.js
+type nul > src/routes/boletimRoutes.js</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -746,7 +764,7 @@ module.exports = router;</code></pre>
 
 
         <p>
-          Crie <strong>src/routes/boletimRoutes.js</strong>:
+          Crie <strong>src/routes/boletimRoutes.js</strong> seguindo o mesmo padrão:
         </p>
 
         <div class="code-container">
@@ -761,6 +779,13 @@ router.get("/boletim/:alunoId/media", media);
 module.exports = router;</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <p>
+          Crie também as rotas para <strong>professorRoutes.js</strong>,
+          <strong>turmaRoutes.js</strong> e <strong>notaRoutes.js</strong>
+          seguindo o mesmo padrão do <code>alunoRoutes.js</code>, adaptando
+          os endpoints para cada entidade.
+        </p>
 
         <h3>Passo 2.9 — Criar o app.js</h3>
 
@@ -940,16 +965,16 @@ node server.js</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Abra o Postman (caso não tenha, baixe-o) e teste nele colando na barra dele esses códigos:</p>
+        <p>Abra o Postman (caso não tenha, baixe-o) e crie requisições para testar os endpoints:</p>
 
         <div class="code-container">
-          <pre><code class="language-bash">curl http://localhost:3000
+          <pre><code class="language-bash">GET http://localhost:3000
 
-curl http://localhost:3000/alunos
+GET http://localhost:3000/alunos
 
-curl http://localhost:3000/boletim/1
+GET http://localhost:3000/boletim/1
 
-curl http://localhost:3000/boletim/1/media</code></pre>
+GET http://localhost:3000/boletim/1/media</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
@@ -1050,13 +1075,8 @@ curl http://localhost:3000/boletim/1/media</code></pre>
             ✅ Pool de conexão, queries parametrizadas e Repository Pattern
             (Aula 13)
           </li>
-          <li>✅ Autenticação JWT (registro, login, middleware)</li>
           <li>
             ✅ Rota de boletim consumindo a VIEW com JOINs
-          </li>
-          <li>✅ Front-end React + Vite em <code>frontend/</code></li>
-          <li>
-            ✅ Proxy do Vite configurado para o backend (Aula 11)
           </li>
           <li>✅ <code>.env</code> no <code>.gitignore</code></li>
           <li>✅ Vídeo de apresentação (máximo 5 min)</li>
