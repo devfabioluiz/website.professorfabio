@@ -319,7 +319,7 @@ cd projeto-integrador-back-front-sql</code></pre>
 
         <h3>Passo 2.1 — Inicializar o projeto Node.js</h3>
 
-        <p>Acesse o repositrório do git projeto-integrador-back-front-sql no VSCode e abra o terminal e digite os comandos abaixo:</p>
+        <p>Acesse o repositório do git projeto-integrador-back-front-sql no VSCode e abra o terminal e digite os comandos abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">mkdir backend
@@ -435,14 +435,41 @@ module.exports = {
 
         <h3>Passo 2.5 — Criar os outros repositórios</h3>
 
-        <p>Agora seguindo o modelo de <code>alunoRepository.js</code>, crie os repositórios para as outras entidades e faça as devidas correções necessárias</p>
-
         <p>
-          Crie repositórios similares para: <code>professorRepository.js</code>,
-          <code>disciplinaRepository.js</code>,
-          <code>turmaRepository.js</code>,
-          <code>matriculaRepository.js</code> e
-          <code>notaRepository.js</code> — todos seguindo o mesmo padrão.
+          Agora crie repositórios similares para as demais entidades. Use o
+          <code>alunoRepository.js</code> como base e adapte:
+        </p>
+        <ul>
+          <li>
+            <strong>professorRepository.js</strong> — tabela
+            <code>professores</code> com campos:
+            <code>nome</code>, <code>email</code>, <code>especialidade</code>
+          </li>
+          <li>
+            <strong>disciplinaRepository.js</strong> — tabela
+            <code>disciplinas</code> com campos:
+            <code>nome</code>, <code>carga_horaria</code>
+          </li>
+          <li>
+            <strong>turmaRepository.js</strong> — tabela
+            <code>turmas</code> com campos:
+            <code>codigo</code>, <code>disciplina_id</code>,
+            <code>professor_id</code>, <code>semestre</code>
+          </li>
+          <li>
+            <strong>matriculaRepository.js</strong> — tabela
+            <code>matriculas</code> com campos:
+            <code>aluno_id</code>, <code>turma_id</code>
+          </li>
+          <li>
+            <strong>notaRepository.js</strong> — tabela
+            <code>notas</code> com campos:
+            <code>matricula_id</code>, <code>nota</code>, <code>tipo</code>
+          </li>
+        </ul>
+        <p>
+          Crie também os controllers seguindo o padrão do
+          <code>alunoController.js</code>.
         </p>
 
         <h3>Passo 2.6 — Repository com JOIN (Boletim)</h3>
@@ -675,22 +702,6 @@ module.exports = { boletim, media };</code></pre>
 
 
 
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Importante!
-          </h2>
-          <p>
-            <strong>Não esqueça de adicionar o campo <code>senha</code> e
-            <code>role</code> na tabela <code>professores</code>!</strong>
-            Adicione ao schema:
-          </p>
-          <div class="code-container">
-            <pre><code class="language-sql">ALTER TABLE professores
-  ADD COLUMN senha VARCHAR(200) NOT NULL DEFAULT '',
-  ADD COLUMN role VARCHAR(10) DEFAULT 'admin';</code></pre>
-          </div>
-        </div>
-
         <h3>Passo 2.8 — Criar as Rotas</h3>
 
         <p>
@@ -885,7 +896,6 @@ async function seed() {
   `);
 
   console.log("Banco populado com sucesso!");
-  console.log("Admin: carlos@email.com / senha: admin123");
 
   await pool.end();
 }
@@ -904,8 +914,7 @@ seed().catch((erro) => {
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "seed": "node seed.js",
-    "migrate": "node src/database/migrate.js"
+    "seed": "node seed.js"
   }
 }</code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -938,32 +947,12 @@ node server.js</code></pre>
 
 curl http://localhost:3000/alunos
 
-curl -X POST http://localhost:3000/login \
-  -H "Content-Type: application/json" \
-  -d "{\"email\":\"carlos@email.com\",\"senha\":\"admin123\"}"
+curl http://localhost:3000/boletim/1
 
-curl http://localhost:3000/boletim/1 \
-  -H "Authorization: Bearer TOKEN"
-
-curl http://localhost:3000/boletim/1/media \
-  -H "Authorization: Bearer TOKEN"</code></pre>
+curl http://localhost:3000/boletim/1/media</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-
-
-        <div class="alert-explicando-codigo">
-          <p>
-            <strong>🔗 Referência principal:</strong> O passo a passo completo
-            de como integrar React + Vite ao Node.js está na
-            <a href="../nodejs/aula11.html"
-              >Aula 11 de Node.js — Integração Front-End e Back-End</a
-            >. Lá você encontra detalhes sobre configuração de proxy, CORS,
-            consumo da API com fetch e muito mais.
-          </p>
-        </div>
-
-        <p>
 
 
         <!-- ============================================================ -->
