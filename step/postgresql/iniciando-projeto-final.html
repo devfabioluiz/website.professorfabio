@@ -1,0 +1,1649 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciando nosso Projeto Final - PostgreSQL</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+
+    <header>
+      <h1>Iniciando nosso Projeto Final</h1>
+      <h4 class="text-center">PostgreSQL</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O Projeto Final</h2>
+
+        <p>
+          Neste projeto final você criará um <strong>sistema completo</strong>
+          que integra <strong>banco relacional PostgreSQL</strong>,
+          <strong>back-end Node.js</strong> e
+          <strong>front-end React</strong>, formando uma aplicação full-stack
+          pronta para produção.
+        </p>
+
+        <p>
+          O projeto será armazenado no repositório
+          <strong>projeto-integrador-back-front-sql</strong> dentro de uma
+          branch chamada <strong>projeto-final</strong>.
+        </p>
+
+        <p>O sistema escolhido é o <strong>Sistema Escolar</strong>, com:</p>
+
+        <ul>
+          <li>
+            <strong>Banco Relacional</strong> — tabelas com chaves
+            estrangeiras, JOINs e views para gerar boletins
+          </li>
+          <li>
+            <strong>API REST em Node.js</strong> — Express + pg (PostgreSQL)
+            com autenticação JWT
+          </li>
+          <li>
+            <strong>Front-end React + Vite</strong> — consumindo a API e
+            exibindo dados relacionados
+          </li>
+        </ul>
+
+        <h2>Estrutura do Projeto</h2>
+
+        <div class="code-container">
+          <pre><code class="language-bash">projeto-integrador-back-front-sql/
+│
+├── database/
+│   ├── schema-postgres.sql      # CREATE TABLEs para PostgreSQL
+│   └── seed.sql                 # Dados iniciais
+│
+├── backend/
+│   ├── src/
+│   │   ├── database/
+│   │   │   └── pg.js            # Pool de conexão PostgreSQL
+│   │   ├── repositories/
+│   │   │   ├── alunoRepository.js
+│   │   │   ├── professorRepository.js
+│   │   │   ├── disciplinaRepository.js
+│   │   │   ├── turmaRepository.js
+│   │   │   ├── matriculaRepository.js
+│   │   │   └── notaRepository.js
+│   │   ├── controllers/
+│   │   │   ├── alunoController.js
+│   │   │   ├── professorController.js
+│   │   │   ├── turmaController.js
+│   │   │   ├── notaController.js
+│   │   │   ├── boletimController.js
+│   │   │   └── authController.js
+│   │   ├── routes/
+│   │   │   ├── alunoRoutes.js
+│   │   │   ├── professorRoutes.js
+│   │   │   ├── turmaRoutes.js
+│   │   │   ├── notaRoutes.js
+│   │   │   ├── boletimRoutes.js
+│   │   │   └── authRoutes.js
+│   │   └── middlewares/
+│   │       ├── autenticar.js
+│   │       └── admin.js
+│   ├── app.js
+│   ├── server.js
+│   ├── seed.js
+│   ├── package.json
+│   ├── .env
+│   └── .gitignore
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── App.jsx
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 0 — REPOSITÓRIO GITHUB                                  -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #333;
+            padding-bottom: 8px;
+          "
+        >
+          📦 PASSO 0 — CRIAR REPOSITÓRIO NO GITHUB
+        </h2>
+
+        <ol>
+          <li>
+            Acesse <code>https://github.com</code> e faça login com sua conta
+          </li>
+          <li>
+            Clique no botão <strong>"+"</strong> (canto superior direito) →
+            <strong>"New repository"</strong>
+          </li>
+          <li>
+            Dê o nome: <strong>projeto-integrador-back-front-sql</strong>
+          </li>
+          <li>
+            Deixe como <strong>público</strong> e marque
+            <strong>"Add a README file"</strong>
+          </li>
+          <li>Clique em <strong>"Create repository"</strong></li>
+          <li>
+            Clone na sua máquina e crie a branch do projeto final:
+            <div class="code-container">
+              <pre><code class="language-bash">git clone https://github.com/SEU_USUARIO/projeto-integrador-back-front-sql.git
+cd projeto-integrador-back-front-sql</code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+          </li>
+        </ol>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 1 — MODELAGEM DO BANCO                                  -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 8px;
+          "
+        >
+          🗄️ PASSO 1 — MODELAGEM DO BANCO (SISTEMA ESCOLAR)
+        </h2>
+
+        <p>
+          Vamos modelar um <strong>Sistema Escolar</strong> com alunos,
+          professores, disciplinas, turmas, matrículas e notas. Este modelo
+          exige <strong>JOINs</strong> (para relacionar os dados) e
+          <strong>Views</strong> (para facilitar consultas como o boletim).
+        </p>
+
+        <h3>Diagrama de Relacionamentos</h3>
+
+        <h3>Tabelas do Sistema</h3>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Tabela</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>alunos</code></td>
+              <td>Dados dos alunos (nome, email, matrícula)</td>
+            </tr>
+            <tr>
+              <td><code>professores</code></td>
+              <td>Dados dos professores (nome, email, especialidade)</td>
+            </tr>
+            <tr>
+              <td><code>disciplinas</code></td>
+              <td>Disciplinas oferecidas (nome, carga horária)</td>
+            </tr>
+            <tr>
+              <td><code>turmas</code></td>
+              <td>
+                Turmas vinculadas a uma disciplina e professor (FK →
+                disciplinas, professores)
+              </td>
+            </tr>
+            <tr>
+              <td><code>matriculas</code></td>
+              <td>
+                Matrícula de alunos em turmas (FK → alunos, turmas)
+              </td>
+            </tr>
+            <tr>
+              <td><code>notas</code></td>
+              <td>
+                Notas dos alunos por matrícula (FK → matriculas)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ============================================================ -->
+        <!-- VIEW + JOINS                                                  -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          👁️ VIEW COM JOINS — BOLETIM DO ALUNO
+        </h2>
+
+        <p>
+          Um dos requisitos do sistema é exibir o <strong>boletim</strong> do
+          aluno com: nome do aluno, disciplina, professor, nota e situação
+          (aprovado/reprovado). Para isso, crie uma <strong>VIEW</strong>
+          que centraliza os JOINs entre 5 tabelas de acordo com esses requisitos
+        </p>
+
+        <p>
+          <strong>🔗 Referência:</strong> Revise os conceitos de JOINs na
+          <a href="aula5.html">Aula 5 (JOINs)</a> e Views na
+          <a href="aula10.html">Aula 10 (Views)</a> do nosso curso.
+        </p>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 2 — BACKEND NODE.JS                                     -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 8px;
+          "
+        >
+          🟢 PASSO 2 — BACKEND NODE.JS COM POSTGRESQL
+        </h2>
+
+        <div class="alert-explicando-codigo">
+          <p>
+            <strong>🔗 Referência principal:</strong> Todo o conteúdo de
+            conexão Node.js + PostgreSQL foi detalhado na
+            <a href="aula13.html"
+              >Aula 13 — Integração Node.js com PostgreSQL</a
+            >. Volte a ela se tiver dúvidas sobre Pool, queries parametrizadas,
+            transações ou Repository Pattern.
+          </p>
+        </div>
+
+        <p>
+          Vamos construir a API dentro da pasta <strong>backend/</strong>. Siga
+          os passos abaixo:
+        </p>
+
+        <h3>Passo 2.1 — Inicializar o projeto Node.js</h3>
+
+        <p>Acesse o repositrório do git projeto-integrador-back-front-sql no VSCode e abra o terminal e digite os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir backend
+cd backend
+mkdir src\database src\repositories src\controllers src\routes
+npm init -y
+npm install express pg dotenv
+type nul > .gitignore
+type nul > src\database\pg.js
+type nul > .env</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.2 — Configurar o arquivo .env</h3>
+
+        <p>Insira no arquivo <code>.env</code> todos os valores que se encontram na <a href="aula13.html">Aula 13</a>:</p>
+
+        <h3>Passo 2.3 — Criar o Pool de conexão</h3>
+
+        <p>
+          Dentro do arquivo <strong>src/database/pg.js</strong> — igual ao que vimos na
+          <a href="aula13.html">Aula 13</a>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+pool.on("error", (erro) => {
+  console.error("Erro inesperado no pool do PostgreSQL:", erro.message);
+});
+
+module.exports = pool;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.4 — Criar o Repositório de aluno</h3>
+
+        <p>
+          Seguindo o <strong>Repository Pattern</strong> (visto na Aula 13), crie o arquivo <strong>src/repositories/alunoRepository.js</strong> e
+          insira o código abaixo:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const listarTodos = async () => {
+  const resultado = await pool.query(
+    "SELECT * FROM alunos ORDER BY nome"
+  );
+  return resultado.rows;
+};
+
+const buscarPorId = async (id) => {
+  const resultado = await pool.query(
+    "SELECT * FROM alunos WHERE id = $1",
+    [id]
+  );
+  return resultado.rows[0] || null;
+};
+
+const criar = async (dados) => {
+  const { nome, email, matricula, data_nascimento } = dados;
+
+  const resultado = await pool.query(
+    `INSERT INTO alunos (nome, email, matricula, data_nascimento)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [nome, email, matricula, data_nascimento]
+  );
+
+  return resultado.rows[0];
+};
+
+const atualizar = async (id, dados) => {
+  const { nome, email, data_nascimento } = dados;
+
+  const resultado = await pool.query(
+    `UPDATE alunos
+     SET nome = $1, email = $2, data_nascimento = $3
+     WHERE id = $4
+     RETURNING *`,
+    [nome, email, data_nascimento, id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+const deletar = async (id) => {
+  const resultado = await pool.query(
+    "DELETE FROM alunos WHERE id = $1 RETURNING *",
+    [id]
+  );
+
+  return resultado.rows[0] || null;
+};
+
+module.exports = {
+  listarTodos,
+  buscarPorId,
+  criar,
+  atualizar,
+  deletar,
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.5 — Criar os outros repositórios</h3>
+
+        <p>Agora seguindo o modelo de <code>alunoRepository.js</code>, crie os repositórios para as outras entidades e faça as devidas correções necessárias</p>
+
+        <p>
+          Crie repositórios similares para: <code>professorRepository.js</code>,
+          <code>disciplinaRepository.js</code>,
+          <code>turmaRepository.js</code>,
+          <code>matriculaRepository.js</code> e
+          <code>notaRepository.js</code> — todos seguindo o mesmo padrão.
+        </p>
+
+        <h3>Passo 2.6 — Repository com JOIN (Boletim)</h3>
+
+        <p>No terminal coloque o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > src\repositories\boletimRepository.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const pool = require("../database/pg");
+
+const boletimDoAluno = async (alunoId) => {
+  const resultado = await pool.query(
+    "SELECT * FROM vw_boletim WHERE aluno_id = $1 ORDER BY disciplina_nome, data_avaliacao",
+    [alunoId]
+  );
+
+  return resultado.rows;
+};
+
+const boletimDaTurma = async (turmaId) => {
+  const resultado = await pool.query(
+    `SELECT * FROM vw_boletim
+     WHERE turma_codigo = (SELECT codigo FROM turmas WHERE id = $1)
+     ORDER BY aluno_nome, disciplina_nome`,
+    [turmaId]
+  );
+
+  return resultado.rows;
+};
+
+const mediaPorDisciplina = async (alunoId) => {
+  const resultado = await pool.query(
+    `SELECT
+       disciplina_nome,
+       ROUND(AVG(nota), 2) AS media,
+       COUNT(*) AS total_avaliacoes
+     FROM vw_boletim
+     WHERE aluno_id = $1 AND nota IS NOT NULL
+     GROUP BY disciplina_nome
+     ORDER BY disciplina_nome`,
+    [alunoId]
+  );
+
+  return resultado.rows;
+};
+
+module.exports = {
+  boletimDoAluno,
+  boletimDaTurma,
+  mediaPorDisciplina,
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o BoletimRepository
+          </h2>
+
+          <h3>🔹 Consultando a VIEW</h3>
+          <p>
+            O repositório consulta a VIEW <code>vw_boletim</code> como se fosse
+            uma tabela comum. Toda a complexidade dos JOINs entre 5 tabelas fica
+            encapsulada na VIEW.
+          </p>
+
+          <h3>🔹 Funções do repositório</h3>
+          <ul>
+            <li>
+              <code>boletimDoAluno</code> — retorna todas as notas do aluno com
+              detalhes das disciplinas
+            </li>
+            <li>
+              <code>boletimDaTurma</code> — retorna o boletim de todos os
+              alunos de uma turma
+            </li>
+            <li>
+              <code>mediaPorDisciplina</code> — calcula a média do aluno por
+              disciplina usando <code>GROUP BY</code> e
+              <code>ROUND(AVG())</code>
+            </li>
+          </ul>
+
+          <h3>🔹 Por que a VIEW é importante aqui?</h3>
+          <p>
+            Sem a VIEW, cada uma dessas funções precisaria repetir os 5 JOINs.
+            Com a VIEW, o código fica limpo e a lógica fica centralizada no
+            banco de dados — facilitando manutenção e garantindo consistência.
+          </p>
+        </div>
+
+        <h3>Passo 2.7 — Criar os Controllers</h3>
+
+        <p>
+          Exemplo de <strong>src/controllers/alunoController.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const repository = require("../repositories/alunoRepository");
+
+const listar = async (req, res) => {
+  try {
+    const alunos = await repository.listarTodos();
+    res.json(alunos);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao listar alunos" });
+  }
+};
+
+const obterPorId = async (req, res) => {
+  try {
+    const aluno = await repository.buscarPorId(req.params.id);
+
+    if (!aluno) {
+      return res.status(404).json({ erro: "Aluno não encontrado" });
+    }
+
+    res.json(aluno);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao buscar aluno" });
+  }
+};
+
+const criar = async (req, res) => {
+  try {
+    const { nome, email, matricula, data_nascimento } = req.body;
+
+    if (!nome || !email || !matricula) {
+      return res.status(400).json({
+        erro: "Nome, email e matrícula são obrigatórios",
+      });
+    }
+
+    const aluno = await repository.criar({
+      nome,
+      email,
+      matricula,
+      data_nascimento,
+    });
+
+    res.status(201).json(aluno);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao criar aluno" });
+  }
+};
+
+const atualizar = async (req, res) => {
+  try {
+    const aluno = await repository.atualizar(
+      req.params.id,
+      req.body
+    );
+
+    if (!aluno) {
+      return res.status(404).json({ erro: "Aluno não encontrado" });
+    }
+
+    res.json(aluno);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao atualizar aluno" });
+  }
+};
+
+const deletar = async (req, res) => {
+  try {
+    const aluno = await repository.deletar(req.params.id);
+
+    if (!aluno) {
+      return res.status(404).json({ erro: "Aluno não encontrado" });
+    }
+
+    res.json({ mensagem: "Aluno removido com sucesso" });
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao deletar aluno" });
+  }
+};
+
+module.exports = {
+  listar,
+  obterPorId,
+  criar,
+  atualizar,
+  deletar,
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Crie controllers similares para as demais entidades, além de
+          <strong>src/controllers/boletimController.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const boletimRepository = require("../repositories/boletimRepository");
+
+const boletim = async (req, res) => {
+  try {
+    const { alunoId } = req.params;
+    const boletim = await boletimRepository.boletimDoAluno(alunoId);
+
+    if (boletim.length === 0) {
+      return res
+        .status(404)
+        .json({ erro: "Nenhum boletim encontrado para este aluno" });
+    }
+
+    res.json(boletim);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao buscar boletim" });
+  }
+};
+
+const media = async (req, res) => {
+  try {
+    const { alunoId } = req.params;
+    const medias = await boletimRepository.mediaPorDisciplina(alunoId);
+    res.json(medias);
+  } catch (erro) {
+    res.status(500).json({ erro: "Erro ao calcular médias" });
+  }
+};
+
+module.exports = { boletim, media };</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.8 — Middlewares de Autenticação</h3>
+
+        <p>
+          Crie <strong>src/middlewares/autenticar.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const jwt = require("jsonwebtoken");
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo";
+
+const autenticar = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ erro: "Token não informado" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.usuarioId = payload.id;
+    req.usuarioEmail = payload.email;
+    req.usuarioRole = payload.role;
+    next();
+  } catch (erro) {
+    return res.status(401).json({ erro: "Token inválido ou expirado" });
+  }
+};
+
+module.exports = autenticar;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Crie <strong>src/middlewares/admin.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const admin = (req, res, next) => {
+  if (req.usuarioRole !== "admin") {
+    return res
+      .status(403)
+      .json({ erro: "Acesso restrito a administradores" });
+  }
+  next();
+};
+
+module.exports = admin;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.9 — Controller de Autenticação</h3>
+
+        <p>
+          Crie <strong>src/controllers/authController.js</strong> (registro e
+          login de professores/administradores):
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const pool = require("../database/pg");
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo";
+
+const registrar = async (req, res) => {
+  const { nome, email, senha, role } = req.body;
+
+  const existe = await pool.query(
+    "SELECT * FROM professores WHERE email = $1",
+    [email]
+  );
+
+  if (existe.rows.length > 0) {
+    return res.status(400).json({ erro: "Email já cadastrado" });
+  }
+
+  const senhaHash = await bcrypt.hash(senha, 10);
+
+  const resultado = await pool.query(
+    `INSERT INTO professores (nome, email, senha, role)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, nome, email, role`,
+    [nome, email, senhaHash, role || "admin"]
+  );
+
+  const professor = resultado.rows[0];
+
+  const token = jwt.sign(
+    { id: professor.id, email: professor.email, role: professor.role },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.status(201).json({
+    mensagem: "Professor registrado com sucesso",
+    token,
+    usuario: professor,
+  });
+};
+
+const login = async (req, res) => {
+  const { email, senha } = req.body;
+
+  const resultado = await pool.query(
+    "SELECT * FROM professores WHERE email = $1",
+    [email]
+  );
+
+  const professor = resultado.rows[0];
+
+  if (!professor) {
+    return res
+      .status(401)
+      .json({ erro: "Email ou senha inválidos" });
+  }
+
+  const senhaValida = await bcrypt.compare(senha, professor.senha);
+
+  if (!senhaValida) {
+    return res
+      .status(401)
+      .json({ erro: "Email ou senha inválidos" });
+  }
+
+  const token = jwt.sign(
+    {
+      id: professor.id,
+      email: professor.email,
+      role: professor.role,
+    },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.json({
+    mensagem: "Login realizado com sucesso",
+    token,
+    usuario: {
+      id: professor.id,
+      nome: professor.nome,
+      email: professor.email,
+      role: professor.role,
+    },
+  });
+};
+
+const perfil = async (req, res) => {
+  const resultado = await pool.query(
+    "SELECT id, nome, email, role FROM professores WHERE id = $1",
+    [req.usuarioId]
+  );
+
+  const professor = resultado.rows[0];
+
+  if (!professor) {
+    return res
+      .status(404)
+      .json({ erro: "Professor não encontrado" });
+  }
+
+  res.json({ usuario: professor });
+};
+
+module.exports = { registrar, login, perfil };</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Importante!
+          </h2>
+          <p>
+            <strong>Não esqueça de adicionar o campo <code>senha</code> e
+            <code>role</code> na tabela <code>professores</code>!</strong>
+            Adicione ao schema:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-sql">ALTER TABLE professores
+  ADD COLUMN senha VARCHAR(200) NOT NULL DEFAULT '',
+  ADD COLUMN role VARCHAR(10) DEFAULT 'admin';</code></pre>
+          </div>
+        </div>
+
+        <h3>Passo 2.10 — Criar as Rotas</h3>
+
+        <p>
+          Exemplo de <strong>src/routes/alunoRoutes.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const {
+  listar,
+  obterPorId,
+  criar,
+  atualizar,
+  deletar,
+} = require("../controllers/alunoController");
+
+const autenticar = require("../middlewares/autenticar");
+const admin = require("../middlewares/admin");
+
+router.get("/alunos", listar);
+router.get("/alunos/:id", obterPorId);
+router.post("/alunos", autenticar, admin, criar);
+router.put("/alunos/:id", autenticar, admin, atualizar);
+router.delete("/alunos/:id", autenticar, admin, deletar);
+
+module.exports = router;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Crie <strong>src/routes/authRoutes.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const { registrar, login, perfil } = require("../controllers/authController");
+const autenticar = require("../middlewares/autenticar");
+
+router.post("/registrar", registrar);
+router.post("/login", login);
+router.get("/me", autenticar, perfil);
+
+module.exports = router;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Crie <strong>src/routes/boletimRoutes.js</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const router = express.Router();
+
+const { boletim, media } = require("../controllers/boletimController");
+const autenticar = require("../middlewares/autenticar");
+
+router.get("/boletim/:alunoId", autenticar, boletim);
+router.get("/boletim/:alunoId/media", autenticar, media);
+
+module.exports = router;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.11 — Criar o app.js</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+
+const alunoRoutes = require("./src/routes/alunoRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+const boletimRoutes = require("./src/routes/boletimRoutes");
+
+const app = express();
+
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
+app.use(compression());
+
+const limitador = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { erro: "Muitas requisições. Tente novamente mais tarde." },
+});
+app.use("/api/", limitador);
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json({
+    mensagem: "API do Sistema Escolar funcionando!",
+    versao: "1.0.0",
+    endpoints: {
+      alunos: "GET /alunos, POST /alunos, PUT /alunos/:id, DELETE /alunos/:id",
+      auth: "POST /registrar, POST /login, GET /me",
+      boletim: "GET /boletim/:alunoId, GET /boletim/:alunoId/media",
+    },
+  });
+});
+
+app.use(alunoRoutes);
+app.use(authRoutes);
+app.use(boletimRoutes);
+
+app.use((erro, req, res, next) => {
+  console.error("Erro interno:", erro.message);
+  res.status(erro.status || 500).json({
+    erro:
+      process.env.NODE_ENV === "production"
+        ? "Erro interno do servidor"
+        : erro.message,
+  });
+});
+
+module.exports = app;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.12 — Criar o server.js</h3>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const app = require("./app");
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.13 — Criar o Seed de dados</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">type nul > seed.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">require("dotenv").config();
+
+const pool = require("./src/database/pg");
+const bcrypt = require("bcryptjs");
+
+async function seed() {
+  console.log("Populando banco de dados...");
+
+  // Limpar dados existentes
+  await pool.query("DELETE FROM notas");
+  await pool.query("DELETE FROM matriculas");
+  await pool.query("DELETE FROM turmas");
+  await pool.query("DELETE FROM disciplinas");
+  await pool.query("DELETE FROM professores");
+  await pool.query("DELETE FROM alunos");
+
+  // Alunos
+  await pool.query(`
+    INSERT INTO alunos (nome, email, matricula, data_nascimento) VALUES
+    ('Ana Silva', 'ana@email.com', 'MAT001', '2005-03-15'),
+    ('Bruno Santos', 'bruno@email.com', 'MAT002', '2004-07-22'),
+    ('Carla Oliveira', 'carla@email.com', 'MAT003', '2005-01-10')
+  `);
+
+  // Professores (com senha)
+  const senhaHash = await bcrypt.hash("admin123", 10);
+
+  await pool.query(
+    `INSERT INTO professores (nome, email, especialidade, senha, role) VALUES
+     ($1, $2, $3, $4, $5)`,
+    ["Prof. Carlos", "carlos@email.com", "Matemática", senhaHash, "admin"]
+  );
+
+  await pool.query(
+    `INSERT INTO professores (nome, email, especialidade, senha, role) VALUES
+     ($1, $2, $3, $4, $5)`,
+    ["Profa. Mariana", "mariana@email.com", "Português", senhaHash, "admin"]
+  );
+
+  // Disciplinas
+  await pool.query(`
+    INSERT INTO disciplinas (nome, carga_horaria) VALUES
+    ('Matemática', 80),
+    ('Português', 80),
+    ('História', 60)
+  `);
+
+  // Turmas
+  await pool.query(`
+    INSERT INTO turmas (codigo, disciplina_id, professor_id, semestre) VALUES
+    ('MAT2024-1', 1, 1, '2024.1'),
+    ('POR2024-1', 2, 2, '2024.1'),
+    ('HIS2024-1', 3, 1, '2024.1')
+  `);
+
+  // Matrículas
+  await pool.query(`
+    INSERT INTO matriculas (aluno_id, turma_id) VALUES
+    (1, 1), (1, 2),
+    (2, 1), (2, 3),
+    (3, 2), (3, 3)
+  `);
+
+  // Notas
+  await pool.query(`
+    INSERT INTO notas (matricula_id, nota, tipo) VALUES
+    (1, 8.5, 'prova'), (1, 9.0, 'trabalho'),
+    (2, 7.0, 'prova'), (2, 8.0, 'trabalho'),
+    (3, 6.5, 'prova'), (3, 7.0, 'trabalho'),
+    (4, 9.5, 'prova'), (4, 10.0, 'trabalho'),
+    (5, 5.0, 'prova'), (5, 6.0, 'trabalho'),
+    (6, 8.0, 'prova'), (6, 8.5, 'trabalho')
+  `);
+
+  console.log("Banco populado com sucesso!");
+  console.log("Admin: carlos@email.com / senha: admin123");
+
+  await pool.end();
+}
+
+seed().catch((erro) => {
+  console.error("Erro ao popular banco:", erro);
+  process.exit(1);
+});</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.14 — Adicionar scripts no package.json</h3>
+
+        <div class="code-container">
+          <pre><code class="language-json">{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node seed.js",
+    "migrate": "node src/database/migrate.js"
+  }
+}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.15 — Criar .gitignore</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node_modules/
+.env
+logs/
+*.log
+.env.*
+!.env.example</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2.16 — Executar o seed e testar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">node seed.js
+node server.js</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Teste as rotas:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">curl http://localhost:3000
+
+curl http://localhost:3000/alunos
+
+curl -X POST http://localhost:3000/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"carlos@email.com\",\"senha\":\"admin123\"}"
+
+curl http://localhost:3000/boletim/1 \
+  -H "Authorization: Bearer TOKEN"
+
+curl http://localhost:3000/boletim/1/media \
+  -H "Authorization: Bearer TOKEN"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 3 — FRONTEND REACT                                      -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #61dafb;
+            padding-bottom: 8px;
+          "
+        >
+          ⚛️ PASSO 3 — FRONTEND REACT
+        </h2>
+
+        <div class="alert-explicando-codigo">
+          <p>
+            <strong>🔗 Referência principal:</strong> O passo a passo completo
+            de como integrar React + Vite ao Node.js está na
+            <a href="../nodejs/aula11.html"
+              >Aula 11 de Node.js — Integração Front-End e Back-End</a
+            >. Lá você encontra detalhes sobre configuração de proxy, CORS,
+            consumo da API com fetch e muito mais.
+          </p>
+        </div>
+
+        <p>
+          Vamos criar o front-end React dentro da pasta
+          <strong>frontend/</strong>:
+        </p>
+
+        <h3>Passo 3.1 — Criar o projeto Vite + React</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">cd ..
+npm create vite@latest frontend -- --template react
+cd frontend
+npm install</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3.2 — Configurar o Proxy do Vite</h3>
+
+        <p>
+          Abra <strong>vite.config.js</strong> e configure o proxy para o
+          backend:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      "/alunos": "http://localhost:3000",
+      "/login": "http://localhost:3000",
+      "/registrar": "http://localhost:3000",
+      "/me": "http://localhost:3000",
+      "/boletim": "http://localhost:3000",
+    },
+  },
+});</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Por que o proxy?
+          </h2>
+          <p>
+            Sem o proxy, o navegador bloquearia as requisições do React
+            (porta 5173) para o Node.js (porta 3000) por causa da política de
+            <strong>CORS</strong>. O proxy do Vite faz o papel de intermediário:
+            o React chama <code>/alunos</code> (mesma origem) e o Vite
+            redireciona para <code>http://localhost:3000/alunos</code>.
+        </div>
+
+        <h3>Passo 3.3 — Criar o serviço de API</h3>
+
+        <p>
+          Crie <strong>src/services/api.js</strong> para centralizar as
+          chamadas HTTP:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">const API_BASE = "";
+
+async function request(endpoint, options = {}) {
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
+
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.erro || "Erro na requisição");
+  }
+
+  return data;
+}
+
+export const api = {
+  login: (email, senha) =>
+    request("/login", {
+      method: "POST",
+      body: JSON.stringify({ email, senha }),
+    }),
+
+  registrar: (nome, email, senha) =>
+    request("/registrar", {
+      method: "POST",
+      body: JSON.stringify({ nome, email, senha }),
+    }),
+
+  listarAlunos: () => request("/alunos"),
+
+  criarAluno: (dados) =>
+    request("/alunos", {
+      method: "POST",
+      body: JSON.stringify(dados),
+    }),
+
+  buscarBoletim: (alunoId) => request(`/boletim/${alunoId}`),
+
+  buscarMedia: (alunoId) => request(`/boletim/${alunoId}/media`),
+
+  perfil: () => request("/me"),
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3.4 — Tela de Login</h3>
+
+        <p>
+          Crie <strong>src/pages/Login.jsx</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-jsx">import { useState } from "react";
+import { api } from "../services/api";
+
+function Login({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await api.login(email, senha);
+      localStorage.setItem("token", data.token);
+      onLogin(data.usuario);
+    } catch (err) {
+      setErro(err.message);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 400, margin: "40px auto" }}>
+      <h1>Login - Sistema Escolar</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ display: "block", width: "100%", marginBottom: 10 }}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          required
+          style={{ display: "block", width: "100%", marginBottom: 10 }}
+        />
+        <button type="submit">Entrar</button>
+        {erro && <p style={{ color: "red" }}>{erro}</p>}
+      </form>
+    </div>
+  );
+}
+
+export default Login;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3.5 — Tela de Boletim</h3>
+
+        <p>
+          Crie <strong>src/pages/Boletim.jsx</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-jsx">import { useState } from "react";
+import { api } from "../services/api";
+
+function Boletim() {
+  const [alunoId, setAlunoId] = useState("");
+  const [boletim, setBoletim] = useState(null);
+  const [erro, setErro] = useState("");
+
+  const buscar = async () => {
+    try {
+      setErro("");
+      const data = await api.buscarBoletim(alunoId);
+      setBoletim(data);
+    } catch (err) {
+      setErro(err.message);
+      setBoletim(null);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Boletim do Aluno</h2>
+      <input
+        type="number"
+        placeholder="ID do Aluno"
+        value={alunoId}
+        onChange={(e) => setAlunoId(e.target.value)}
+      />
+      <button onClick={buscar}>Buscar Boletim</button>
+
+      {erro && <p style={{ color: "red" }}>{erro}</p>}
+
+      {boletim && (
+        <table border="1" cellPadding="8" style={{ marginTop: 20 }}>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>Professor</th>
+              <th>Turma</th>
+              <th>Nota</th>
+              <th>Tipo</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {boletim.map((item, i) => (
+              <tr key={i}>
+                <td>{item.disciplina_nome}</td>
+                <td>{item.professor_nome}</td>
+                <td>{item.turma_codigo}</td>
+                <td>{item.nota}</td>
+                <td>{item.tipo_avaliacao}</td>
+                <td
+                  style={{
+                    color: item.situacao === "Aprovado" ? "green" : "red",
+                  }}
+                >
+                  {item.situacao}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+export default Boletim;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3.6 — App.jsx principal</h3>
+
+        <div class="code-container">
+          <pre><code class="language-jsx">import { useState } from "react";
+import Login from "./pages/Login";
+import Boletim from "./pages/Boletim";
+
+function App() {
+  const [usuario, setUsuario] = useState(null);
+
+  if (!usuario) {
+    return <Login onLogin={setUsuario} />;
+  }
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>Bem-vindo, {usuario.nome}!</h1>
+      <button
+        onClick={() => {
+          localStorage.removeItem("token");
+          setUsuario(null);
+        }}
+      >
+        Sair
+      </button>
+      <Boletim />
+    </div>
+  );
+}
+
+export default App;</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3.7 — Testar o front-end</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm run dev</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Acesse <code>http://localhost:5173</code>, faça login com
+          <code>carlos@email.com</code> / <code>admin123</code> e consulte o
+          boletim dos alunos (IDs: 1, 2 ou 3).
+        </p>
+
+        <!-- ============================================================ -->
+        <!-- RESUMO DOS ENDPOINTS                                          -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          📋 RESUMO DOS ENDPOINTS DA API
+        </h2>
+
+        <table border="1" cellpadding="10">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Rota</th>
+              <th>Autenticação</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td><code>/</code></td>
+              <td>—</td>
+              <td>Informações da API</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/registrar</code></td>
+              <td>—</td>
+              <td>Registrar novo professor</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/login</code></td>
+              <td>—</td>
+              <td>Login e receber token JWT</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/me</code></td>
+              <td>JWT</td>
+              <td>Perfil do professor logado</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/alunos</code></td>
+              <td>—</td>
+              <td>Listar todos os alunos</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/alunos/:id</code></td>
+              <td>—</td>
+              <td>Obter aluno por ID</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/alunos</code></td>
+              <td>JWT (admin)</td>
+              <td>Criar novo aluno</td>
+            </tr>
+            <tr>
+              <td>PUT</td>
+              <td><code>/alunos/:id</code></td>
+              <td>JWT (admin)</td>
+              <td>Atualizar aluno</td>
+            </tr>
+            <tr>
+              <td>DELETE</td>
+              <td><code>/alunos/:id</code></td>
+              <td>JWT (admin)</td>
+              <td>Remover aluno</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/boletim/:alunoId</code></td>
+              <td>JWT</td>
+              <td>Boletim completo do aluno (com JOINs)</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/boletim/:alunoId/media</code></td>
+              <td>JWT</td>
+              <td>Média do aluno por disciplina</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ============================================================ -->
+        <!-- CHECKLIST                                                      -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #e91e63;
+            padding-bottom: 8px;
+          "
+        >
+          ✅ CHECKLIST DO PROJETO FINAL
+        </h2>
+
+        <ol>
+          <li>
+            ✅ Repositório <strong>projeto-integrador-back-front-sql</strong> criado
+            no GitHub
+          </li>
+          <li>✅ Branch <strong>projeto-final</strong> criada a partir da main</li>
+          <li>
+            ✅ Scripts SQL do banco em <code>database/</code> (PostgreSQL)
+          </li>
+          <li>
+            ✅ VIEW <code>vw_boletim</code> criada com JOINs entre 5 tabelas
+          </li>
+          <li>✅ Backend Node.js com Express e PostgreSQL em <code>backend/</code></li>
+          <li>
+            ✅ Pool de conexão, queries parametrizadas e Repository Pattern
+            (Aula 13)
+          </li>
+          <li>✅ Autenticação JWT (registro, login, middleware)</li>
+          <li>
+            ✅ Rota de boletim consumindo a VIEW com JOINs
+          </li>
+          <li>✅ Front-end React + Vite em <code>frontend/</code></li>
+          <li>
+            ✅ Proxy do Vite configurado para o backend (Aula 11)
+          </li>
+          <li>✅ <code>.env</code> no <code>.gitignore</code></li>
+          <li>✅ Vídeo de apresentação (máximo 5 min)</li>
+        </ol>
+
+        <!-- ============================================================ -->
+        <!-- ENTREGA                                                       -->
+        <!-- ============================================================ -->
+        <section>
+          <h2
+            style="
+              margin-top: 40px;
+              border-bottom: 3px solid #e91e63;
+              padding-bottom: 8px;
+            "
+          >
+            📤 ENTREGA DO PROJETO
+          </h2>
+
+          <div class="alert-explicando-codigo">
+            <ol>
+              <li>
+                <strong>Grave um vídeo</strong> apresentando seu projeto
+                (máximo 5 minutos). Mostre o código, o banco funcionando, a API
+                e o front-end consumindo os dados.
+                <strong>Não precisa aparecer seu rosto</strong> — apenas a tela
+                do computador.
+              </li>
+              <li>
+                <strong>Coloque o vídeo</strong> dentro do repositório do
+                projeto (ex: <code>video-apresentacao.mp4</code> ou
+                <code>video/</code>).
+              </li>
+              <li>
+                <strong>Envie um email</strong> com o link do repositório.
+              </li>
+            </ol>
+
+            <p>
+              O assunto do email deve ser:
+              <strong
+                >"Projeto Final PostgreSQL - [SEU NOME]"</strong
+              >.
+            </p>
+          </div>
+        </section>
+
+        <h2 style="margin-top: 40px">🔗 Referências</h2>
+
+        <ul>
+          <li>
+            <a href="aula13.html"
+              >Aula 13 — Integração Node.js com PostgreSQL</a
+            >
+            (Pool, queries parametrizadas, transações, Repository Pattern)
+          </li>
+          <li>
+            <a href="../nodejs/aula11.html"
+              >Aula 11 de Node.js — Integração Front-End e Back-End</a
+            >
+            (React + Vite + Node.js, proxy, CORS, fetch API)
+          </li>
+          <li>
+            <a href="aula5.html">Aula 5 — JOINs</a> (INNER, LEFT, RIGHT,
+            SELF JOIN)
+          </li>
+          <li>
+            <a href="aula10.html">Aula 10 — Views</a> (criação e uso de
+            views no PostgreSQL)
+          </li>
+        </ul>
+
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
