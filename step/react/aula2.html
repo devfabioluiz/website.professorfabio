@@ -282,7 +282,7 @@ export default Timer;
         <div class="code-container">
           <pre>
 <code class="language-javascript">
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 function Relogio() {
   const [horario, setHorario] = useState(new Date());
@@ -300,11 +300,11 @@ function Relogio() {
 
   return (
     &lt;div&gt;
-      &lt;p&gt;Relógio Digital&lt;p&gt;
+      &lt;p&gt;Relógio Digital&lt;/p&gt;
       &lt;p&gt;
         {horario.toLocaleTimeString()}
-      &lt;p&gt;
-    &lt;div&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
   );
 }
 
@@ -356,7 +356,7 @@ type nul &gt; PlacarDoJogo.jsx
 import React, { useState, useEffect } from 'react';
 
 const PlacarDoJogo = () => {
-  const [minutos, setMinutos] = useState(0);
+const [minutos, setMinutos] = useState(0);
 const [segundos, setSegundos] = useState(0);
 const [jogando, setJogando] = useState(false);
 const [intervaloAtivo, setIntervaloAtivo] = useState(false);
