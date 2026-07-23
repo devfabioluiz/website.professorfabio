@@ -126,6 +126,17 @@ export default ItemList;
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O método <code>.map()</code> percorre o array <code>items</code> e retorna um
+            <code>&lt;li&gt;</code> para cada elemento. A prop <code>key={index}</code> usa o
+            índice do array como chave — funciona para listas estáticas, mas não é recomendado
+            para listas dinâmicas que podem ser reordenadas.
+          </p>
+        </div>
+
         <h5>Exemplo 2</h5>
         <div class="code-container">
           <pre>
@@ -159,6 +170,18 @@ export default ListaDeTarefas;
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Este exemplo usa um array de <strong>objetos</strong> com <code>id</code>,
+            <code>titulo</code> e <code>concluida</code>. A <code>key</code> agora usa
+            <code>tarefa.id</code> (um identificador único), que é a forma recomendada.
+            O React usa a <code>key</code> para otimizar a renderização, identificando
+            quais itens foram adicionados, removidos ou reordenados.
+          </p>
+        </div>
+
         <h5>Exemplo 3</h5>
         <div class="code-container">
           <pre>
@@ -201,6 +224,16 @@ export default ListaDeProdutos;
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Este exemplo renderiza uma <strong>tabela HTML</strong> com <code>&lt;table&gt;</code>,
+            <code>&lt;thead&gt;</code> e <code>&lt;tbody&gt;</code>. O <code>.map()</code> gera
+            as linhas da tabela (<code>&lt;tr&gt;</code>), cada uma com <code>key={produto.id}</code>.
+            O <code>preco.toFixed(2)</code> formata o valor com duas casas decimais.
+          </p>
+        </div>
       </section>
 
       <section>
@@ -218,6 +251,18 @@ git fetch
 git checkout -b aula4-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do repositório remoto.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula4-react</code></strong> — Cria e muda para a branch
+            <code>aula4-react</code> a partir da branch atual (que deve ser a <code>main</code>
+            ou a branch da aula anterior).
+          </p>
         </div>
 
         <h3>Passo 1 — Criar o componente ListaDeProdutos</h3>
@@ -268,6 +313,20 @@ export default ListaDeProdutos;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O componente <code>ListaDeProdutos</code> contém um array de objetos <code>produtos</code>
+            e usa <code>.map()</code> para gerar as linhas da tabela. Cada linha recebe
+            <code>key={produto.id}</code>, que é um identificador único e estável — essencial
+            para o React otimizar a renderização da lista.
+          </p>
+          <p>
+            Note que o array está <strong>dentro do componente</strong>. Em aplicações reais,
+            esses dados viriam de uma API ou de estado.
+          </p>
+        </div>
+
         <h3>Passo 2 — Renderizar o componente no App</h3>
 
         <p>
@@ -290,6 +349,14 @@ function App() {
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>App.jsx</code> importa e renderiza o <code>ListaDeProdutos</code>. Toda a
+            lógica de iteração e renderização da tabela fica encapsulada no componente filho.
+          </p>
         </div>
 
         <h3>Passo 3 — Rodar o projeto</h3>
@@ -317,6 +384,38 @@ git commit -m "aula 4 react iteracao sobre arrays com map"
 git push --set-upstream origin aula4-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Adiciona todos os arquivos modificados ao staging.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit com a mensagem.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula4-react</code></strong> — Envia a branch
+            para o GitHub e define o upstream.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-react-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula4-react</code></li>
+          </ul>
         </div>
       </section>
 
@@ -392,6 +491,16 @@ export default ListaFiltrada;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>ListaFiltrada</code> combina <code>.filter()</code> e <code>.map()</code>:
+                  primeiro filtra os produtos com <code>preco > 1000</code>, depois mapeia o
+                  resultado para gerar as linhas da tabela. Essa combinação é muito comum em React
+                  para exibir subconjuntos de dados.
+                </p>
+              </div>
+
               <p><b>App.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -409,6 +518,14 @@ function App() {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>App.jsx</code> do gabarito segue o padrão das aulas anteriores,
+                  apenas importando e renderizando o componente principal.
+                </p>
               </div>
             </div>
           </div>

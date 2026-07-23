@@ -266,6 +266,22 @@ export default Welcome;
         </pre>
           <button class="btn-copy">Copiar Texto</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O componente <code>Welcome</code> é declarado como uma <strong>arrow function</strong>
+            que recebe um objeto <code>props</code> como parâmetro. Usamos a
+            <strong>desestruturação</strong> <code>{ name }</code> para extrair diretamente a
+            propriedade <code>name</code> sem precisar escrever <code>props.name</code>.
+          </p>
+          <p>
+            O JSX retornado usa chaves <code>{ }</code> para interpolar a variável
+            <code>name</code> dentro do texto do <code>&lt;h1&gt;</code>, gerando
+            uma mensagem personalizada. O <code>export default Welcome</code> permite
+            que este componente seja importado em outros arquivos da aplicação.
+          </p>
+        </div>
       </section>
 
       <section>
@@ -301,6 +317,32 @@ git checkout -b aula1-react
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>cd C:/</code></strong> — Navega para a raiz do disco C, onde o repositório será clonado.
+          </p>
+          <p>
+            <strong><code>git clone [URL]</code></strong> — Baixa o repositório remoto do GitHub para o seu computador,
+            criando uma pasta com o nome do repositório e todo o histórico de versões.
+          </p>
+          <p>
+            <strong><code>cd projeto-react-step</code></strong> — Entra na pasta do repositório recém-clonado.
+          </p>
+          <p>
+            <strong><code>git checkout main</code></strong> — Muda para a branch <code>main</code> (principal) do repositório.
+          </p>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as referências e branches mais recentes do repositório remoto
+            sem alterar os arquivos locais.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula1-react</code></strong> — Cria uma <strong>nova branch</strong> chamada
+            <code>aula1-react</code> <em>e já muda para ela</em>. A flag <code>-b</code> significa "branch" — sem ela,
+            o Git tentaria mudar para uma branch existente.
+          </p>
+        </div>
+
         <h3>Passo 1 — Criar projeto Vite</h3>
 
         <div class="code-container">
@@ -331,6 +373,21 @@ export default Welcome;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Este é o mesmo componente <code>Welcome</code> visto anteriormente, agora sendo
+            criado dentro da pasta <code>src/components</code> — prática recomendada para
+            organizar componentes reutilizáveis. A estrutura é idêntica: uma arrow function
+            que recebe <code>{ name }</code> via desestruturação e renderiza um JSX com a
+            saudação.
+          </p>
+          <p>
+            Note que o Vite já configura o projeto com suporte a JSX, então não precisamos
+            nos preocupar com transpilação manual — o Babel é integrado automaticamente.
+          </p>
+        </div>
+
         <h3>Passo 3 — Renderizar o componente no App</h3>
 
         <p>Abra o arquivo <code>src/App.jsx</code> e substitua o conteúdo pelo código abaixo:</p>
@@ -351,6 +408,21 @@ function App() {
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>App.jsx</code> é o <strong>componente raiz</strong> da aplicação. Aqui
+            importamos o <code>Welcome</code> de <code>./components/Welcome</code> e o
+            utilizamos como uma <strong>tag JSX</strong> <code>&lt;Welcome name="Fabio" /&gt;</code>.
+          </p>
+          <p>
+            A prop <code>name="Fabio"</code> é passada para o componente <code>Welcome</code>,
+            que a recebe via desestruturação e a exibe no <code>&lt;h1&gt;</code>. Esse é o
+            mecanismo fundamental de <strong>comunicação entre componentes</strong> no React:
+            o pai (App) passa dados para o filho (Welcome) através de props.
+          </p>
         </div>
 
         <h3>Passo 4 — Rodar o projeto</h3>
@@ -375,6 +447,44 @@ git commit -m "aula 1 react fundamentos"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Adiciona <strong>todos</strong> os arquivos
+            modificados (o <code>.</code> representa o diretório atual) à <strong>área de staging</strong>
+            (preparação). É como "marcar" quais arquivos farão parte do próximo commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "mensagem"</code></strong> — Cria um <strong>commit</strong>
+            (um ponto na história do repositório) com os arquivos que estão em staging. A flag
+            <code>-m</code> permite escrever a mensagem descritiva diretamente no comando.
+          </p>
+          <p>
+            <strong><code>git push</code></strong> — Envia os commits locais para o
+            <strong>repositório remoto</strong> no GitHub. Como a branch <code>aula1-react</code>
+            foi criada localmente com <code>checkout -b</code>, o Git pode pedir para usar
+            <code>--set-upstream</code> na primeira vez (em aulas seguintes veremos isso).
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-react-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula1-react</code></li>
+          </ul>
         </div>
       </section>
 
@@ -410,6 +520,19 @@ export default BoasVindas;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  Diferente do componente <code>Welcome</code> da aula (que usava <strong>retorno implícito</strong>
+                  com arrow function), este <code>BoasVindas</code> usa <strong>corpo de função</strong> com
+                  chaves <code>{ }</code> e a palavra <code>return</code>. Ambos os estilos são válidos em React.
+                </p>
+                <p>
+                  O padrão com chaves é útil quando você precisa de múltiplas linhas de lógica antes do
+                  retorno do JSX.
+                </p>
+              </div>
+
               <p><b>App.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -427,6 +550,16 @@ function App() {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>App.jsx</code> do gabarito segue a mesma estrutura da aula: importa o
+                  componente filho (<code>BoasVindas</code>) e o renderiza passando a prop
+                  <code>nome</code>. Perceba que o caminho do import reflete a organização de pastas:
+                  <code>./components/BoasVindas</code>.
+                </p>
               </div>
             </div>
           </div>

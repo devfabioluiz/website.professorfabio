@@ -51,6 +51,16 @@ const UserGreeting = ({ isLoggedIn }) => {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <strong>operador ternário</strong> (<code>cond ? valorSeVerdadeiro : valorSeFalso</code>)
+            é a forma mais comum de renderização condicional em React. Dentro do JSX, usamos
+            <code>{ }</code> para avaliar a expressão: se <code>isLoggedIn</code> for
+            <code>true</code>, renderiza "Welcome back!"; caso contrário, "Please log in.".
+          </p>
+        </div>
+
         <h4>Short-circuit Evaluation (`&&`)</h4>
         <p>
           O Short-circuit Evaluation no JavaScript ocorre quando operadores
@@ -86,6 +96,16 @@ const Notification = ({ showNotification }) => {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O operador <code>&&</code> (short-circuit) renderiza o elemento à direita apenas
+            se a condição à esquerda for <strong>truthy</strong>. Se <code>showNotification</code>
+            for <code>false</code>, o React ignora o <code>&lt;p&gt;</code>. É ideal para
+            mostrar/esconder elementos sem usar <code>if</code> ou ternário.
+          </p>
+        </div>
+
         <h4>Função que Retorna JSX</h4>
         <div class="code-container">
           <pre>
@@ -102,6 +122,16 @@ const Greeting = ({ isLoggedIn }) => {
         </code>
     </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Uma <strong>função que retorna JSX</strong> permite usar lógica condicional mais
+            complexa (<code>if/else</code>) antes do retorno. A função <code>renderGreeting</code>
+            é chamada dentro do JSX com <code>{renderGreeting()}</code>. Isso mantém o JSX
+            mais limpo quando a condição é muito elaborada para um ternário.
+          </p>
         </div>
       </section>
 
@@ -131,6 +161,16 @@ const Counter = () => {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Toda vez que <code>setCount</code> é chamado, o React <strong>re-renderiza</strong>
+            o componente <code>Counter</code> automaticamente, atualizando o valor exibido
+            de <code>count</code> na tela. Esse é o comportamento fundamental que torna o
+            React reativo.
+          </p>
+        </div>
+
         <h4>Alterações nas Props</h4>
         <div class="code-container">
           <pre>
@@ -154,6 +194,16 @@ const Counter = () => {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Quando as <strong>props</strong> de um componente mudam (ex: <code>message</code>
+            muda de "Hello" para "World"), o React re-renderiza automaticamente o componente
+            filho (<code>Display</code>) que recebe aquela prop. A re-renderização em cadeia
+            (pai → filho) é uma característica central do React.
+          </p>
+        </div>
+
         <h4>Force Update</h4>
         <div class="code-container">
           <pre>
@@ -170,6 +220,16 @@ const App() => {
         </code>
     </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <strong>Force Update</strong> é uma técnica para forçar a re-renderização de um
+            componente quando não há mudança de estado ou props. Usa-se <code>useState</code>
+            com um contador <code>n => n + 1</code> como "chave" para disparar a atualização.
+            Não é uma prática recomendada para uso rotineiro.
+          </p>
         </div>
       </section>
 
@@ -196,6 +256,22 @@ git fetch
 git checkout aula5-renderizacao-condicional
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula5-renderizacao-condicional</code></strong> — Muda para a branch
+            <code>aula5-renderizacao-condicional</code> que foi criada no GitHub. Como a branch já
+            existe no remoto, o <code>git fetch</code> a torna disponível localmente.
+          </p>
+          <p>
+            <em>Nota:</em> Nesta aula a branch foi criada diretamente no GitHub e depois baixada,
+            ao contrário das aulas anteriores onde criávamos localmente com <code>-b</code>.
+          </p>
         </div>
 
         <h3>Passo 1 — Criar o projeto React</h3>
@@ -235,6 +311,15 @@ export default LoginStatus;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <code>LoginStatus</code> usa o <strong>operador ternário</strong> para exibir
+            mensagem diferente conforme <code>isLoggedIn</code>. Essa é a aplicação prática
+            da renderização condicional que vimos na teoria.
+          </p>
+        </div>
+
         <h3>Passo 3 — Adicionar botão de login/logout</h3>
 
         <p>
@@ -265,6 +350,16 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>App.jsx</code> gerencia o estado <code>isLoggedIn</code> e altera o texto
+            do botão com ternário: <code>{isLoggedIn ? 'Logout' : 'Login'}</code>. Quando o
+            estado muda, tanto o <code>App</code> quanto o <code>LoginStatus</code>
+            (que recebe a prop) são re-renderizados.
+          </p>
+        </div>
+
         <h3>Passo 4 — Usar short-circuit para notificação</h3>
 
         <p>
@@ -285,6 +380,15 @@ const Notification = ({ showNotification }) => {
 export default Notification;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>Notification</code> usa <strong>short-circuit</strong> (<code>&&</code>):
+            a notificação só aparece quando <code>showNotification</code> é <code>true</code>.
+            No <code>App</code>, dois estados independentes controlam o login e a notificação.
+          </p>
         </div>
 
         <div class="code-container">
@@ -316,6 +420,16 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Este <code>App.jsx</code> completo demonstra <strong>renderização condicional</strong>
+            (ternário em <code>LoginStatus</code>) e <strong>short-circuit</strong>
+            (<code>Notification</code>). Cada botão altera um estado independente, e o React
+            re-renderiza apenas as partes afetadas.
+          </p>
+        </div>
+
         <h3>Último Passo - Subindo para o Git</h3>
 
         <p>Agora vamos salvar tudo no repositório:</p>
@@ -327,6 +441,39 @@ git commit -m "aula 5 renderizacao condicional"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit.
+          </p>
+          <p>
+            <strong><code>git push</code></strong> — Envia os commits para o GitHub. Como a branch
+            <code>aula5-renderizacao-condicional</code> foi criada no GitHub primeiro e depois
+            clonada, o upstream já está configurado.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-react-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula5-renderizacao-condicional</code></li>
+          </ul>
         </div>
       </section>
 
@@ -404,6 +551,17 @@ const NotificationPanel = () => {
 export default NotificationPanel;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O gabarito combina <strong>renderização condicional</strong> (ternário para
+                  mostrar/esconder painel) com <strong>short-circuit</strong> (&& para exibir
+                  conteúdo condicional), <strong>.filter()</strong> para remover notificações
+                  e <strong>.map()</strong> para renderizar a lista. É um exemplo completo
+                  que integra os conceitos das aulas 4 e 5.
+                </p>
               </div>
             </div>
           </div>

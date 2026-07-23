@@ -56,6 +56,12 @@ export default Home;
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Home</strong> é um componente funcional simples que retorna um JSX com um título. Ele representa a página inicial nos exemplos de roteamento básico e será renderizado quando a URL corresponder à raiz do site.</p>
+</div>
+
         <div class="code-container">
           <pre>
           <code class="language-javascript">
@@ -70,6 +76,12 @@ export default About;
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>About</strong> é um componente funcional que retorna um título "Sobre Nós". Ele será renderizado quando o usuário navegar para a rota <code>/about</code>, demonstrando como diferentes componentes podem ser associados a diferentes URLs no React Router.</p>
+</div>
+
         <div class="code-container">
           <pre>
           <code class="language-javascript">
@@ -93,6 +105,11 @@ export default App;
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> é o ponto central do roteamento. O <code>BrowserRouter</code> deve envolver toda a aplicação para que o React Router funcione corretamente. O componente <code>Routes</code> funciona como um switch que verifica cada <code>Route</code> filho e renderiza apenas o primeiro que corresponde à URL atual. Cada <code>Route</code> possui um atributo <code>path</code> (caminho da URL) e <code>element</code> (componente a ser renderizado).</p>
+</div>
 
         <h4>Redirecionamento</h4>
         <div class="code-container">
@@ -118,6 +135,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <code>Navigate</code> permite redirecionar o usuário de uma rota para outra automaticamente. Neste exemplo, quando a URL for <code>"/"</code>, o usuário será imediatamente redirecionado para <code>"/home"</code>. Isso é útil para criar URLs amigáveis ou redirecionar usuários não autenticados.</p>
+</div>
+
         <h4>Rotas Dinâmicas</h4>
         <p>Utiliza parâmetros na URL para acessar dados específicos.</p>
         <div class="code-container">
@@ -132,6 +154,11 @@ const User = () =>  {
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>User</strong> utiliza o hook <code>useParams</code> para acessar o parâmetro <code>:id</code> definido na rota. O <code>useParams</code> retorna um objeto com todos os parâmetros da URL. A variável <code>id</code> é extraída diretamente e exibida no JSX, permitindo criar páginas dinâmicas que se adaptam ao valor informado na URL.</p>
+</div>
 
         <div class="code-container">
           <pre>
@@ -151,6 +178,11 @@ const App = () => => {
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Neste exemplo, a rota <code>/user/:id</code> utiliza <code>:id</code> como um parâmetro dinâmico da URL. O valor informado após <code>/user/</code> é capturado pelo hook <code>useParams</code> dentro do componente <strong>User</strong>. Por exemplo, ao acessar <code>/user/42</code>, a variável <code>id</code> receberá o valor "42", permitindo buscar e exibir dados específicos daquele usuário.</p>
+</div>
 
         <h4>Navegação Programática</h4>
         <p>
@@ -172,6 +204,11 @@ export default Home;
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O hook <code>useNavigate</code> retorna uma função <code>navigate</code> que permite redirecionar o usuário programaticamente, ou seja, através de código JavaScript (como após o clique de um botão ou conclusão de uma ação). Isso é diferente do componente <code>Link</code>, que exige um clique em um elemento âncora. A navegação programática é ideal para fluxos como login, cadastro ou submissão de formulários.</p>
+</div>
 
         <h4>Rotas Aninhadas</h4>
         <p>
@@ -202,6 +239,11 @@ export default Dashboard;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Dashboard</strong> utiliza o componente <code>Outlet</code> como um placeholder para renderizar os componentes das rotas filhas. O <code>Outlet</code> é substituído pelo componente filho ativo no momento. Isso permite criar layouts compartilhados onde a estrutura principal permanece visível enquanto o conteúdo muda dinamicamente.</p>
+</div>
+
         <div class="code-container">
           <pre>
     <code class="language-javascript">
@@ -215,6 +257,11 @@ export default Profile;
   </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Profile</strong> é um componente funcional que exibe um título "Perfil". Ele será renderizado dentro do componente <strong>Dashboard</strong> através do <code>Outlet</code> quando a rota filha <code>profile</code> for acessada.</p>
+</div>
 
         <div class="code-container">
           <pre>
@@ -230,6 +277,11 @@ export default Settings;
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Settings</strong> é um componente funcional simples que retorna um título "Configurações". Ele será renderizado como rota filha dentro do Dashboard, aparecendo no lugar do <code>Outlet</code> quando o usuário navegar para <code>/dashboard/settings</code>.</p>
+</div>
 
         <div class="code-container">
           <pre>
@@ -257,6 +309,11 @@ export default App;
   </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>A configuração de rotas aninhadas é feita colocando rotas <code>Route</code> como filhas de outra <code>Route</code>. Neste exemplo, <strong>Dashboard</strong> é o layout principal (com o <code>Outlet</code>), e <strong>Profile</strong> e <strong>Settings</strong> são rotas filhas que serão renderizadas dentro de Dashboard. As URLs resultantes são <code>/dashboard</code>, <code>/dashboard/profile</code> e <code>/dashboard/settings</code>.</p>
+</div>
 
         <p>Logo, temos como definidas as rotas:</p>
         <ul>
@@ -302,13 +359,18 @@ const Login = () => {
     &lt;button onClick={() => navigate("/home")}&gt;Clique para se logar&lt;/button&gt;
   );
 };
-
 export default Login;
 
 </code>
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Login</strong> utiliza o hook <code>useNavigate</code> para redirecionar o usuário após uma ação. No exemplo, ao clicar no botão "Clique para se logar", a função <code>navigate("/home")</code> é chamada, levando o usuário para a página inicial. Esta é uma forma de navegação programática, diferente do <code>Link</code> que exige um clique em um elemento âncora.</p>
+</div>
+
         <div class="code-container">
           <pre>
             <code class="language-javascript">
@@ -323,6 +385,11 @@ const PrivateRoute = ({ children }) => {
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>PrivateRoute</strong> atua como um guardião de rotas. Ele recebe um prop <code>children</code> (o componente a ser protegido) e verifica se o usuário está autenticado. Se estiver autenticado (<code>isAuthenticated = true</code>), renderiza o <code>children</code> normalmente. Caso contrário, redireciona para a página de login usando <code>Navigate</code>. Esse padrão é amplamente utilizado em sistemas com autenticação.</p>
+</div>
 
         <div class="code-container">
           <pre>
@@ -350,6 +417,11 @@ const App = () => {
           </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>App.jsx</strong> configura as rotas protegidas envolvendo os componentes que exigem autenticação com o componente <strong>PrivateRoute</strong>. Se o usuário não estiver autenticado, ele é redirecionado para <code>/login</code>. A rota <code>/login</code> não possui proteção, permitindo que qualquer usuário acesse a página de login.</p>
+</div>
 
         <p>
           Agora faça um teste de colocar isAuthenticated como false e veja o
@@ -432,6 +504,11 @@ git pull
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>git clone</code> baixa o repositório remoto para o seu computador. <code>cd projeto-react-router</code> entra na pasta do projeto. <code>git fetch</code> atualiza as referências das branches remotas. <code>git checkout aula9-react-router</code> alterna para a branch específica da aula. <code>git pull</code> baixa as alterações mais recentes da branch remota.</p>
+</div>
+
         <h3>Passo 1 — Instalar React Router</h3>
 
         <div class="code-container">
@@ -441,6 +518,11 @@ npm install react-router-dom
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm create vite@latest . -- --template react</code> inicializa um novo projeto React usando Vite no diretório atual. Em seguida, <code>npm install react-router-dom</code> instala a biblioteca React Router, que fornece os componentes necessários para configurar o roteamento na aplicação (<code>BrowserRouter</code>, <code>Routes</code>, <code>Route</code>, <code>Link</code>, etc.).</p>
+</div>
 
         <h3>Passo 2 — Criar as páginas</h3>
 
@@ -458,6 +540,11 @@ export default Home;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Home</strong> é um componente funcional que retorna um JSX simples. Ele representa a página inicial da aplicação e será renderizado quando o usuário acessar a rota <code>/</code> (raiz do site).</p>
+</div>
+
         <p><b>About.jsx</b></p>
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -470,6 +557,11 @@ export default About;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>About</strong> é um componente funcional simples que retorna um elemento <code>&lt;h1&gt;</code> com o texto "Sobre Nós". Ele representará a página "Sobre" da aplicação e será renderizado quando o usuário navegar para a rota <code>/about</code>.</p>
+</div>
+
         <p><b>Contact.jsx</b></p>
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -481,6 +573,11 @@ export default Contact;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Contact</strong> segue o mesmo padrão dos anteriores: é um componente funcional simples que retorna JSX. Aqui ele exibe um título <code>&lt;h1&gt;</code> com o texto "Contato", representando a página de contato da aplicação.</p>
+</div>
 
         <h3>Passo 3 — Configurar o Router no App.jsx</h3>
 
@@ -508,6 +605,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>App.jsx</strong> configura o roteamento básico da aplicação. <code>BrowserRouter</code> é o componente que encapsula toda a aplicação e gerencia o histórico de navegação. <code>Routes</code> define um conjunto de rotas que serão avaliadas da mais específica para a mais genérica. Cada <code>Route</code> associa um <code>path</code> (caminho da URL) a um <code>element</code> (componente React). Quando a URL corresponde ao <code>path</code>, o componente especificado é renderizado.</p>
+</div>
+
         <h3>Passo 4 — Adicionar navegação com Links</h3>
 
         <p>Crie um componente <b>Navbar.jsx</b>:</p>
@@ -529,6 +631,11 @@ export default Navbar;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Navbar</strong> utiliza o componente <code>Link</code> do React Router para criar links de navegação. Diferente de uma tag <code>&lt;a&gt;</code> tradicional, o <code>Link</code> não recarrega a página — ele apenas atualiza a URL e renderiza o componente correspondente no <code>Routes</code>. Cada <code>Link</code> possui o atributo <code>to</code> que define o caminho da rota: <code>"/"</code> para Home, <code>"/about"</code> para Sobre e <code>"/contact"</code> para Contato.</p>
+</div>
 
         <p>Atualize o <b>App.jsx</b> para incluir a Navbar:</p>
         <div class="code-container">
@@ -557,6 +664,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> agora inclui o componente <strong>Navbar</strong> acima do sistema de rotas. Isso significa que a barra de navegação será exibida em todas as páginas da aplicação, pois ela está fora do componente <code>Routes</code>. O <code>BrowserRouter</code> continua encapsulando tudo, permitindo que tanto a Navbar quanto as rotas tenham acesso ao contexto de roteamento.</p>
+</div>
+
         <h3>Passo 5 — Rodar e testar</h3>
 
         <div class="code-container">
@@ -566,12 +678,22 @@ npm run dev
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm run dev</code> inicia o servidor de desenvolvimento do Vite. Com ele, você pode testar sua aplicação React em tempo real: qualquer alteração nos arquivos JSX é automaticamente refletida no navegador sem necessidade de recarregar a página manualmente (hot reload).</p>
+</div>
+
         <p>Acesse no navegador:</p>
         <div class="code-container">
           <pre><code class="language-bash">
 http://localhost:5173
           </code></pre>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O servidor de desenvolvimento do Vite é iniciado no endereço <code>http://localhost:5173</code>. Ao acessar esse endereço no navegador, você verá sua aplicação React com o roteamento configurado funcionando. A página inicial exibirá o componente <strong>Home</strong>, e você poderá navegar entre as páginas usando os links da <strong>Navbar</strong>.</p>
+</div>
 
         <h3>Último Passo — Subindo para o Git</h3>
 
@@ -583,6 +705,21 @@ git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>git add .</code> adiciona todos os arquivos modificados à área de staging. <code>git commit -m "aula 9: react router com multi paginas"</code> cria um snapshot das alterações com uma mensagem descritiva. <code>git push</code> envia os commits para o repositório remoto no GitHub.</p>
+</div>
+
+<div class="alert-box-github">
+  <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+  <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+  <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+  <p>Selecione a branch correspondente a esta aula:</p>
+  <ul>
+    <li><code>aula9-react-router</code></li>
+  </ul>
+</div>
       </section>
 
       <!-- DEVER -->
@@ -634,6 +771,11 @@ export default Blog;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Blog</strong> utiliza o componente <code>Link</code> do React Router para criar navegação entre páginas sem recarregar o navegador. A lista de posts é percorrida com <code>map</code>, gerando um item de lista <code>&lt;li&gt;</code> para cada post. Cada <code>Link</code> aponta para uma rota dinâmica <code>/post/{id}</code>, permitindo que o usuário clique e seja direcionado para a página detalhada de cada post.</p>
+</div>
+
               <p><b>2. Post.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -664,6 +806,11 @@ export default Post;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Post</strong> utiliza o hook <code>useParams</code> para capturar o parâmetro <code>:id</code> da URL. Internamente, ele mantém uma lista de posts com <code>id</code>, <code>titulo</code> e <code>conteudo</code>. A função <code>find</code> localiza o post cujo <code>id</code> corresponde ao parâmetro da URL (convertido para número). Caso o post não exista, exibe uma mensagem de erro; caso contrário, renderiza o título e o conteúdo do post encontrado.</p>
+</div>
+
               <p><b>3. App.jsx — rotas atualizadas:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -686,6 +833,12 @@ export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
+
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> configura o roteador principal da aplicação. O <code>BrowserRouter</code> envolve toda a árvore de componentes e gerencia o histórico de navegação. Dentro dele, o componente <code>Routes</code> define um sistema de roteamento exclusivo: a primeira rota <code>path="/"</code> renderiza o <strong>Blog</strong> como página inicial, e a segunda rota <code>path="/post/:id"</code> usa um parâmetro dinâmico <code>:id</code> para identificar qual post específico será exibido através do componente <strong>Post</strong>.</p>
+</div>
+
             </div>
           </div>
         </div>

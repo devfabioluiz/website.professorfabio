@@ -54,6 +54,16 @@ function Lista() {
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <strong>Fragment</strong> (<code>&lt;&gt;&lt;/&gt;</code>) permite agrupar os
+            <code>&lt;li&gt;</code> sem adicionar uma <code>&lt;div&gt;</code> extra ao DOM.
+            Isso é útil quando você precisa retornar múltiplos elementos irmãos sem um nó
+            pai desnecessário, mantendo o HTML final mais limpo.
+          </p>
+        </div>
       </section>
 
       <h2>Tipos de Componentes</h2>
@@ -90,6 +100,16 @@ export default HelloWorld;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <strong>Componentes de classe</strong> estendem <code>Component</code> do React e
+            precisam implementar o método <code>render()</code>, que retorna o JSX. Eles foram
+            a forma original de criar componentes com estado e ciclo de vida no React, mas hoje
+            são menos usados devido à chegada dos Hooks nos componentes funcionais.
+          </p>
+        </div>
+
         <p>
           <b>Componentes Funcionais:</b> São funções JavaScript simples que
           retornam JSX. Com o React Hooks, eles podem gerenciar o estado e os
@@ -112,6 +132,16 @@ export default HelloWorld;
 </code>
 </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <strong>Componentes funcionais</strong> são funções JavaScript que retornam JSX.
+            Com os Hooks (como <code>useState</code> e <code>useEffect</code>), eles se tornaram
+            a forma moderna e recomendada de criar componentes em React, substituindo os
+            componentes de classe. São mais simples, concisos e fáceis de testar.
+          </p>
         </div>
       </section>
 
@@ -208,6 +238,22 @@ export default Contador;
         <button class="btn-copy">Copiar Código</button>
       </div>
 
+      <div class="alert-explicando-codigo">
+        <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+        <p>
+          O <code>useState</code> é um Hook que gerencia <strong>estado local</strong> no componente.
+          <code>const [contador, setContador] = useState(0)</code> cria uma variável de estado
+          <code>contador</code> com valor inicial <code>0</code> e uma função <code>setContador</code>
+          para atualizá-lo.
+        </p>
+        <p>
+          Cada vez que <code>setContador</code> é chamada (ex: <code>setContador(contador + 1)</code>),
+          o React re-renderiza o componente automaticamente, refletindo o novo valor na interface.
+          O estado é <strong>imutável</strong> — você nunca o modifica diretamente, sempre usa a
+          função de atualização.
+        </p>
+      </div>
+
       <h5>Exemplo 2</h5>
       <p>
         O estado pode ser um objeto para lidar com dados mais complexos. É
@@ -247,6 +293,20 @@ export default PerfilUsuario;
         <button class="btn-copy">Copiar Código</button>
       </div>
 
+      <div class="alert-explicando-codigo">
+        <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+        <p>
+          Quando o estado é um <strong>objeto</strong>, você deve tomar cuidado ao atualizá-lo.
+          O código <code>setPerfil({ ...perfil, cidade: "Rio de Janeiro" })</code> usa o
+          <strong>operador spread</strong> (<code>...perfil</code>) para copiar todas as
+          propriedades existentes do objeto e depois sobrescreve apenas <code>cidade</code>.
+        </p>
+        <p>
+          Sem o spread, as propriedades <code>nome</code> e <code>idade</code> seriam perdidas,
+          pois o <code>setPerfil</code> substitui o estado inteiro pelo novo objeto passado.
+        </p>
+      </div>
+
       <h4>Side Effects (hook useEffect)</h4>
       <section>
         <p>
@@ -276,6 +336,21 @@ export default Timer;
 </code>
 </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>useEffect</code> executa <strong>efeitos colaterais</strong> após a renderização.
+            Neste exemplo, o <code>setTimeout</code> dentro do <code>useEffect</code> atualiza o
+            contador a cada 1 segundo.
+          </p>
+          <p>
+            <strong>Atenção:</strong> Como não passamos um array de dependências (segundo argumento),
+            este efeito executa em <strong>toda renderização</strong>, criando um novo timeout a cada
+            atualização. Isso pode causar loops inesperados. Idealmente, deve-se especificar
+            dependências ou usar <code>setInterval</code> com cleanup.
+          </p>
         </div>
 
         <h5>Exemplo 2</h5>
@@ -313,6 +388,21 @@ export default Relogio;
 </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Este <code>useEffect</code> é um exemplo de <strong>efeito com cleanup</strong>.
+            O <code>setInterval</code> atualiza o estado <code>horario</code> a cada segundo,
+            e a <strong>função de cleanup</strong> <code>return () => clearInterval(intervalo)</code>
+            é executada quando o componente desmonta, evitando vazamento de memória.
+          </p>
+          <p>
+            O array vazio <code>[]</code> como dependência faz com que o efeito execute
+            <strong>apenas uma vez</strong>, na montagem do componente — sem ele, o
+            intervalo seria recriado a cada renderização.
+          </p>
+        </div>
       </section>
 
       <section>
@@ -332,6 +422,23 @@ git fetch
 git checkout -b aula2-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>cd projeto-step-react</code></strong> — Navega para a pasta do repositório.
+            Note que aqui não usamos <code>git clone</code> pois o repositório já foi clonado na aula 1.
+          </p>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches e referências mais recentes
+            do repositório remoto, mantendo o repositório local sincronizado com o GitHub.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula2-react</code></strong> — Cria uma nova branch chamada
+            <code>aula2-react</code> a partir da branch atual (<code>main</code>) e já muda para ela.
+            A flag <code>-b</code> é essencial para criar uma nova branch.
+          </p>
         </div>
 
         <h3>Passo 1 — Criar o componente PlacarDoJogo</h3>
@@ -448,6 +555,27 @@ export default PlacarDoJogo;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <strong>PlacarDoJogo</strong> é um componente completo que gerencia múltiplos estados
+            simultaneamente: <code>minutos</code>, <code>segundos</code>, <code>jogando</code>,
+            <code>golsCasa</code>, <code>golsVisitante</code> e <code>acrescimos</code>. Cada
+            <code>useState</code> é independente.
+          </p>
+          <p>
+            O <code>useEffect</code> com dependências <code>[jogando, minutos]</code> controla o
+            cronômetro: ele só executa quando <code>jogando</code> ou <code>minutos</code> mudam,
+            e a função de cleanup (<code>clearInterval</code>) garante que não haja múltiplos
+            intervalos rodando simultaneamente.
+          </p>
+          <p>
+            As funções <code>golCasa</code> e <code>golVisitante</code> usam o <strong>callback</strong>
+            <code>(prev) => prev + 1</code> para atualizar o estado com base no valor anterior,
+            evitando problemas de concorrência em atualizações rápidas.
+          </p>
+        </div>
+
         <h3>Passo 3 — Renderizar o componente no App</h3>
 
         <p>No <code>src/App.jsx</code>, importe e renderize o PlacarDoJogo:</p>
@@ -470,6 +598,15 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>App.jsx</code> importa e renderiza o <code>PlacarDoJogo</code>. Note que
+            o componente é "auto-suficiente": ele gerencia todo o seu próprio estado internamente,
+            então o <code>App</code> apenas o insere na página.
+          </p>
+        </div>
+
         <h3>Último Passo - Subindo para o Git</h3>
 
         <p>Execute os comandos abaixo:</p>
@@ -481,6 +618,40 @@ git commit -m "aula 2 react hooks e placar do jogo"
 git push --set-upstream origin aula2-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Adiciona todos os arquivos modificados à área de staging.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria um commit com uma mensagem descritiva.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula2-react</code></strong> — Envia os commits para o
+            repositório remoto. A flag <code>--set-upstream</code> (ou <code>-u</code>) define a branch
+            remota <code>origin/aula2-react</code> como destino padrão para <code>git push</code> futuros
+            nesta branch local.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-react-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula2-react</code></li>
+          </ul>
         </div>
       </section>
 
@@ -537,6 +708,17 @@ export default RelogioDigital;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>RelogioDigital</code> usa <code>useState(new Date())</code> para armazenar
+                  o horário atual e <code>useEffect</code> com <code>setInterval</code> para atualizá-lo
+                  a cada segundo. O array vazio <code>[]</code> garante que o intervalo seja criado
+                  apenas uma vez. O cleanup <code>clearInterval(intervalo)</code> impede vazamentos
+                  de memória quando o componente for removido da tela.
+                </p>
+              </div>
+
               <p><b>App.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -554,6 +736,15 @@ function App() {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>App.jsx</code> do gabarito segue o mesmo padrão: importa o componente
+                  <code>RelogioDigital</code> e o renderiza. Este padrão de importação e uso será
+                  repetido em todas as aulas seguintes.
+                </p>
               </div>
             </div>
           </div>

@@ -52,6 +52,16 @@ export default Saudacao;
             </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O componente <code>Saudacao</code> recebe <code>props</code> como parâmetro e acessa
+            <code>props.nome</code> para exibir o valor passado. Este é o exemplo mais básico
+            de <strong>props</strong> em React: o componente pai passa um atributo
+            <code>nome="valor"</code> e o filho o renderiza.
+          </p>
+        </div>
       </section>
       <h2>Passagem de dados entre componentes (Pai/Filho)</h2>
       <section>
@@ -83,6 +93,19 @@ export default Parent;
 </code>
         </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Aqui temos dois componentes no mesmo arquivo: <code>Child</code> recebe <code>message</code>
+            via desestruturação e o exibe. <code>Parent</code> renderiza <code>Child</code> passando
+            a prop <code>message="Olá, do componente Pai!"</code>.
+          </p>
+          <p>
+            Essa é a <strong>comunicação unidirecional</strong> (pai → filho) típica do React.
+            Os dados fluem de cima para baixo na árvore de componentes.
+          </p>
         </div>
 
         <h4>Vantagens</h4>
@@ -138,6 +161,20 @@ export default Parent;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Para <strong>comunicação filho → pai</strong>, o pai passa uma <strong>função</strong>
+            como prop (<code>sendDataToParent</code>). O filho a invoca com os dados desejados
+            (<code>sendDataToParent('Dados do Filho')</code>).
+          </p>
+          <p>
+            No pai, <code>handleDataFromChild</code> recebe o dado e atualiza o estado
+            <code>data</code> via <code>setData</code>, fazendo o React re-renderizar
+            automaticamente o componente com o novo valor.
+          </p>
+        </div>
+
         <h4>Vantagens</h4>
         <ul>
           <li>Permite que o pai reaja a eventos do filho.</li>
@@ -169,6 +206,26 @@ git checkout -b aula3-react
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula2-react</code></strong> — Muda para a branch da aula anterior.
+            Isso garante que a nova branch parta do código correto.
+          </p>
+          <p>
+            <strong><code>git pull</code></strong> — Baixa e mescla (merge) as alterações mais recentes
+            da branch remota com sua branch local. Garante que você está trabalhando com a versão
+            mais atualizada do código da aula anterior.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula3-react</code></strong> — Cria e muda para a nova branch
+            <code>aula3-react</code> a partir do estado atual da <code>aula2-react</code>.
+          </p>
+        </div>
+
         <h3>Passo 1 — Criar o componente Filho</h3>
 
         <p>Crie o arquivo <code>src/components/Filho.jsx</code>:</p>
@@ -189,6 +246,16 @@ const Filho = ({ message, sendDataToParent }) => {
 export default Filho;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>Filho</code> recebe duas props: <code>message</code> (string exibida no parágrafo)
+            e <code>sendDataToParent</code> (função chamada no clique do botão). A seta
+            <code>onClick={() => sendDataToParent('Dados do Filho')}</code> cria uma função anônima
+            que invoca <code>sendDataToParent</code> com os dados.
+          </p>
         </div>
 
         <h3>Passo 2 — Criar o componente Pai</h3>
@@ -221,6 +288,22 @@ export default Pai;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>Pai</code> gerencia o estado <code>dadosDoFilho</code> e passa para o
+            <code>Filho</code> duas props: <code>message</code> (string) e
+            <code>sendDataToParent</code> (função <code>receberDados</code>). Quando o
+            <code>Filho</code> chama essa função, o estado do <code>Pai</code> é atualizado
+            e a mensagem aparece na tela.
+          </p>
+          <p>
+            Este padrão de <strong>elevação de estado</strong> (lifting state up) é fundamental
+            no React: o estado fica no componente pai, e o filho o modifica através de funções
+            passadas via props.
+          </p>
+        </div>
+
         <h3>Passo 3 — Renderizar o componente no App</h3>
 
         <p>
@@ -242,6 +325,15 @@ function App() {
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O <code>App.jsx</code> importa apenas o <code>Pai</code>, que por sua vez importa
+            e renderiza o <code>Filho</code> internamente. Toda a lógica de comunicação
+            pai/filho fica encapsulada dentro do componente <code>Pai</code>.
+          </p>
         </div>
 
         <h3>Passo 4 — Rodar o projeto e testar</h3>
@@ -270,6 +362,39 @@ git commit -m "aula 3 react props e comunicacao pai filho"
 git push --set-upstream origin aula3-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos modificados para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit com a mensagem descritiva.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula3-react</code></strong> — Envia a branch
+            para o GitHub e define a origem remota. Nas próximas vezes, apenas <code>git push</code>
+            será suficiente.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-react-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula3-react</code></li>
+          </ul>
         </div>
       </section>
 
@@ -327,6 +452,16 @@ export default FormularioFilho;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>FormularioFilho</code> gerencia seu próprio estado <code>inputValue</code>
+                  para o campo de texto. Ao clicar em "Enviar", ele chama <code>enviarDados(inputValue)</code>
+                  (função recebida do pai) e limpa o input. Este é um padrão comum de
+                  <strong>componente controlado</strong> em React.
+                </p>
+              </div>
+
               <p>
                 <b>Componente <code>PaiFormulario.jsx</code>:</b>
               </p>
@@ -351,6 +486,16 @@ export default PaiFormulario;
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>PaiFormulario</code> é mais simples que o <code>Pai</code> da aula:
+                  ele passa a própria função <code>setDados</code> diretamente como prop
+                  <code>enviarDados</code>. Isso funciona porque <code>setDados</code> já é
+                  uma função que atualiza o estado. É um padrão útil para casos simples.
+                </p>
+              </div>
+
               <p><b>App.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -368,6 +513,15 @@ function App() {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  O <code>App.jsx</code> do gabarito segue o mesmo padrão das aulas anteriores:
+                  importa o componente principal e o renderiza. A comunicação pai/filho fica
+                  toda encapsulada dentro de <code>PaiFormulario</code>.
+                </p>
               </div>
             </div>
           </div>

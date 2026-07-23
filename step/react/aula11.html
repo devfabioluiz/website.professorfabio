@@ -89,6 +89,10 @@
                 </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Este exemplo cria um <strong>Modal</strong> utilizando <code>ReactDOM.createPortal</code>. O modal é renderizado fora da hierarquia DOM do componente pai, mas mantém o contexto React. O primeiro argumento do <code>createPortal</code> é o JSX a ser renderizado, e o segundo é o nó DOM alvo (<code>document.getElementById('modal-root')</code>). Isso evita problemas de <em>z-index</em> e estilos herdados, comuns em modais aninhados.</p>
+</div>
 
           <h5>Exemplo 2</h5>
           <div class="code-container">
@@ -151,6 +155,10 @@ export default App;
             </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>No Exemplo 2, um <strong>Tooltip</strong> é posicionado dinamicamente usando <code>getBoundingClientRect()</code> do elemento alvo, capturado via <code>useRef</code>. O portal renderiza o tooltip em <code>document.body</code>, garantindo que ele apareça sobre todos os outros elementos. O cálculo da posição (<code>top</code>, <code>left</code>) é feito com base nas coordenadas do elemento referenciado.</p>
+</div>
 
           <h5>Exemplo 3</h5>
           <div class="code-container">
@@ -216,6 +224,11 @@ export default App;
               </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>Dropdown</strong> usa o mesmo padrão dos exemplos anteriores: <code>ReactDOM.createPortal</code> para renderizar o menu em <code>document.body</code>. A posição é calculada dinamicamente com <code>getBoundingClientRect()</code> a partir do botão âncora (<code>anchorRef</code>). O menu é exibido condicionalmente com base no estado <code>open</code>, e cada item é um <code>&lt;li&gt;</code> clicável.</p>
+</div>
+
         </section>
 
         <h2>Referências (Refs)</h2>
@@ -255,6 +268,10 @@ function Formulario() {
             </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O hook <code>useRef</code> cria um objeto com a propriedade <code>current</code>, que é atribuída ao elemento JSX via o atributo <code>ref</code>. Aqui, <code>inputRef.current.focus()</code> é chamado imperativamente para focar o input — algo que não seria possível apenas com estado e props. useRef não causa re-renderização ao ser alterado.</p>
+</div>
 
           <h5>Exemplo 2</h5>
           <div class="code-container">
@@ -288,6 +305,10 @@ export default VideoPlayer;
             </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Neste exemplo, <code>useRef</code> é usado para controlar a reprodução de um vídeo. As funções <code>play()</code> e <code>pause()</code> são chamadas diretamente no elemento de vídeo do DOM, permitindo controle imperativo sobre a mídia. Esse padrão é comum para integração com APIs de navegador que não são reativas, como a API de áudio/vídeo.</p>
+</div>
 
           <h5>Exemplo 3</h5>
           <div class="code-container">
@@ -327,6 +348,11 @@ const Filho = forwardRef((props, ref) =&gt; {
             </pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p><code>forwardRef</code> permite que um componente funcional receba uma <code>ref</code> do componente pai. Já <code>useImperativeHandle</code> customiza o valor da ref exposta ao pai, controlando quais métodos ou propriedades serão acessíveis. Aqui, o componente <strong>Filho</strong> expõe o método <code>digaOla()</code>, que pode ser chamado pelo <strong>Pai</strong> através de <code>filhoRef.current.digaOla()</code>.</p>
+</div>
+
         </section>
       </div>
       <!-- PASSO A PASSO -->
@@ -357,6 +383,10 @@ git pull
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p><code>git clone</code> baixa o repositório remoto para o seu computador. <code>git fetch</code> atualiza as referências locais com as branches do remoto. <code>git checkout aula11-portal-modal</code> alterna para a branch específica desta aula. <code>git pull</code> baixa e faz merge das alterações mais recentes do remoto com a branch local.</p>
+</div>
 
         <h3>Passo 1 — Criar o projeto</h3>
 
@@ -367,6 +397,10 @@ npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm create vite@latest . -- --template react</code> cria um novo projeto React no diretório atual usando o Vite como bundler. O Vite oferece hot-reload rápido e otimizações de produção. Em seguida, <code>npm install</code> instala todas as dependências do projeto.</p>
+</div>
 
         <h3>Passo 2 — Adicionar o elemento modal-root no index.html</h3>
 
@@ -378,6 +412,10 @@ npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Adicionamos <code>&lt;div id="modal-root"&gt;&lt;/div&gt;</code> ao <strong>index.html</strong> como um contêiner separado fora da <code>div#root</code>. Esse elemento será o destino do <code>ReactDOM.createPortal</code> no componente Modal, permitindo que o modal seja renderizado fora da hierarquia principal do React, evitando conflitos de CSS e z-index.</p>
+</div>
 
         <h3>Passo 3 — Criar o componente Modal com Portal</h3>
 
@@ -433,6 +471,10 @@ export default Modal;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Modal</strong> utiliza <code>ReactDOM.createPortal</code> para renderizar seu conteúdo em <code>document.getElementById('modal-root')</code>, um nó fora da hierarquia principal. O <code>useRef</code> captura a referência do <code>&lt;div&gt;</code> overlay e, através do <code>useEffect</code>, o foco é movido para o modal quando ele é aberto (<code>modalRef.current.focus()</code>). O <code>tabIndex={-1}</code> permite que a <code>div</code> receba foco programaticamente. O clique no overlay fecha o modal (<code>onClick={onClose}</code>), e o clique no conteúdo interno é interrompido com <code>e.stopPropagation()</code> para evitar fechamento indesejado.</p>
+</div>
 
         <h3>Passo 4 — Usar o Modal no App.jsx</h3>
 
@@ -460,6 +502,10 @@ export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>No <strong>App.jsx</strong>, o estado <code>isOpen</code> controla a visibilidade do Modal. O botão "Abrir Modal" define <code>isOpen</code> como <code>true</code>, e o botão "Fechar" dentro do Modal o retorna para <code>false</code>. O componente <code>Modal</code> recebe <code>isOpen</code> e <code>onClose</code> como props, e seu conteúdo é passado via <code>children</code>.</p>
+</div>
 
         <h3>Passo 5 — Rodar e testar</h3>
 
@@ -469,6 +515,10 @@ npm run dev
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm run dev</code> inicia o servidor de desenvolvimento do Vite, que fornece hot-reload automático. Qualquer alteração nos arquivos será refletida imediatamente no navegador sem necessidade de recarregar manualmente a página.</p>
+</div>
 
         <p>Acesse no navegador:</p>
         <div class="code-container">
@@ -476,6 +526,10 @@ npm run dev
 http://localhost:5173
           </code></pre>
         </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Abra o endereço <code>http://localhost:5173</code> no navegador para visualizar o projeto em execução. A porta <strong>5173</strong> é a padrão do Vite. Teste o modal clicando no botão "Abrir Modal" e verifique o gerenciamento de foco e a renderização via Portal.</p>
+</div>
 
         <h3>Último Passo — Subindo para o Git</h3>
 
@@ -487,6 +541,20 @@ git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p><code>git add .</code> adiciona todos os arquivos modificados à área de staging. <code>git commit -m "aula 11: modal com portal e useref"</code> cria um snapshot das alterações com uma mensagem descritiva. <code>git push</code> envia os commits para o repositório remoto no GitHub.</p>
+</div>
+
+<div class="alert-box-github">
+  <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+  <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+  <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+  <p>Selecione a branch correspondente a esta aula:</p>
+  <ul>
+    <li><code>aula11-portal-modal</code></li>
+  </ul>
+</div>
       </section>
 
       <!-- DEVER -->
@@ -544,6 +612,10 @@ export default Tooltip;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Tooltip</strong> usa <code>ReactDOM.createPortal</code> para renderizar a dica em <code>document.body</code>. A posição é calculada com <code>getBoundingClientRect()</code> a partir do elemento alvo (<code>targetRef</code>), centralizando horizontalmente com <code>translateX(-50%)</code>. O tooltip só é renderizado se <code>targetRef.current</code> existir.</p>
+</div>
 
               <p><b>App.jsx:</b></p>
               <div class="code-container">
@@ -575,6 +647,10 @@ export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>No <strong>App.jsx</strong> do gabarito, o estado <code>hover</code> controla a exibição do Tooltip. <code>useRef</code> captura a referência do botão para calcular a posição do tooltip. Os eventos <code>onMouseEnter</code> e <code>onMouseLeave</code> alternam o estado, fazendo o tooltip aparecer e desaparecer suavemente.</p>
+</div>
             </div>
           </div>
         </div>

@@ -81,6 +81,11 @@ export default FormularioControlado;
   <button class="btn-copy">Copiar Código</button>
 </div>
 
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Este componente <strong>FormularioControlado</strong> é um exemplo de formulário controlado em React. O estado <code>nome</code> é atualizado a cada digitação através do <code>handleChange</code>, que lê o valor do input com <code>e.target.value</code>. O <code>handleSubmit</code> previne o recarregamento da página com <code>e.preventDefault()</code> e exibe uma mensagem de alerta com o nome digitado. O input possui o atributo <code>value={nome}</code> para refletir o estado atual e <code>onChange={handleChange}</code> para capturar as alterações.</p>
+</div>
+
 <h5>Exemplo 2</h5>
 <p>
   Neste exemplo, capturamos os valores de vários campos (nome e e-mail) usando um estado representado como um objeto.
@@ -137,6 +142,11 @@ export default FormularioMultiCampos;
 </code>
   </pre>
   <button class="btn-copy">Copiar Código</button>
+</div>
+
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>FormularioMultiCampos</strong> gerencia múltiplos campos (nome e email) usando um único objeto no estado. A função <code>handleChange</code> extrai <code>name</code> e <code>value</code> do input disparado e atualiza dinamicamente a propriedade correspondente no objeto com <code>setFormData({ ...formData, [name]: value })</code>. Essa técnica é chamada de <em>dynamic property assignment</em> e evita criar uma função separada para cada campo.</p>
 </div>
 
 <h4>Benefícios de Formulários Controlados</h4>
@@ -217,6 +227,12 @@ export default FormWithValidation;
 </code>
 </pre><button class="btn-copy">Copiar Código</button>
 </div>
+
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>FormWithValidation</strong> implementa validação customizada sem bibliotecas externas. A função <code>validate()</code> percorre os campos e preenche um objeto <code>newErrors</code> com mensagens de erro caso as regras sejam violadas. O email é validado com uma expressão regular (<code>/\S+@\S+\.\S+/</code>). As mensagens de erro são exibidas condicionalmente com <code>{errors.name && &lt;span&gt;{errors.name}&lt;/span&gt;}</code>.</p>
+</div>
+
         </div>
 
         <h4>Passar Dados de um Formulário para Outro</h4>
@@ -264,6 +280,12 @@ export default ParentForm;
 </code>
     </pre><button class="btn-copy">Copiar Código</button>
 </div>
+
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Este exemplo demonstra a comunicação entre componentes pai e filho. O componente <strong>ParentForm</strong> passa uma função <code>onFormSubmit</code> como prop para <strong>ChildForm</strong>. Quando o formulário filho é enviado, ele chama <code>onFormSubmit(childData)</code>, que atualiza o estado <code>parentData</code> no componente pai. Essa é a abordagem padrão em React para passar dados de um componente filho para o pai através de <em>props</em>.</p>
+</div>
+
         </div>
         <h4>Como Usar Elementos de Formulários com Material-UI em React</h4>
 <p>
@@ -311,6 +333,11 @@ export default FormularioTexto;
 </code>
   </pre>
   <button class="btn-copy">Copiar Código</button>
+</div>
+
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>FormularioTexto</strong> utiliza componentes do Material-UI como <code>&lt;TextField&gt;</code> e <code>&lt;Button&gt;</code>. O <code>&lt;TextField&gt;</code> substitui o input HTML tradicional, já incluindo estilização, label e borda através da prop <code>variant="outlined"</code>. O estado continua sendo gerenciado da mesma forma que um formulário controlado convencional, com <code>value</code> e <code>onChange</code>.</p>
 </div>
 
 <h5>Exemplo 2</h5>
@@ -368,6 +395,11 @@ export default FormularioSelectCheckbox;
   <button class="btn-copy">Copiar Código</button>
 </div>
 
+<div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>FormularioSelectCheckbox</strong> mostra como usar <code>&lt;Select&gt;</code> e <code>&lt;Checkbox&gt;</code> do Material-UI. O <code>&lt;Select&gt;</code> é envolvido por um <code>&lt;FormControl&gt;</code> com <code>fullWidth</code> para responsividade. O <code>&lt;Checkbox&gt;</code> é integrado com <code>&lt;FormControlLabel&gt;</code> para exibir o texto ao lado. Cada componente possui seu próprio estado e manipulador de eventos.</p>
+</div>
+
 <h4>Benefícios do Uso do Material-UI em Formulários</h4>
 <p>
   Trabalhar com formulários no Material-UI oferece as seguintes vantagens:
@@ -405,6 +437,11 @@ git checkout aula8-formularios-react
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>git fetch</code> baixa as referências e branches do repositório remoto sem fazer merge automático. Em seguida, <code>git checkout aula8-formularios-react</code> alterna para a branch específica da aula, permitindo que você trabalhe isoladamente nesta aula sem interferir em outras branches.</p>
+</div>
+
         <h3>Passo 1 — Criar o projeto React</h3>
 
         <div class="code-container">
@@ -415,6 +452,11 @@ npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm create vite@latest registration-form -- --template react</code> cria um novo projeto React usando o Vite como bundler. O Vite é uma ferramenta de build moderna que oferece hot-reload rápido e otimizações de produção. Em seguida, <code>cd registration-form</code> entra na pasta do projeto e <code>npm install</code> instala todas as dependências necessárias.</p>
+</div>
 
         <h3>Passo 2 — Criar formulário de registro controlado</h3>
 
@@ -534,6 +576,11 @@ export default RegistrationForm;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>RegistrationForm</strong> gerencia um formulário controlado com validação completa. O estado <code>formData</code> armazena todos os campos (nome, email, senha e confirmação). A função <code>validate()</code> verifica campos obrigatórios, formato de email e correspondência de senhas. Os erros são exibidos dinamicamente ao lado de cada campo quando a validação falha.</p>
+</div>
+
         <h3>Passo 3 — Adicionar campo de seleção (select)</h3>
 
         <p>Adicione um campo de seleção de país ao formulário:</p>
@@ -639,6 +686,11 @@ export default RegistrationForm;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Este passo adiciona um campo <code>&lt;select&gt;</code> de país ao formulário. O estado <code>formData</code> agora inclui a propriedade <code>country</code>. A validação verifica se um país foi selecionado (<code>!formData.country</code>). O seletor usa o mesmo <code>handleChange</code> genérico, demonstrando como um único manipulador pode atender diferentes tipos de input.</p>
+</div>
+
         <h3>Passo 4 — Usar o formulário no App</h3>
 
         <div class="code-container">
@@ -659,6 +711,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O arquivo <strong>App.jsx</strong> importa e renderiza o componente <code>RegistrationForm</code>. O componente é inserido dentro de uma <code>&lt;div&gt;</code> com um título. Essa é a estrutura padrão de entrada de uma aplicação React, onde o componente raiz <code>App</code> organiza os demais componentes da página.</p>
+</div>
+
         <h3>Último Passo - Subindo para o Git</h3>
 
         <p>Agora vamos salvar tudo no repositório:</p>
@@ -671,6 +728,21 @@ git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p><code>git add .</code> adiciona todos os arquivos modificados à área de staging. <code>git commit -m "aula 8 formularios react"</code> cria um snapshot das alterações com uma mensagem descritiva. <code>git push</code> envia os commits para o repositório remoto no GitHub.</p>
+</div>
+
+<div class="alert-box-github">
+  <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+  <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+  <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+  <p>Selecione a branch correspondente a esta aula:</p>
+  <ul>
+    <li><code>aula8-formularios-react</code></li>
+  </ul>
+</div>
       </section>
 
       <section>
@@ -797,6 +869,12 @@ export default FeedbackForm;
                 <button class="btn-copy">Copiar Código</button>
               </div>
             </div>
+
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>FeedbackForm</strong> implementa um formulário completo de feedback. Ele valida todos os campos, incluindo o tamanho mínimo de 10 caracteres para a mensagem. Ao enviar com sucesso, os dados são armazenados no estado <code>submitted</code> e exibidos abaixo do formulário. O botão "Limpar" reseta o formulário através da função <code>handleClear</code>, que restaura os estados ao valor inicial.</p>
+</div>
+
           </div>
         </div>
       </section>

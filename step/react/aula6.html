@@ -74,6 +74,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Este código CSS define uma classe <code>.container</code> com estilos para centralizar e estilizar um contêiner: fundo claro, bordas arredondadas, padding e fonte Arial. No React, esse CSS é importado diretamente no componente com <code>import "./App.css"</code>, e as classes são aplicadas via <code>className</code> (equivalente ao <code>class</code> do HTML, mas adaptado ao JSX).</p>
+        </div>
+
         <h4>Usando Inline Styles</h4>
         <p>
           Os estilos são definidos como objetos JavaScript e aplicados
@@ -108,6 +113,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Este exemplo demonstra <strong>estilos inline</strong> no React. Os estilos são definidos como um objeto JavaScript (<code>estiloContainer</code>) com propriedades em <strong>camelCase</strong> (ex: <code>backgroundColor</code> em vez de <code>background-color</code>). O objeto é passado para a prop <code>style</code> do elemento JSX. Essa abordagem é prática para estilos dinâmicos, mas não substitui arquivos CSS para estilos mais complexos.</p>
+        </div>
+
         <h4>Usando CSS Modules</h4>
         <p>
           CSS Modules é uma abordagem de estilização que permite escopar
@@ -137,6 +147,12 @@ export default App;
   </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>CSS Modules</strong> escopa os estilos automaticamente ao componente. O arquivo <code>App.module.css</code> é importado como um objeto JavaScript (<code>styles</code>), e as classes são aplicadas via <code>className={styles.container}</code>. Isso evita conflitos de nomes de classes entre diferentes componentes, pois o Vite/Webpack gera nomes únicos durante o build.</p>
+        </div>
+
         <div class="code-container">
           <pre class="code">
 <code class="language-javascript">
@@ -156,6 +172,11 @@ export default App;
 </code>
   </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>No <strong>CSS Modules</strong> com JavaScript, o arquivo de estilos é importado como módulo: <code>import styles from "./App.module.css"</code>. As classes definidas no CSS viram propriedades do objeto <code>styles</code>, permitindo o uso via <code>className={styles.container}</code>. Isso garante que os estilos de um componente nunca interfiram em outros componentes com nomes de classe idênticos.</p>
         </div>
       </section>
 
@@ -216,6 +237,11 @@ function App() {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Styled Components</strong> usa a sintaxe de <strong>tagged template literals</strong> (crases) para criar componentes estilizados. <code>styled.button</code> cria um componente <code>button</code> com os estilos CSS definidos dentro das crases. As props são acessadas via <code>${props => ...}</code>, permitindo estilos dinâmicos. O componente <code>Button</code> criado pode ser usado como qualquer outro componente React, aceitando props como <code>primary</code> para alterar sua aparência.</p>
+        </div>
+
         <p>
           Veja este artigo que explica sobre o atual cenário do Styled
           Components:
@@ -273,6 +299,11 @@ function Button({ primary, children }) {
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Emotion</strong> com a função <code>css</code> cria estilos dinâmicos em tempo de execução. A função <code>buttonStyle</code> recebe um parâmetro e retorna um estilo CSS condicional. O componente <code>Button</code> usa a prop <code>css</code> (disponível graças ao pragma <code>@emotion/react</code>) para aplicar o estilo. Essa abordagem permite lógica JavaScript dentro dos estilos, como o operador ternário que escolhe a cor de fundo.</p>
+        </div>
       </section>
 
       <h2>Vanilla Extract</h2>
@@ -319,6 +350,11 @@ export const botao = style({
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Vanilla Extract</strong> usa a função <code>style()</code> para definir estilos com tipagem estática em arquivos <code>.css.ts</code>. Diferente do CSS-in-JS tradicional, os estilos são compilados em arquivos CSS estáticos durante o build, eliminando a sobrecarga de tempo de execução. O objeto de estilo aceita pseudosseletores como <code>:hover</code> diretamente nas propriedades.</p>
+        </div>
+
         <div class="code-container">
           <pre>
 <code class="language-javascript">
@@ -334,6 +370,11 @@ export default Botao;
         </code>
     </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>No <strong>Vanilla Extract</strong> com React, o componente importa os estilos via <code>import * as styles from './styles.css'</code> e aplica as classes CSS com <code>className={styles.botao}</code>. Como os estilos são gerados em tempo de build, o <code>styles.css</code> é um arquivo CSS real, e não uma string injetada em tempo de execução — isso resulta em melhor performance.</p>
         </div>
       </section>
 
@@ -377,6 +418,11 @@ const App = () => {
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Tailwind CSS</strong> usa classes utilitárias pré-definidas diretamente no JSX. <code>bg-blue-500</code> define a cor de fundo azul, <code>text-white</code> define o texto branco, <code>p-2</code> adiciona padding e <code>rounded</code> arredonda as bordas. Não é necessário escrever CSS personalizado — a combinação de classes utilitárias constrói o design de forma rápida e consistente.</p>
+        </div>
       </section>
 
       <h2>Material-UI</h2>
@@ -416,6 +462,11 @@ const App = () => {
     </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Material-UI</strong> fornece componentes prontos e estilizados seguindo o Material Design do Google. O componente <code>Button</code> é importado diretamente da biblioteca e aceita props como <code>variant</code> (estilo visual) e <code>color</code> (esquema de cores). Não é necessário escrever CSS próprio — a biblioteca cuida da estilização completa e da consistência visual.</p>
+        </div>
       </section>
 
       <section>
@@ -443,6 +494,12 @@ git checkout aula6-estilizacao-componentes
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p><strong><code>git fetch</code></strong> — Busca as branches e referências mais recentes do repositório remoto, sincronizando o repositório local com o GitHub sem modificar seus arquivos.</p>
+          <p><strong><code>git checkout aula6-estilizacao-componentes</code></strong> — Muda para a branch <code>aula6-estilizacao-componentes</code> que foi criada no GitHub. Como a branch já existe no repositório remoto, o <code>git fetch</code> a torna disponível localmente.</p>
+        </div>
+
         <h3>Passo 1 — Criar o projeto React</h3>
 
         <div class="code-container">
@@ -452,6 +509,13 @@ cd styled-button
 npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p><strong><code>npm create vite@latest styled-button -- --template react</code></strong> — Cria um novo projeto React com Vite chamado <code>styled-button</code>. O Vite é uma ferramenta de build moderna e rápida para projetos web.</p>
+          <p><strong><code>cd styled-button</code></strong> — Navega para a pasta do projeto recém-criado.</p>
+          <p><strong><code>npm install</code></strong> — Instala todas as dependências do projeto listadas no <code>package.json</code>.</p>
         </div>
 
         <h3>Passo 2 — Estilizar botão com CSS externo</h3>
@@ -478,6 +542,11 @@ npm install
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Este arquivo <code>Button.css</code> define os estilos para o botão personalizado. A classe <code>.btn-custom</code> usa <code>background-color: #6200ea</code> (roxo) e bordas arredondadas. O <code>transition: background-color 0.3s</code> suaviza a mudança de cor ao passar o mouse. A pseudoclasse <code>:hover</code> escurece o fundo para <code>#3700b3</code>, dando feedback visual ao usuário.</p>
+        </div>
+
         <p>Depois crie o componente <strong>ButtonCSS.jsx</strong>:</p>
 
         <div class="code-container">
@@ -491,6 +560,11 @@ const ButtonCSS = ({ label }) => {
 export default ButtonCSS;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O componente <code>ButtonCSS</code> é um componente funcional que recebe a prop <code>label</code> via desestruturação. Ele importa o arquivo CSS externo <code>./Button.css</code> (o Vite aplica os estilos globalmente) e renderiza um botão com a classe <code>btn-custom</code> usando <code>className</code>. O texto do botão é dinâmico, vindo da prop <code>label</code>.</p>
         </div>
 
         <h3>Passo 3 — Estilizar botão com Inline Styles</h3>
@@ -517,6 +591,11 @@ export default ButtonInline;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <code>ButtonInline</code> usa <strong>estilos inline</strong> com um objeto JavaScript. A prop <code>primary</code> determina a cor de fundo via operador ternário: azul (<code>#1976d2</code>) se <code>primary</code> for verdadeiro, cinza (<code>#9e9e9e</code>) caso contrário. O objeto <code>styles</code> usa camelCase para as propriedades CSS (ex: <code>backgroundColor</code> em vez de <code>background-color</code>).</p>
+        </div>
+
         <h3>Passo 4 — Estilizar botão com Styled Components</h3>
 
         <p>Instale a biblioteca:</p>
@@ -526,6 +605,11 @@ export default ButtonInline;
 npm install styled-components
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O comando <code>npm install styled-components</code> baixa e instala a biblioteca <strong>Styled Components</strong> no projeto, adicionando-a às dependências do <code>package.json</code>. Após a instalação, podemos importar a função <code>styled</code> para criar componentes estilizados.</p>
         </div>
 
         <div class="code-container">
@@ -555,6 +639,11 @@ const ButtonStyled = ({ label, primary }) => {
 export default ButtonStyled;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <strong>Styled Components</strong> <code>StyledBtn</code> é criado com <code>styled.button</code> e template literals. As props são acessadas com <code>${(props) => ...}</code> para estilos condicionais. O componente <code>ButtonStyled</code> renderiza <code>StyledBtn</code> passando a prop <code>primary</code>, que define as cores. O <code>&:hover</code> usa o operador <code>&</code> do Sass para referenciar o próprio elemento no hover.</p>
         </div>
 
         <h3>Passo 5 — Usar todos os botões no App</h3>
@@ -587,6 +676,11 @@ export default App;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O <code>App.jsx</code> importa os três componentes de botão criados nos passos anteriores: <code>ButtonCSS</code>, <code>ButtonInline</code> e <code>ButtonStyled</code>. Cada um é renderizado com diferentes props para demonstrar as três abordagens de estilização. O <code>ButtonInline</code> e <code>ButtonStyled</code> usam a prop <code>primary</code> para alternar entre estilo primário e secundário.</p>
+        </div>
+
         <h3>Último Passo - Subindo para o Git</h3>
 
         <p>Agora vamos salvar tudo no repositório:</p>
@@ -598,6 +692,23 @@ git commit -m "aula 6 estilizacao de componentes"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">🛠️ Entendendo os comandos Git 📂</h2>
+          <p><strong><code>git add .</code></strong> — Adiciona todos os arquivos modificados e novos à área de staging, preparando-os para o commit.</p>
+          <p><strong><code>git commit -m "aula 6 estilizacao de componentes"</code></strong> — Cria um commit com uma mensagem descritiva, salvando o estado atual dos arquivos no histórico do Git.</p>
+          <p><strong><code>git push</code></strong> — Envia os commits para o repositório remoto no GitHub, sincronizando as alterações. Como a branch já foi criada no GitHub (Passo 0), o push encontra automaticamente o destino remoto.</p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+          <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula6-estilizacao-componentes</code></li>
+          </ul>
         </div>
       </section>
 
@@ -662,6 +773,11 @@ git push
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>O CSS Module do tema <strong>claro</strong> define um card com fundo branco (<code>#ffffff</code>), texto escuro (<code>#333333</code>) e sombra suave. O <code>transition: transform 0.3s</code> combinado com o <code>:hover</code> que aplica <code>scale(1.02)</code> cria um efeito de zoom suave ao passar o mouse. As classes <code>.title</code> e <code>.description</code> estilizam o título em negrito e a descrição em cinza.</p>
+              </div>
+
               <p><b>2. ThemedCardDark.module.css</b></p>
               <div class="code-container">
                 <pre><code class="language-css">
@@ -695,6 +811,11 @@ git push
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>O CSS Module do tema <strong>escuro</strong> segue a mesma estrutura do claro, mas com cores invertidas: fundo escuro (<code>#1e1e1e</code>), texto claro (<code>#e0e0e0</code>) e sombra mais intensa. O título ganha cor branca (<code>#ffffff</code>) para garantir contraste. Ambos os arquivos compartilham os mesmos nomes de classe (<code>.card</code>, <code>.title</code>, <code>.description</code>), mas o CSS Modules evita conflitos pois cada arquivo tem escopo próprio.</p>
+              </div>
+
               <p><b>3. ThemedCard.jsx</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
@@ -715,6 +836,11 @@ const ThemedCard = ({ title, description, theme }) => {
 export default ThemedCard;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>O componente <code>ThemedCard</code> importa <strong>ambos</strong> os CSS Modules (claro e escuro) e usa a prop <code>theme</code> para escolher qual aplicar via operador ternário: <code>theme === 'dark' ? darkStyles : lightStyles</code>. As classes <code>styles.card</code>, <code>styles.title</code> e <code>styles.description</code> são aplicadas dinamicamente, garantindo que o card se adapte ao tema escolhido sem conflitos de estilo.</p>
               </div>
 
               <p><b>4. App.jsx</b></p>
@@ -742,6 +868,11 @@ function App() {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>No <code>App.jsx</code> do gabarito, dois cards são renderizados: um com <code>theme="light"</code> e outro com <code>theme="dark"</code>. Cada um recebe <code>title</code> e <code>description</code> específicas. O componente <code>ThemedCard</code> internamente aplica o CSS Module correspondente, demonstrando na prática como criar componentes reutilizáveis com temas dinâmicos usando CSS Modules.</p>
               </div>
             </div>
           </div>

@@ -61,6 +61,10 @@ export default App;
         </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Este exemplo usa o hook <code>useState</code> para armazenar os dados retornados pela API. O <code>useEffect</code> com array de dependências vazio executa a requisição apenas uma vez, quando o componente é montado. O método <code>fetch</code> nativo do JavaScript faz a chamada HTTP, e <code>response.json()</code> converte a resposta para objeto JavaScript. Enquanto os dados não chegam, exibimos "Loading..." usando um operador ternário.</p>
+        </div>
         <h4>Vantagens</h4>
         <ul>
           <li>Nativo no JavaScript; nenhuma biblioteca externa necessária.</li>
@@ -100,6 +104,10 @@ export default App;
 </code>
           </pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Este exemplo utiliza a biblioteca Axios para fazer a requisição GET. Diferente do <code>fetch</code>, o Axios já retorna os dados em <code>response.data</code>, eliminando a necessidade de chamar <code>response.json()</code>. A sintaxe é mais concisa e o Axios oferece recursos como timeout e interceptadores embutidos, facilitando o tratamento global de requisições.</p>
         </div>
         <h4>Vantagens</h4>
         <ul>
@@ -157,6 +165,10 @@ const App = () => {
 export default App;
 </code>
         </pre>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O React Query (TanStack Query) gerencia o estado assíncrono de forma declarativa. O hook <code>useQuery</code> recebe uma chave única para identificar a query e uma função que retorna uma Promise. Ele retorna os estados <code>data</code>, <code>isLoading</code> e <code>error</code> automaticamente, eliminando a necessidade de gerenciar manualmente cada estado com <code>useState</code> e <code>useEffect</code>. O cache e a revalidação são feitos automaticamente pela biblioteca.</p>
+        </div>
         <h4>Vantagens</h4>
         <ul>
           <li>Cache de dados automático e revalidação em segundo plano.</li>
@@ -214,6 +226,10 @@ const App = () => {
 export default App;
 </code>
         </pre>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O SWR (stale-while-revalidate) é uma biblioteca leve para gerenciamento de dados remotos. O hook <code>useSWR</code> recebe a URL da API e uma função <code>fetcher</code> que define como os dados serão buscados. O SWR retorna os dados em cache enquanto revalida em segundo plano, garantindo uma experiência rápida. Ele também fornece os estados <code>data</code> e <code>error</code> para controlar a exibição.</p>
+        </div>
         <h4>Vantagens</h4>
         <ul>
           <li>Cache integrado e revalidação automática.</li>
@@ -259,6 +275,10 @@ git checkout aula7-requisicoes-http
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo" style="background: linear-gradient(135deg, #d4edda, #f0fff4); border-color: #28a745;">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O comando <code>git fetch</code> baixa as referências e branches do repositório remoto sem mesclar nada no seu código local. Já o <code>git checkout aula7-requisicoes-http</code> alterna para a branch que você criou no GitHub, permitindo que você trabalhe nela localmente. É uma boa prática sempre dar <code>git fetch</code> antes do checkout para garantir que você tenha a branch mais recente do remoto.</p>
+        </div>
 
         <h3>Passo 1 — Criar o projeto React</h3>
 
@@ -269,6 +289,10 @@ cd jsonplaceholder-app
 npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O comando <code>npm create vite@latest</code> cria um novo projeto Vite com React. O <code>jsonplaceholder-app</code> é o nome da pasta do projeto. O <code>cd jsonplaceholder-app</code> entra na pasta recém-criada, e <code>npm install</code> instala todas as dependências necessárias listadas no <code>package.json</code>. Após esses comandos, o projeto está pronto para ser executado com <code>npm run dev</code>.</p>
         </div>
 
         <h3>Passo 2 — Fazer requisição GET com fetch</h3>
@@ -326,6 +350,10 @@ export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Neste componente, usamos três estados: <code>users</code> para armazenar a lista de usuários, <code>loading</code> para controlar o carregamento, e <code>error</code> para capturar erros. Dentro do <code>useEffect</code>, fazemos uma requisição GET com <code>fetch</code> para a JSONPlaceholder API. Verificamos se a resposta é ok com <code>response.ok</code>, e em caso de erro lançamos uma exceção. Os dados são armazenados no estado <code>users</code> e exibidos em uma lista não ordenada com <code>map</code>.</p>
+        </div>
 
         <h3>Passo 3 — Refatorar com Axios</h3>
 
@@ -336,6 +364,10 @@ export default App;
 npm install axios
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O comando <code>npm install axios</code> instala a biblioteca Axios no projeto. Após a instalação, podemos importá-la e usar sua sintaxe simplificada para fazer requisições HTTP. O Axios será adicionado como dependência no <code>package.json</code> e estará disponível para uso em qualquer componente do projeto.</p>
         </div>
 
         <p>Refatore o <strong>App.jsx</strong> para usar Axios:</p>
@@ -384,6 +416,10 @@ export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>A refatoração com Axios mantém a mesma lógica do exemplo anterior, mas simplifica o código. <code>axios.get()</code> retorna uma Promise cujo resultado está em <code>response.data</code> — não precisamos mais chamar <code>response.json()</code>. O tratamento de erro com <code>.catch()</code> continua similar, mas o Axios já trata automaticamente erros de rede e HTTP como exceções, tornando o código mais limpo.</p>
+        </div>
 
         <h3>Passo 4 — Criar um componente separado para a lista</h3>
 
@@ -428,6 +464,10 @@ export default UserList;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Criamos um componente separado <code>UserList</code> para organizar melhor o código. Ele contém toda a lógica de busca e exibição dos usuários, incluindo os estados de carregamento. Cada usuário é exibido em um <code>div</code> com classe <code>user-card</code>, mostrando nome, email e cidade. Separar componentes é uma boa prática no React para manter o código modular e reutilizável.</p>
+        </div>
 
         <h3>Passo 5 — Usar o componente no App</h3>
 
@@ -448,6 +488,10 @@ export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O componente <code>App</code> agora importa e utiliza o <code>UserList</code>. Isso mantém o <code>App.jsx</code> simples e limpo, delegando a responsabilidade de buscar e exibir os dados para o componente <code>UserList</code>. Essa é a essência da componentização no React: cada componente tem uma responsabilidade específica.</p>
+        </div>
 
         <h3>Último Passo - Subindo para o Git</h3>
 
@@ -460,6 +504,19 @@ git commit -m "aula 7 requisicoes http"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo" style="background: linear-gradient(135deg, #d4edda, #f0fff4); border-color: #28a745;">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>O comando <code>git add .</code> adiciona todos os arquivos modificados e novos à área de staging. O <code>git commit -m "mensagem"</code> cria um commit com os arquivos staged e a mensagem descritiva. O <code>git push</code> envia os commits locais para o repositório remoto no GitHub, atualizando a branch remota com as alterações desta aula.</p>
+        </div>
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+          <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula7-requisicoes-http</code></li>
+          </ul>
         </div>
       </section>
 
@@ -549,6 +606,10 @@ const PostList = () => {
 export default PostList;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>O componente <code>PostList</code> busca os posts da API JSONPlaceholder usando Axios. Ele gerencia os estados de carregamento, erro e dados, além de um estado <code>search</code> para filtrar os posts pelo título. O filtro é feito com o método <code>filter</code> combinado com <code>includes</code> para busca case-insensitive. Se não houver resultados, exibe "Nenhum post encontrado". Cada post é exibido em um cartão com o <code>userId</code> como badge, o título e o corpo do post.</p>
               </div>
             </div>
           </div>

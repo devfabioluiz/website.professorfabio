@@ -58,6 +58,11 @@ function App() {
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p><code>createContext</code> cria um objeto de contexto que pode ser compartilhado entre componentes. O <code>Provider</code> (ex: <code>TemaContext.Provider</code>) envolve a árvore de componentes e fornece o valor do contexto. O hook <code>useContext</code> permite que qualquer componente filho acesse esse valor sem precisar recebê-lo via props — eliminando o <em>prop drilling</em>.</p>
+        </div>
       </section>
 
       <h2>Redux</h2>
@@ -105,6 +110,11 @@ export default Contador;
             </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>O <strong>Redux</strong> gerencia o estado global da aplicação através de uma <em>store</em> centralizada. Um <em>reducer</em> é uma função pura que recebe o estado atual e uma <em>action</em> e retorna um novo estado. As ações são objetos com uma propriedade <code>type</code> e são enviadas via <code>store.dispatch()</code>. O componente lê o estado com <code>store.getState()</code>.</p>
+        </div>
       </section>
 
       <h2>useReducer</h2>
@@ -145,6 +155,11 @@ function Contador() {
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>O hook <code>useReducer</code> é uma alternativa ao <code>useState</code> para gerenciar estados complexos. Ele recebe uma função <em>reducer</em> e um estado inicial, retornando um par <code>[state, dispatch]</code>. O <code>dispatch</code> envia ações para o reducer, que calcula o novo estado com base no tipo da ação. É especialmente útil quando o próximo estado depende de múltiplos valores ou de lógica condicional.</p>
+        </div>
       </section>
       <!-- PASSO A PASSO -->
       <section>
@@ -173,6 +188,17 @@ git checkout aula10-theme-context
 git pull
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h3 class="alert-title" style="color: #166534;">🤔 Explicando o código</h3>
+          <ul>
+            <li><code>git clone</code> — baixa o repositório remoto para sua máquina local.</li>
+            <li><code>cd</code> — navega para a pasta do projeto clonado.</li>
+            <li><code>git fetch</code> — sincroniza as referências das branches remotas sem fazer merge.</li>
+            <li><code>git checkout aula10-theme-context</code> — alterna para a branch específica da aula.</li>
+            <li><code>git pull</code> — baixa e integra as alterações mais recentes do repositório remoto.</li>
+          </ul>
         </div>
 
         <h3>Passo 1 — Criar o projeto</h3>
@@ -213,6 +239,11 @@ export const useTheme = () => useContext(ThemeContext);
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p><code>createContext()</code> cria um contexto vazio. O <code>ThemeProvider</code> é um componente que utiliza o <code>ThemeContext.Provider</code> para disponibilizar o estado do tema e a função <code>toggleTheme</code> para toda a árvore de componentes filhos. O hook customizado <code>useTheme</code> encapsula <code>useContext(ThemeContext)</code>, facilitando o consumo do contexto em qualquer componente.</p>
+        </div>
+
         <h3>Passo 3 — Criar um componente que use o tema</h3>
 
         <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
@@ -243,6 +274,11 @@ export default ThemeSwitcher;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>O <code>ThemeSwitcher</code> consome o contexto através do hook <code>useTheme()</code>, que retorna o tema atual e a função <code>toggleTheme</code>. O estilo do componente é alterado dinamicamente conforme o valor de <code>theme</code> (light ou dark), e o botão dispara a alternância do tema. Tudo isso sem que nenhuma prop seja passada manualmente — o contexto faz o compartilhamento automaticamente.</p>
+        </div>
+
         <h3>Passo 4 — Usar o Provider no App.jsx</h3>
 
         <div class="code-container">
@@ -261,6 +297,11 @@ const App = () => {
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>O <code>App</code> envolve o componente <code>ThemeSwitcher</code> com o <code>ThemeProvider</code>. Esse é o padrão <strong>Provider</strong> da Context API: o provedor deve estar no nível mais alto da árvore de componentes que precisam acessar o contexto. Assim, qualquer componente descendente do <code>ThemeProvider</code> consegue consumir o tema sem a necessidade de props intermediárias.</p>
         </div>
 
         <h3>Passo 5 — Rodar e testar</h3>
@@ -288,6 +329,25 @@ git commit -m "aula 10: theme toggler com context api"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h3 class="alert-title" style="color: #166534;">🤔 Explicando o código</h3>
+          <ul>
+            <li><code>git add .</code> — adiciona todos os arquivos modificados à área de staging.</li>
+            <li><code>git commit -m "mensagem"</code> — cria um snapshot com as alterações e uma mensagem descritiva.</li>
+            <li><code>git push</code> — envia os commits da branch local para o repositório remoto no GitHub.</li>
+          </ul>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+          <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula10-theme-context</code></li>
+          </ul>
         </div>
       </section>
 
@@ -374,6 +434,10 @@ export default TodoList;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h3 class="alert-title">🤔 Explicando o código</h3>
+                <p>O hook <code>useReducer</code> gerencia o array de tarefas. O reducer trata três ações: <code>ADD_TASK</code> adiciona uma nova tarefa com <code>Date.now()</code> como ID único, <code>TOGGLE_TASK</code> alterna a propriedade <code>completed</code> da tarefa correspondente ao ID, e <code>REMOVE_TASK</code> filtra a tarefa pelo ID removendo-a da lista. O <code>useState</code> é usado separadamente para controlar o valor do input.</p>
+              </div>
 
               <p><b>App.jsx:</b></p>
               <div class="code-container">
@@ -387,6 +451,10 @@ const App = () => {
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
+              </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h3 class="alert-title">🤔 Explicando o código</h3>
+                <p>O <code>App.jsx</code> importa e renderiza o componente <code>TodoList</code>, que contém toda a lógica de gerenciamento de tarefas com <code>useReducer</code>. A estrutura é simples porque o <code>useReducer</code> encapsula tanto o estado quanto as ações dentro do próprio componente <code>TodoList</code>.</p>
               </div>
             </div>
           </div>
