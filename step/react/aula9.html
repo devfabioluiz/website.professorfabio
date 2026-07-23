@@ -24,7 +24,7 @@
       <div
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Roteamento, React Router, Links e NavLinks, Passagem de parâmetros via
+        Roteamento, React Router, Links, Passagem de parâmetros via
         rotas, Rotas aninhadas, Redirecionamento.
       </div>
     </header>
@@ -638,6 +638,63 @@ export default Navbar;
 </div>
 
         <p>Atualize o <b>App.jsx</b> para incluir a Navbar:</p>
+
+        <h4>NavLink — Link com estilo ativo</h4>
+        <p>
+          O React Router também fornece o componente <strong>NavLink</strong>,
+          que funciona como <code>Link</code> mas permite adicionar estilos
+          especiais quando a rota está <strong>ativa</strong> (correspondente à
+          URL atual).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { NavLink } from 'react-router-dom';
+
+const Navbar = () => {
+  return (
+    &lt;nav&gt;
+      &lt;NavLink
+        to="/"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Home
+      &lt;/NavLink&gt;
+      &lt;NavLink
+        to="/about"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Sobre
+      &lt;/NavLink&gt;
+      &lt;NavLink
+        to="/contact"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Contato
+      &lt;/NavLink&gt;
+    &lt;/nav&gt;
+  );
+};
+
+export default Navbar;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <code>NavLink</code> recebe uma função no <code>className</code> que
+            recebe um objeto com a propriedade <code>isActive</code>. Quando a
+            rota corresponde à URL atual, <code>isActive</code> é
+            <code>true</code> e a classe <code>"active"</code> é aplicada. Você
+            pode usar isso para estilizar o link ativo com CSS, por exemplo:
+            <code>.active &#123; font-weight: bold; color: blue; &#125;</code>.
+          </p>
+          <p>
+            <code>NavLink</code> também aceita <code>style</code> como função
+            no lugar de <code>className</code> para aplicar estilos inline
+            condicionais.
+          </p>
+        </div>
         <div class="code-container">
           <pre><code class="language-javascript">
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 12 de React - Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+      
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 12</h1>
+      <h4 class="text-center">React</h4>
+      <h4 class="text-center">Testando Aplicações React</h4>
+
+    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Por que testar, Tipos de testes, Jest, React Testing Library, Exemplos práticos.</div>
+    </header>
+    <div class="container">
+      <h2>1. Por que testar aplicações React?</h2>
+      <section>
+        <p>
+          Testes são uma parte fundamental do desenvolvimento de software moderno. Eles garantem que
+          o código funciona conforme o esperado, especialmente em aplicações React que evoluem
+          rapidamente com novos componentes e funcionalidades.
+        </p>
+        <ul>
+          <li>
+            <strong>Garantia de funcionamento:</strong> Testes verificam que cada componente e função
+            se comporta corretamente em diferentes cenários.
+          </li>
+          <li>
+            <strong>Previnem regressões:</strong> Quando você altera ou adiciona código, os testes
+            existentes avisam se algo que funcionava antes quebrou.
+          </li>
+          <li>
+            <strong>Facilitam refatoração e manutenção:</strong> Com testes, você pode reestruturar o
+            código com confiança, sabendo que os testes validarão o comportamento.
+          </li>
+          <li>
+            <strong>Documentam o comportamento esperado:</strong> Testes funcionam como uma
+            documentação viva que descreve o que cada parte da aplicação deve fazer.
+          </li>
+        </ul>
+      </section>
+
+      <h2>2. Tipos de testes</h2>
+      <section>
+        <p>
+          Existem diferentes níveis de testes, cada um com um objetivo específico. Em aplicações React,
+          os mais comuns são:
+        </p>
+        <ul>
+          <li>
+            <strong>Testes unitários:</strong> Testam componentes, funções ou hooks de forma
+            isolada, sem depender de outras partes do sistema. São rápidos e fáceis de escrever.
+          </li>
+          <li>
+            <strong>Testes de integração:</strong> Testam a interação entre dois ou mais componentes,
+            verificando se eles se comunicam corretamente (por exemplo, um formulário que atualiza
+            uma lista).
+          </li>
+          <li>
+            <strong>Testes end-to-end (E2E):</strong> Testam o fluxo completo da aplicação no
+            navegador, simulando ações do usuário como cliques, digitação e navegação. Ferramentas
+            como Cypress e Playwright são usadas para esse tipo de teste.
+          </li>
+        </ul>
+        <p>
+          Nesta aula, focaremos nos <strong>testes unitários e de integração</strong>, que são a
+          base para qualquer aplicação React.
+        </p>
+      </section>
+
+      <h2>3. Jest — O framework de testes padrão do React</h2>
+      <section>
+        <p>
+          <strong>Jest</strong> é um framework de testes criado pelo Facebook, amplamente utilizado
+          no ecossistema React. Ele já vem configurado com o <strong>Create React App</strong> e pode
+          ser facilmente adicionado ao <strong>Vite</strong> com plugins como
+          <code>vite-plugin-testing-library</code> e <code>jest</code>.
+        </p>
+        <p>Principais características do Jest:</p>
+        <ul>
+          <li>
+            <strong>Funções globais:</strong> Não é necessário importar funções como
+            <code>describe</code>, <code>test</code> / <code>it</code>, <code>expect</code> — elas
+            estão disponíveis globalmente.
+          </li>
+          <li>
+            <strong>Matchers:</strong> O Jest oferece diversos matchers para verificar valores:
+            <ul>
+              <li><code>toBe(valor)</code> — comparação exata (usando <code>===</code>)</li>
+              <li><code>toEqual(valor)</code> — comparação profunda de objetos e arrays</li>
+              <li><code>toBeInTheDocument()</code> — verifica se um elemento está no DOM (via React Testing Library)</li>
+              <li><code>toHaveBeenCalled()</code> — verifica se uma função mock foi chamada</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Mocks:</strong> O Jest permite criar funções falsas com
+            <code>jest.fn()</code> para simular comportamentos e verificar chamadas.
+          </li>
+        </ul>
+      </section>
+
+      <h2>4. React Testing Library — Biblioteca para testar componentes React</h2>
+      <section>
+        <p>
+          Enquanto o Jest é o executor de testes, a <strong>React Testing Library</strong> (RTL)
+          é a biblioteca que nos ajuda a <strong>renderizar componentes</strong> e
+          <strong>interagir com eles</strong> em ambiente simulado.
+        </p>
+        <p>O grande diferencial da RTL é o foco em testar o <strong>comportamento do usuário</strong>, não os detalhes de implementação. Isso significa que você testa o que o usuário vê e com o que ele interage, e não métodos internos ou estado do componente.</p>
+        <p>Principais funções da React Testing Library:</p>
+        <ul>
+          <li>
+            <code>render(componente)</code> — renderiza o componente em um DOM virtual
+          </li>
+          <li>
+            <code>screen.getByText("texto")</code> — busca um elemento pelo texto visível
+          </li>
+          <li>
+            <code>screen.getByRole("botao")</code> — busca por papel (role) semântico, como <code>button</code>
+          </li>
+          <li>
+            <code>screen.getByPlaceholderText("texto")</code> — busca um input pelo placeholder
+          </li>
+          <li>
+            <code>screen.getByTestId("id")</code> — busca por <code>data-testid</code> (último recurso)
+          </li>
+          <li>
+            <code>fireEvent</code> — dispara eventos como clique, digitação, submit (versão mais simples)
+          </li>
+          <li>
+            <code>userEvent</code> — simula eventos de forma mais realista (requer instalação separada)
+          </li>
+        </ul>
+      </section>
+
+      <h2>5. Exemplo prático 1: Testando um componente simples (Contador)</h2>
+      <section>
+        <p>
+          Vamos começar com um componente <code>Contador</code> que possui dois botões para
+          incrementar e decrementar um valor.
+        </p>
+
+        <h4>Componente Contador (<code>Contador.jsx</code>)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useState } from 'react';
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Contador: {contador}&lt;/h2&gt;
+      &lt;button onClick={() =&gt; setContador(contador + 1)}&gt;Incrementar&lt;/button&gt;
+      &lt;button onClick={() =&gt; setContador(contador - 1)}&gt;Decrementar&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Contador;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O componente <code>Contador</code> usa o hook <code>useState</code> para gerenciar o
+            estado <code>contador</code>, iniciado em <code>0</code>. O JSX exibe o valor atual
+            em um <code>&lt;h2&gt;</code> e dois botões que, ao serem clicados, chamam
+            <code>setContador</code> para incrementar ou decrementar o valor.
+          </p>
+        </div>
+
+        <h4>Teste do Contador (<code>Contador.test.jsx</code>)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Contador from './Contador';
+
+test('deve incrementar e decrementar o contador', () =&gt; {
+  render(&lt;Contador /&gt;);
+  
+  // Verifica valor inicial
+  expect(screen.getByText('Contador: 0')).toBeInTheDocument();
+  
+  // Clica no botão de incrementar
+  fireEvent.click(screen.getByText('Incrementar'));
+  expect(screen.getByText('Contador: 1')).toBeInTheDocument();
+  
+  // Clica no botão de decrementar
+  fireEvent.click(screen.getByText('Decrementar'));
+  expect(screen.getByText('Contador: 0')).toBeInTheDocument();
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <strong>1.</strong> <code>render(&lt;Contador /&gt;)</code> — renderiza o componente
+            em um DOM virtual para teste.
+          </p>
+          <p>
+            <strong>2.</strong> <code>screen.getByText('Contador: 0')</code> — busca um elemento
+            que contenha exatamente o texto "Contador: 0". O matcher
+            <code>toBeInTheDocument()</code> verifica se ele existe no DOM.
+          </p>
+          <p>
+            <strong>3.</strong> <code>fireEvent.click(elemento)</code> — dispara um evento de
+            clique no elemento encontrado. Após clicar em "Incrementar", esperamos que o texto
+            mude para "Contador: 1". Em seguida, clicamos em "Decrementar" e esperamos voltar
+            para "Contador: 0".
+          </p>
+        </div>
+      </section>
+
+      <h2>6. Exemplo prático 2: Testando um formulário</h2>
+      <section>
+        <p>
+          Agora vamos testar um formulário que coleta o nome do usuário e o envia através de uma
+          função <code>onSubmit</code>.
+        </p>
+
+        <h4>Componente Formulario (<code>Formulario.jsx</code>)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useState } from 'react';
+
+const Formulario = ({ onSubmit }) =&gt; {
+  const [nome, setNome] = useState('');
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    onSubmit(nome);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        placeholder="Digite seu nome"
+        value={nome}
+        onChange={(e) =&gt; setNome(e.target.value)}
+      /&gt;
+      &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default Formulario;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            O componente <code>Formulario</code> recebe uma prop <code>onSubmit</code>, que é uma
+            função chamada quando o formulário é enviado. O estado <code>nome</code> é atualizado
+            a cada digitação no input. Ao submeter (clicar no botão "Enviar" ou pressionar Enter),
+            <code>handleSubmit</code> previne o recarregamento da página e chama
+            <code>onSubmit(nome)</code> com o valor digitado.
+          </p>
+        </div>
+
+        <h4>Teste do Formulario (<code>Formulario.test.jsx</code>)</h4>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Formulario from './Formulario';
+
+test('deve chamar onSubmit com o nome digitado', () =&gt; {
+  const onSubmit = jest.fn();
+  render(&lt;Formulario onSubmit={onSubmit} /&gt;);
+  
+  // Digita no input
+  const input = screen.getByPlaceholderText('Digite seu nome');
+  fireEvent.change(input, { target: { value: 'Maria' } });
+  
+  // Clica no botão de enviar
+  fireEvent.click(screen.getByText('Enviar'));
+  
+  // Verifica se onSubmit foi chamado com o valor correto
+  expect(onSubmit).toHaveBeenCalledWith('Maria');
+});
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <strong>1.</strong> <code>jest.fn()</code> — cria uma função mock (falsa) que
+            registra todas as chamadas recebidas, permitindo verificar depois se foi chamada
+            e com quais argumentos.
+          </p>
+          <p>
+            <strong>2.</strong> <code>fireEvent.change(input, { target: { value: 'Maria' } })</code>
+            — simula a digitação no input, alterando seu valor para "Maria".
+          </p>
+          <p>
+            <strong>3.</strong> <code>expect(onSubmit).toHaveBeenCalledWith('Maria')</code> —
+            verifica se a função <code>onSubmit</code> foi chamada exatamente com o argumento
+            <code>'Maria'</code>, confirmando que o formulário está funcionando corretamente.
+          </p>
+        </div>
+      </section>
+
+      <h2>7. Dever de Casa</h2>
+      <section>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar testes para um componente Lista de Tarefas</h3>
+            <p>
+              Você recebeu o componente <code>ListaTarefas</code> abaixo. Crie testes para
+              verificar seu funcionamento:
+            </p>
+
+            <div class="code-container">
+              <pre><code class="language-javascript">
+import React, { useState } from 'react';
+
+const ListaTarefas = () =&gt; {
+  const [tarefas, setTarefas] = useState([]);
+  const [input, setInput] = useState('');
+
+  const adicionar = () =&gt; {
+    if (input.trim() === '') return;
+    setTarefas([...tarefas, input]);
+    setInput('');
+  };
+
+  const remover = (index) =&gt; {
+    setTarefas(tarefas.filter((_, i) =&gt; i !== index));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Lista de Tarefas&lt;/h2&gt;
+      &lt;input
+        type="text"
+        value={input}
+        onChange={(e) =&gt; setInput(e.target.value)}
+        placeholder="Nova tarefa"
+      /&gt;
+      &lt;button onClick={adicionar}&gt;Adicionar&lt;/button&gt;
+      &lt;ul&gt;
+        {tarefas.map((tarefa, index) =&gt; (
+          &lt;li key={index}&gt;
+            {tarefa}
+            &lt;button onClick={() =&gt; remover(index)}&gt;Remover&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ListaTarefas;
+              </code></pre>
+              <button class="btn-copy">Copiar Código</button>
+            </div>
+
+            <p><strong>Tarefa:</strong> Escreva os seguintes testes:</p>
+            <ol>
+              <li>Testar que a lista começa vazia (não exibe nenhum <code>&lt;li&gt;</code>)</li>
+              <li>Testar que é possível adicionar uma tarefa digitando no input e clicando em "Adicionar"</li>
+              <li>Testar que é possível remover uma tarefa clicando no botão "Remover"</li>
+              <li>Testar que tarefas vazias (só espaços) não são adicionadas</li>
+            </ol>
+
+            <p><strong>Dica:</strong> Use <code>screen.getByText</code> para buscar elementos pelo texto visível e <code>screen.getByPlaceholderText</code> para o input.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>ListaTarefas.test.jsx</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import ListaTarefas from './ListaTarefas';
+
+test('deve iniciar com a lista vazia', () =&gt; {
+  render(&lt;ListaTarefas /&gt;);
+  
+  const lista = screen.queryAllByRole('listitem');
+  expect(lista).toHaveLength(0);
+});
+
+test('deve adicionar uma tarefa', () =&gt; {
+  render(&lt;ListaTarefas /&gt;);
+  
+  const input = screen.getByPlaceholderText('Nova tarefa');
+  fireEvent.change(input, { target: { value: 'Estudar React' } });
+  
+  fireEvent.click(screen.getByText('Adicionar'));
+  
+  expect(screen.getByText('Estudar React')).toBeInTheDocument();
+});
+
+test('deve remover uma tarefa', () =&gt; {
+  render(&lt;ListaTarefas /&gt;);
+  
+  const input = screen.getByPlaceholderText('Nova tarefa');
+  fireEvent.change(input, { target: { value: 'Tarefa para remover' } });
+  fireEvent.click(screen.getByText('Adicionar'));
+  
+  expect(screen.getByText('Tarefa para remover')).toBeInTheDocument();
+  
+  fireEvent.click(screen.getByText('Remover'));
+  
+  expect(screen.queryByText('Tarefa para remover')).not.toBeInTheDocument();
+});
+
+test('não deve adicionar tarefas vazias', () =&gt; {
+  render(&lt;ListaTarefas /&gt;);
+  
+  const input = screen.getByPlaceholderText('Nova tarefa');
+  fireEvent.change(input, { target: { value: '   ' } });
+  fireEvent.click(screen.getByText('Adicionar'));
+  
+  const lista = screen.queryAllByRole('listitem');
+  expect(lista).toHaveLength(0);
+});
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+                <p>
+                  <strong>Teste 1:</strong> Usamos <code>screen.queryAllByRole('listitem')</code>
+                  em vez de <code>getByRole</code> porque <code>queryAllByRole</code> retorna um
+                  array vazio se nenhum elemento for encontrado (não lança erro), permitindo
+                  verificar que a lista tem comprimento 0.
+                </p>
+                <p>
+                  <strong>Teste 2 e 3:</strong> Simulamos a digitação no input com
+                  <code>fireEvent.change</code>, clicamos em "Adicionar" e verificamos se o
+                  texto aparece. Para remover, clicamos em "Remover" e usamos
+                  <code>queryByText</code> com <code>.not.toBeInTheDocument()</code> para
+                  confirmar que o elemento não está mais no DOM.
+                </p>
+                <p>
+                  <strong>Teste 4:</strong> Verificamos que digitar apenas espaços não adiciona
+                  itens à lista (graças à validação <code>input.trim() === ''</code> no componente).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>

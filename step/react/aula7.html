@@ -25,12 +25,121 @@
         class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
         Fundamentos do HTTP, Métodos HTTP (GET, POST, PUT, DELETE, PATCH), REST
-        API, Obtendo dados do servidor em React.
+        API, fetch, Axios, React Query, SWR, Obtendo dados do servidor em React.
       </div>
     </header>
     <main class="container"><p>
         Existem várias formas de realizar requisições HTTP no React. São elas:
       </p>
+
+      <section>
+        <h2>O que é HTTP?</h2>
+        <p>
+          HTTP significa <strong>Hypertext Transfer Protocol</strong> (Protocolo de Transferência de Hipertexto).
+          É o protocolo fundamental utilizado para a comunicação entre clientes (navegadores) e servidores na web.
+        </p>
+        <p>
+          A comunicação acontece através de <strong>requisições</strong> (requests) e <strong>respostas</strong> (responses).
+          O cliente envia uma requisição para o servidor, que processa e devolve uma resposta.
+        </p>
+        <p>Uma requisição HTTP é composta por:</p>
+        <ul>
+          <li><strong>URL</strong> — o endereço do recurso que queremos acessar</li>
+          <li><strong>Método</strong> — a ação que queremos realizar (GET, POST, etc.)</li>
+          <li><strong>Cabeçalhos</strong> (headers) — informações adicionais como formato dos dados, autenticação, etc.</li>
+          <li><strong>Corpo</strong> (body) — dados enviados ao servidor (comum em POST, PUT, PATCH)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Métodos HTTP</h2>
+        <p>Os métodos HTTP indicam a ação que desejamos realizar ao fazer uma requisição. Os principais são:</p>
+        <ul>
+          <li><strong>GET</strong> — obter dados (o mais comum, usado nas APIs públicas como JSONPlaceholder)</li>
+          <li><strong>POST</strong> — criar novos recursos no servidor</li>
+          <li><strong>PUT</strong> — atualizar recursos existentes por completo</li>
+          <li><strong>PATCH</strong> — atualização parcial de um recurso</li>
+          <li><strong>DELETE</strong> — remover recursos do servidor</li>
+        </ul>
+
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr style="background: #f0f0f0;">
+              <th>Método</th>
+              <th>Função</th>
+              <th>Possui corpo?</th>
+              <th>Exemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GET</td>
+              <td>Obter dados</td>
+              <td>Não</td>
+              <td><code>/users</code></td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td>Criar recurso</td>
+              <td>Sim</td>
+              <td><code>/users</code></td>
+            </tr>
+            <tr>
+              <td>PUT</td>
+              <td>Atualizar recurso</td>
+              <td>Sim</td>
+              <td><code>/users/1</code></td>
+            </tr>
+            <tr>
+              <td>PATCH</td>
+              <td>Atualização parcial</td>
+              <td>Sim</td>
+              <td><code>/users/1</code></td>
+            </tr>
+            <tr>
+              <td>DELETE</td>
+              <td>Remover recurso</td>
+              <td>Não</td>
+              <td><code>/users/1</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Códigos de Resposta HTTP</h2>
+        <p>
+          Quando o servidor responde a uma requisição, ele envia um <strong>código de status</strong> indicando o
+          resultado da operação. Os códigos são agrupados em cinco classes:
+        </p>
+        <ul>
+          <li><strong>1xx — Informativo:</strong> a requisição foi recebida e o processamento continua.</li>
+          <li><strong>2xx — Sucesso:</strong> a requisição foi recebida, compreendida e aceita com sucesso. Exemplos: <code>200 OK</code>, <code>201 Created</code>.</li>
+          <li><strong>3xx — Redirecionamento:</strong> o cliente precisa realizar ações adicionais para completar a requisição. Exemplos: <code>301 Moved Permanently</code>, <code>302 Found</code>.</li>
+          <li><strong>4xx — Erro do Cliente:</strong> a requisição contém erro ou não pode ser processada. Exemplos: <code>400 Bad Request</code>, <code>404 Not Found</code>.</li>
+          <li><strong>5xx — Erro do Servidor:</strong> o servidor falhou ao processar a requisição. Exemplo: <code>500 Internal Server Error</code>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>O que é REST API?</h2>
+        <p>
+          <strong>REST</strong> (Representational State Transfer) é um estilo arquitetural para projetar APIs web.
+          Uma API que segue os princípios REST é chamada de <strong>API RESTful</strong>.
+        </p>
+        <p>As principais características de uma API RESTful são:</p>
+        <ul>
+          <li>Usa os métodos HTTP de forma padronizada (GET para ler, POST para criar, etc.)</li>
+          <li>As URLs representam <strong>recursos</strong> de forma clara: <code>/users</code>, <code>/users/1</code>, <code>/posts</code>, <code>/products/123</code></li>
+          <li>As respostas geralmente são no formato JSON</li>
+          <li>Não mantém estado da sessão (stateless) — cada requisição contém todas as informações necessárias</li>
+        </ul>
+        <p>
+          A API que utilizaremos nesta aula — <strong>JSONPlaceholder</strong> — é um exemplo de REST API gratuita
+          para testes e prototipação. Ela disponibiliza recursos como <code>/users</code>, <code>/posts</code>,
+          <code>/comments</code>, etc.
+        </p>
+      </section>
 
       <h2>Usando <code>fetch</code> nativo do JavaScript</h2>
       <section>
@@ -355,7 +464,79 @@ export default App;
           <p>Neste componente, usamos três estados: <code>users</code> para armazenar a lista de usuários, <code>loading</code> para controlar o carregamento, e <code>error</code> para capturar erros. Dentro do <code>useEffect</code>, fazemos uma requisição GET com <code>fetch</code> para a JSONPlaceholder API. Verificamos se a resposta é ok com <code>response.ok</code>, e em caso de erro lançamos uma exceção. Os dados são armazenados no estado <code>users</code> e exibidos em uma lista não ordenada com <code>map</code>.</p>
         </div>
 
-        <h3>Passo 3 — Refatorar com Axios</h3>
+        <h3>Passo 3 — Fazer requisição POST com fetch</h3>
+
+        <p>
+          O método POST é utilizado para <strong>enviar dados</strong> ao servidor e criar novos recursos.
+          Vamos criar um formulário que envia um novo post para a JSONPlaceholder API usando <code>fetch</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useState } from 'react';
+
+function App() {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [response, setResponse] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        body,
+        userId: 1,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setResponse(data))
+      .catch((err) => console.error('Erro:', err));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Criar Post&lt;/h1&gt;
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input
+          type="text"
+          placeholder="Título"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        /&gt;
+        &lt;textarea
+          placeholder="Conteúdo"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        /&gt;
+        &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+      &lt;/form&gt;
+
+      {response && (
+        &lt;div&gt;
+          &lt;h3&gt;Post criado com sucesso!&lt;/h3&gt;
+          &lt;pre&gt;{JSON.stringify(response, null, 2)}&lt;/pre&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>Neste exemplo, usamos o método <code>POST</code> do <code>fetch</code> para enviar dados ao servidor. Passamos um objeto de configuração com <code>method: 'POST'</code>, os <code>headers</code> indicando que estamos enviando JSON (<code>Content-Type: application/json</code>), e o <code>body</code> com os dados convertidos para JSON via <code>JSON.stringify()</code>. O servidor JSONPlaceholder simula a criação e retorna o recurso criado com um <code>id</code> gerado automaticamente.</p>
+        </div>
+
+        <h3>Passo 4 — Refatorar com Axios</h3>
 
         <p>Instale o Axios:</p>
 
@@ -421,7 +602,7 @@ export default App;
           <p>A refatoração com Axios mantém a mesma lógica do exemplo anterior, mas simplifica o código. <code>axios.get()</code> retorna uma Promise cujo resultado está em <code>response.data</code> — não precisamos mais chamar <code>response.json()</code>. O tratamento de erro com <code>.catch()</code> continua similar, mas o Axios já trata automaticamente erros de rede e HTTP como exceções, tornando o código mais limpo.</p>
         </div>
 
-        <h3>Passo 4 — Criar um componente separado para a lista</h3>
+        <h3>Passo 5 — Criar um componente separado para a lista</h3>
 
         <p>Crie o componente <strong>UserList.jsx</strong>:</p>
 
@@ -469,7 +650,7 @@ export default UserList;
           <p>Criamos um componente separado <code>UserList</code> para organizar melhor o código. Ele contém toda a lógica de busca e exibição dos usuários, incluindo os estados de carregamento. Cada usuário é exibido em um <code>div</code> com classe <code>user-card</code>, mostrando nome, email e cidade. Separar componentes é uma boa prática no React para manter o código modular e reutilizável.</p>
         </div>
 
-        <h3>Passo 5 — Usar o componente no App</h3>
+        <h3>Passo 6 — Usar o componente no App</h3>
 
         <div class="code-container">
           <pre><code class="language-javascript">

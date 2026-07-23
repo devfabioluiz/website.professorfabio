@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 13 de React - Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+      
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <header>
+      <h1>Aula 13</h1>
+      <h4 class="text-center">React</h4>
+      <h4 class="text-center">Componentes de Classe</h4>
+    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> O que são componentes de classe, Estado em classes, Métodos do ciclo de vida, Exemplos práticos.</div>
+    </header>
+    <main class="container"><div class="texto-impirmir">
+        <h2>1. O que são componentes de classe?</h2>
+        <section>
+          <p>
+            Antes da introdução dos <strong>Hooks</strong> no React 16.8 (2019), os componentes de classe eram a única forma de usar <strong>estado</strong> e <strong>ciclo de vida</strong> em componentes React. Mesmo hoje, é comum encontrar código legado que utiliza classes, e entender esse padrão é fundamental para manter e migrar projetos antigos.
+          </p>
+          <p>
+            Um componente de classe é uma classe JavaScript que estende <code>React.Component</code> e deve implementar, no mínimo, o método <code>render()</code>, que retorna o JSX a ser exibido.
+          </p>
+
+          <h5>Exemplo básico: HelloWorld com classe</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { Component } from 'react';
+
+class HelloWorld extends Component {
+  render() {
+    return &lt;h1&gt;Olá, mundo!&lt;/h1&gt;;
+  }
+}
+
+export default HelloWorld;
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>A classe <code>HelloWorld</code> estende <code>Component</code> (importado do React) e implementa o método <code>render()</code>, que retorna um elemento JSX. Esse é o componente mais simples possível usando classe. Para usá-lo, basta importá-lo e inseri-lo no JSX como <code>&lt;HelloWorld /&gt;</code>.</p>
+</div>
+
+        </section>
+
+        <h2>2. Estado em componentes de classe</h2>
+        <section>
+          <p>
+            Em componentes funcionais usamos <code>useState</code> para gerenciar estado. Em classes, o estado é um objeto armazenado em <code>this.state</code>, geralmente inicializado no <strong>constructor</strong>. Para atualizá-lo, usamos <strong>sempre</strong> o método <code>this.setState()</code> — nunca atribua diretamente (<code>this.state.x = valor</code>), pois isso não dispara uma re-renderização.
+          </p>
+
+          <h5>Exemplo prático: Contador com classe</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { Component } from 'react';
+
+class Contador extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  incrementar = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  decrementar = () => {
+    this.setState({ count: this.state.count - 1 });
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Contador: {this.state.count}&lt;/h1&gt;
+        &lt;button onClick={this.incrementar}&gt;+&lt;/button&gt;
+        &lt;button onClick={this.decrementar}&gt;-&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Contador;
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>No <strong>constructor</strong>, inicializamos <code>this.state</code> com um objeto contendo <code>count: 0</code>. Os métodos <code>incrementar</code> e <code>decrementar</code> usam <code>this.setState()</code> para atualizar o estado — isso dispara uma nova chamada ao <code>render()</code>, atualizando a界面. Note o uso de <strong>arrow functions</strong> para definir os métodos, o que elimina a necessidade de bind manual no constructor.</p>
+</div>
+
+        </section>
+
+        <h2>3. Métodos do ciclo de vida</h2>
+        <section>
+          <p>
+            Os métodos de ciclo de vida são hooks nativos das classes que nos permitem executar código em momentos específicos da existência do componente. Os três principais são:
+          </p>
+          <ul>
+            <li><code>componentDidMount()</code> — executado <strong>após</strong> o componente renderizar pela primeira vez. Ideal para requisições a APIs, subscriptions e inicializações.</li>
+            <li><code>componentDidUpdate(prevProps, prevState)</code> — executado após uma atualização (quando props ou state mudam). Útil para reagir a mudanças comparando valores anteriores com atuais.</li>
+            <li><code>componentWillUnmount()</code> — executado <strong>antes</strong> do componente ser removido do DOM. Usado para cleanup: limpar timers, cancelar subscriptions, remover event listeners.</li>
+          </ul>
+
+          <h5>Exemplo prático: Relógio com classe</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { Component } from 'react';
+
+class Relogio extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hora: new Date().toLocaleTimeString(),
+    };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.setState({ hora: new Date().toLocaleTimeString() });
+    }, 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('Relógio atualizado:', this.state.hora);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  render() {
+    return &lt;h2&gt;{this.state.hora}&lt;/h2&gt;;
+  }
+}
+
+export default Relogio;
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>No <code>componentDidMount()</code>, iniciamos um <code>setInterval</code> que atualiza o estado com a hora atual a cada 1 segundo. O timer é armazenado em <code>this.timerID</code> para ser limpo posteriormente. <code>componentDidUpdate</code> exibe um log no console sempre que o estado muda. <code>componentWillUnmount()</code> limpa o <code>setInterval</code> com <code>clearInterval</code>, evitando vazamento de memória quando o componente for removido.</p>
+</div>
+
+        </section>
+
+        <h2>4. Manipulação de eventos em classes</h2>
+        <section>
+          <p>
+            Em componentes de classe, os event handlers são definidos como métodos da classe. Existem duas abordagens comuns para garantir que o <code>this</code> dentro do handler aponte para a instância correta:
+          </p>
+          <ul>
+            <li><strong>Bind manual no constructor</strong>: <code>this.handleClick = this.handleClick.bind(this);</code></li>
+            <li><strong>Arrow functions</strong> (class fields): <code>handleClick = () => { ... }</code> — mais conciso e recomendado.</li>
+          </ul>
+
+          <h5>Exemplo: Formulário com classe</h5>
+          <div class="code-container">
+            <pre>
+              <code class="language-javascript">
+import React, { Component } from 'react';
+
+class Formulario extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nome: '',
+      email: '',
+    };
+  }
+
+  handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Nome: ${this.state.nome}, Email: ${this.state.email}`);
+  };
+
+  render() {
+    return (
+      &lt;form onSubmit={this.handleSubmit}&gt;
+        &lt;input
+          name="nome"
+          value={this.state.nome}
+          onChange={this.handleChange}
+          placeholder="Nome"
+        /&gt;
+        &lt;input
+          name="email"
+          value={this.state.email}
+          onChange={this.handleChange}
+          placeholder="Email"
+        /&gt;
+        &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+      &lt;/form&gt;
+    );
+  }
+}
+
+export default Formulario;
+              </code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O método <code>handleChange</code> é uma arrow function, então o <code>this</code> se refere à instância da classe. Usamos <code>[e.target.name]</code> para atualizar dinamicamente a propriedade correta do estado com base no <code>name</code> do input. <code>handleSubmit</code> previne o recarregamento da página com <code>e.preventDefault()</code> e exibe os dados em um alert.</p>
+</div>
+
+        </section>
+
+        <h2>5. Comparação: Classe vs Funcional</h2>
+        <section>
+          <p>
+            A tabela abaixo mostra o mesmo componente (um contador) implementado nos dois estilos:
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+              <thead>
+                <tr style="background-color: #e2e8f0;">
+                  <th style="padding: 10px; border: 1px solid #cbd5e1;">Componente de Classe</th>
+                  <th style="padding: 10px; border: 1px solid #cbd5e1;">Componente Funcional</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #cbd5e1; vertical-align: top;">
+                    <pre style="margin: 0; background: transparent; padding: 0;"><code class="language-javascript" style="background: transparent; padding: 0;">
+class Contador extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  incrementar = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;{this.state.count}&lt;/p&gt;
+        &lt;button onClick={this.incrementar}&gt;+&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+                    </code></pre>
+                  </td>
+                  <td style="padding: 10px; border: 1px solid #cbd5e1; vertical-align: top;">
+                    <pre style="margin: 0; background: transparent; padding: 0;"><code class="language-javascript" style="background: transparent; padding: 0;">
+function Contador() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+                    </code></pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Quando usar cada um?</strong> O estilo <strong>funcional com Hooks</strong> é o padrão moderno do React e deve ser preferido para novos projetos. Componentes de <strong>classe</strong> ainda aparecem em código legado e em projetos que não foram migrados. Saber trabalhar com ambos é essencial para um desenvolvedor React completo.
+          </p>
+        </section>
+      </div>
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>6. Passo a Passo: Converter um componente funcional para classe</h2>
+
+        <p>Vamos pegar o componente <strong>Contador</strong> que criamos na aula 2 (versão funcional) e reescrevê-lo como componente de classe.</p>
+
+        <h5>Versão funcional original (aula 2):</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useState } from 'react';
+
+function Contador() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Você clicou {count} vezes&lt;/p&gt;
+      &lt;button onClick={() => setCount(count + 1)}&gt;
+        Clique aqui
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Contador;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h5>Versão equivalente em classe:</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { Component } from 'react';
+
+class Contador extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  handleClick = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Você clicou {this.state.count} vezes&lt;/p&gt;
+        &lt;button onClick={this.handleClick}&gt;
+          Clique aqui
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Contador;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>As principais diferenças na conversão: (1) <code>useState(0)</code> vira <code>this.state = { count: 0 }</code> no constructor. (2) <code>setCount</code> vira <code>this.setState</code>. (3) A variável <code>count</code> vira <code>this.state.count</code> no JSX. (4) O event handler é um método da classe (<code>handleClick</code>) em vez de uma função inline.</p>
+</div>
+
+        <h3>7. Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 13: componentes de classe"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p><code>git add .</code> adiciona todos os arquivos modificados à área de staging. <code>git commit -m "aula 13: componentes de classe"</code> cria um snapshot das alterações com uma mensagem descritiva. <code>git push</code> envia os commits para o repositório remoto no GitHub.</p>
+</div>
+
+<div class="alert-box-github">
+  <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+  <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+  <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+  <p>Selecione a branch correspondente a esta aula:</p>
+  <ul>
+    <li><code>aula13-componentes-classe</code></li>
+  </ul>
+</div>
+      </section>
+
+      <!-- DEVER -->
+      <section>
+        <h2>8. Dever de Casa</h2>
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar um Cronômetro com Componente de Classe</h3>
+            <p>Crie uma branch chamada <strong>dever-de-casa-aula13</strong> e nela desenvolva:</p>
+            <ol>
+              <li>Crie um componente de classe <b>Cronometro</b> que exiba minutos, segundos e milissegundos.</li>
+              <li>Use <code>componentDidMount</code> para iniciar um <code>setInterval</code> que atualiza o tempo.</li>
+              <li>Use <code>componentDidUpdate</code> para exibir no console o tempo atualizado a cada tick.</li>
+              <li>Use <code>componentWillUnmount</code> para limpar o intervalo quando o componente for desmontado.</li>
+              <li>Adicione botões de <b>Iniciar</b>, <b>Pausar</b> e <b>Resetar</b>.</li>
+            </ol>
+            <p><strong>Obs:</strong> Não se esqueça de subir o projeto para o Git na branch do dever após terminar.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Cronometro.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import React, { Component } from 'react';
+
+class Cronometro extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      milisegundos: 0,
+      ativo: false,
+    };
+  }
+
+  componentDidMount() {
+    console.log('Cronômetro montado!');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.milisegundos !== this.state.milisegundos) {
+      console.log('Tempo:', this.formatarTempo());
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalo);
+    console.log('Cronômetro desmontado!');
+  }
+
+  iniciar = () => {
+    if (!this.state.ativo) {
+      this.setState({ ativo: true });
+      this.intervalo = setInterval(() => {
+        this.setState({ milisegundos: this.state.milisegundos + 10 });
+      }, 10);
+    }
+  };
+
+  pausar = () => {
+    this.setState({ ativo: false });
+    clearInterval(this.intervalo);
+  };
+
+  resetar = () => {
+    this.pausar();
+    this.setState({ milisegundos: 0 });
+  };
+
+  formatarTempo() {
+    const ms = this.state.milisegundos;
+    const minutos = Math.floor(ms / 60000);
+    const segundos = Math.floor((ms % 60000) / 1000);
+    const centesimos = Math.floor((ms % 1000) / 10);
+    return `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}:${String(centesimos).padStart(2, '0')}`;
+  }
+
+  render() {
+    return (
+      &lt;div style={{ textAlign: 'center', padding: '20px' }}&gt;
+        &lt;h1&gt;{this.formatarTempo()}&lt;/h1&gt;
+        &lt;button onClick={this.iniciar}&gt;Iniciar&lt;/button&gt;
+        &lt;button onClick={this.pausar}&gt;Pausar&lt;/button&gt;
+        &lt;button onClick={this.resetar}&gt;Resetar&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Cronometro;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>Cronometro</strong> usa <code>componentDidMount</code> apenas para logging. O timer é iniciado no método <code>iniciar</code> com <code>setInterval</code> a cada 10ms, incrementando <code>milisegundos</code>. <code>componentDidUpdate</code> loga o tempo formatado sempre que os milissegundos mudam. <code>componentWillUnmount</code> garante que o intervalo seja limpo. A formatação converte milissegundos em <code>MM:SS:CC</code>.</p>
+</div>
+
+              <p><b>App.jsx:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import Cronometro from './Cronometro';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Cronômetro&lt;/h1&gt;
+      &lt;Cronometro /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

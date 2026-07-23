@@ -33,6 +33,30 @@
   <li><b>Formulários não controlados</b>: Os dados são manipulados diretamente pelo DOM, usando referências (<code>refs</code>).</li>
 </ul>
 
+<h4>O que é Binding Bidirecional?</h4>
+<p>
+  <strong>Binding bidirecional</strong> (ou two-way data binding) é um padrão
+  onde o <strong>estado</strong> do componente e o <strong>valor do input</strong>
+  estão sempre sincronizados em ambas as direções:
+</p>
+<ul>
+  <li>
+    <strong>Estado → Input:</strong> Quando o estado muda, o input reflete
+    o novo valor (via <code>value={estado}</code>).
+  </li>
+  <li>
+    <strong>Input → Estado:</strong> Quando o usuário digita no input, o
+    estado é atualizado (via <code>onChange</code>).
+  </li>
+</ul>
+<p>
+  Em React, isso é implementado com <strong>formulários controlados</strong>:
+  o <code>value</code> do input é vinculado ao estado e o
+  <code>onChange</code> atualiza o estado. Isso difere de frameworks como
+  Angular ou Vue, que possuem sintaxe própria para binding bidirecional
+  (ex: <code>[(ngModel)]</code> ou <code>v-model</code>).
+</p>
+
  <h4>Gerenciando Inputs com Estado</h4>
         <p>
           Estados são frequentemente usados em formulários para controlar inputs

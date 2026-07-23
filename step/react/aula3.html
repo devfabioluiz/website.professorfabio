@@ -24,7 +24,7 @@
 
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Props, PropTypes, Interação entre componentes filhos e pais.
+        Props, Interação entre componentes filhos e pais.
       </div>
     </header>
     <div class="container">
@@ -62,6 +62,86 @@ export default Saudacao;
             <code>nome="valor"</code> e o filho o renderiza.
           </p>
         </div>
+
+        <h2>PropTypes</h2>
+        <section>
+          <p>
+            <strong>PropTypes</strong> é um recurso do React que permite
+            <strong>validar</strong> as props que um componente recebe. Com ele,
+            você pode definir o tipo esperado de cada prop (string, número,
+            função, etc.) e indicar se ela é obrigatória ou opcional.
+          </p>
+
+          <h4>Por que usar PropTypes?</h4>
+          <ul>
+            <li>
+              <strong>Documentação automática:</strong> Fica claro quais props
+              um componente espera e de que tipo.
+            </li>
+            <li>
+              <strong>Prevenção de erros:</strong> O React exibe avisos no
+              console se uma prop receber um tipo inesperado.
+            </li>
+            <li>
+              <strong>Manutenibilidade:</strong> Facilita a vida de quem for
+              usar ou dar manutenção no componente.
+            </li>
+          </ul>
+
+          <h4>Exemplo prático</h4>
+          <div class="code-container">
+            <pre>
+<code class="language-javascript">import React from 'react';
+import PropTypes from 'prop-types';
+
+const Saudacao = ({ nome, idade }) => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Olá, {nome}!&lt;/h1&gt;
+      {idade && &lt;p&gt;Você tem {idade} anos.&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+};
+
+Saudacao.propTypes = {
+  nome: PropTypes.string.isRequired,
+  idade: PropTypes.number,
+};
+
+export default Saudacao;
+</code>
+            </pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+            <p>
+              <code>Saudacao.propTypes</code> é um objeto onde cada chave é o
+              nome da prop e o valor é a validação. <code>PropTypes.string</code>
+              exige que <code>nome</code> seja uma string, e
+              <code>.isRequired</code> torna a prop obrigatória.
+              <code>PropTypes.number</code> para <code>idade</code> é opcional
+              (sem <code>isRequired</code>).
+            </p>
+            <p>
+              Para usar PropTypes, é necessário instalar o pacote separado:
+              <code>npm install prop-types</code> (a partir do React 15.5,
+              PropTypes foi movido para um pacote próprio).
+            </p>
+          </div>
+
+          <h4>Principais validadores</h4>
+          <ul>
+            <li><code>PropTypes.string</code> — deve ser string</li>
+            <li><code>PropTypes.number</code> — deve ser número</li>
+            <li><code>PropTypes.bool</code> — deve ser booleano</li>
+            <li><code>PropTypes.func</code> — deve ser função</li>
+            <li><code>PropTypes.array</code> — deve ser array</li>
+            <li><code>PropTypes.object</code> — deve ser objeto</li>
+            <li><code>PropTypes.oneOf(['a', 'b'])</code> — deve ser um dos valores</li>
+            <li><code>PropTypes.oneOfType([...])</code> — deve ser um dos tipos</li>
+          </ul>
+        </section>
       </section>
       <h2>Passagem de dados entre componentes (Pai/Filho)</h2>
       <section>
