@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dieta — Acompanhamento Semanal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #app { display: none; }
+  </style>
+</head>
+<body>
+  <div id="app-loading" class="app-loading">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-logo">Dieta</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-page="plano">
+          <i data-lucide="utensils-crossed"></i>
+          <span>Plano Alimentar</span>
+        </button>
+        <button class="nav-item" data-page="receitas">
+          <i data-lucide="book-open"></i>
+          <span>Receitas</span>
+        </button>
+        <button class="nav-item" data-page="despensa">
+          <i data-lucide="package"></i>
+          <span>Despensa</span>
+        </button>
+        <button class="nav-item" data-page="compras">
+          <i data-lucide="shopping-cart"></i>
+          <span>Lista de Compras</span>
+        </button>
+        <button class="nav-item" data-page="sobre">
+          <i data-lucide="info"></i>
+          <span>Sobre</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+          <i data-lucide="moon"></i>
+          <i data-lucide="sun"></i>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+        <span class="topbar-spacer"></span>
+      </header>
+
+      <div class="content">
+        <section id="page-dashboard" class="page"></section>
+        <section id="page-plano" class="page"></section>
+        <section id="page-receitas" class="page"></section>
+        <section id="page-dispensa" class="page"></section>
+        <section id="page-compras" class="page"></section>
+        <section id="page-sobre" class="page"></section>
+      </div>
+
+      <footer class="app-footer">
+        <p>Criado por Fabio Luiz · <span id="footer-year"></span></p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
