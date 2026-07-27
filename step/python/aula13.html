@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 13: Reconhecimento Facial com Python e OpenCV - IT Step</title>
+
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">&#8592; Voltar ao índice</button>
+
+    <header>
+      <h1>Aula 13</h1>
+      <h4 class="text-center">Python Backend</h4>
+      <h4 class="text-center">Reconhecimento Facial com Python e OpenCV</h4>
+
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        OpenCV, Haar Cascades, Detecção facial, Reconhecimento facial com LBPH,
+        Captura por webcam.
+      </div>
+    </header>
+
+    <main class="container">
+
+      <!-- INTRODUCAO -->
+      <section>
+        <h2>O que é OpenCV?</h2>
+
+        <p>
+          OpenCV (<em>Open Source Computer Vision Library</em>) é uma biblioteca
+          open-source de visão computacional e aprendizado de máquina. Com ela,
+          podemos processar imagens e vídeos em tempo real, detectar objetos,
+          rostos, e até reconhecer pessoas.
+        </p>
+
+        <ul>
+          <li>Criada pela Intel em 1999</li>
+          <li>Suporte para Python, C++, Java e mais</li>
+          <li>Usada em robótica, segurança, automotiva, etc.</li>
+          <li>Mais de 2500 algoritmos otimizados</li>
+        </ul>
+      </section>
+
+      <!-- INSTALACAO -->
+      <section>
+        <h2>Instalação</h2>
+
+        <p>Instale os pacotes necessários com o pip:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+pip install opencv-python opencv-contrib-python numpy
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <ul>
+          <li>
+            <code>opencv-python</code> — pacote principal do OpenCV para Python
+          </li>
+          <li>
+            <code>opencv-contrib-python</code> — módulos extras (inclui
+            <code>face</code> para LBPH)
+          </li>
+          <li><code>numpy</code> — manipulação de arrays (imagens)</li>
+        </ul>
+      </section>
+
+      <!-- LENDO E EXIBINDO IMAGEM -->
+      <section>
+        <h2>Carregando e exibindo uma imagem</h2>
+
+        <p>Vamos começar com o básico: ler uma imagem do disco e exibi-la na tela.</p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+
+# Carrega a imagem
+img = cv2.imread("foto.jpg")
+
+# Converte para tons de cinza (necessário para detecção)
+cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Exibe a imagem
+cv2.imshow("Minha Imagem", cinza)
+
+# Aguarda tecla e fecha
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Função</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>cv2.imread()</code></td>
+              <td>Lê uma imagem do arquivo</td>
+            </tr>
+            <tr>
+              <td><code>cv2.cvtColor()</code></td>
+              <td>Converte entre espaços de cor (BGR → GRAY)</td>
+            </tr>
+            <tr>
+              <td><code>cv2.imshow()</code></td>
+              <td>Exibe a imagem em uma janela</td>
+            </tr>
+            <tr>
+              <td><code>cv2.waitKey()</code></td>
+              <td>Aguarda uma tecla ser pressionada</td>
+            </tr>
+            <tr>
+              <td><code>cv2.destroyAllWindows()</code></td>
+              <td>Fecha todas as janelas abertas</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DETECCAO FACIAL -->
+      <section>
+        <h2>Detectando rostos com Haar Cascades</h2>
+
+        <p>
+          O OpenCV vem com classificadores pré-treinados chamados
+          <strong>Haar Cascades</strong>. Eles usam características visuais
+          (bordas, linhas, texturas) para detectar objetos. Vamos usar o
+          classificador de face frontal.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+
+# Carrega o classificador
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+
+# Carrega a imagem
+img = cv2.imread("grupo.jpg")
+cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Detecta rostos
+rostos = face_cascade.detectMultiScale(
+    cinza,
+    scaleFactor=1.1,
+    minNeighbors=5,
+    minSize=(30, 30)
+)
+
+# Desenha retângulos ao redor dos rostos
+for (x, y, w, h) in rostos:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+print(f"Rostos detectados: {len(rostos)}")
+
+cv2.imshow("Deteccao Facial", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Parâmetros do detectMultiScale</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>scaleFactor</code></td>
+              <td>Redução da escala a cada passo (1.1 = 10%)</td>
+            </tr>
+            <tr>
+              <td><code>minNeighbors</code></td>
+              <td>Mínimo de vizinhos para validar detecção</td>
+            </tr>
+            <tr>
+              <td><code>minSize</code></td>
+              <td>Tamanho mínimo do rosto a detectar</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- DETECCAO EM TEMPO REAL -->
+      <section>
+        <h2>Detecção em tempo real com a webcam</h2>
+
+        <p>
+          Agora vamos aplicar a detecção frame a frame usando a câmera do
+          computador.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+
+webcam = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = webcam.read()
+    if not ret:
+        break
+
+    cinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    rostos = face_cascade.detectMultiScale(cinza, 1.1, 5)
+
+    for (x, y, w, h) in rostos:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    cv2.imshow("Webcam - Pressione Q para sair", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+webcam.release()
+cv2.destroyAllWindows()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <ul>
+          <li><code>VideoCapture(0)</code> — abre a webcam padrão</li>
+          <li><code>read()</code> — captura um frame (retorna <code>bool</code> + array)</li>
+          <li>Pressione <strong>Q</strong> para encerrar</li>
+        </ul>
+      </section>
+
+      <!-- RECONHECIMENTO LBPH -->
+      <section>
+        <h2>Reconhecimento facial com LBPH</h2>
+
+        <p>
+          A detecção apenas localiza rostos. Para <strong>reconhecer</strong> de
+          quem é o rosto, usamos o algoritmo <strong>LBPH</strong> (Local Binary
+          Patterns Histograms). Ele analisa texturas locais da face e compara
+          com faces previamente cadastradas.
+        </p>
+
+        <h3>Passo 1: Coletar amostras do rosto</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+import os
+
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+
+nome = input("Digite seu nome: ")
+os.makedirs(f"faces/{nome}", exist_ok=True)
+
+webcam = cv2.VideoCapture(0)
+contador = 0
+
+while contador < 30:
+    ret, frame = webcam.read()
+    if not ret:
+        break
+
+    cinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    rostos = face_cascade.detectMultiScale(cinza, 1.3, 5)
+
+    for (x, y, w, h) in rostos:
+        contador += 1
+        face = cinza[y:y+h, x:x+w]
+        face = cv2.resize(face, (200, 200))
+        cv2.imwrite(f"faces/{nome}/{contador}.jpg", face)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.putText(frame, f"Amostra {contador}/30",
+                    (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+
+    cv2.imshow("Coletando Faces", frame)
+    cv2.waitKey(100)
+
+webcam.release()
+cv2.destroyAllWindows()
+print("Coleta finalizada!")
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2: Treinar o reconhecedor</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+import os
+import numpy as np
+
+recognizer = cv2.face.LBPHFaceRecognizer.create()
+
+faces = []
+labels = []
+label_map = {}
+label_id = 0
+
+for pasta in os.listdir("faces"):
+    caminho = os.path.join("faces", pasta)
+    if not os.path.isdir(caminho):
+        continue
+    label_map[label_id] = pasta
+    for arquivo in os.listdir(caminho):
+        img = cv2.imread(os.path.join(caminho, arquivo), 0)
+        img = cv2.resize(img, (200, 200))
+        faces.append(img)
+        labels.append(label_id)
+    label_id += 1
+
+recognizer.train(faces, np.array(labels))
+recognizer.save("treino.yml")
+
+print("Treino concluido!")
+print("Mapa de labels:", label_map)
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3: Reconhecer ao vivo</h3>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+
+recognizer = cv2.face.LBPHFaceRecognizer.create()
+recognizer.read("treino.yml")
+
+label_map = {0: "Joao", 1: "Maria"}  # Ajuste conforme sua coleta
+
+webcam = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = webcam.read()
+    if not ret:
+        break
+
+    cinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    rostos = face_cascade.detectMultiScale(cinza, 1.3, 5)
+
+    for (x, y, w, h) in rostos:
+        face = cv2.resize(cinza[y:y+h, x:x+w], (200, 200))
+        label, confianca = recognizer.predict(face)
+
+        nome = label_map.get(label, "Desconhecido")
+        cor = (0, 255, 0) if confianca < 70 else (0, 0, 255)
+        texto = f"{nome} ({confianca:.0f}%)"
+
+        cv2.rectangle(frame, (x, y), (x+w, y+h), cor, 2)
+        cv2.putText(frame, texto, (x, y-10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, cor, 2)
+
+    cv2.imshow("Reconhecimento Facial - Pressione Q para sair", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+webcam.release()
+cv2.destroyAllWindows()
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Valor</th>
+              <th>Significado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>label</code></td>
+              <td>ID da pessoa reconhecida</td>
+            </tr>
+            <tr>
+              <td><code>confianca</code></td>
+              <td>Quanto menor, maior a certeza (0 = perfeito)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PROJETO COMPLETO -->
+      <section>
+        <h2>Projeto completo: reconhecimento facial integrado</h2>
+
+        <p>
+          Abaixo está um script único que coleta amostras, treina e reconhece
+          rostos. Crie uma pasta <code>projeto_facial/</code>, salve o script
+          como <code>main.py</code> e execute.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-python">
+import cv2
+import os
+import numpy as np
+
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+
+ARQUIVO_TREINO = "treino.yml"
+PASTA_FACES = "faces"
+
+def coletar():
+    nome = input("Digite o nome da pessoa: ")
+    destino = os.path.join(PASTA_FACES, nome)
+    os.makedirs(destino, exist_ok=True)
+
+    webcam = cv2.VideoCapture(0)
+    contador = 0
+
+    while contador < 30:
+        ret, frame = webcam.read()
+        if not ret:
+            break
+        cinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        rostos = face_cascade.detectMultiScale(cinza, 1.3, 5)
+        for (x, y, w, h) in rostos:
+            contador += 1
+            face = cv2.resize(cinza[y:y+h, x:x+w], (200, 200))
+            cv2.imwrite(f"{destino}/{contador}.jpg", face)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            cv2.putText(frame, f"{contador}/30", (x, y-10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.imshow("Coletando - Q para cancelar", frame)
+        if cv2.waitKey(100) & 0xFF == ord("q"):
+            break
+
+    webcam.release()
+    cv2.destroyAllWindows()
+    print(f"Coleta de '{nome}' finalizada com {contador} amostras.")
+
+def treinar():
+    recognizer = cv2.face.LBPHFaceRecognizer.create()
+    faces, labels, label_map = [], [], {}
+
+    for idx, pasta in enumerate(os.listdir(PASTA_FACES)):
+        caminho = os.path.join(PASTA_FACES, pasta)
+        if not os.path.isdir(caminho):
+            continue
+        label_map[idx] = pasta
+        for arquivo in os.listdir(caminho):
+            img = cv2.imread(os.path.join(caminho, arquivo), 0)
+            if img is None:
+                continue
+            faces.append(cv2.resize(img, (200, 200)))
+            labels.append(idx)
+
+    if not faces:
+        print("Nenhuma face encontrada para treino.")
+        return {}
+
+    recognizer.train(faces, np.array(labels))
+    recognizer.save(ARQUIVO_TREINO)
+    print(f"Treino concluido com {len(faces)} amostras.")
+    return label_map
+
+def reconhecer(label_map):
+    if not os.path.exists(ARQUIVO_TREINO):
+        print("Arquivo de treino nao encontrado. Treine primeiro.")
+        return
+
+    recognizer = cv2.face.LBPHFaceRecognizer.create()
+    recognizer.read(ARQUIVO_TREINO)
+
+    webcam = cv2.VideoCapture(0)
+    while True:
+        ret, frame = webcam.read()
+        if not ret:
+            break
+        cinza = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        rostos = face_cascade.detectMultiScale(cinza, 1.3, 5)
+        for (x, y, w, h) in rostos:
+            face = cv2.resize(cinza[y:y+h, x:x+w], (200, 200))
+            label, confianca = recognizer.predict(face)
+            nome = label_map.get(label, "Desconhecido")
+            cor = (0, 255, 0) if confianca < 70 else (0, 0, 255)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), cor, 2)
+            cv2.putText(frame, f"{nome} ({confianca:.0f}%)",
+                        (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, cor, 2)
+        cv2.imshow("Reconhecimento - Q para sair", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    webcam.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    print("=== RECONHECIMENTO FACIAL ===")
+    print("1 - Coletar amostras")
+    print("2 - Treinar modelo")
+    print("3 - Reconhecer ao vivo")
+    opcao = input("Escolha uma opcao: ")
+
+    if opcao == "1":
+        coletar()
+    elif opcao == "2":
+        treinar()
+    elif opcao == "3":
+        mapa = treinar() if not os.path.exists(ARQUIVO_TREINO) else {}
+        if not mapa:
+            mapa = {}
+            for idx, pasta in enumerate(os.listdir(PASTA_FACES)):
+                if os.path.isdir(os.path.join(PASTA_FACES, pasta)):
+                    mapa[idx] = pasta
+        reconhecer(mapa)
+    else:
+        print("Opcao invalida.")
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section>
+        <h2>Resumo do fluxo</h2>
+
+        <ol>
+          <li>Capturamos rostos com a webcam e salvamos como imagens</li>
+          <li>Treinamos o LBPH com as imagens e seus labels</li>
+          <li>O reconhecedor compara rostos ao vivo com os dados treinados</li>
+          <li>Exibimos o nome e a confiança na tela</li>
+        </ol>
+      </section>
+
+      <!-- DEVER DE CASA -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>
+              Modifique o reconhecimento ao vivo para exibir um retângulo
+              <span style="color:green">verde</span> para pessoas conhecidas
+              e <span style="color:red">vermelho</span> para desconhecidas.
+              Além disso, mostre o nome "Visitante" quando o rosto não for
+              reconhecido.
+            </h3>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <div class="code-container">
+                <pre><code class="language-python">
+for (x, y, w, h) in rostos:
+    face = cv2.resize(cinza[y:y+h, x:x+w], (200, 200))
+    label, confianca = recognizer.predict(face)
+
+    if confianca < 70:
+        nome = label_map.get(label, "Visitante")
+        cor = (0, 255, 0)
+    else:
+        nome = "Visitante"
+        cor = (0, 0, 255)
+
+    cv2.rectangle(frame, (x, y), (x+w, y+h), cor, 2)
+    cv2.putText(frame, nome, (x, y-10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, cor, 2)
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GITHUB -->
+      <section>
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado da aplicação</h2>
+
+          <p>
+            Agora é importante que você valide se tudo está funcionando
+            corretamente. Execute o script, colete algumas amostras e teste o
+            reconhecimento ao vivo.
+          </p>
+
+          <p>
+            Compare sua implementação com uma versão funcional da nossa aula em
+            <a
+              href="https://github.com/devfabioluiz/projeto-python-step"
+              target="_blank"
+              class="alert-link-github"
+            >
+              github.com/devfabioluiz/projeto-python-step
+            </a>
+          </p>
+
+          <p>Dentro do repositório, selecione a branch correspondente à aula:</p>
+
+          <ul>
+            <li><code>aula13</code></li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
+  </body>
+</html>

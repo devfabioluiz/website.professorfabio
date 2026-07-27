@@ -1651,6 +1651,383 @@ git push --set-upstream origin projeto-final-python</code></pre>
           </p>
         </div>
 
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 8px;
+          "
+        >
+          PASSO 18B — DEPLOY AUTOMÁTICO COM GITHUB ACTIONS (OPCIONAL)
+        </h2>
+
+        <p>
+          O deploy manual funciona, mas toda vez que você alterar o código
+          precisará repetir o processo. Com <strong>GitHub Actions</strong>,
+          cada push na branch <code>main</code> faz o deploy automático no
+          Vercel — e você ainda ganha <strong>URLs de preview</strong> para
+          testar antes de ir para produção.
+        </p>
+
+        <h3>Passo 18B.1 — Fazer o primeiro deploy manual no Vercel</h3>
+
+        <p>
+          Antes de automatizar, precisamos que o Vercel conheça seu projeto.
+          Siga o <strong>Passo 18</strong> acima para fazer o primeiro deploy
+          manual. Depois disso, volte aqui.
+        </p>
+
+        <h3>Passo 18B.2 — Obter os IDs do projeto no Vercel</h3>
+
+        <p>Você vai precisar de três informações do Vercel:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Informação</th>
+              <th>Onde encontrar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>VERCEL_ORG_ID</code></td>
+              <td>
+                Vercel → Dashboard → clique no nome do seu time/usuário no
+                canto superior esquerdo → <strong>Settings</strong> →
+                <strong>General</strong> → role até <strong>Team ID</strong>
+              </td>
+            </tr>
+            <tr>
+              <td><code>VERCEL_PROJECT_ID</code></td>
+              <td>
+                Vercel → abra seu projeto → <strong>Settings</strong> →
+                <strong>General</strong> → <strong>Project ID</strong>
+              </td>
+            </tr>
+            <tr>
+              <td><code>VERCEL_TOKEN</code></td>
+              <td>
+                Vercel → clique no seu avatar →
+                <strong>Settings</strong> → <strong>Tokens</strong> →
+                <strong>Create Token</strong> → dê um nome (ex:
+                "github-actions") → escopo <strong>deployment</strong> →
+                clique em <strong>Create</strong> → <strong>copie o token
+                (só aparece uma vez!)</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Entendendo cada ID
+          </h2>
+
+          <h3>🔹 VERCEL_ORG_ID</h3>
+          <p>
+            É o identificador do seu time (ou conta pessoal) no Vercel. Se você
+            não faz parte de nenhum time, use o ID da sua conta pessoal. O valor
+            parece com <code>team_xxxxxxxxxxxxxxxx</code>.
+          </p>
+
+          <h3>🔹 VERCEL_PROJECT_ID</h3>
+          <p>
+            É o identificador único do seu projeto no Vercel. Parece com
+            <code>prj_xxxxxxxxxxxxxxxx</code>. Cada projeto tem um ID
+            diferente.
+          </p>
+
+          <h3>🔹 VERCEL_TOKEN</h3>
+          <p>
+            Um token de autenticação que permite ao GitHub Actions fazer deploy
+            em seu nome. <strong>Guarde-o com segurança</strong> — ele dá acesso
+            para modificar seus projetos no Vercel. Se perder, crie outro.
+          </p>
+        </div>
+
+        <h3>Passo 18B.3 — Adicionar os secrets no GitHub</h3>
+
+        <p>
+          Agora vamos passar esses três valores para o GitHub Actions de forma
+          segura, usando <strong>Secrets</strong> (variáveis criptografadas).
+        </p>
+
+        <ol>
+          <li>
+            Acesse seu repositório no GitHub
+          </li>
+          <li>
+            Vá em <strong>Settings → Secrets and variables → Actions</strong>
+          </li>
+          <li>
+            Clique em <strong>New repository secret</strong> e adicione:
+            <table style="margin-top: 10px">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Secret</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>VERCEL_TOKEN</code></td>
+                  <td>Token que você criou no Vercel</td>
+                </tr>
+                <tr>
+                  <td><code>VERCEL_ORG_ID</code></td>
+                  <td>ID do seu time/conta no Vercel</td>
+                </tr>
+                <tr>
+                  <td><code>VERCEL_PROJECT_ID</code></td>
+                  <td>ID do seu projeto no Vercel</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>
+            Além dos IDs, adicione também as variáveis de ambiente da sua API
+            como secrets:
+            <table style="margin-top: 10px">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Secret</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>DATABASE_URL</code></td>
+                  <td>URL do seu banco Supabase</td>
+                </tr>
+                <tr>
+                  <td><code>JWT_SECRET</code></td>
+                  <td>Sua chave secreta JWT</td>
+                </tr>
+                <tr>
+                  <td><code>ALLOWED_ORIGINS</code></td>
+                  <td><code>*</code> ou domínio do frontend</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+        </ol>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Por que secrets e não variáveis normais?
+          </h2>
+          <p>
+            Secrets são criptografados e nunca aparecem nos logs do GitHub
+            Actions. Se você colocasse a <code>DATABASE_URL</code> diretamente
+            no arquivo de workflow, ela ficaria visível para qualquer pessoa que
+            acesse o repositório.
+          </p>
+          <p>
+            No Vercel, essas variáveis precisam ser configuradas manualmente
+            (Passo 18.6). O GitHub Actions <strong>não envia</strong> os secrets
+            para o Vercel automaticamente — você ainda precisa configurá-las nas
+            <strong>Environment Variables</strong> do projeto no Vercel.
+          </p>
+        </div>
+
+        <h3>Passo 18B.4 — Criar o workflow do GitHub Actions</h3>
+
+        <p>
+          Crie a pasta e o arquivo do workflow:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">mkdir -p .github\workflows
+type nul > .github\workflows\deploy.yml</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Abra <code>.github/workflows/deploy.yml</code> e adicione:</p>
+
+        <div class="code-container">
+          <pre><code class="language-yaml">name: Deploy para Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - projeto-final-python
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Deploy para Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          scope: ${{ secrets.VERCEL_ORG_ID }}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o workflow
+          </h2>
+
+          <h3>🔹 on.push.branches</h3>
+          <p>
+            Define em quais branches o deploy automático vai rodar. Toda vez
+            que você der push em <code>main</code> ou
+            <code>projeto-final-python</code>, o Actions executa o deploy.
+          </p>
+
+          <h3>🔹 actions/checkout@v4</h3>
+          <p>
+            Action oficial do GitHub que baixa seu código dentro do ambiente do
+            Actions. Sem ela, o Vercel não teria acesso aos arquivos.
+          </p>
+
+          <h3>🔹 amondnet/vercel-action@v25</h3>
+          <p>
+            Action comunitária que integra o Vercel ao GitHub Actions. Ela
+            chama o CLI do Vercel internamente e faz o deploy.
+          </p>
+
+          <h3>🔹 vercel-args: "--prod"</h3>
+          <p>
+            Publica diretamente em produção. Sem essa flag, o Vercel cria uma
+            <strong>URL de preview</strong> (branch preview), que é ótimo para
+            testar antes de ir para produção. Você pode remover o
+            <code>--prod</code> se quiser apenas preview.
+          </p>
+
+          <h3>🔹 ${{ secrets.NOME }}</h3>
+          <p>
+            O GitHub Actions substitui esses placeholders pelos secrets que
+            você configurou no passo anterior. Eles nunca aparecem nos logs.
+          </p>
+        </div>
+
+        <h3>Passo 18B.5 — Adicionar variáveis de ambiente no Vercel</h3>
+
+        <p>
+          O GitHub Actions só faz o deploy do código. As variáveis de ambiente
+          precisam ser configuradas diretamente no projeto do Vercel:
+        </p>
+
+        <ol>
+          <li>
+            Acesse <code>https://vercel.com</code> e abra seu projeto
+          </li>
+          <li>
+            Vá em <strong>Settings → Environment Variables</strong>
+          </li>
+          <li>
+            Adicione as mesmas variáveis do seu <code>.env</code>:
+            <ul>
+              <li><code>DATABASE_URL</code> — URL do Supabase</li>
+              <li><code>JWT_SECRET</code> — chave secreta</li>
+              <li><code>ALLOWED_ORIGINS</code> — origens permitidas</li>
+            </ul>
+          </li>
+          <li>
+            Selecione os ambientes <strong>Production</strong> e
+            <strong>Preview</strong>
+          </li>
+          <li>Clique em <strong>Save</strong></li>
+        </ol>
+
+        <h3>Passo 18B.6 — Testar o deploy automático</h3>
+
+        <p>Agora vamos ver se tudo funciona:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git add .
+git commit -m "adiciona github actions para deploy automatico"
+git push</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <ol>
+          <li>
+            No GitHub, vá em <strong>Actions</strong> e veja o workflow rodando
+          </li>
+          <li>
+            Clique no nome do workflow para ver os logs em tempo real
+          </li>
+          <li>
+            Se tudo der certo, o status fica verde
+            ✅ e o Vercel recebe o novo deploy
+          </li>
+          <li>
+            Acesse sua URL do Vercel e confira se a API está no ar
+          </li>
+        </ol>
+
+        <div class="alert-explicando-codigo" style="border-left: 5px solid #dc2626">
+          <h2 class="alert-explicando-codigo-title">
+            ❌ E se o workflow falhar?
+          </h2>
+          <p>Verifique os pontos mais comuns:</p>
+          <ul>
+            <li>
+              <strong>VERCEL_TOKEN</strong> — o token foi criado com escopo
+              <code>deployment</code>? É necessário no mínimo esse escopo.
+            </li>
+            <li>
+              <strong>VERCEL_ORG_ID</strong> — copiou exatamente como está no
+              Vercel (começa com <code>team_</code>)?
+            </li>
+            <li>
+              <strong>VERCEL_PROJECT_ID</strong> — copiou do projeto correto?
+            </li>
+            <li>
+              <strong>Secrets</strong> — os nomes no GitHub batem com os nomes
+              no workflow (<code>VERCEL_TOKEN</code>, <code>VERCEL_ORG_ID</code>,
+              <code>VERCEL_PROJECT_ID</code>)?
+            </li>
+          </ul>
+        </div>
+
+        <h3>Bônus — Preview Deploy em Pull Requests</h3>
+
+        <p>
+          Com o GitHub Actions, você pode gerar uma URL de preview única para
+          cada Pull Request. Isso permite testar a funcionalidade antes de
+          mesclar com a main.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-yaml">name: Deploy Preview para Vercel
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+        <p>
+          Com esse workflow, cada Pull Request gera uma URL única tipo
+          <code>https://projeto-python-step-git-nome-branch.vercel.app</code>
+          para você testar antes de aprovar.
+        </p>
+
         <h3>Passo 19 — Testar a API no ar</h3>
 
         <div class="code-container">
