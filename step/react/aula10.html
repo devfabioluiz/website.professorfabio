@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 10 de React - Step</title>
+    <title>Aula 10 - React - Step</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
@@ -12,158 +12,472 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-      
+    
   </head>
+
   <body>
     <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
       <h1>Aula 10</h1>
       <h4 class="text-center">React</h4>
-      <h4 class="text-center">Context API, useReducer e Redux</h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Context API (hook useContext), Hook useReducer, Redux (arquitetura e exemplos práticos).</div>
+      <h4 class="text-center">Roteamento no React</h4>
+      <div
+        class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Roteamento, React Router, Links, Passagem de parâmetros via
+        rotas, Rotas aninhadas, Redirecionamento.
+      </div>
     </header>
-    <main class="container"><h2>Context API (hook useContext)</h2>
+    <main class="container"><h2>React Router</h2>
       <section>
         <p>
-          A Context API no React é uma ferramenta que permite compartilhar
-          valores e estados entre componentes sem a necessidade de passar props
-          manualmente por toda a árvore de componentes. Ela é ideal para
-          gerenciar dados globais, como temas, autenticação ou configurações de
-          idioma. O contexto é criado usando
-          <code>React.createContext()</code>, e seus valores são fornecidos aos
-          componentes filhos através do <code>Provider</code>. Os componentes
-          que precisam acessar esses valores utilizam o hook
-          <code>useContext</code>. A Context API simplifica a gestão de estados
-          globais em aplicações React, eliminando a complexidade de "prop
-          drilling".
+          O roteamento no React é gerenciado principalmente pela biblioteca
+          <strong>React Router</strong>. Ele permite criar interfaces de várias
+          páginas em aplicações Single-Page Application (SPA), onde a navegação
+          é feita dinamicamente sem recarregar a página.
         </p>
-        <div class="code-container">
-          <pre><code>
-import React, { createContext, useContext } from 'react';
-
-const TemaContext = createContext('claro');
-
-function Painel() {
-  const tema = useContext(TemaContext);
-  return &lt;div&gt;Tema atual: {tema}&lt;/div&gt;;
-}
-
-function App() {
-  return (
-    &lt;TemaContext.Provider value="escuro"&gt;
-      &lt;Painel /&gt;
-    &lt;/TemaContext.Provider&gt;
-  );
-}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p><code>createContext</code> cria um objeto de contexto que pode ser compartilhado entre componentes. O <code>Provider</code> (ex: <code>TemaContext.Provider</code>) envolve a árvore de componentes e fornece o valor do contexto. O hook <code>useContext</code> permite que qualquer componente filho acesse esse valor sem precisar recebê-lo via props — eliminando o <em>prop drilling</em>.</p>
-        </div>
-      </section>
-
-      <h2>Redux</h2>
-      <section>
         <p>
-          Redux e uma ferramenta popular para gerenciamento de estado em
-          aplicações React. Ele proporciona uma estrutura de dados unificada que
-          pode ser facilmente compartilhada entre componentes e acionados por
-          ações.
+          Rode o seguinte comando no seu terminal
+          <code>npm install react-router-dom</code>
         </p>
-        <h5>Exemplo</h5>
+
+        <h4>Roteamento Básico</h4>
         <div class="code-container">
           <pre>
-              <code class="language-javascript">
-import React from 'react';
-import { createStore } from 'redux';
-
-const initialState = { count: 0 };  
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { ...state, count: state.count + 1 };
-    case 'DECREMENT':
-      return { ...state, count: state.count - 1 };
-    default:
-      return state;
-  }
+          <code class="language-javascript">
+//crie um arquivo chamado Home.jsx
+const Home = () => {
+  return &lt;h1&gt;Bem-vindo à Home&lt;/h1&gt;
 };
 
-const store = createStore(reducer);
+export default Home;
 
-const Contador = () => {
-  const state = store.getState();
-  return (
-    &lt;&gt;
-      &lt;p&gt;Contagem: {state.count}&lt;/p&gt;
-      &lt;button onClick={() =&gt; store.dispatch({ type: 'INCREMENT' })}&gt;+&lt;/button&gt;
-      &lt;button onClick={() =&gt; store.dispatch({ type: 'DECREMENT' })}&gt;-&lt;/button&gt;
-    &lt;/&gt;
-  );
-};
-
-export default Contador;
-              </code>
-            </pre>
+          </code>
+        </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>O <strong>Redux</strong> gerencia o estado global da aplicação através de uma <em>store</em> centralizada. Um <em>reducer</em> é uma função pura que recebe o estado atual e uma <em>action</em> e retorna um novo estado. As ações são objetos com uma propriedade <code>type</code> e são enviadas via <code>store.dispatch()</code>. O componente lê o estado com <code>store.getState()</code>.</p>
-        </div>
-      </section>
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Home</strong> é um componente funcional simples que retorna um JSX com um título. Ele representa a página inicial nos exemplos de roteamento básico e será renderizado quando a URL corresponder à raiz do site.</p>
+</div>
 
-      <h2>useReducer</h2>
-      <section>
-        <p>
-          Hook para gerenciamento de estado complexo, similar ao Redux, com
-          dispatch e reducer.
-        </p>
-        <h5>Exemplo</h5>
         <div class="code-container">
-          <pre><code class="language-javascript">
-import React, { useReducer } from 'react';
+          <pre>
+          <code class="language-javascript">
+//crie um arquivo chamado About.jsx
+const About = () => {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;
+};
 
-const initialState = { count: 0 };
+export default About;
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'increment':
-      return { count: state.count + 1 };
-    case 'decrement':
-      return { count: state.count - 1 };
-    default:
-      return state;
-  }
-}
-
-function Contador() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    &lt;&gt;;
-      &lt;p&gt;;Contagem: {state.count}&lt;/p&gt;;
-      &lt;button onClick={() =&gt;; dispatch({ type: 'increment' })}&gt;;+&lt;/button&gt;;
-      &lt;button onClick={() =&gt;; dispatch({ type: 'decrement' })}&gt;;-&lt;/button&gt;;
-    &lt;/&gt;;
-  );
-}
-          </code></pre>
+          </code>
+        </pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>O hook <code>useReducer</code> é uma alternativa ao <code>useState</code> para gerenciar estados complexos. Ele recebe uma função <em>reducer</em> e um estado inicial, retornando um par <code>[state, dispatch]</code>. O <code>dispatch</code> envia ações para o reducer, que calcula o novo estado com base no tipo da ação. É especialmente útil quando o próximo estado depende de múltiplos valores ou de lógica condicional.</p>
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>About</strong> é um componente funcional que retorna um título "Sobre Nós". Ele será renderizado quando o usuário navegar para a rota <code>/about</code>, demonstrando como diferentes componentes podem ser associados a diferentes URLs no React Router.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from "./components/Home";
+import About from "./components/About";
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> é o ponto central do roteamento. O <code>BrowserRouter</code> deve envolver toda a aplicação para que o React Router funcione corretamente. O componente <code>Routes</code> funciona como um switch que verifica cada <code>Route</code> filho e renderiza apenas o primeiro que corresponde à URL atual. Cada <code>Route</code> possui um atributo <code>path</code> (caminho da URL) e <code>element</code> (componente a ser renderizado).</p>
+</div>
+
+        <h4>Redirecionamento</h4>
+        <div class="code-container">
+          <pre>
+          <code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Navigate to="/home" /&gt;} /&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+          </code>
+        </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <code>Navigate</code> permite redirecionar o usuário de uma rota para outra automaticamente. Neste exemplo, quando a URL for <code>"/"</code>, o usuário será imediatamente redirecionado para <code>"/home"</code>. Isso é útil para criar URLs amigáveis ou redirecionar usuários não autenticados.</p>
+</div>
+
+        <h4>Rotas Dinâmicas</h4>
+        <p>Utiliza parâmetros na URL para acessar dados específicos.</p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+//Crie um arquivo chamado User.jsx
+const User = () =>  {
+  const { id } = useParams();
+  return &lt;h1&gt;Usuário ID: {id}&lt;/h1&gt;;
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>User</strong> utiliza o hook <code>useParams</code> para acessar o parâmetro <code>:id</code> definido na rota. O <code>useParams</code> retorna um objeto com todos os parâmetros da URL. A variável <code>id</code> é extraída diretamente e exibida no JSX, permitindo criar páginas dinâmicas que se adaptam ao valor informado na URL.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+
+const App = () => => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/user/:id" element={&lt;User /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>Neste exemplo, a rota <code>/user/:id</code> utiliza <code>:id</code> como um parâmetro dinâmico da URL. O valor informado após <code>/user/</code> é capturado pelo hook <code>useParams</code> dentro do componente <strong>User</strong>. Por exemplo, ao acessar <code>/user/42</code>, a variável <code>id</code> receberá o valor "42", permitindo buscar e exibir dados específicos daquele usuário.</p>
+</div>
+
+        <h4>Navegação Programática</h4>
+        <p>
+          Permite alterar rotas dinamicamente usando o hook
+          <code>useNavigate</code>.
+        </p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { useNavigate } from 'react-router-dom';
+
+const Home = () => {
+  const navigate = useNavigate();
+  return &lt;button onClick={() => navigate('/about')}&gt;Ir para Sobre&lt;/button&gt;
+}
+
+export default Home;
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O hook <code>useNavigate</code> retorna uma função <code>navigate</code> que permite redirecionar o usuário programaticamente, ou seja, através de código JavaScript (como após o clique de um botão ou conclusão de uma ação). Isso é diferente do componente <code>Link</code>, que exige um clique em um elemento âncora. A navegação programática é ideal para fluxos como login, cadastro ou submissão de formulários.</p>
+</div>
+
+        <h4>Rotas Aninhadas</h4>
+        <p>
+          Organiza rotas hierarquicamente com o componente <code>Outlet</code>.
+        </p>
+        <p>
+          Inclui um <Outlet /> onde serão renderizados os componentes das rotas
+          filhas (Profile ou Settings).
+        </p>
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+import { Outlet } from 'react-router-dom';
+
+// Crie um arquivo chamado Dashboard.jsx
+const Dashboard = () => {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard &lt/h1&gt;
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Dashboard;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Dashboard</strong> utiliza o componente <code>Outlet</code> como um placeholder para renderizar os componentes das rotas filhas. O <code>Outlet</code> é substituído pelo componente filho ativo no momento. Isso permite criar layouts compartilhados onde a estrutura principal permanece visível enquanto o conteúdo muda dinamicamente.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+// Crie um arquivo chamado Profile.jsx
+const Profile = () => {
+  return  &lt;h1&gt;Perfil &lt/h1&gt;;
+}
+
+export default Profile;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Profile</strong> é um componente funcional que exibe um título "Perfil". Ele será renderizado dentro do componente <strong>Dashboard</strong> através do <code>Outlet</code> quando a rota filha <code>profile</code> for acessada.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+
+// Crie um arquivo chamado Settings.jsx
+const Settings = () => {
+  return &lt;h1&gt;Configurações&lt;/h1&gt;
+}
+
+export default Settings;
+    </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Settings</strong> é um componente funcional simples que retorna um título "Configurações". Ele será renderizado como rota filha dentro do Dashboard, aparecendo no lugar do <code>Outlet</code> quando o usuário navegar para <code>/dashboard/settings</code>.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+    <code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import Settings from "./components/Settings";
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/dashboard" element={ &ltDashboard /&gt;}&gt;
+          &lt;Route path="profile" element={ &ltProfile /&gt;} /&gt;
+          &lt;Route path="settings" element={ &ltSettings /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+    </code>
+  </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>A configuração de rotas aninhadas é feita colocando rotas <code>Route</code> como filhas de outra <code>Route</code>. Neste exemplo, <strong>Dashboard</strong> é o layout principal (com o <code>Outlet</code>), e <strong>Profile</strong> e <strong>Settings</strong> são rotas filhas que serão renderizadas dentro de Dashboard. As URLs resultantes são <code>/dashboard</code>, <code>/dashboard/profile</code> e <code>/dashboard/settings</code>.</p>
+</div>
+
+        <p>Logo, temos como definidas as rotas:</p>
+        <ul>
+          <li>/dashboard: Renderiza o componente Dashboard.</li>
+          <li>
+            /dashboard/profile: Renderiza Profile dentro de Dashboard (graças ao
+            <code> &lt;Outlet /&gt;). </code>
+          </li>
+
+          <li>/dashboard/settings: Renderiza Settings dentro de Dashboard.</li>
+        </ul>
+
+        <h4>Rotas Protegidas</h4>
+        <p>Controle de acesso baseado em autenticação</p>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { useNavigate } from "react-router-dom";
+
+//crie um arquivo chamado Login.jsx
+const Login = () => {
+  const navigate = useNavigate();
+  return (
+    &lt;button onClick={() => navigate("/home")}&gt;Clique para se logar&lt;/button&gt;
+  );
+};
+
+export default Login;
+
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { useNavigate } from "react-router-dom";
+
+//crie um arquivo chamado Login.jsx
+const Login = () => {
+  const navigate = useNavigate();
+  return (
+    &lt;button onClick={() => navigate("/home")}&gt;Clique para se logar&lt;/button&gt;
+  );
+};
+export default Login;
+
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Login</strong> utiliza o hook <code>useNavigate</code> para redirecionar o usuário após uma ação. No exemplo, ao clicar no botão "Clique para se logar", a função <code>navigate("/home")</code> é chamada, levando o usuário para a página inicial. Esta é uma forma de navegação programática, diferente do <code>Link</code> que exige um clique em um elemento âncora.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { Navigate } from "react-router-dom";
+
+//Crie um arquivo chamado PrivateRoute.jsx
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = true; // Simulação de autenticação
+  return isAuthenticated ? children : &lt;Navigate to="/login" /&gt;
+}
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>PrivateRoute</strong> atua como um guardião de rotas. Ele recebe um prop <code>children</code> (o componente a ser protegido) e verifica se o usuário está autenticado. Se estiver autenticado (<code>isAuthenticated = true</code>), renderiza o <code>children</code> normalmente. Caso contrário, redireciona para a página de login usando <code>Navigate</code>. Esse padrão é amplamente utilizado em sistemas com autenticação.</p>
+</div>
+
+        <div class="code-container">
+          <pre>
+            <code class="language-javascript">
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route
+          path="/home"
+          element={
+            &lt;PrivateRoute&gt;
+              &lt;Home /&gt;
+            &lt;/PrivateRoute&gt;
+          }
+        /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+            </code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>App.jsx</strong> configura as rotas protegidas envolvendo os componentes que exigem autenticação com o componente <strong>PrivateRoute</strong>. Se o usuário não estiver autenticado, ele é redirecionado para <code>/login</code>. A rota <code>/login</code> não possui proteção, permitindo que qualquer usuário acesse a página de login.</p>
+</div>
+
+        <p>
+          Agora faça um teste de colocar isAuthenticated como false e veja o
+          resultado
+        </p>
+
+        <!-- 
+          -->
+
+        <h4>Comparativo das Abordagens</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Abordagem</th>
+              <th>Uso Principal</th>
+              <th>Complexidade</th>
+              <th>Cenário Ideal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Roteamento Básico</strong></td>
+              <td>Navegação simples.</td>
+              <td>Baixa</td>
+              <td>Aplicações com poucas rotas.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Dinâmicas</strong></td>
+              <td>URLs parametrizadas.</td>
+              <td>Média</td>
+              <td>Sistemas de perfil ou detalhe de produto.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Aninhadas</strong></td>
+              <td>Rotas hierárquicas.</td>
+              <td>Alta</td>
+              <td>Dashboards ou sistemas modulares.</td>
+            </tr>
+            <tr>
+              <td><strong>Navegação Programática</strong></td>
+              <td>Navegação via lógica.</td>
+              <td>Média</td>
+              <td>Fluxos de autenticação ou carrinho.</td>
+            </tr>
+            <tr>
+              <td><strong>Rotas Protegidas</strong></td>
+              <td>Controle de acesso.</td>
+              <td>Alta</td>
+              <td>Sistemas com login obrigatório.</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
       <!-- PASSO A PASSO -->
       <section>
-        <h2>Passo a Passo: Criando um Theme Toggler com Context API</h2>
+        <h2>Passo a Passo: Criando um App Multi-Páginas com React Router</h2>
 
         <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
 
@@ -171,126 +485,118 @@ function Contador() {
 
         <div class="code-container">
           <pre><code class="language-bash">
-projeto-theme-context
+projeto-react-router
           </code></pre>
         </div>
 
-        <p>Agora crie uma branch chamada <strong>aula10-theme-context</strong></p>
+        <p>Agora crie uma branch chamada <strong>aula10-react-router</strong></p>
 
         <p>Depois, clone o repositório no seu computador:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
-git clone https://github.com/{{SEU-USERNAME}}/projeto-theme-context.git
-cd projeto-theme-context
+git clone https://github.com/{{SEU-USERNAME}}/projeto-react-router.git
+cd projeto-react-router
 git fetch
-git checkout aula10-theme-context
+git checkout aula10-react-router
 git pull
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h3 class="alert-title" style="color: #166534;">🤔 Explicando o código</h3>
-          <ul>
-            <li><code>git clone</code> — baixa o repositório remoto para sua máquina local.</li>
-            <li><code>cd</code> — navega para a pasta do projeto clonado.</li>
-            <li><code>git fetch</code> — sincroniza as referências das branches remotas sem fazer merge.</li>
-            <li><code>git checkout aula10-theme-context</code> — alterna para a branch específica da aula.</li>
-            <li><code>git pull</code> — baixa e integra as alterações mais recentes do repositório remoto.</li>
-          </ul>
-        </div>
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>git clone</code> baixa o repositório remoto para o seu computador. <code>cd projeto-react-router</code> entra na pasta do projeto. <code>git fetch</code> atualiza as referências das branches remotas. <code>git checkout aula10-react-router</code> alterna para a branch específica da aula. <code>git pull</code> baixa as alterações mais recentes da branch remota.</p>
+</div>
 
-        <h3>Passo 1 — Criar o projeto</h3>
+        <h3>Passo 1 — Instalar React Router</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
 npm create vite@latest . -- --template react
-npm install
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Criar o ThemeContext</h3>
-
-        <p>Crie o arquivo <b>src/ThemeContext.jsx</b>:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { createContext, useState, useContext } from 'react';
-
-const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
-  };
-
-  return (
-    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
-      {children}
-    &lt;/ThemeContext.Provider&gt;
-  );
-};
-
-export const useTheme = () => useContext(ThemeContext);
+npm install react-router-dom
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p><code>createContext()</code> cria um contexto vazio. O <code>ThemeProvider</code> é um componente que utiliza o <code>ThemeContext.Provider</code> para disponibilizar o estado do tema e a função <code>toggleTheme</code> para toda a árvore de componentes filhos. O hook customizado <code>useTheme</code> encapsula <code>useContext(ThemeContext)</code>, facilitando o consumo do contexto em qualquer componente.</p>
-        </div>
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm create vite@latest . -- --template react</code> inicializa um novo projeto React usando Vite no diretório atual. Em seguida, <code>npm install react-router-dom</code> instala a biblioteca React Router, que fornece os componentes necessários para configurar o roteamento na aplicação (<code>BrowserRouter</code>, <code>Routes</code>, <code>Route</code>, <code>Link</code>, etc.).</p>
+</div>
 
-        <h3>Passo 3 — Criar um componente que use o tema</h3>
+        <h3>Passo 2 — Criar as páginas</h3>
 
-        <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
+        <p>Crie os arquivos dentro da pasta <code>src</code>:</p>
+
+        <p><b>Home.jsx</b></p>
         <div class="code-container">
           <pre><code class="language-javascript">
-import { useTheme } from './ThemeContext';
-
-const ThemeSwitcher = () => {
-  const { theme, toggleTheme } = useTheme();
-
-  return (
-    &lt;div style={{
-      background: theme === 'light' ? '#fff' : '#333',
-      color: theme === 'light' ? '#000' : '#fff',
-      padding: '20px',
-      minHeight: '100vh',
-    }}&gt;
-      &lt;h1&gt;Tema atual: {theme}&lt;/h1&gt;
-      &lt;button onClick={toggleTheme}&gt;
-        Alternar para {theme === 'light' ? 'dark' : 'light'}
-      &lt;/button&gt;
-    &lt;/div&gt;
-  );
+const Home = () => {
+  return &lt;h1&gt;Página Inicial&lt;/h1&gt;;
 };
 
-export default ThemeSwitcher;
+export default Home;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>O <code>ThemeSwitcher</code> consome o contexto através do hook <code>useTheme()</code>, que retorna o tema atual e a função <code>toggleTheme</code>. O estilo do componente é alterado dinamicamente conforme o valor de <code>theme</code> (light ou dark), e o botão dispara a alternância do tema. Tudo isso sem que nenhuma prop seja passada manualmente — o contexto faz o compartilhamento automaticamente.</p>
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Home</strong> é um componente funcional que retorna um JSX simples. Ele representa a página inicial da aplicação e será renderizado quando o usuário acessar a rota <code>/</code> (raiz do site).</p>
+</div>
+
+        <p><b>About.jsx</b></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const About = () => {
+  return &lt;h1&gt;Sobre Nós&lt;/h1&gt;;
+};
+
+export default About;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 4 — Usar o Provider no App.jsx</h3>
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>About</strong> é um componente funcional simples que retorna um elemento <code>&lt;h1&gt;</code> com o texto "Sobre Nós". Ele representará a página "Sobre" da aplicação e será renderizado quando o usuário navegar para a rota <code>/about</code>.</p>
+</div>
+
+        <p><b>Contact.jsx</b></p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+const Contact = () => {
+  return &lt;h1&gt;Contato&lt;/h1&gt;;
+};
+
+export default Contact;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Contact</strong> segue o mesmo padrão dos anteriores: é um componente funcional simples que retorna JSX. Aqui ele exibe um título <code>&lt;h1&gt;</code> com o texto "Contato", representando a página de contato da aplicação.</p>
+</div>
+
+        <h3>Passo 3 — Configurar o Router no App.jsx</h3>
 
         <div class="code-container">
           <pre><code class="language-javascript">
-import { ThemeProvider } from './ThemeContext';
-import ThemeSwitcher from './ThemeSwitcher';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
 
 const App = () => {
   return (
-    &lt;ThemeProvider&gt;
-      &lt;ThemeSwitcher /&gt;
-    &lt;/ThemeProvider&gt;
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
   );
 };
 
@@ -300,9 +606,125 @@ export default App;
         </div>
 
         <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>O <code>App</code> envolve o componente <code>ThemeSwitcher</code> com o <code>ThemeProvider</code>. Esse é o padrão <strong>Provider</strong> da Context API: o provedor deve estar no nível mais alto da árvore de componentes que precisam acessar o contexto. Assim, qualquer componente descendente do <code>ThemeProvider</code> consegue consumir o tema sem a necessidade de props intermediárias.</p>
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O <strong>App.jsx</strong> configura o roteamento básico da aplicação. <code>BrowserRouter</code> é o componente que encapsula toda a aplicação e gerencia o histórico de navegação. <code>Routes</code> define um conjunto de rotas que serão avaliadas da mais específica para a mais genérica. Cada <code>Route</code> associa um <code>path</code> (caminho da URL) a um <code>element</code> (componente React). Quando a URL corresponde ao <code>path</code>, o componente especificado é renderizado.</p>
+</div>
+
+        <h3>Passo 4 — Adicionar navegação com Links</h3>
+
+        <p>Crie um componente <b>Navbar.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { Link } from 'react-router-dom';
+
+const Navbar = () => {
+  return (
+    &lt;nav&gt;
+      &lt;Link to="/"&gt;Home&lt;/Link&gt;
+      &lt;Link to="/about"&gt;Sobre&lt;/Link&gt;
+      &lt;Link to="/contact"&gt;Contato&lt;/Link&gt;
+    &lt;/nav&gt;
+  );
+};
+
+export default Navbar;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Navbar</strong> utiliza o componente <code>Link</code> do React Router para criar links de navegação. Diferente de uma tag <code>&lt;a&gt;</code> tradicional, o <code>Link</code> não recarrega a página — ele apenas atualiza a URL e renderiza o componente correspondente no <code>Routes</code>. Cada <code>Link</code> possui o atributo <code>to</code> que define o caminho da rota: <code>"/"</code> para Home, <code>"/about"</code> para Sobre e <code>"/contact"</code> para Contato.</p>
+</div>
+
+        <p>Atualize o <b>App.jsx</b> para incluir a Navbar:</p>
+
+        <h4>NavLink — Link com estilo ativo</h4>
+        <p>
+          O React Router também fornece o componente <strong>NavLink</strong>,
+          que funciona como <code>Link</code> mas permite adicionar estilos
+          especiais quando a rota está <strong>ativa</strong> (correspondente à
+          URL atual).
+        </p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { NavLink } from 'react-router-dom';
+
+const Navbar = () => {
+  return (
+    &lt;nav&gt;
+      &lt;NavLink
+        to="/"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Home
+      &lt;/NavLink&gt;
+      &lt;NavLink
+        to="/about"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Sobre
+      &lt;/NavLink&gt;
+      &lt;NavLink
+        to="/contact"
+        className={({ isActive }) => (isActive ? 'active' : '')}
+      &gt;
+        Contato
+      &lt;/NavLink&gt;
+    &lt;/nav&gt;
+  );
+};
+
+export default Navbar;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            <code>NavLink</code> recebe uma função no <code>className</code> que
+            recebe um objeto com a propriedade <code>isActive</code>. Quando a
+            rota corresponde à URL atual, <code>isActive</code> é
+            <code>true</code> e a classe <code>"active"</code> é aplicada. Você
+            pode usar isso para estilizar o link ativo com CSS, por exemplo:
+            <code>.active &#123; font-weight: bold; color: blue; &#125;</code>.
+          </p>
+          <p>
+            <code>NavLink</code> também aceita <code>style</code> como função
+            no lugar de <code>className</code> para aplicar estilos inline
+            condicionais.
+          </p>
+        </div>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
+import Navbar from './Navbar';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Navbar /&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> agora inclui o componente <strong>Navbar</strong> acima do sistema de rotas. Isso significa que a barra de navegação será exibida em todas as páginas da aplicação, pois ela está fora do componente <code>Routes</code>. O <code>BrowserRouter</code> continua encapsulando tudo, permitindo que tanto a Navbar quanto as rotas tenham acesso ao contexto de roteamento.</p>
+</div>
 
         <h3>Passo 5 — Rodar e testar</h3>
 
@@ -313,6 +735,11 @@ npm run dev
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>npm run dev</code> inicia o servidor de desenvolvimento do Vite. Com ele, você pode testar sua aplicação React em tempo real: qualquer alteração nos arquivos JSX é automaticamente refletida no navegador sem necessidade de recarregar a página manualmente (hot reload).</p>
+</div>
+
         <p>Acesse no navegador:</p>
         <div class="code-container">
           <pre><code class="language-bash">
@@ -320,35 +747,36 @@ http://localhost:5173
           </code></pre>
         </div>
 
+        <div class="alert-explicando-codigo">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O servidor de desenvolvimento do Vite é iniciado no endereço <code>http://localhost:5173</code>. Ao acessar esse endereço no navegador, você verá sua aplicação React com o roteamento configurado funcionando. A página inicial exibirá o componente <strong>Home</strong>, e você poderá navegar entre as páginas usando os links da <strong>Navbar</strong>.</p>
+</div>
+
         <h3>Último Passo — Subindo para o Git</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git add .
-git commit -m "aula 10: theme toggler com context api"
+git commit -m "aula 10: react router com multi paginas"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
         <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h3 class="alert-title" style="color: #166534;">🤔 Explicando o código</h3>
-          <ul>
-            <li><code>git add .</code> — adiciona todos os arquivos modificados à área de staging.</li>
-            <li><code>git commit -m "mensagem"</code> — cria um snapshot com as alterações e uma mensagem descritiva.</li>
-            <li><code>git push</code> — envia os commits da branch local para o repositório remoto no GitHub.</li>
-          </ul>
-        </div>
+  <h2 class="alert-explicando-codigo-title" style="color: #166534;">🤓 Explicando o código 📝</h2>
+  <p>O comando <code>git add .</code> adiciona todos os arquivos modificados à área de staging. <code>git commit -m "aula 10: react router com multi paginas"</code> cria um snapshot das alterações com uma mensagem descritiva. <code>git push</code> envia os commits para o repositório remoto no GitHub.</p>
+</div>
 
-        <div class="alert-box-github">
-          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
-          <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
-          <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
-          <p>Selecione a branch correspondente a esta aula:</p>
-          <ul>
-            <li><code>aula10-theme-context</code></li>
-          </ul>
-        </div>
+<div class="alert-box-github">
+  <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+  <p>Compare sua implementação com o código completo da aula no repositório oficial:</p>
+  <a href="https://github.com/devfabioluiz/projeto-react-step" target="_blank" class="alert-link-github">github.com/devfabioluiz/projeto-react-step</a>
+  <p>Selecione a branch correspondente a esta aula:</p>
+  <ul>
+    <li><code>aula10-react-router</code></li>
+  </ul>
+</div>
       </section>
 
       <!-- DEVER -->
@@ -356,12 +784,12 @@ git push
         <h2>Dever de Casa</h2>
         <div id="question-container-casa">
           <div class="question">
-            <h3>Criar uma Todo List com useReducer</h3>
+            <h3>Criar um blog com rotas dinâmicas</h3>
             <p>Crie uma branch chamada <strong>dever-de-casa-aula10</strong> e nela desenvolva:</p>
             <ol>
-              <li>Crie um componente <b>TodoList.jsx</b> que use <code>useReducer</code> para gerenciar uma lista de tarefas.</li>
-              <li>Implemente as ações: <code>ADD_TASK</code>, <code>TOGGLE_TASK</code> e <code>REMOVE_TASK</code>.</li>
-              <li>Renderize um input para adicionar tarefas e a lista com opção de marcar como concluída e remover.</li>
+              <li>Crie um componente <b>Post.jsx</b> que use <code>useParams</code> para exibir o título e conteúdo de um post baseado no ID da URL.</li>
+              <li>Crie um componente <b>Blog.jsx</b> que liste links para posts (ex: /post/1, /post/2, /post/3).</li>
+              <li>Configure as rotas no <b>App.jsx</b>.</li>
             </ol>
             <p><strong>Obs:</strong> Não se esqueça de subir o projeto para o Git na branch do dever após terminar.</p>
 
@@ -369,60 +797,25 @@ git push
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>TodoList.jsx:</b></p>
+              <p><b>1. Blog.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
-import { useReducer, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TASK':
-      return [...state, { id: Date.now(), text: action.payload, completed: false }];
-    case 'TOGGLE_TASK':
-      return state.map(task =>
-        task.id === action.payload
-          ? { ...task, completed: !task.completed }
-          : task
-      );
-    case 'REMOVE_TASK':
-      return state.filter(task => task.id !== action.payload);
-    default:
-      return state;
-  }
-};
+const posts = [
+  { id: 1, titulo: 'React é incrível' },
+  { id: 2, titulo: 'Aprendendo React Router' },
+  { id: 3, titulo: 'Hooks na prática' },
+];
 
-const TodoList = () => {
-  const [tasks, dispatch] = useReducer(reducer, []);
-  const [input, setInput] = useState('');
-
-  const addTask = () => {
-    if (input.trim()) {
-      dispatch({ type: 'ADD_TASK', payload: input });
-      setInput('');
-    }
-  };
-
+const Blog = () => {
   return (
     &lt;div&gt;
-      &lt;h1&gt;Lista de Tarefas&lt;/h1&gt;
-      &lt;input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Nova tarefa"
-      /&gt;
-      &lt;button onClick={addTask}&gt;Adicionar&lt;/button&gt;
+      &lt;h1&gt;Blog&lt;/h1&gt;
       &lt;ul&gt;
-        {tasks.map(task => (
-          &lt;li key={task.id}
-            style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
-          &gt;
-            {task.text}
-            &lt;button onClick={() => dispatch({ type: 'TOGGLE_TASK', payload: task.id })}&gt;
-              {task.completed ? 'Desmarcar' : 'Concluir'}
-            &lt;/button&gt;
-            &lt;button onClick={() => dispatch({ type: 'REMOVE_TASK', payload: task.id })}&gt;
-              Remover
-            &lt;/button&gt;
+        {posts.map(post => (
+          &lt;li key={post.id}&gt;
+            &lt;Link to={`/post/${post.id}`}&gt;{post.titulo}&lt;/Link&gt;
           &lt;/li&gt;
         ))}
       &lt;/ul&gt;
@@ -430,32 +823,79 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default Blog;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
-              <div class="alert-explicando-codigo" style="margin-top: 15px;">
-                <h3 class="alert-title">🤔 Explicando o código</h3>
-                <p>O hook <code>useReducer</code> gerencia o array de tarefas. O reducer trata três ações: <code>ADD_TASK</code> adiciona uma nova tarefa com <code>Date.now()</code> como ID único, <code>TOGGLE_TASK</code> alterna a propriedade <code>completed</code> da tarefa correspondente ao ID, e <code>REMOVE_TASK</code> filtra a tarefa pelo ID removendo-a da lista. O <code>useState</code> é usado separadamente para controlar o valor do input.</p>
-              </div>
 
-              <p><b>App.jsx:</b></p>
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Blog</strong> utiliza o componente <code>Link</code> do React Router para criar navegação entre páginas sem recarregar o navegador. A lista de posts é percorrida com <code>map</code>, gerando um item de lista <code>&lt;li&gt;</code> para cada post. Cada <code>Link</code> aponta para uma rota dinâmica <code>/post/{id}</code>, permitindo que o usuário clique e seja direcionado para a página detalhada de cada post.</p>
+</div>
+
+              <p><b>2. Post.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
-import TodoList from './TodoList';
+import { useParams } from 'react-router-dom';
+
+const posts = [
+  { id: 1, titulo: 'React é incrível', conteudo: 'React é uma biblioteca para construir interfaces...' },
+  { id: 2, titulo: 'Aprendendo React Router', conteudo: 'React Router permite navegação SPA...' },
+  { id: 3, titulo: 'Hooks na prática', conteudo: 'Hooks como useState e useEffect são essenciais...' },
+];
+
+const Post = () => {
+  const { id } = useParams();
+  const post = posts.find(p => p.id === Number(id));
+
+  if (!post) return &lt;h2&gt;Post não encontrado&lt;/h2&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.titulo}&lt;/h1&gt;
+      &lt;p&gt;{post.conteudo}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Post;
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>Post</strong> utiliza o hook <code>useParams</code> para capturar o parâmetro <code>:id</code> da URL. Internamente, ele mantém uma lista de posts com <code>id</code>, <code>titulo</code> e <code>conteudo</code>. A função <code>find</code> localiza o post cujo <code>id</code> corresponde ao parâmetro da URL (convertido para número). Caso o post não exista, exibe uma mensagem de erro; caso contrário, renderiza o título e o conteúdo do post encontrado.</p>
+</div>
+
+              <p><b>3. App.jsx — rotas atualizadas:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Blog from './Blog';
+import Post from './Post';
 
 const App = () => {
-  return &lt;TodoList /&gt;;
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Blog /&gt;} /&gt;
+        &lt;Route path="/post/:id" element={&lt;Post /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
 };
 
 export default App;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
-              <div class="alert-explicando-codigo" style="margin-top: 15px;">
-                <h3 class="alert-title">🤔 Explicando o código</h3>
-                <p>O <code>App.jsx</code> importa e renderiza o componente <code>TodoList</code>, que contém toda a lógica de gerenciamento de tarefas com <code>useReducer</code>. A estrutura é simples porque o <code>useReducer</code> encapsula tanto o estado quanto as ações dentro do próprio componente <code>TodoList</code>.</p>
-              </div>
+
+            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+  <p>O componente <strong>App.jsx</strong> configura o roteador principal da aplicação. O <code>BrowserRouter</code> envolve toda a árvore de componentes e gerencia o histórico de navegação. Dentro dele, o componente <code>Routes</code> define um sistema de roteamento exclusivo: a primeira rota <code>path="/"</code> renderiza o <strong>Blog</strong> como página inicial, e a segunda rota <code>path="/post/:id"</code> usa um parâmetro dinâmico <code>:id</code> para identificar qual post específico será exibido através do componente <strong>Post</strong>.</p>
+</div>
+
             </div>
           </div>
         </div>
