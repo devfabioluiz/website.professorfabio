@@ -730,14 +730,14 @@ npm install axios
           </p>
         </div>
 
-        <p>Refatore o <strong>App.jsx</strong> para usar Axios:</p>
+        <p>Refatore o <strong>Usuarios.jsx</strong> para usar Axios:</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function App() {
+function Usuarios() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -772,7 +772,7 @@ function App() {
   );
 }
 
-export default App;
+export default Usuarios;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -788,96 +788,6 @@ export default App;
             erro com <code>.catch()</code> continua similar, mas o Axios já
             trata automaticamente erros de rede e HTTP como exceções, tornando o
             código mais limpo.
-          </p>
-        </div>
-
-        <h3>Passo 5 — Criar um componente separado para a lista</h3>
-
-        <p>Crie o componente <strong>UserList.jsx</strong>:</p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    axios
-      .get('https://jsonplaceholder.typicode.com/users')
-      .then((response) => {
-        setUsers(response.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  if (loading) return &lt;p&gt;Carregando...&lt;/p&gt;;
-
-  return (
-    &lt;div&gt;
-      &lt;h2&gt;Usuários&lt;/h2&gt;
-      {users.map((user) => (
-        &lt;div key={user.id} className="user-card"&gt;
-          &lt;h3&gt;{user.name}&lt;/h3&gt;
-          &lt;p&gt;Email: {user.email}&lt;/p&gt;
-          &lt;p&gt;Cidade: {user.address.city}&lt;/p&gt;
-        &lt;/div&gt;
-      ))}
-    &lt;/div&gt;
-  );
-};
-
-export default UserList;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Criamos um componente separado <code>UserList</code> para organizar
-            melhor o código. Ele contém toda a lógica de busca e exibição dos
-            usuários, incluindo os estados de carregamento. Cada usuário é
-            exibido em um <code>div</code> com classe <code>user-card</code>,
-            mostrando nome, email e cidade. Separar componentes é uma boa
-            prática no React para manter o código modular e reutilizável.
-          </p>
-        </div>
-
-        <h3>Passo 6 — Usar o componente no App</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import UserList from './UserList';
-
-function App() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;JSONPlaceholder App&lt;/h1&gt;
-      &lt;UserList /&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default App;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            O componente <code>App</code> agora importa e utiliza o
-            <code>UserList</code>. Isso mantém o <code>App.jsx</code> simples e
-            limpo, delegando a responsabilidade de buscar e exibir os dados para
-            o componente <code>UserList</code>. Essa é a essência da
-            componentização no React: cada componente tem uma responsabilidade
-            específica.
           </p>
         </div>
 
