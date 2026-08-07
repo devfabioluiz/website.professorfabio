@@ -499,7 +499,12 @@ git checkout -b aula8-requisicoes-http
         <h3>Passo 2 — Fazer requisição GET com fetch</h3>
 
         <p>
-          No componente <strong>App.jsx</strong>, use <code>useEffect</code> e
+          Crie um componente chamado <code>Usuarios.jsx</code> e coloque o
+          código abaixo:
+        </p>
+
+        <p>
+          Podemos perceber que no componente temos o <code>useEffect</code> e
           <code>fetch</code> para buscar dados da JSONPlaceholder API:
         </p>
 
@@ -507,7 +512,7 @@ git checkout -b aula8-requisicoes-http
           <pre><code class="language-javascript">
 import { useState, useEffect } from 'react';
 
-function App() {
+function Usuarios() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -547,10 +552,33 @@ function App() {
   );
 }
 
+export default Usuarios;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Insira o componente <code>Usuarios</code> no seu arquivo
+          <code>App.jsx</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import Usuarios from './Usuarios';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;JSONPlaceholder App&lt;/h1&gt;
+      &lt;Usuarios /&gt;
+    &lt;/div&gt;
+  );
+}
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">
             🤓 Explicando o código 📝
@@ -580,7 +608,7 @@ export default App;
           <pre><code class="language-javascript">
 import { useState } from 'react';
 
-function App() {
+function Posts() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [response, setResponse] = useState(null);
@@ -632,10 +660,36 @@ function App() {
   );
 }
 
+export default Posts;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Agora, vamos refatorar o componente <code>App</code> para usar o
+          componente <code>Posts</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import Posts from './Posts';
+import Usuarios from "./components/aula8/Usuarios";
+import Posts from "./components/aula8/Posts";
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;JSONPlaceholder App&lt;/h1&gt;
+      &lt;Usuarios /&gt;
+      &lt;Posts /&gt;
+    &lt;/div&gt;
+  );
+}
 export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">
             🤓 Explicando o código 📝
