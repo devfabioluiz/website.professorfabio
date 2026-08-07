@@ -730,14 +730,14 @@ npm install axios
           </p>
         </div>
 
-        <p>Refatore o <strong>Usuarios.jsx</strong> para usar Axios:</p>
+        <p>Crie o componente <code>ListaUsuarios.jsx</code> para usar Axios:</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function Usuarios() {
+function ListaUsuarios() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -772,7 +772,7 @@ function Usuarios() {
   );
 }
 
-export default Usuarios;
+export default ListaUsuarios;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -781,14 +781,40 @@ export default Usuarios;
             🤓 Explicando o código 📝
           </h2>
           <p>
-            A refatoração com Axios mantém a mesma lógica do exemplo anterior,
-            mas simplifica o código. <code>axios.get()</code> retorna uma
-            Promise cujo resultado está em <code>response.data</code> — não
-            precisamos mais chamar <code>response.json()</code>. O tratamento de
-            erro com <code>.catch()</code> continua similar, mas o Axios já
-            trata automaticamente erros de rede e HTTP como exceções, tornando o
+            Esse componente com Axios mantém a mesma lógica do exemplo anterior
+            em <code>Usuarios.jsx</code>, mas simplifica o código.
+            <code>axios.get()</code> retorna uma Promise cujo resultado está em
+            <code>response.data</code> — não precisamos mais chamar
+            <code>response.json()</code>. O tratamento de erro com
+            <code>.catch()</code> continua similar, mas o Axios já trata
+            automaticamente erros de rede e HTTP como exceções, tornando o
             código mais limpo.
           </p>
+        </div>
+
+        <p>
+          Agora que temos o componente <code>ListaUsuarios</code> implementado
+          com Axios, podemos usá-lo em nosso aplicativo.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import Usuarios from './Usuarios';
+import Posts from './Posts';
+import ListaUsuarios from './ListaUsuarios';
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;JSONPlaceholder App&lt;/h1&gt;
+      &lt;Usuarios /&gt;
+      &lt;Posts /&gt;
+      &lt;ListaUsuarios /&gt;
+    &lt;/div&gt;
+  );
+}
+export default App;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
         <h3>Último Passo - Subindo para o Git</h3>
