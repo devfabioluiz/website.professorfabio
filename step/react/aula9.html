@@ -441,22 +441,13 @@ export default FormularioSelectCheckbox;
 
         <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
 
-        <p>
-          Acesse o GitHub e crie uma nova branch baseada na branch <strong>aula8</strong> com o nome:
-        </p>
+        <p>Abra um novo terminal do VSCode e execute o comando abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
-aula9-formularios-react
-          </code></pre>
-        </div>
-
-        <p>Depois, no terminal do VSCode, execute:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
+git checkout aula8-requisicoes-http
 git fetch
-git checkout aula9-formularios-react
+git checkout -b aula9-formularios-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -466,13 +457,13 @@ git checkout aula9-formularios-react
   <p>O comando <code>git fetch</code> baixa as referências e branches do repositório remoto sem fazer merge automático. Em seguida, <code>git checkout aula9-formularios-react</code> alterna para a branch específica da aula, permitindo que você trabalhe isoladamente nesta aula sem interferir em outras branches.</p>
 </div>
 
-        <h3>Passo 1 — Criar o projeto React</h3>
+        <h3>Passo 1 — Criar a pasta da aula 9 e os componentes necessários</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
-npm create vite@latest registration-form -- --template react
-cd registration-form
-npm install
+cd my-react-app/src/components
+mkdir aula9
+type nul &gt; aula9/RegistrationForm.jsx
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -485,129 +476,8 @@ npm install
         <h3>Passo 2 — Criar formulário de registro controlado</h3>
 
         <p>
-          Crie o componente <strong>RegistrationForm.jsx</strong> com campos
-          controlados e validação:
+          Dentro do componente <code>RegistrationForm.jsx</code> insira o código abaixo:
         </p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { useState } from 'react';
-
-const RegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Nome é obrigatório';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Senha é obrigatória';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Senhas não conferem';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      alert('Cadastro realizado com sucesso!');
-    }
-  };
-
-  return (
-    &lt;form onSubmit={handleSubmit}&gt;
-      &lt;div&gt;
-        &lt;label&gt;Nome:&lt;/label&gt;
-        &lt;input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-        /&gt;
-        {errors.name && &lt;span className="error"&gt;{errors.name}&lt;/span&gt;}
-      &lt;/div&gt;
-
-      &lt;div&gt;
-        &lt;label&gt;Email:&lt;/label&gt;
-        &lt;input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        /&gt;
-        {errors.email && &lt;span className="error"&gt;{errors.email}&lt;/span&gt;}
-      &lt;/div&gt;
-
-      &lt;div&gt;
-        &lt;label&gt;Senha:&lt;/label&gt;
-        &lt;input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        /&gt;
-        {errors.password && &lt;span className="error"&gt;{errors.password}&lt;/span&gt;}
-      &lt;/div&gt;
-
-      &lt;div&gt;
-        &lt;label&gt;Confirmar Senha:&lt;/label&gt;
-        &lt;input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        /&gt;
-        {errors.confirmPassword && (
-          &lt;span className="error"&gt;{errors.confirmPassword}&lt;/span&gt;
-        )}
-      &lt;/div&gt;
-
-      &lt;button type="submit"&gt;Cadastrar&lt;/button&gt;
-    &lt;/form&gt;
-  );
-};
-
-export default RegistrationForm;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-  <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
-  <p>O componente <strong>RegistrationForm</strong> gerencia um formulário controlado com validação completa. O estado <code>formData</code> armazena todos os campos (nome, email, senha e confirmação). A função <code>validate()</code> verifica campos obrigatórios, formato de email e correspondência de senhas. Os erros são exibidos dinamicamente ao lado de cada campo quando a validação falha.</p>
-</div>
-
-        <h3>Passo 3 — Adicionar campo de seleção (select)</h3>
-
-        <p>Adicione um campo de seleção de país ao formulário:</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -710,12 +580,16 @@ export default RegistrationForm;
           <button class="btn-copy">Copiar Código</button>
         </div>
 
+        
         <div class="alert-explicando-codigo">
   <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
-  <p>Este passo adiciona um campo <code>&lt;select&gt;</code> de país ao formulário. O estado <code>formData</code> agora inclui a propriedade <code>country</code>. A validação verifica se um país foi selecionado (<code>!formData.country</code>). O seletor usa o mesmo <code>handleChange</code> genérico, demonstrando como um único manipulador pode atender diferentes tipos de input.</p>
+  <p>O componente <strong>RegistrationForm</strong> gerencia um formulário controlado com validação completa. O estado <code>formData</code> armazena todos os campos (nome, email, senha e confirmação). A função <code>validate()</code> verifica campos obrigatórios, formato de email e correspondência de senhas. Os erros são exibidos dinamicamente ao lado de cada campo quando a validação falha.</p>
+  <p>Também notamos que existe um campo <code>&lt;select&gt;</code> de país ao formulário. O estado <code>formData</code> agora inclui a propriedade <code>country</code>. A validação verifica se um país foi selecionado (<code>!formData.country</code>). O seletor usa o mesmo <code>handleChange</code> genérico, demonstrando como um único manipulador pode atender diferentes tipos de input.</p>
 </div>
 
-        <h3>Passo 4 — Usar o formulário no App</h3>
+        <h3>Passo 3 — Usar o formulário no App</h3>
+
+        <p>Substitua o código anterior de <code>App.jsx</code> pelo código abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -748,7 +622,7 @@ export default App;
           <pre><code class="language-bash">
 git add .
 git commit -m "aula 9 formularios react"
-git push
+git push --set-upstream origin aula9-formularios-react
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -892,12 +766,13 @@ export default FeedbackForm;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
-            </div>
-
-            <div class="alert-explicando-codigo" style="margin-top: 15px;">
+             <div class="alert-explicando-codigo" style="margin-top: 15px;">
   <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
   <p>O componente <strong>FeedbackForm</strong> implementa um formulário completo de feedback. Ele valida todos os campos, incluindo o tamanho mínimo de 10 caracteres para a mensagem. Ao enviar com sucesso, os dados são armazenados no estado <code>submitted</code> e exibidos abaixo do formulário. O botão "Limpar" reseta o formulário através da função <code>handleClear</code>, que restaura os estados ao valor inicial.</p>
 </div>
+            </div>
+
+           
 
           </div>
         </div>

@@ -66,6 +66,209 @@ function Lista() {
         </div>
       </section>
 
+      <h2>Arrow Functions</h2>
+      <section>
+        <p>
+          As <strong>arrow functions</strong> (funções de seta) são uma forma
+          mais curta de escrever funções em JavaScript. Em vez da palavra
+          <code>function</code>, usamos a seta <code>=&gt;</code>. Elas são muito
+          comuns no React — os componentes desta aula já usam essa sintaxe, como
+          <code>const HelloWorld = () =&gt; { ... }</code> e
+          <code>const PlacarDoJogo = () =&gt; { ... }</code>.
+        </p>
+
+        <h4>Comparando com uma função tradicional</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+function saudacao(nome) {
+  return `Olá, ${nome}!`;
+}
+
+const saudacao2 = (nome) => {
+  return `Olá, ${nome}!`;
+};
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            As duas funções fazem a mesma coisa: a diferença é apenas a <strong>sintaxe</strong>.
+            A arrow function elimina a palavra <code>function</code> e coloca a seta
+            <code>=&gt;</code> depois dos parâmetros. Quando há um único parâmetro, até os
+            parênteses podem ser omitidos (ex.: <code>nome =&gt; nome.length</code>).
+          </p>
+        </div>
+
+        <h4>Retorno implícito</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+// Forma completa, com return
+const dobro = (numero) => {
+  return numero * 2;
+};
+
+// Forma curta (retorno implícito) — mesmo resultado
+const dobro2 = (numero) => numero * 2;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Quando a arrow function tem <strong>apenas uma expressão</strong>, podemos remover
+            as chaves <code>{}</code> e o <code>return</code> — o valor é retornado
+            automaticamente. É por isso que existem funções tão curtas na aula, como
+            <code>const golCasa = () =&gt; setGolsCasa((prev) =&gt; prev + 1);</code>.
+          </p>
+        </div>
+      </section>
+
+      <h2>Eventos no React</h2>
+      <section>
+        <p>
+          No React, os eventos são escritos com nomes em <strong>camelCase</strong> e recebem
+          uma <strong>função</strong> como valor (e não uma string como no HTML). Os mais
+          comuns são:
+        </p>
+        <ul>
+          <li><code>onClick</code> — clique em um elemento</li>
+          <li><code>onChange</code> — mudança em inputs, textareas e selects</li>
+          <li><code>onSubmit</code> — envio de um formulário</li>
+          <li><code>onKeyDown</code> — tecla pressionada</li>
+          <li><code>onMouseEnter</code> / <code>onMouseLeave</code> — passagem do mouse</li>
+        </ul>
+
+        <h4>onClick no HTML vs no React</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+// HTML puro: nome minúsculo e valor entre aspas
+&lt;button onclick="alert('Oi')"&gt;Clique aqui&lt;/button&gt;
+
+// React: nome em camelCase e valor é uma função
+const handleClick = () =&gt; alert('Oi');
+
+const Botao = () =&gt; (
+  &lt;button onClick={handleClick}&gt;Clique aqui&lt;/button&gt;
+);
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            No HTML puro usamos <code>onclick="..."</code>. No React o nome se torna
+            <code>onClick</code> e o valor é a <strong>referência</strong> de uma função
+            JavaScript, normalmente definida antes do JSX.
+          </p>
+        </div>
+
+        <h4>Passar a função, nunca chamá-la</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+// Errado: os parênteses executam a função durante a renderização
+&lt;button onClick={handleClick()}&gt;Errado&lt;/button&gt;
+
+// Correto: passamos a referência — ela só é chamada no clique
+&lt;button onClick={handleClick}&gt;Correto&lt;/button&gt;
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Os parênteses <strong>chamam</strong> a função na hora. Sem eles, passamos apenas
+            a referência e o React executa a função somente quando o evento acontecer.
+          </p>
+        </div>
+
+        <h4>Passando argumentos com arrow function</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import { useState } from 'react';
+
+function ContadorClick() {
+  const [contador, setContador] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Contador: {contador}&lt;/h1&gt;
+      &lt;button onClick={() =&gt; setContador(contador + 1)}&gt;Incrementar&lt;/button&gt;
+      &lt;button onClick={() =&gt; setContador(0)}&gt;Resetar&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Para passar um argumento sem executar a função na hora, envolvemos tudo em uma
+            <strong>arrow function inline</strong>. O React guarda essa arrow e a executa apenas
+            no clique — é o formato <code>onClick={() =&gt; ...}</code> usado nos exemplos
+            do componente <code>Contador</code>.
+          </p>
+        </div>
+
+        <h4>O objeto de evento e o preventDefault</h4>
+        <div class="code-container">
+          <pre>
+<code class="language-javascript">
+import { useState } from 'react';
+
+const Formulario = () =&gt; {
+  const [nome, setNome] = useState('');
+
+  const aoEnviar = (evento) =&gt; {
+    evento.preventDefault();
+    alert(`Olá, ${nome}!`);
+    setNome('');
+  };
+
+  return (
+    &lt;form onSubmit={aoEnviar}&gt;
+      &lt;input
+        type="text"
+        value={nome}
+        onChange={(e) =&gt; setNome(e.target.value)}
+        placeholder="Digite seu nome"
+      /&gt;
+      &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code>
+          </pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">🤓 Explicando o código 📝</h2>
+          <p>
+            Todo handler de evento recebe o <strong>evento sintético</strong> (<code>e</code>).
+            Com ele lemos valores do elemento — ex.: <code>e.target.value</code> no
+            <code>onChange</code> — e impedimos comportamentos padrão, como o recarregamento
+            da página no <code>onSubmit</code>, usando <code>e.preventDefault()</code>.
+          </p>
+        </div>
+      </section>
+
       <h2>Tipos de Componentes</h2>
       <section>
         <p>
