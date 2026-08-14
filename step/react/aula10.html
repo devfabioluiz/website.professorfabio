@@ -679,9 +679,13 @@ npm install react-router-dom
 type nul &gt; src/components/aula10/Home.jsx
 type nul &gt; src/components/aula10/About.jsx
 type nul &gt; src/components/aula10/Contact.jsx
+type nul &gt; src/components/aula10/Navbar.jsx
+type nul &gt; src/components/aula10/Navbar2.jsx
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
+        <h3>Passo 3 — Criar o conteúdo da página Home</h3>
 
         <p>Agora edite o arquivo <code>Home.jsx</code>com o código abaixo:</p>
 
@@ -708,6 +712,8 @@ export default Home;
           </p>
         </div>
 
+        <h3>Passo 4 — Criar o conteúdo da página About</h3>
+
         <p>Agora edite o arquivo <code>About.jsx</code>com o código abaixo:</p>
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -733,7 +739,11 @@ export default About;
           </p>
         </div>
 
-        <p><b>Contact.jsx</b></p>
+        <h3>Passo 5 — Criar o conteúdo da página Contact</h3>
+
+        <p>
+          Agora edite o arquivo <code>Contact.jsx</code>com o código abaixo:
+        </p>
         <div class="code-container">
           <pre><code class="language-javascript">
 const Contact = () => {
@@ -757,7 +767,12 @@ export default Contact;
           </p>
         </div>
 
-        <h3>Passo 3 — Configurar o Router no App.jsx</h3>
+        <h3>Passo 6 — Configurar o Router no App.jsx</h3>
+
+        <p>
+          Agora vamos substituir o código existente em <code>App.jsx</code>pelo
+          código abaixo:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
@@ -765,10 +780,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import About from './About';
 import Contact from './Contact';
+import Navbar from './Navbar';
+import Navbar2 from './Navbar2';
 
 const App = () => {
   return (
     &lt;BrowserRouter&gt;
+      &lt;Navbar /&gt;
+      &lt;Navbar2 /&gt;
       &lt;Routes&gt;
         &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
         &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
@@ -799,7 +818,11 @@ export default App;
           </p>
         </div>
 
-        <h3>Passo 4 — Adicionar navegação com Links</h3>
+        <h3>Passo 7 — Adicionar navegação com Links</h3>
+
+        <p>
+          Agora edite o arquivo <code>Navbar.jsx</code> com o seguinte código
+        </p>
 
         <p>Crie um componente <b>Navbar.jsx</b>:</p>
         <div class="code-container">
@@ -838,20 +861,24 @@ export default Navbar;
           </p>
         </div>
 
-        <p>Atualize o <b>App.jsx</b> para incluir a Navbar:</p>
+        <h3>Passo 8 — Atualizar o Navbar2.jsx</h3>
 
-        <h4>NavLink — Link com estilo ativo</h4>
         <p>
-          O React Router também fornece o componente <strong>NavLink</strong>,
-          que funciona como <code>Link</code> mas permite adicionar estilos
-          especiais quando a rota está <strong>ativa</strong> (correspondente à
-          URL atual).
+          Agora atualize o <b>Navbar2.jsx</b> para incluir a Navbar com o código
+          abaixo:
+        </p>
+
+        <p>
+          Perceba que o React Router também fornece o componente
+          <strong>NavLink</strong>, que funciona como <code>Link</code> mas
+          permite adicionar estilos especiais quando a rota está
+          <strong>ativa</strong> (correspondente à URL atual).
         </p>
         <div class="code-container">
           <pre><code class="language-javascript">
 import { NavLink } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar2 = () => {
   return (
     &lt;nav&gt;
       &lt;NavLink
@@ -900,26 +927,7 @@ export default Navbar;
         </div>
         <div class="code-container">
           <pre><code class="language-javascript">
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './Home';
-import About from './About';
-import Contact from './Contact';
-import Navbar from './Navbar';
 
-const App = () => {
-  return (
-    &lt;BrowserRouter&gt;
-      &lt;Navbar /&gt;
-      &lt;Routes&gt;
-        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
-        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
-        &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
-      &lt;/Routes&gt;
-    &lt;/BrowserRouter&gt;
-  );
-};
-
-export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -939,7 +947,7 @@ export default App;
           </p>
         </div>
 
-        <h3>Passo 5 — Rodar e testar</h3>
+        <h3>Passo 9 — Rodar e testar</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
