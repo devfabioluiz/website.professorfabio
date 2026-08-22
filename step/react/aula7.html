@@ -296,10 +296,10 @@ git checkout -b aula7-css-modules-tailwind-material
             Este arquivo <code>Button.module.css</code> define os estilos do
             botão com a classe <code>.btnCustom</code>. O sufixo
             <code>.module.css</code> indica ao Vite que os estilos devem ser
-            escopados ao componente. O <code>transition: background-color 0.3s</code>
-            suaviza a mudança de cor e a pseudoclasse <code>:hover</code>
-            escurece o fundo para <code>#3700b3</code>, dando feedback visual ao
-            usuário.
+            escopados ao componente. O
+            <code>transition: background-color 0.3s</code> suaviza a mudança de
+            cor e a pseudoclasse <code>:hover</code> escurece o fundo para
+            <code>#3700b3</code>, dando feedback visual ao usuário.
           </p>
         </div>
 
@@ -338,8 +338,7 @@ export default ButtonModules;
 
         <div class="code-container">
           <pre><code class="language-bash">
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/vite
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -349,39 +348,39 @@ npx tailwindcss init -p
             🤓 Explicando o código 📝
           </h2>
           <p>
-            O comando <code>npm install -D tailwindcss postcss autoprefixer</code>
-            instala o Tailwind CSS e suas dependências como dependências de
-            desenvolvimento. O <code>npx tailwindcss init -p</code> cria o arquivo
-            <code>tailwind.config.js</code> e o <code>postcss.config.js</code>.
+            O comando
+            <code>npm install tailwindcss @tailwindcss/vite</code> instala o
+            Tailwind CSS e suas dependências como dependências de
+            desenvolvimento.
           </p>
         </div>
 
         <p>
-          Configure o <code>tailwind.config.js</code> indicando os arquivos que
-          podem conter classes utilitárias:
+          Agora, vamos entrar no <code>tailwind.config.js</code>e inserir as
+          configurações do tailwind. Insira o código abaixo no arquivo todo
         </p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+});
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Adicione as diretivas do Tailwind no início do <strong>src/index.css</strong>:</p>
+        <p>
+          Por fim, entre em <code>index.css</code> e insira na linha 1 do
+          arquivo o código abaixo para importar o tailwind
+        </p>
 
         <div class="code-container">
           <pre><code class="language-css">
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -426,12 +425,12 @@ export default ButtonTailwind;
           </h2>
           <p>
             O <code>ButtonTailwind</code> usa classes utilitárias do Tailwind
-            aplicadas diretamente no JSX. As classes
-            <code>text-white</code>, <code>font-semibold</code>,
-            <code>py-3 px-6</code> e <code>rounded-lg</code> definem cores,
-            tipografia, espaçamento e bordas. O operador ternário alterna o
-            esquema de cores conforme a prop <code>primary</code>, e
-            <code>hover:bg-blue-800</code> aplica a cor ao passar o mouse.
+            aplicadas diretamente no JSX. As classes <code>text-white</code>,
+            <code>font-semibold</code>, <code>py-3 px-6</code> e
+            <code>rounded-lg</code> definem cores, tipografia, espaçamento e
+            bordas. O operador ternário alterna o esquema de cores conforme a
+            prop <code>primary</code>, e <code>hover:bg-blue-800</code> aplica a
+            cor ao passar o mouse.
           </p>
         </div>
 
@@ -485,7 +484,8 @@ export default ButtonMUI;
             <code>variant="contained"</code> define o estilo preenchido e a prop
             <code>color</code> define o esquema de cores, alternando entre
             <code>primary</code> e <code>secondary</code> conforme a prop
-            recebida. Não é necessário escrever CSS — a biblioteca cuida de tudo.
+            recebida. Não é necessário escrever CSS — a biblioteca cuida de
+            tudo.
           </p>
         </div>
 
@@ -524,10 +524,11 @@ export default App;
             🤓 Explicando o código 📝
           </h2>
           <p>
-            O <code>App.jsx</code> importa e renderiza os três botões criados nos
-            passos anteriores, demonstrando as três abordagens de estilização:
-            CSS Modules, Tailwind CSS e Material-UI. Cada componente recebe props
-            diferentes para mostrar os estados primário e secundário.
+            O <code>App.jsx</code> importa e renderiza os três botões criados
+            nos passos anteriores, demonstrando as três abordagens de
+            estilização: CSS Modules, Tailwind CSS e Material-UI. Cada
+            componente recebe props diferentes para mostrar os estados primário
+            e secundário.
           </p>
         </div>
 
@@ -568,7 +569,12 @@ git push --set-upstream origin aula7-css-modules-tailwind-material
             atual dos arquivos no histórico do Git.
           </p>
           <p>
-            <strong><code>git push --set-upstream origin aula7-css-modules-tailwind-material</code></strong>
+            <strong
+              ><code
+                >git push --set-upstream origin
+                aula7-css-modules-tailwind-material</code
+              ></strong
+            >
             — Envia os commits para o repositório remoto no GitHub, definindo a
             branch <code>aula7-css-modules-tailwind-material</code> como destino
             padrão para pushes futuros.
