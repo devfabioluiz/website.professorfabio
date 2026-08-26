@@ -20,407 +20,178 @@
     <header>
       <h1>Aula 12</h1>
       <h4 class="text-center">React</h4>
-      <h4 class="text-center">Portals e Refs</h4>
+      <h4 class="text-center">Context API, useReducer e Redux</h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        React Portals, Refs, Objetivos e exemplos práticos.
+        Context API (hook useContext), Hook useReducer, Redux (arquitetura e
+        exemplos práticos).
       </div>
     </header>
     <main class="container">
-      <div class="texto-impirmir">
-        <h2>Portals</h2>
-        <section>
-          <p>
-            Portals no React são uma forma de renderizar um componente filho em
-            um nó DOM que está fora da hierarquia DOM do componente pai. Isso é
-            útil para casos em que você precisa que um elemento, como um modal,
-            tooltip ou menu suspenso, seja exibido fora da estrutura principal
-            do aplicativo, mas ainda mantenha a conexão com o React para
-            gerenciamento de estado e eventos. Para criar um portal, usa-se a
-            função <code>ReactDOM.createPortal(child, container)</code>, onde
-            <code>child</code> é o elemento React que você quer renderizar e
-            <code>container</code> é o nó DOM onde ele será inserido. Assim,
-            Portals facilitam o controle da posição visual e do comportamento
-            dos componentes, sem complicar a organização do código.
-          </p>
+      <h2>Context API (hook useContext)</h2>
+      <section>
+        <p>
+          A Context API no React é uma ferramenta que permite compartilhar
+          valores e estados entre componentes sem a necessidade de passar props
+          manualmente por toda a árvore de componentes. Ela é ideal para
+          gerenciar dados globais, como temas, autenticação ou configurações de
+          idioma. O contexto é criado usando
+          <code>React.createContext()</code>, e seus valores são fornecidos aos
+          componentes filhos através do <code>Provider</code>. Os componentes
+          que precisam acessar esses valores utilizam o hook
+          <code>useContext</code>. A Context API simplifica a gestão de estados
+          globais em aplicações React, eliminando a complexidade de "prop
+          drilling".
+        </p>
+        <div class="code-container">
+          <pre><code>
+import React, { createContext, useContext } from 'react';
 
-          <h5>Exemplo 1</h5>
-          <div class="code-container">
-            <pre>
-                  <code class="language-javascript">
-    // Modal simples usando Portal
-    
-    import ReactDOM from 'react-dom';
+const TemaContext = createContext('claro');
 
-    const Modal = ({ children }) => {
-      return ReactDOM.createPortal(
-        &lt;div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center',
-        }}&gt;
-          &lt;div style={{ background: 'white', padding: '20px', borderRadius: '8px' }}&gt;
-            {children}
-          &lt;/div&gt;
-        &lt;/div&gt;
-        document.getElementById('modal-root') // nó fora do app principal
-      );
-    };
-
-    export default Modal;
-
-    // Uso no App
-    import React, { useState } from 'react';
-    import Modal from './Modal';
-
-    function App() {
-      const [open, setOpen] = useState(false);
-      return (
-        &lt;&gt;
-          &lt;button onClick={() => setOpen(true)}&gtAbrir Modal&lt;/button&gt;
-          {open && (
-            &lt;Modal&gt;
-              &lt;h2&gtEste é um modal!&gt;/h2&gt;
-              &lt;button onClick={() => setOpen(false)}&gtFechar&lt;/button&gt;
-            &lt;/Modal&gt;
-          )}
-        &lt;/&gt;
-      );
-    }
-
-    export default App;
-
-                  </code>
-                </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              Este exemplo cria um <strong>Modal</strong> utilizando
-              <code>ReactDOM.createPortal</code>. O modal é renderizado fora da
-              hierarquia DOM do componente pai, mas mantém o contexto React. O
-              primeiro argumento do <code>createPortal</code> é o JSX a ser
-              renderizado, e o segundo é o nó DOM alvo
-              (<code>document.getElementById('modal-root')</code>). Isso evita
-              problemas de <em>z-index</em> e estilos herdados, comuns em modais
-              aninhados.
-            </p>
-          </div>
-
-          <h5>Exemplo 2</h5>
-          <div class="code-container">
-            <pre>
-              <code class="language-javascript">
-// Exemplo 2: Tooltip com Portal
-
-import ReactDOM from 'react-dom';
-
-const Tooltip = ({ text, targetRef }) => {
-  if (!targetRef.current) return null;
-
-  const rect = targetRef.current.getBoundingClientRect();
-
-  return ReactDOM.createPortal(
-    &lt;div style={{
-      position: 'fixed',
-      top: rect.bottom + 5,
-      left: rect.left,
-      backgroundColor: '#333',
-      color: '#fff',
-      padding: '5px 10px',
-      borderRadius: '4px',
-      fontSize: '12px',
-      zIndex: 1000,
-    }}&gt;
-      {text}
-    &lt;/div&gt;,
-    document.body
-  );
-};
-
-export default Tooltip;
-
-// Uso no App
-import React, { useRef, useState } from 'react';
-import Tooltip from './Tooltip';
-
-function App() {
-  const btnRef = useRef(null);
-  const [hover, setHover] = useState(false);
-
-  return (
-    &lt;&gt;
-      &lt;button
-        ref={btnRef}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      &gt;
-        Passe o mouse aqui
-      &lt;/button&gt;
-      {hover && &lt;Tooltip text="Tooltip via Portal!" targetRef={btnRef} /&gt;}
-    &lt;/&gt;
-  );
+function Painel() {
+  const tema = useContext(TemaContext);
+  return &lt;div&gt;Tema atual: {tema}&lt;/div&gt;;
 }
 
-export default App;
-
-              </code>
-            </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              No Exemplo 2, um <strong>Tooltip</strong> é posicionado
-              dinamicamente usando <code>getBoundingClientRect()</code> do
-              elemento alvo, capturado via <code>useRef</code>. O portal
-              renderiza o tooltip em <code>document.body</code>, garantindo que
-              ele apareça sobre todos os outros elementos. O cálculo da posição
-              (<code>top</code>, <code>left</code>) é feito com base nas
-              coordenadas do elemento referenciado.
-            </p>
-          </div>
-
-          <h5>Exemplo 3</h5>
-          <div class="code-container">
-            <pre>
-              <code class="language-javascript">
-
-// Exemplo 3: Menu Dropdown usando Portal
-import React, { useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
-
-const Dropdown = ({ anchorRef, children }) => {
-  if (!anchorRef.current) return null;
-
-  const rect = anchorRef.current.getBoundingClientRect();
-
-  return ReactDOM.createPortal(
-    &lt;ul
-      style={{
-            position: 'fixed',
-            top: rect.bottom,
-            left: rect.left,
-            margin: 0,
-            padding: '10px',
-            listStyle: 'none',
-            backgroundColor: 'white',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            zIndex: 1000,
-            minWidth: rect.width,
-          }}&gt;
-      {children}
-    &lt;ul&gt;,
-    document.body
-  );
-};
-
-export default Dropdown;
-// Uso no App
 function App() {
-  const [open, setOpen] = useState(false);
-  const btnRef = useRef(null);
-
   return (
-    &lt;div style={{ padding: '50px' }}&gt;
-      &lt;button ref={btnRef} onClick={() => setOpen(!open)}&gt;
-        Abrir Menu
-      &lt;/button&gt;
-      {open && (
-        &lt;Dropdown anchorRef={btnRef}&gt;
-          &lt;li>Opção 1&lt;/li&gt;
-          &lt;li>Opção 2&lt;/li&gt;
-          &lt;li>Opção 3&lt;/li&gt;
-        &lt;/Dropdown&gt;
-      )}
-    &lt;/div&gt;
+    &lt;TemaContext.Provider value="escuro"&gt;
+      &lt;Painel /&gt;
+    &lt;/TemaContext.Provider&gt;
   );
 }
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-export default App;
-
-              </code>
-              </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              O <strong>Dropdown</strong> usa o mesmo padrão dos exemplos
-              anteriores: <code>ReactDOM.createPortal</code> para renderizar o
-              menu em <code>document.body</code>. A posição é calculada
-              dinamicamente com <code>getBoundingClientRect()</code> a partir do
-              botão âncora (<code>anchorRef</code>). O menu é exibido
-              condicionalmente com base no estado <code>open</code>, e cada item
-              é um <code>&lt;li&gt;</code> clicável.
-            </p>
-          </div>
-        </section>
-
-        <h2>Referências (Refs)</h2>
-        <section>
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
           <p>
-            <code>ref</code> é uma forma de acessar diretamente um elemento DOM
-            ou um componente React criado no JSX. Ele permite manipular
-            elementos de forma imperativa, como focar um input, controlar
-            vídeos, ou integrar bibliotecas externas que precisam de acesso
-            direto ao DOM. Para criar uma referência, usa-se o hook
-            <code>useRef</code>, que retorna um objeto cuja propriedade
-            <code>current</code> pode ser atribuída a um elemento JSX. Isso
-            facilita interações que não são possíveis apenas com props e estado.
+            <code>createContext</code> cria um objeto de contexto que pode ser
+            compartilhado entre componentes. O <code>Provider</code> (ex:
+            <code>TemaContext.Provider</code>) envolve a árvore de componentes e
+            fornece o valor do contexto. O hook <code>useContext</code> permite
+            que qualquer componente filho acesse esse valor sem precisar
+            recebê-lo via props — eliminando o <em>prop drilling</em>.
           </p>
+        </div>
+      </section>
 
-          <h5>Exemplo 1</h5>
-          <div class="code-container">
-            <pre>
-<code class="language-javascript">
-import React, { useRef } from 'react';
+      <h2>Redux</h2>
+      <section>
+        <p>
+          Redux e uma ferramenta popular para gerenciamento de estado em
+          aplicações React. Ele proporciona uma estrutura de dados unificada que
+          pode ser facilmente compartilhada entre componentes e acionados por
+          ações.
+        </p>
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre>
+              <code class="language-javascript">
 
-function Formulario() {
-  const inputRef = useRef(null);
+import { createStore } from 'redux';
 
-  function focarInput() {
-    inputRef.current.focus();
+const initialState = { count: 0 };  
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    case 'DECREMENT':
+      return { ...state, count: state.count - 1 };
+    default:
+      return state;
   }
+};
 
+const store = createStore(reducer);
+
+const Contador = () => {
+  const state = store.getState();
   return (
     &lt;&gt;
-      &lt;input ref={inputRef} type="text" /&gt;
-      &lt;button onClick={focarInput}&gt;Focar input&lt;/button&gt;
+      &lt;p&gt;Contagem: {state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; store.dispatch({ type: 'INCREMENT' })}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; store.dispatch({ type: 'DECREMENT' })}&gt;-&lt;/button&gt;
     &lt;/&gt;
   );
-}
-</code>
+};
+
+export default Contador;
+              </code>
             </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              O hook <code>useRef</code> cria um objeto com a propriedade
-              <code>current</code>, que é atribuída ao elemento JSX via o
-              atributo <code>ref</code>. Aqui,
-              <code>inputRef.current.focus()</code> é chamado imperativamente
-              para focar o input — algo que não seria possível apenas com estado
-              e props. useRef não causa re-renderização ao ser alterado.
-            </p>
-          </div>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-          <h5>Exemplo 2</h5>
-          <div class="code-container">
-            <pre>
-<code class="language-javascript">
-import React, { useRef } from "react";
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>
+            O <strong>Redux</strong> gerencia o estado global da aplicação
+            através de uma <em>store</em> centralizada. Um <em>reducer</em> é
+            uma função pura que recebe o estado atual e uma <em>action</em> e
+            retorna um novo estado. As ações são objetos com uma propriedade
+            <code>type</code> e são enviadas via <code>store.dispatch()</code>.
+            O componente lê o estado com <code>store.getState()</code>.
+          </p>
+        </div>
+      </section>
 
-function VideoPlayer() {
-  const videoRef = useRef(null);
+      <h2>useReducer</h2>
+      <section>
+        <p>
+          Hook para gerenciamento de estado complexo, similar ao Redux, com
+          dispatch e reducer.
+        </p>
+        <h5>Exemplo</h5>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import React, { useReducer } from 'react';
 
-  const playVideo = () =&gt; {
-    videoRef.current.play();
-  };
+const initialState = { count: 0 };
 
-  const pauseVideo = () =&gt; {
-    videoRef.current.pause();
-  };
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+}
+
+function Contador() {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    &lt;div&gt;
-      &lt;video ref={videoRef} width="320" height="240" controls src="video.mp4" /&gt;
-      &lt;br /&gt;
-      &lt;button onClick={playVideo}&gt;Play&lt;/button&gt;
-      &lt;button onClick={pauseVideo}&gt;Pause&lt;/button&gt;
-    &lt;/div&gt;
+    &lt;&gt;;
+      &lt;p&gt;;Contagem: {state.count}&lt;/p&gt;;
+      &lt;button onClick={() =&gt;; dispatch({ type: 'increment' })}&gt;;+&lt;/button&gt;;
+      &lt;button onClick={() =&gt;; dispatch({ type: 'decrement' })}&gt;;-&lt;/button&gt;;
+    &lt;/&gt;;
   );
 }
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
-export default VideoPlayer;
-              </code>
-            </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              Neste exemplo, <code>useRef</code> é usado para controlar a
-              reprodução de um vídeo. As funções <code>play()</code> e
-              <code>pause()</code> são chamadas diretamente no elemento de vídeo
-              do DOM, permitindo controle imperativo sobre a mídia. Esse padrão
-              é comum para integração com APIs de navegador que não são
-              reativas, como a API de áudio/vídeo.
-            </p>
-          </div>
-
-          <h5>Exemplo 3</h5>
-          <div class="code-container">
-            <pre>
-              <code class="language-javascript">
-import React, { useRef, forwardRef, useImperativeHandle } from "react";
-
-const Pai = () => {
-  const filhoRef = useRef(null);
-
-  return (
-    &lt;div&gt;
-      &lt;Filho ref={filhoRef} /&gt;
-      &lt;button onClick={() =&gt; filhoRef.current.digaOla()}&gt;Dizer Olá&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}
-              </code>
-            </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="code-container">
-            <pre>
-              <code class="language-javascript">
-import React, { useRef, forwardRef, useImperativeHandle } from "react";
-
-const Filho = forwardRef((props, ref) =&gt; {
-  useImperativeHandle(ref, () =&gt; ({
-    digaOla() {
-      alert("Olá do componente Filho!");
-    }
-  }));
-
-  return &lt;div&gt;Componente Filho&lt;/div&gt;;
-});
-              </code>
-            </pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <div class="alert-explicando-codigo">
-            <h2 class="alert-explicando-codigo-title">
-              🤓 Explicando o código 📝
-            </h2>
-            <p>
-              <code>forwardRef</code> permite que um componente funcional receba
-              uma <code>ref</code> do componente pai. Já
-              <code>useImperativeHandle</code> customiza o valor da ref exposta
-              ao pai, controlando quais métodos ou propriedades serão
-              acessíveis. Aqui, o componente <strong>Filho</strong> expõe o
-              método <code>digaOla()</code>, que pode ser chamado pelo
-              <strong>Pai</strong> através de
-              <code>filhoRef.current.digaOla()</code>.
-            </p>
-          </div>
-        </section>
-      </div>
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>
+            O hook <code>useReducer</code> é uma alternativa ao
+            <code>useState</code> para gerenciar estados complexos. Ele recebe
+            uma função <em>reducer</em> e um estado inicial, retornando um par
+            <code>[state, dispatch]</code>. O <code>dispatch</code> envia ações
+            para o reducer, que calcula o novo estado com base no tipo da ação.
+            É especialmente útil quando o próximo estado depende de múltiplos
+            valores ou de lógica condicional.
+          </p>
+        </div>
+      </section>
       <!-- PASSO A PASSO -->
       <section>
-        <h2>Passo a Passo: Criando um Modal com Portal e useRef</h2>
+        <h2>Passo a Passo: Criando um Theme Toggler com Context API</h2>
 
         <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
 
@@ -428,26 +199,27 @@ const Filho = forwardRef((props, ref) =&gt; {
 
         <div class="code-container">
           <pre><code class="language-bash">
-projeto-portal-modal
+projeto-theme-context
           </code></pre>
         </div>
 
         <p>
-          Agora crie uma branch chamada <strong>aula12-portal-modal</strong>
+          Agora crie uma branch chamada <strong>aula12-theme-context</strong>
         </p>
 
         <p>Depois, clone o repositório no seu computador:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
-git clone https://github.com/{{SEU-USERNAME}}/projeto-portal-modal.git
-cd projeto-portal-modal
+git clone https://github.com/{{SEU-USERNAME}}/projeto-theme-context.git
+cd projeto-theme-context
 git fetch
-git checkout aula12-portal-modal
+git checkout aula12-theme-context
 git pull
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div
           class="alert-explicando-codigo"
           style="
@@ -455,17 +227,28 @@ git pull
             background: linear-gradient(135deg, #f0fdf4, #f8fafc);
           "
         >
-          <h2 class="alert-explicando-codigo-title" style="color: #166534">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            <code>git clone</code> baixa o repositório remoto para o seu
-            computador. <code>git fetch</code> atualiza as referências locais
-            com as branches do remoto.
-            <code>git checkout aula12-portal-modal</code> alterna para a branch
-            específica desta aula. <code>git pull</code> baixa e faz merge das
-            alterações mais recentes do remoto com a branch local.
-          </p>
+          <h3 class="alert-title" style="color: #166534">
+            🤔 Explicando o código
+          </h3>
+          <ul>
+            <li>
+              <code>git clone</code> — baixa o repositório remoto para sua
+              máquina local.
+            </li>
+            <li><code>cd</code> — navega para a pasta do projeto clonado.</li>
+            <li>
+              <code>git fetch</code> — sincroniza as referências das branches
+              remotas sem fazer merge.
+            </li>
+            <li>
+              <code>git checkout aula12-theme-context</code> — alterna para a
+              branch específica da aula.
+            </li>
+            <li>
+              <code>git pull</code> — baixa e integra as alterações mais
+              recentes do repositório remoto.
+            </li>
+          </ul>
         </div>
 
         <h3>Passo 1 — Criar o projeto</h3>
@@ -477,141 +260,104 @@ npm install
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            O comando
-            <code>npm create vite@latest . -- --template react</code> cria um
-            novo projeto React no diretório atual usando o Vite como bundler. O
-            Vite oferece hot-reload rápido e otimizações de produção. Em
-            seguida, <code>npm install</code> instala todas as dependências do
-            projeto.
-          </p>
-        </div>
 
-        <h3>Passo 2 — Adicionar o elemento modal-root no index.html</h3>
+        <h3>Passo 2 — Criar o ThemeContext</h3>
 
-        <p>
-          Abra o arquivo <b>index.html</b> e adicione
-          <code>&lt;div id="modal-root"&gt;&lt;/div&gt;</code> logo após a
-          <code>&lt;div id="root"&gt;</code>:
-        </p>
-        <div class="code-container">
-          <pre><code class="language-markup">
-&lt;div id="root"&gt;&lt;/div&gt;
-&lt;div id="modal-root"&gt;&lt;/div&gt;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Adicionamos <code>&lt;div id="modal-root"&gt;&lt;/div&gt;</code> ao
-            <strong>index.html</strong> como um contêiner separado fora da
-            <code>div#root</code>. Esse elemento será o destino do
-            <code>ReactDOM.createPortal</code> no componente Modal, permitindo
-            que o modal seja renderizado fora da hierarquia principal do React,
-            evitando conflitos de CSS e z-index.
-          </p>
-        </div>
-
-        <h3>Passo 3 — Criar o componente Modal com Portal</h3>
-
-        <p>Crie o arquivo <b>src/Modal.jsx</b>:</p>
+        <p>Crie o arquivo <b>src/ThemeContext.jsx</b>:</p>
         <div class="code-container">
           <pre><code class="language-javascript">
-import { useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { createContext, useState, useContext } from 'react';
 
-const Modal = ({ isOpen, onClose, children }) => {
-  const modalRef = useRef(null);
+const ThemeContext = createContext();
 
-  useEffect(() => {
-    if (isOpen && modalRef.current) {
-      modalRef.current.focus();
-    }
-  }, [isOpen]);
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
 
-  if (!isOpen) return null;
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
 
-  return ReactDOM.createPortal(
-    &lt;div
-      ref={modalRef}
-      tabIndex={-1}
-      style={{
-        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    &gt;
-      &lt;div
-        style={{
-          background: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          minWidth: '300px',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      &gt;
-        {children}
-        &lt;button onClick={onClose}&gt;Fechar&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;,
-    document.getElementById('modal-root')
+  return (
+    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
   );
 };
 
-export default Modal;
+export const useTheme = () => useContext(ThemeContext);
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
+          <h3 class="alert-title">🤔 Explicando o código</h3>
           <p>
-            O componente <strong>Modal</strong> utiliza
-            <code>ReactDOM.createPortal</code> para renderizar seu conteúdo em
-            <code>document.getElementById('modal-root')</code>, um nó fora da
-            hierarquia principal. O <code>useRef</code> captura a referência do
-            <code>&lt;div&gt;</code> overlay e, através do
-            <code>useEffect</code>, o foco é movido para o modal quando ele é
-            aberto (<code>modalRef.current.focus()</code>). O
-            <code>tabIndex={-1}</code> permite que a <code>div</code> receba
-            foco programaticamente. O clique no overlay fecha o modal
-            (<code>onClick={onClose}</code>), e o clique no conteúdo interno é
-            interrompido com <code>e.stopPropagation()</code> para evitar
-            fechamento indesejado.
+            <code>createContext()</code> cria um contexto vazio. O
+            <code>ThemeProvider</code> é um componente que utiliza o
+            <code>ThemeContext.Provider</code> para disponibilizar o estado do
+            tema e a função <code>toggleTheme</code> para toda a árvore de
+            componentes filhos. O hook customizado
+            <code>useTheme</code> encapsula
+            <code>useContext(ThemeContext)</code>, facilitando o consumo do
+            contexto em qualquer componente.
           </p>
         </div>
 
-        <h3>Passo 4 — Usar o Modal no App.jsx</h3>
+        <h3>Passo 3 — Criar um componente que use o tema</h3>
+
+        <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
+        <div class="code-container">
+          <pre><code class="language-javascript">
+import { useTheme } from './ThemeContext';
+
+const ThemeSwitcher = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    &lt;div style={{
+      background: theme === 'light' ? '#fff' : '#333',
+      color: theme === 'light' ? '#000' : '#fff',
+      padding: '20px',
+      minHeight: '100vh',
+    }}&gt;
+      &lt;h1&gt;Tema atual: {theme}&lt;/h1&gt;
+      &lt;button onClick={toggleTheme}&gt;
+        Alternar para {theme === 'light' ? 'dark' : 'light'}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ThemeSwitcher;
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h3 class="alert-title">🤔 Explicando o código</h3>
+          <p>
+            O <code>ThemeSwitcher</code> consome o contexto através do hook
+            <code>useTheme()</code>, que retorna o tema atual e a função
+            <code>toggleTheme</code>. O estilo do componente é alterado
+            dinamicamente conforme o valor de <code>theme</code> (light ou
+            dark), e o botão dispara a alternância do tema. Tudo isso sem que
+            nenhuma prop seja passada manualmente — o contexto faz o
+            compartilhamento automaticamente.
+          </p>
+        </div>
+
+        <h3>Passo 4 — Usar o Provider no App.jsx</h3>
 
         <div class="code-container">
           <pre><code class="language-javascript">
-import { useState } from 'react';
-import Modal from './Modal';
+import { ThemeProvider } from './ThemeContext';
+import ThemeSwitcher from './ThemeSwitcher';
 
 const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    &lt;div style={{ padding: '50px' }}&gt;
-      &lt;h1&gt;Exemplo de Modal com Portal&lt;/h1&gt;
-      &lt;button onClick={() => setIsOpen(true)}&gt;Abrir Modal&lt;/button&gt;
-      &lt;Modal isOpen={isOpen} onClose={() => setIsOpen(false)}&gt;
-        &lt;h2&gt;Modal Aberto!&lt;/h2&gt;
-        &lt;p&gt;Este modal usa Portal e gerenciamento de foco com useRef.&lt;/p&gt;
-      &lt;/Modal&gt;
-    &lt;/div&gt;
+    &lt;ThemeProvider&gt;
+      &lt;ThemeSwitcher /&gt;
+    &lt;/ThemeProvider&gt;
   );
 };
 
@@ -619,18 +365,17 @@ export default App;
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
+          <h3 class="alert-title">🤔 Explicando o código</h3>
           <p>
-            No <strong>App.jsx</strong>, o estado <code>isOpen</code> controla a
-            visibilidade do Modal. O botão "Abrir Modal" define
-            <code>isOpen</code> como <code>true</code>, e o botão "Fechar"
-            dentro do Modal o retorna para <code>false</code>. O componente
-            <code>Modal</code> recebe <code>isOpen</code> e
-            <code>onClose</code> como props, e seu conteúdo é passado via
-            <code>children</code>.
+            O <code>App</code> envolve o componente
+            <code>ThemeSwitcher</code> com o <code>ThemeProvider</code>. Esse é
+            o padrão <strong>Provider</strong> da Context API: o provedor deve
+            estar no nível mais alto da árvore de componentes que precisam
+            acessar o contexto. Assim, qualquer componente descendente do
+            <code>ThemeProvider</code> consegue consumir o tema sem a
+            necessidade de props intermediárias.
           </p>
         </div>
 
@@ -642,17 +387,6 @@ npm run dev
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            O comando <code>npm run dev</code> inicia o servidor de
-            desenvolvimento do Vite, que fornece hot-reload automático. Qualquer
-            alteração nos arquivos será refletida imediatamente no navegador sem
-            necessidade de recarregar manualmente a página.
-          </p>
-        </div>
 
         <p>Acesse no navegador:</p>
         <div class="code-container">
@@ -660,28 +394,18 @@ npm run dev
 http://localhost:5173
           </code></pre>
         </div>
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Abra o endereço <code>http://localhost:5173</code> no navegador para
-            visualizar o projeto em execução. A porta <strong>5173</strong> é a
-            padrão do Vite. Teste o modal clicando no botão "Abrir Modal" e
-            verifique o gerenciamento de foco e a renderização via Portal.
-          </p>
-        </div>
 
         <h3>Último Passo — Subindo para o Git</h3>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git add .
-git commit -m "aula 12: modal com portal e useref"
+git commit -m "aula 12: theme toggler com context api"
 git push
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
+
         <div
           class="alert-explicando-codigo"
           style="
@@ -689,17 +413,23 @@ git push
             background: linear-gradient(135deg, #f0fdf4, #f8fafc);
           "
         >
-          <h2 class="alert-explicando-codigo-title" style="color: #166534">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            <code>git add .</code> adiciona todos os arquivos modificados à área
-            de staging.
-            <code>git commit -m "aula 12: modal com portal e useref"</code> cria
-            um snapshot das alterações com uma mensagem descritiva.
-            <code>git push</code> envia os commits para o repositório remoto no
-            GitHub.
-          </p>
+          <h3 class="alert-title" style="color: #166534">
+            🤔 Explicando o código
+          </h3>
+          <ul>
+            <li>
+              <code>git add .</code> — adiciona todos os arquivos modificados à
+              área de staging.
+            </li>
+            <li>
+              <code>git commit -m "mensagem"</code> — cria um snapshot com as
+              alterações e uma mensagem descritiva.
+            </li>
+            <li>
+              <code>git push</code> — envia os commits da branch local para o
+              repositório remoto no GitHub.
+            </li>
+          </ul>
         </div>
 
         <div class="alert-box-github">
@@ -716,7 +446,7 @@ git push
           >
           <p>Selecione a branch correspondente a esta aula:</p>
           <ul>
-            <li><code>aula12-portal-modal</code></li>
+            <li><code>aula12-theme-context</code></li>
           </ul>
         </div>
       </section>
@@ -726,24 +456,23 @@ git push
         <h2>Dever de Casa</h2>
         <div id="question-container-casa">
           <div class="question">
-            <h3>Criar um Tooltip com Portal</h3>
+            <h3>Criar uma Todo List com useReducer</h3>
             <p>
               Crie uma branch chamada <strong>dever-de-casa-aula12</strong> e
               nela desenvolva:
             </p>
             <ol>
               <li>
-                Crie um componente <b>Tooltip.jsx</b> que use
-                <code>ReactDOM.createPortal</code> para renderizar um tooltip
-                posicionado próximo a um elemento alvo.
+                Crie um componente <b>TodoList.jsx</b> que use
+                <code>useReducer</code> para gerenciar uma lista de tarefas.
               </li>
               <li>
-                O tooltip deve aparecer ao passar o mouse sobre o elemento e
-                desaparecer ao remover o mouse.
+                Implemente as ações: <code>ADD_TASK</code>,
+                <code>TOGGLE_TASK</code> e <code>REMOVE_TASK</code>.
               </li>
               <li>
-                Use <code>useRef</code> para capturar a posição do elemento
-                alvo.
+                Renderize um input para adicionar tarefas e a lista com opção de
+                marcar como concluída e remover.
               </li>
             </ol>
             <p>
@@ -755,82 +484,92 @@ git push
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Tooltip.jsx:</b></p>
+              <p><b>TodoList.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
-import ReactDOM from 'react-dom';
+import { useReducer, useState } from 'react';
 
-const Tooltip = ({ text, targetRef }) => {
-  if (!targetRef.current) return null;
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return [...state, { id: Date.now(), text: action.payload, completed: false }];
+    case 'TOGGLE_TASK':
+      return state.map(task =>
+        task.id === action.payload
+          ? { ...task, completed: !task.completed }
+          : task
+      );
+    case 'REMOVE_TASK':
+      return state.filter(task => task.id !== action.payload);
+    default:
+      return state;
+  }
+};
 
-  const rect = targetRef.current.getBoundingClientRect();
+const TodoList = () => {
+  const [tasks, dispatch] = useReducer(reducer, []);
+  const [input, setInput] = useState('');
 
-  return ReactDOM.createPortal(
-    &lt;div
-      style={{
-        position: 'fixed',
-        top: rect.bottom + 8,
-        left: rect.left + rect.width / 2,
-        transform: 'translateX(-50%)',
-        backgroundColor: '#333',
-        color: '#fff',
-        padding: '6px 12px',
-        borderRadius: '4px',
-        fontSize: '13px',
-        whiteSpace: 'nowrap',
-        zIndex: 1000,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-      }}
-    &gt;
-      {text}
-    &lt;/div&gt;,
-    document.body
+  const addTask = () => {
+    if (input.trim()) {
+      dispatch({ type: 'ADD_TASK', payload: input });
+      setInput('');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Lista de Tarefas&lt;/h1&gt;
+      &lt;input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Nova tarefa"
+      /&gt;
+      &lt;button onClick={addTask}&gt;Adicionar&lt;/button&gt;
+      &lt;ul&gt;
+        {tasks.map(task => (
+          &lt;li key={task.id}
+            style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+          &gt;
+            {task.text}
+            &lt;button onClick={() => dispatch({ type: 'TOGGLE_TASK', payload: task.id })}&gt;
+              {task.completed ? 'Desmarcar' : 'Concluir'}
+            &lt;/button&gt;
+            &lt;button onClick={() => dispatch({ type: 'REMOVE_TASK', payload: task.id })}&gt;
+              Remover
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
   );
 };
 
-export default Tooltip;
+export default TodoList;
                 </code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
               <div class="alert-explicando-codigo" style="margin-top: 15px">
-                <h2 class="alert-explicando-codigo-title">
-                  🤓 Explicando o código 📝
-                </h2>
+                <h3 class="alert-title">🤔 Explicando o código</h3>
                 <p>
-                  O componente <strong>Tooltip</strong> usa
-                  <code>ReactDOM.createPortal</code> para renderizar a dica em
-                  <code>document.body</code>. A posição é calculada com
-                  <code>getBoundingClientRect()</code> a partir do elemento alvo
-                  (<code>targetRef</code>), centralizando horizontalmente com
-                  <code>translateX(-50%)</code>. O tooltip só é renderizado se
-                  <code>targetRef.current</code> existir.
+                  O hook <code>useReducer</code> gerencia o array de tarefas. O
+                  reducer trata três ações: <code>ADD_TASK</code> adiciona uma
+                  nova tarefa com <code>Date.now()</code> como ID único,
+                  <code>TOGGLE_TASK</code> alterna a propriedade
+                  <code>completed</code> da tarefa correspondente ao ID, e
+                  <code>REMOVE_TASK</code> filtra a tarefa pelo ID removendo-a
+                  da lista. O <code>useState</code> é usado separadamente para
+                  controlar o valor do input.
                 </p>
               </div>
 
               <p><b>App.jsx:</b></p>
               <div class="code-container">
                 <pre><code class="language-javascript">
-import { useRef, useState } from 'react';
-import Tooltip from './Tooltip';
+import TodoList from './TodoList';
 
 const App = () => {
-  const btnRef = useRef(null);
-  const [hover, setHover] = useState(false);
-
-  return (
-    &lt;div style={{ padding: '50px' }}&gt;
-      &lt;h1&gt;Tooltip com Portal&lt;/h1&gt;
-      &lt;button
-        ref={btnRef}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        style={{ padding: '10px 20px', fontSize: '16px' }}
-      &gt;
-        Passe o mouse aqui
-      &lt;/button&gt;
-      {hover && &lt;Tooltip text="Tooltip via Portal!" targetRef={btnRef} /&gt;}
-    &lt;/div&gt;
-  );
+  return &lt;TodoList /&gt;;
 };
 
 export default App;
@@ -838,16 +577,14 @@ export default App;
                 <button class="btn-copy">Copiar Código</button>
               </div>
               <div class="alert-explicando-codigo" style="margin-top: 15px">
-                <h2 class="alert-explicando-codigo-title">
-                  🤓 Explicando o código 📝
-                </h2>
+                <h3 class="alert-title">🤔 Explicando o código</h3>
                 <p>
-                  No <strong>App.jsx</strong> do gabarito, o estado
-                  <code>hover</code> controla a exibição do Tooltip.
-                  <code>useRef</code> captura a referência do botão para
-                  calcular a posição do tooltip. Os eventos
-                  <code>onMouseEnter</code> e <code>onMouseLeave</code> alternam
-                  o estado, fazendo o tooltip aparecer e desaparecer suavemente.
+                  O <code>App.jsx</code> importa e renderiza o componente
+                  <code>TodoList</code>, que contém toda a lógica de
+                  gerenciamento de tarefas com <code>useReducer</code>. A
+                  estrutura é simples porque o <code>useReducer</code> encapsula
+                  tanto o estado quanto as ações dentro do próprio componente
+                  <code>TodoList</code>.
                 </p>
               </div>
             </div>

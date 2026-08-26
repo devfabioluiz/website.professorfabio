@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,366 +20,1700 @@
     <header>
       <h1>Aula 11</h1>
       <h4 class="text-center">React</h4>
-      <h4 class="text-center">Context API, useReducer e Redux</h4>
+      <h4 class="text-center">Realizando o projeto prático integrando aulas</h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Context API (hook useContext), Hook useReducer, Redux (arquitetura e
-        exemplos práticos).
+        Integração de tudo o que aprendemos até aqui: Formulários (Aula 9),
+        Roteamento (Aula 10), Requisições HTTP com Axios (Aula 8) e Estilização
+        (Aulas 6 e 7).
       </div>
     </header>
     <main class="container">
-      <h2>Context API (hook useContext)</h2>
       <section>
         <p>
-          A Context API no React é uma ferramenta que permite compartilhar
-          valores e estados entre componentes sem a necessidade de passar props
-          manualmente por toda a árvore de componentes. Ela é ideal para
-          gerenciar dados globais, como temas, autenticação ou configurações de
-          idioma. O contexto é criado usando
-          <code>React.createContext()</code>, e seus valores são fornecidos aos
-          componentes filhos através do <code>Provider</code>. Os componentes
-          que precisam acessar esses valores utilizam o hook
-          <code>useContext</code>. A Context API simplifica a gestão de estados
-          globais em aplicações React, eliminando a complexidade de "prop
-          drilling".
+          Chegou a hora de colocar em prática tudo o que vimos nas últimas
+          aulas! Nesta aula vamos construir um pequeno projeto que integra
+          <strong>formulários</strong> (Aula 9), <strong>rotas</strong> (Aula
+          10), <strong>requisições HTTP com Axios</strong> (Aula 8) e
+          <strong>estilização</strong> (Aulas 6 e 7).
         </p>
-        <div class="code-container">
-          <pre><code>
-import React, { createContext, useContext } from 'react';
-
-const TemaContext = createContext('claro');
-
-function Painel() {
-  const tema = useContext(TemaContext);
-  return &lt;div&gt;Tema atual: {tema}&lt;/div&gt;;
-}
-
-function App() {
-  return (
-    &lt;TemaContext.Provider value="escuro"&gt;
-      &lt;Painel /&gt;
-    &lt;/TemaContext.Provider&gt;
-  );
-}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>
-            <code>createContext</code> cria um objeto de contexto que pode ser
-            compartilhado entre componentes. O <code>Provider</code> (ex:
-            <code>TemaContext.Provider</code>) envolve a árvore de componentes e
-            fornece o valor do contexto. O hook <code>useContext</code> permite
-            que qualquer componente filho acesse esse valor sem precisar
-            recebê-lo via props — eliminando o <em>prop drilling</em>.
-          </p>
-        </div>
-      </section>
-
-      <h2>Redux</h2>
-      <section>
         <p>
-          Redux e uma ferramenta popular para gerenciamento de estado em
-          aplicações React. Ele proporciona uma estrutura de dados unificada que
-          pode ser facilmente compartilhada entre componentes e acionados por
-          ações.
+          O projeto terá as páginas <strong>Login</strong>,
+          <strong>Registrar</strong> e <strong>Home</strong>, além de um
+          <strong>CRUD</strong> completo de produtos (Criar, Ler, Atualizar e
+          Deletar). Siga as instruções de cada parte e, caso precise, confira o
+          gabarito clicando em <strong>Ver gabarito</strong>.
         </p>
-        <h5>Exemplo</h5>
-        <div class="code-container">
-          <pre>
-              <code class="language-javascript">
-
-import { createStore } from 'redux';
-
-const initialState = { count: 0 };  
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { ...state, count: state.count + 1 };
-    case 'DECREMENT':
-      return { ...state, count: state.count - 1 };
-    default:
-      return state;
-  }
-};
-
-const store = createStore(reducer);
-
-const Contador = () => {
-  const state = store.getState();
-  return (
-    &lt;&gt;
-      &lt;p&gt;Contagem: {state.count}&lt;/p&gt;
-      &lt;button onClick={() =&gt; store.dispatch({ type: 'INCREMENT' })}&gt;+&lt;/button&gt;
-      &lt;button onClick={() =&gt; store.dispatch({ type: 'DECREMENT' })}&gt;-&lt;/button&gt;
-    &lt;/&gt;
-  );
-};
-
-export default Contador;
-              </code>
-            </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>
-            O <strong>Redux</strong> gerencia o estado global da aplicação
-            através de uma <em>store</em> centralizada. Um <em>reducer</em> é
-            uma função pura que recebe o estado atual e uma <em>action</em> e
-            retorna um novo estado. As ações são objetos com uma propriedade
-            <code>type</code> e são enviadas via <code>store.dispatch()</code>.
-            O componente lê o estado com <code>store.getState()</code>.
-          </p>
-        </div>
       </section>
 
-      <h2>useReducer</h2>
-      <section>
-        <p>
-          Hook para gerenciamento de estado complexo, similar ao Redux, com
-          dispatch e reducer.
-        </p>
-        <h5>Exemplo</h5>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import React, { useReducer } from 'react';
-
-const initialState = { count: 0 };
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'increment':
-      return { count: state.count + 1 };
-    case 'decrement':
-      return { count: state.count - 1 };
-    default:
-      return state;
-  }
-}
-
-function Contador() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    &lt;&gt;;
-      &lt;p&gt;;Contagem: {state.count}&lt;/p&gt;;
-      &lt;button onClick={() =&gt;; dispatch({ type: 'increment' })}&gt;;+&lt;/button&gt;;
-      &lt;button onClick={() =&gt;; dispatch({ type: 'decrement' })}&gt;;-&lt;/button&gt;;
-    &lt;/&gt;;
-  );
-}
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>
-            O hook <code>useReducer</code> é uma alternativa ao
-            <code>useState</code> para gerenciar estados complexos. Ele recebe
-            uma função <em>reducer</em> e um estado inicial, retornando um par
-            <code>[state, dispatch]</code>. O <code>dispatch</code> envia ações
-            para o reducer, que calcula o novo estado com base no tipo da ação.
-            É especialmente útil quando o próximo estado depende de múltiplos
-            valores ou de lógica condicional.
-          </p>
-        </div>
-      </section>
       <!-- PASSO A PASSO -->
       <section>
-        <h2>Passo a Passo: Criando um Theme Toggler com Context API</h2>
+        <h2>Passo a Passo: Integrando Formulários, Rotas e API</h2>
 
-        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
-
-        <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-projeto-theme-context
-          </code></pre>
-        </div>
+        <h3>1ª Parte — Criar a branch aulas-integradas</h3>
 
         <p>
-          Agora crie uma branch chamada <strong>aula11-theme-context</strong>
+          A nossa última aula foi a Aula 10 (roteamento). Crie a branch
+          <strong>aulas-integradas</strong> baseada na branch da Aula 10.
         </p>
 
-        <p>Depois, clone o repositório no seu computador:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-git clone https://github.com/{{SEU-USERNAME}}/projeto-theme-context.git
-cd projeto-theme-context
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-bash">
 git fetch
-git checkout aula11-theme-context
-git pull
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
+git checkout aula10-react-router
+git checkout -b aulas-integradas
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              <code>git fetch</code> atualiza as referências das branches
+              remotas. <code>git checkout aula10-react-router</code> alterna
+              para a branch da última aula (Aula 10), e
+              <code>git checkout -b aulas-integradas</code> cria uma nova branch
+              chamada <strong>aulas-integradas</strong> a partir dela.
+            </p>
+          </div>
         </div>
 
-        <div
-          class="alert-explicando-codigo"
-          style="
-            border-color: #16a34a;
-            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
-          "
-        >
-          <h3 class="alert-title" style="color: #166534">
-            🤔 Explicando o código
-          </h3>
-          <ul>
-            <li>
-              <code>git clone</code> — baixa o repositório remoto para sua
-              máquina local.
-            </li>
-            <li><code>cd</code> — navega para a pasta do projeto clonado.</li>
-            <li>
-              <code>git fetch</code> — sincroniza as referências das branches
-              remotas sem fazer merge.
-            </li>
-            <li>
-              <code>git checkout aula11-theme-context</code> — alterna para a
-              branch específica da aula.
-            </li>
-            <li>
-              <code>git pull</code> — baixa e integra as alterações mais
-              recentes do repositório remoto.
-            </li>
-          </ul>
+        <h3>
+          2ª Parte — Criar os componentes LOGIN, REGISTRAR e HOME
+        </h3>
+
+        <p>
+          Crie a subpasta <code>aulas-integradas</code> dentro de
+          <code>src/components</code> e, dentro dela, os componentes
+          <code>Login.jsx</code>, <code>Registrar.jsx</code> e
+          <code>Home.jsx</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-bash">
+cd my-react-app/src/components
+mkdir aulas-integradas
+type nul &gt; aulas-integradas/Login.jsx
+type nul &gt; aulas-integradas/Registrar.jsx
+type nul &gt; aulas-integradas/Home.jsx
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              <code>cd</code> entra na pasta <code>components</code>,
+              <code>mkdir aulas-integradas</code> cria a subpasta e
+              <code>type nul &gt;</code> cria os arquivos vazios
+              <code>Login.jsx</code>, <code>Registrar.jsx</code> e
+              <code>Home.jsx</code>.
+            </p>
+          </div>
         </div>
 
-        <h3>Passo 1 — Criar o projeto</h3>
+        <h3>3ª Parte — Criar as rotas para cada componente</h3>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-npm create vite@latest . -- --template react
-npm install
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
+        <p>
+          Conforme aprendemos na Aula 10, use o <code>react-router-dom</code>
+          (já instalado na branch da Aula 10) para criar uma URL para cada
+          componente no <code>App.jsx</code>: <code>/</code> para a Home,
+          <code>/login</code> para o Login e <code>/registrar</code> para o
+          Registrar.
+        </p>
 
-        <h3>Passo 2 — Criar o ThemeContext</h3>
-
-        <p>Crie o arquivo <b>src/ThemeContext.jsx</b>:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { createContext, useState, useContext } from 'react';
-
-const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
-  };
-
-  return (
-    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
-      {children}
-    &lt;/ThemeContext.Provider&gt;
-  );
-};
-
-export const useTheme = () => useContext(ThemeContext);
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>
-            <code>createContext()</code> cria um contexto vazio. O
-            <code>ThemeProvider</code> é um componente que utiliza o
-            <code>ThemeContext.Provider</code> para disponibilizar o estado do
-            tema e a função <code>toggleTheme</code> para toda a árvore de
-            componentes filhos. O hook customizado
-            <code>useTheme</code> encapsula
-            <code>useContext(ThemeContext)</code>, facilitando o consumo do
-            contexto em qualquer componente.
-          </p>
-        </div>
-
-        <h3>Passo 3 — Criar um componente que use o tema</h3>
-
-        <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { useTheme } from './ThemeContext';
-
-const ThemeSwitcher = () => {
-  const { theme, toggleTheme } = useTheme();
-
-  return (
-    &lt;div style={{
-      background: theme === 'light' ? '#fff' : '#333',
-      color: theme === 'light' ? '#000' : '#fff',
-      padding: '20px',
-      minHeight: '100vh',
-    }}&gt;
-      &lt;h1&gt;Tema atual: {theme}&lt;/h1&gt;
-      &lt;button onClick={toggleTheme}&gt;
-        Alternar para {theme === 'light' ? 'dark' : 'light'}
-      &lt;/button&gt;
-    &lt;/div&gt;
-  );
-};
-
-export default ThemeSwitcher;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
-          <p>
-            O <code>ThemeSwitcher</code> consome o contexto através do hook
-            <code>useTheme()</code>, que retorna o tema atual e a função
-            <code>toggleTheme</code>. O estilo do componente é alterado
-            dinamicamente conforme o valor de <code>theme</code> (light ou
-            dark), e o botão dispara a alternância do tema. Tudo isso sem que
-            nenhuma prop seja passada manualmente — o contexto faz o
-            compartilhamento automaticamente.
-          </p>
-        </div>
-
-        <h3>Passo 4 — Usar o Provider no App.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">
-import { ThemeProvider } from './ThemeContext';
-import ThemeSwitcher from './ThemeSwitcher';
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './components/aulas-integradas/Login';
+import Registrar from './components/aulas-integradas/Registrar';
+import Home from './components/aulas-integradas/Home';
 
 const App = () => {
   return (
-    &lt;ThemeProvider&gt;
-      &lt;ThemeSwitcher /&gt;
-    &lt;/ThemeProvider&gt;
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="/registrar" element={&lt;Registrar /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
   );
 };
 
 export default App;
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>BrowserRouter</code> envolve toda a aplicação, o
+              <code>Routes</code> agrupa as rotas e cada <code>Route</code>
+              associa um <code>path</code> (URL) a um <code>element</code>
+              (componente).
+            </p>
+          </div>
         </div>
 
-        <div class="alert-explicando-codigo">
-          <h3 class="alert-title">🤔 Explicando o código</h3>
+        <h3>4ª Parte — Criar o formulário do componente LOGIN</h3>
+
+        <p>
+          Conforme aprendemos na Aula 9, crie um formulário controlado no
+          <code>Login.jsx</code> com os campos <strong>email</strong> e
+          <strong>senha</strong>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;h1&gt;Login&lt;/h1&gt;
+      &lt;div&gt;
+        &lt;label&gt;Email:&lt;/label&gt;
+        &lt;input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Senha:&lt;/label&gt;
+        &lt;input
+          type="password"
+          name="senha"
+          value={formData.senha}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default Login;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O estado <code>formData</code> armazena os campos
+              <code>email</code> e <code>senha</code>. O
+              <code>handleChange</code> usa <em>dynamic property assignment</em>
+              (<code>[name]: value</code>) para atualizar apenas o campo
+              digitado. O <code>handleSubmit</code> previne o recarregamento da
+              página e, por enquanto, exibe os dados no console.
+            </p>
+          </div>
+        </div>
+
+        <h3>5ª Parte — Criar o formulário do componente REGISTRAR</h3>
+
+        <p>
+          Crie o formulário do <code>Registrar.jsx</code> com os campos
+          <strong>nome</strong>, <strong>e-mail</strong>, <strong>role</strong>
+          (função do empregado em inglês) e <strong>senha</strong>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const Registrar = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    role: '',
+    senha: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;h1&gt;Registrar&lt;/h1&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nome:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="nome"
+          value={formData.nome}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Email:&lt;/label&gt;
+        &lt;input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Role:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Senha:&lt;/label&gt;
+        &lt;input
+          type="password"
+          name="senha"
+          value={formData.senha}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Salvar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default Registrar;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Seguindo o mesmo padrão do Login, o estado
+              <code>formData</code> possui quatro campos:
+              <code>nome</code>, <code>email</code>, <code>role</code> e
+              <code>senha</code>. O campo <code>role</code> representa a função
+              do empregado (por exemplo: <em>admin</em>, <em>manager</em>,
+              <em>employee</em>).
+            </p>
+          </div>
+        </div>
+
+        <h3>6ª Parte — Estilizar os formulários</h3>
+
+        <p>
+          Estilize os formulários dos componentes <strong>Registrar</strong> e
+          <strong>Login</strong> usando uma das formas de estilização que
+          aprendemos nas Aulas 6 e 7: Tailwind, Material-UI, CSS Modules ou CSS.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
           <p>
-            O <code>App</code> envolve o componente
-            <code>ThemeSwitcher</code> com o <code>ThemeProvider</code>. Esse é
-            o padrão <strong>Provider</strong> da Context API: o provedor deve
-            estar no nível mais alto da árvore de componentes que precisam
-            acessar o contexto. Assim, qualquer componente descendente do
-            <code>ThemeProvider</code> consegue consumir o tema sem a
-            necessidade de props intermediárias.
+            No gabarito abaixo usamos CSS com estilos inline, mas você pode usar
+            a forma que preferir.
           </p>
+          <p><b>Login.jsx:</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Login&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            style={{
+              width: '100%',
+              padding: '8px',
+              marginTop: '4px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+            }}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Senha:&lt;/label&gt;
+          &lt;input
+            type="password"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            style={{
+              width: '100%',
+              padding: '8px',
+              marginTop: '4px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+            }}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#0073e6',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Entrar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Login;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p><b>Registrar.jsx:</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const Registrar = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    role: '',
+    senha: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Registrar&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Nome:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="nome"
+            value={formData.nome}
+            onChange={handleChange}
+            placeholder="Digite seu nome"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Role:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            placeholder="Ex: admin, manager, employee"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Senha:&lt;/label&gt;
+          &lt;input
+            type="password"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#16a34a',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Salvar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Registrar;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
         </div>
 
-        <h3>Passo 5 — Rodar e testar</h3>
+        <h3>7ª Parte — Chamar a API no componente HOME</h3>
+
+        <p>
+          Conforme aprendemos na Aula 8, faça uma requisição <code>GET</code>
+          com Axios para a URL
+          <code>https://projeto-node-step-t5i1.vercel.app/produtos</code> no
+          componente <code>Home.jsx</code> e exiba os <strong>nomes</strong> dos
+          produtos em uma lista na tela.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const Home = () => {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get('https://projeto-node-step-t5i1.vercel.app/produtos')
+      .then((response) => {
+        setProdutos(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return &lt;p&gt;Carregando produtos...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div style={{ maxWidth: '600px', margin: '40px auto', padding: '0 20px' }}&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;h2&gt;Produtos&lt;/h2&gt;
+      &lt;ul&gt;
+        {produtos.map((produto) => (
+          &lt;li key={produto._id}&gt;{produto.nome}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Home;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>useEffect</code> com array vazio executa a requisição
+              apenas uma vez. <code>axios.get()</code> busca os dados, que ficam
+              em <code>response.data</code>. Enquanto a resposta não chega,
+              exibimos "Carregando produtos..."; se houver erro, mostramos a
+              mensagem. Os nomes são renderizados com <code>map</code>.
+            </p>
+          </div>
+        </div>
+
+        <h3>8ª Parte — Fazer o POST no componente REGISTRAR</h3>
+
+        <p>
+          No componente <code>Registrar.jsx</code>, faça o botão
+          <strong>Salvar</strong> enviar os dados do formulário através de uma
+          requisição <code>POST</code> (usando Axios) para
+          <code>https://projeto-node-step-t5i1.vercel.app/registrar</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+import axios from 'axios';
+
+const Registrar = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    role: '',
+    senha: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        'https://projeto-node-step-t5i1.vercel.app/registrar',
+        formData
+      );
+      console.log('Usuário registrado:', response.data);
+      alert('Usuário registrado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      alert('Erro ao registrar usuário');
+    }
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Registrar&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Nome:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="nome"
+            value={formData.nome}
+            onChange={handleChange}
+            placeholder="Digite seu nome"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Role:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            placeholder="Ex: admin, manager, employee"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Senha:&lt;/label&gt;
+          &lt;input
+            type="password"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#16a34a',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Salvar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Registrar;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              <code>handleSubmit</code> agora é <code>async</code> e usa
+              <code>await axios.post()</code> para enviar o objeto
+              <code>formData</code> (nome, email, role e senha) para a URL
+              <code>/registrar</code>. Em caso de sucesso, exibimos uma
+              mensagem com <code>alert()</code>; caso contrário, o erro é
+              capturado no bloco <code>catch</code>.
+            </p>
+          </div>
+        </div>
+
+        <h3>9ª Parte — Criar o componente CriarProduto</h3>
+
+        <p>
+          Crie o componente <code>CriarProduto.jsx</code> na subpasta
+          <code>aulas-integradas</code> com um formulário contendo todos os
+          campos de um produto da API:
+        </p>
+        <ul>
+          <li><code>nome</code></li>
+          <li><code>preco</code></li>
+          <li><code>descricao</code></li>
+          <li><code>categoria</code></li>
+          <li><code>imagem</code></li>
+          <li>
+            <code>avaliacao</code>, que possui <code>nota</code> e
+            <code>quantidade</code>
+          </li>
+        </ul>
+        <p>
+          <strong>Obs:</strong> os campos <code>_id</code> e <code>__v</code>
+          são gerados automaticamente pela API, então não precisam ser
+          preenchidos no formulário. Não se esqueça também de criar uma rota
+          para esse novo componente no <code>App.jsx</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <p>Crie o arquivo:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">
+type nul &gt; src/components/aulas-integradas/CriarProduto.jsx
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p><b>CriarProduto.jsx:</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const CriarProduto = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    preco: '',
+    descricao: '',
+    categoria: '',
+    imagem: '',
+    avaliacao: {
+      nota: '',
+      quantidade: '',
+    },
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAvaliacaoChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      avaliacao: { ...formData.avaliacao, [name]: value },
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;h1&gt;Criar Produto&lt;/h1&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nome:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="nome"
+          value={formData.nome}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Preço:&lt;/label&gt;
+        &lt;input
+          type="number"
+          step="0.01"
+          name="preco"
+          value={formData.preco}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Descrição:&lt;/label&gt;
+        &lt;textarea
+          name="descricao"
+          value={formData.descricao}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Categoria:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="categoria"
+          value={formData.categoria}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Imagem (URL):&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="imagem"
+          value={formData.imagem}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nota da avaliação:&lt;/label&gt;
+        &lt;input
+          type="number"
+          step="0.1"
+          name="nota"
+          value={formData.avaliacao.nota}
+          onChange={handleAvaliacaoChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Quantidade de avaliações:&lt;/label&gt;
+        &lt;input
+          type="number"
+          name="quantidade"
+          value={formData.avaliacao.quantidade}
+          onChange={handleAvaliacaoChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Salvar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default CriarProduto;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p><b>App.jsx (com a nova rota):</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './components/aulas-integradas/Login';
+import Registrar from './components/aulas-integradas/Registrar';
+import Home from './components/aulas-integradas/Home';
+import CriarProduto from './components/aulas-integradas/CriarProduto';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="/registrar" element={&lt;Registrar /&gt;} /&gt;
+        &lt;Route path="/criar-produto" element={&lt;CriarProduto /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Como <code>avaliacao</code> é um objeto aninhado, criamos um
+              segundo handler (<code>handleAvaliacaoChange</code>) que atualiza
+              apenas as propriedades <code>nota</code> e <code>quantidade</code>
+              dentro de <code>avaliacao</code>. Também registramos a rota
+              <code>/criar-produto</code> no <code>App.jsx</code>.
+            </p>
+          </div>
+        </div>
+
+        <h3>10ª Parte — Cadastrar produto com POST</h3>
+
+        <p>
+          Dentro do componente <code>CriarProduto.jsx</code>, faça o botão
+          <strong>Salvar</strong> enviar todos os dados do produto via
+          <code>POST</code> para
+          <code>https://projeto-node-step-t5i1.vercel.app/produtos</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+import axios from 'axios';
+
+const CriarProduto = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    preco: '',
+    descricao: '',
+    categoria: '',
+    imagem: '',
+    avaliacao: {
+      nota: '',
+      quantidade: '',
+    },
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAvaliacaoChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      avaliacao: { ...formData.avaliacao, [name]: value },
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        'https://projeto-node-step-t5i1.vercel.app/produtos',
+        formData
+      );
+      console.log('Produto cadastrado:', response.data);
+      alert('Produto cadastrado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao cadastrar produto:', error);
+      alert('Erro ao cadastrar produto');
+    }
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Criar Produto&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Nome:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="nome"
+            value={formData.nome}
+            onChange={handleChange}
+            placeholder="Nome do produto"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Preço:&lt;/label&gt;
+          &lt;input
+            type="number"
+            step="0.01"
+            name="preco"
+            value={formData.preco}
+            onChange={handleChange}
+            placeholder="0.00"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Descrição:&lt;/label&gt;
+          &lt;textarea
+            name="descricao"
+            value={formData.descricao}
+            onChange={handleChange}
+            placeholder="Descrição do produto"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Categoria:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="categoria"
+            value={formData.categoria}
+            onChange={handleChange}
+            placeholder="Ex: masculino, feminino, eletronicos"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Imagem (URL):&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="imagem"
+            value={formData.imagem}
+            onChange={handleChange}
+            placeholder="https://..."
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Nota da avaliação:&lt;/label&gt;
+          &lt;input
+            type="number"
+            step="0.1"
+            name="nota"
+            value={formData.avaliacao.nota}
+            onChange={handleAvaliacaoChange}
+            placeholder="0.0"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Quantidade de avaliações:&lt;/label&gt;
+          &lt;input
+            type="number"
+            name="quantidade"
+            value={formData.avaliacao.quantidade}
+            onChange={handleAvaliacaoChange}
+            placeholder="0"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#0073e6',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Salvar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default CriarProduto;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>handleSubmit</code> usa <code>await axios.post()</code>
+              para enviar o objeto <code>formData</code> (que já inclui o objeto
+              aninhado <code>avaliacao</code>) para a URL
+              <code>/produtos</code>, cadastrando o novo produto.
+            </p>
+          </div>
+        </div>
+
+        <h3>11ª Parte — Botões editar e deletar na Home</h3>
+
+        <p>
+          No componente <code>Home.jsx</code>, na lista de produtos, crie um
+          botão <strong>editar</strong> e outro <strong>deletar</strong> para
+          cada produto listado. O botão <strong>editar</strong> deve redirecionar
+          para a rota <code>/produto/:id</code>, que chamará o componente
+          <strong>EditarProduto</strong> (que criaremos nas próximas partes).
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const Home = () => {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const carregarProdutos = () => {
+    axios
+      .get('https://projeto-node-step-t5i1.vercel.app/produtos')
+      .then((response) => {
+        setProdutos(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    carregarProdutos();
+  }, []);
+
+  const deletarProduto = (id) => {
+    console.log('Deletar produto com id:', id);
+  };
+
+  if (loading) return &lt;p&gt;Carregando produtos...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div style={{ maxWidth: '600px', margin: '40px auto', padding: '0 20px' }}&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;h2&gt;Produtos&lt;/h2&gt;
+      &lt;ul&gt;
+        {produtos.map((produto) => (
+          &lt;li key={produto._id} style={{ marginBottom: '8px' }}&gt;
+            {produto.nome}{' '}
+            &lt;button onClick={() =&gt; navigate(`/produto/${produto._id}`)}&gt;
+              editar
+            &lt;/button&gt;{' '}
+            &lt;button onClick={() =&gt; deletarProduto(produto._id)}&gt;
+              deletar
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Home;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Usamos o hook <code>useNavigate</code> (Aula 10) para redirecionar
+              para a rota dinâmica <code>/produto/:id</code> ao clicar em
+              <strong>editar</strong>. O identificador é
+              <code>produto._id</code>, pois é assim que a API nomeia o campo de
+              id. A função <code>deletarProduto</code> ainda é um placeholder e
+              será implementada na 14ª parte.
+            </p>
+          </div>
+        </div>
+
+        <h3>12ª Parte — Criar o componente EditarProduto</h3>
+
+        <p>
+          Crie o componente <code>EditarProduto.jsx</code> com todos os campos
+          que também existem no <strong>CriarProduto</strong>, e adicione a rota
+          dinâmica <code>/produto/:id</code> no <code>App.jsx</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <p>Crie o arquivo:</p>
+          <div class="code-container">
+            <pre><code class="language-bash">
+type nul &gt; src/components/aulas-integradas/EditarProduto.jsx
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p><b>App.jsx (com a rota dinâmica):</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './components/aulas-integradas/Login';
+import Registrar from './components/aulas-integradas/Registrar';
+import Home from './components/aulas-integradas/Home';
+import CriarProduto from './components/aulas-integradas/CriarProduto';
+import EditarProduto from './components/aulas-integradas/EditarProduto';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="/registrar" element={&lt;Registrar /&gt;} /&gt;
+        &lt;Route path="/criar-produto" element={&lt;CriarProduto /&gt;} /&gt;
+        &lt;Route path="/produto/:id" element={&lt;EditarProduto /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p><b>EditarProduto.jsx:</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+
+const EditarProduto = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    preco: '',
+    descricao: '',
+    categoria: '',
+    imagem: '',
+    avaliacao: {
+      nota: '',
+      quantidade: '',
+    },
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAvaliacaoChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      avaliacao: { ...formData.avaliacao, [name]: value },
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;h1&gt;Editar Produto&lt;/h1&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nome:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="nome"
+          value={formData.nome}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Preço:&lt;/label&gt;
+        &lt;input
+          type="number"
+          step="0.01"
+          name="preco"
+          value={formData.preco}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Descrição:&lt;/label&gt;
+        &lt;textarea
+          name="descricao"
+          value={formData.descricao}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Categoria:&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="categoria"
+          value={formData.categoria}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Imagem (URL):&lt;/label&gt;
+        &lt;input
+          type="text"
+          name="imagem"
+          value={formData.imagem}
+          onChange={handleChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Nota da avaliação:&lt;/label&gt;
+        &lt;input
+          type="number"
+          step="0.1"
+          name="nota"
+          value={formData.avaliacao.nota}
+          onChange={handleAvaliacaoChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;label&gt;Quantidade de avaliações:&lt;/label&gt;
+        &lt;input
+          type="number"
+          name="quantidade"
+          value={formData.avaliacao.quantidade}
+          onChange={handleAvaliacaoChange}
+        /&gt;
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Salvar&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default EditarProduto;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              A rota <code>/produto/:id</code> é uma <strong>rota dinâmica</strong>
+              (Aula 10): o <code>:id</code> é um parâmetro que varia conforme o
+              produto selecionado. O componente <strong>EditarProduto</strong>
+              possui os mesmos campos do CriarProduto.
+            </p>
+          </div>
+        </div>
+
+        <h3>13ª Parte — Buscar os dados do produto pelo id</h3>
+
+        <p>
+          No componente <code>EditarProduto.jsx</code>, use o hook
+          <code>useParams</code> para capturar o <code>id</code> da URL e faça
+          uma chamada <code>GET</code> para
+          <code>https://projeto-node-step-t5i1.vercel.app/produtos/:id</code>
+          (o id é dinâmico). Mostre os dados desse produto preenchendo os campos
+          do formulário.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
+const EditarProduto = () => {
+  const { id } = useParams();
+  const [formData, setFormData] = useState({
+    nome: '',
+    preco: '',
+    descricao: '',
+    categoria: '',
+    imagem: '',
+    avaliacao: {
+      nota: '',
+      quantidade: '',
+    },
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get(`https://projeto-node-step-t5i1.vercel.app/produtos/${id}`)
+      .then((response) => {
+        const produto = response.data;
+        setFormData({
+          nome: produto.nome || '',
+          preco: produto.preco || '',
+          descricao: produto.descricao || '',
+          categoria: produto.categoria || '',
+          imagem: produto.imagem || '',
+          avaliacao: {
+            nota: produto.avaliacao?.nota || '',
+            quantidade: produto.avaliacao?.quantidade || '',
+          },
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar produto:', err);
+        setLoading(false);
+      });
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAvaliacaoChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      avaliacao: { ...formData.avaliacao, [name]: value },
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`,
+        formData
+      );
+      console.log('Produto atualizado:', response.data);
+      alert('Produto atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar produto:', error);
+      alert('Erro ao atualizar produto');
+    }
+  };
+
+  if (loading) return &lt;p&gt;Carregando produto...&lt;/p&gt;;
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Editar Produto&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Nome:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="nome"
+            value={formData.nome}
+            onChange={handleChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Preço:&lt;/label&gt;
+          &lt;input
+            type="number"
+            step="0.01"
+            name="preco"
+            value={formData.preco}
+            onChange={handleChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Descrição:&lt;/label&gt;
+          &lt;textarea
+            name="descricao"
+            value={formData.descricao}
+            onChange={handleChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Categoria:&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="categoria"
+            value={formData.categoria}
+            onChange={handleChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Imagem (URL):&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="imagem"
+            value={formData.imagem}
+            onChange={handleChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Nota da avaliação:&lt;/label&gt;
+          &lt;input
+            type="number"
+            step="0.1"
+            name="nota"
+            value={formData.avaliacao.nota}
+            onChange={handleAvaliacaoChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Quantidade de avaliações:&lt;/label&gt;
+          &lt;input
+            type="number"
+            name="quantidade"
+            value={formData.avaliacao.quantidade}
+            onChange={handleAvaliacaoChange}
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#16a34a',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Salvar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default EditarProduto;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>useParams</code> retorna o <code>id</code> da URL. O
+              <code>useEffect</code> depende de <code>[id]</code>, então sempre
+              que o id mudar ele faz uma nova requisição <code>GET</code> para
+              <code>/produtos/:id</code> e preenche o formulário com os dados
+              retornados. O <code>handleSubmit</code> usa <code>axios.put()</code>
+              para atualizar o produto (completando o "U" do CRUD). Enquanto os
+              dados não chegam, exibimos "Carregando produto...".
+            </p>
+          </div>
+        </div>
+
+        <h3>14ª Parte — Deletar produto com DELETE</h3>
+
+        <p>
+          Faça com que o botão <strong>deletar</strong> na Home chame a API
+          através do método <code>DELETE</code> na URL
+          <code>https://projeto-node-step-t5i1.vercel.app/produtos/:id</code>,
+          em vez de GET ou POST. Lembre-se de atualizar a lista após deletar.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <p>
+            Substitua a função <code>deletarProduto</code> no
+            <code>Home.jsx</code> pelo código abaixo:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+  const deletarProduto = async (id) => {
+    try {
+      await axios.delete(
+        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`
+      );
+      carregarProdutos();
+    } catch (err) {
+      console.error('Erro ao deletar:', err);
+      alert('Erro ao deletar produto');
+    }
+  };
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              A função <code>deletarProduto</code> agora é <code>async</code> e
+              usa <code>await axios.delete()</code> com a URL dinâmica
+              <code>/produtos/:id</code> (método <code>DELETE</code>, que
+              aprendemos na Aula 8). Após deletar, chamamos
+              <code>carregarProdutos()</code> para recarregar a lista sem o
+              produto removido.
+            </p>
+          </div>
+        </div>
+
+        <h3>15ª Parte — Testar a aplicação (CRUD completo)</h3>
+
+        <p>
+          Parabéns! Você acabou de construir um <strong>CRUD</strong> completo.
+          CRUD é a sigla para as quatro operações básicas de persistência de
+          dados:
+        </p>
+
+        <ul>
+          <li>
+            <strong>C</strong>reate (Criar) — <code>POST</code> em
+            <code>/produtos</code> (CriarProduto);
+          </li>
+          <li>
+            <strong>R</strong>ead (Ler) — <code>GET</code> em
+            <code>/produtos</code> (Home) e em <code>/produtos/:id</code>
+            (EditarProduto);
+          </li>
+          <li>
+            <strong>U</strong>pdate (Atualizar) — <code>PUT</code> em
+            <code>/produtos/:id</code> (EditarProduto);
+          </li>
+          <li>
+            <strong>D</strong>elete (Deletar) — <code>DELETE</code> em
+            <code>/produtos/:id</code> (Home).
+          </li>
+        </ul>
+
+        <p>Rode a aplicação e teste tudo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -395,13 +1729,20 @@ http://localhost:5173
           </code></pre>
         </div>
 
-        <h3>Último Passo — Subindo para o Git</h3>
+        <p>
+          Teste toda a aplicação: acesse <code>/</code> para ver a lista de
+          produtos, <code>/criar-produto</code> para cadastrar um novo produto,
+          clique em <strong>editar</strong> em um produto para alterá-lo (rota
+          <code>/produto/:id</code>) e em <strong>deletar</strong> para
+          removê-lo. Não se esqueça de testar também <code>/login</code> e
+          <code>/registrar</code>. Depois, salve tudo no repositório:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git add .
-git commit -m "aula 11: theme toggler com context api"
-git push
+git commit -m "aula 11: projeto pratico integrando aulas"
+git push --set-upstream origin aulas-integradas
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -413,9 +1754,9 @@ git push
             background: linear-gradient(135deg, #f0fdf4, #f8fafc);
           "
         >
-          <h3 class="alert-title" style="color: #166534">
-            🤔 Explicando o código
-          </h3>
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            🤓 Explicando o código 📝
+          </h2>
           <ul>
             <li>
               <code>git add .</code> — adiciona todos os arquivos modificados à
@@ -446,153 +1787,34 @@ git push
           >
           <p>Selecione a branch correspondente a esta aula:</p>
           <ul>
-            <li><code>aula11-theme-context</code></li>
+            <li><code>aulas-integradas</code></li>
           </ul>
-        </div>
-      </section>
-
-      <!-- DEVER -->
-      <section>
-        <h2>Dever de Casa</h2>
-        <div id="question-container-casa">
-          <div class="question">
-            <h3>Criar uma Todo List com useReducer</h3>
-            <p>
-              Crie uma branch chamada <strong>dever-de-casa-aula11</strong> e
-              nela desenvolva:
-            </p>
-            <ol>
-              <li>
-                Crie um componente <b>TodoList.jsx</b> que use
-                <code>useReducer</code> para gerenciar uma lista de tarefas.
-              </li>
-              <li>
-                Implemente as ações: <code>ADD_TASK</code>,
-                <code>TOGGLE_TASK</code> e <code>REMOVE_TASK</code>.
-              </li>
-              <li>
-                Renderize um input para adicionar tarefas e a lista com opção de
-                marcar como concluída e remover.
-              </li>
-            </ol>
-            <p>
-              <strong>Obs:</strong> Não se esqueça de subir o projeto para o Git
-              na branch do dever após terminar.
-            </p>
-
-            <button class="btn-gabarito">Ver gabarito</button>
-            <div class="gabarito">
-              <b>Gabarito:</b>
-
-              <p><b>TodoList.jsx:</b></p>
-              <div class="code-container">
-                <pre><code class="language-javascript">
-import { useReducer, useState } from 'react';
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TASK':
-      return [...state, { id: Date.now(), text: action.payload, completed: false }];
-    case 'TOGGLE_TASK':
-      return state.map(task =>
-        task.id === action.payload
-          ? { ...task, completed: !task.completed }
-          : task
-      );
-    case 'REMOVE_TASK':
-      return state.filter(task => task.id !== action.payload);
-    default:
-      return state;
-  }
-};
-
-const TodoList = () => {
-  const [tasks, dispatch] = useReducer(reducer, []);
-  const [input, setInput] = useState('');
-
-  const addTask = () => {
-    if (input.trim()) {
-      dispatch({ type: 'ADD_TASK', payload: input });
-      setInput('');
-    }
-  };
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Lista de Tarefas&lt;/h1&gt;
-      &lt;input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Nova tarefa"
-      /&gt;
-      &lt;button onClick={addTask}&gt;Adicionar&lt;/button&gt;
-      &lt;ul&gt;
-        {tasks.map(task => (
-          &lt;li key={task.id}
-            style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
-          &gt;
-            {task.text}
-            &lt;button onClick={() => dispatch({ type: 'TOGGLE_TASK', payload: task.id })}&gt;
-              {task.completed ? 'Desmarcar' : 'Concluir'}
-            &lt;/button&gt;
-            &lt;button onClick={() => dispatch({ type: 'REMOVE_TASK', payload: task.id })}&gt;
-              Remover
-            &lt;/button&gt;
-          &lt;/li&gt;
-        ))}
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-};
-
-export default TodoList;
-                </code></pre>
-                <button class="btn-copy">Copiar Código</button>
-              </div>
-              <div class="alert-explicando-codigo" style="margin-top: 15px">
-                <h3 class="alert-title">🤔 Explicando o código</h3>
-                <p>
-                  O hook <code>useReducer</code> gerencia o array de tarefas. O
-                  reducer trata três ações: <code>ADD_TASK</code> adiciona uma
-                  nova tarefa com <code>Date.now()</code> como ID único,
-                  <code>TOGGLE_TASK</code> alterna a propriedade
-                  <code>completed</code> da tarefa correspondente ao ID, e
-                  <code>REMOVE_TASK</code> filtra a tarefa pelo ID removendo-a
-                  da lista. O <code>useState</code> é usado separadamente para
-                  controlar o valor do input.
-                </p>
-              </div>
-
-              <p><b>App.jsx:</b></p>
-              <div class="code-container">
-                <pre><code class="language-javascript">
-import TodoList from './TodoList';
-
-const App = () => {
-  return &lt;TodoList /&gt;;
-};
-
-export default App;
-                </code></pre>
-                <button class="btn-copy">Copiar Código</button>
-              </div>
-              <div class="alert-explicando-codigo" style="margin-top: 15px">
-                <h3 class="alert-title">🤔 Explicando o código</h3>
-                <p>
-                  O <code>App.jsx</code> importa e renderiza o componente
-                  <code>TodoList</code>, que contém toda a lógica de
-                  gerenciamento de tarefas com <code>useReducer</code>. A
-                  estrutura é simples porque o <code>useReducer</code> encapsula
-                  tanto o estado quanto as ações dentro do próprio componente
-                  <code>TodoList</code>.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </main>
     <script src="../../scripts/copy-clipboard.js"></script>
-    <script src="../../scripts/check-gabarito.js"></script>
+    <script>
+      const SENHA_GABARITO = "SOU-PROGRAMADOR-FORMADO-NA-STEP";
+
+      document.querySelectorAll(".btn-gabarito").forEach((botao) => {
+        botao.addEventListener("click", () => {
+          const gabarito = botao.nextElementSibling;
+
+          if (gabarito.style.display === "block") {
+            gabarito.style.display = "none";
+            botao.textContent = "Ver gabarito";
+            return;
+          }
+
+          const senha = prompt("Digite a senha para ver o gabarito:");
+          if (senha === SENHA_GABARITO) {
+            gabarito.style.display = "block";
+            botao.textContent = "Esconder gabarito";
+          } else {
+            alert("Senha incorreta!");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
