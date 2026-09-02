@@ -175,34 +175,48 @@ git checkout -b projeto-final</code></pre>
           seguindo o Atomic Design, movendo cada arquivo para sua nova pasta:
         </p>
 
+        <p>
+          Você pode deixar as aulas que fizemos antes, porém devem estar dentro
+          da pasta Aulas para organizar nosso código. Somente o projeto final
+          deve estar nessa estrutura
+        </p>
+
+        <p>Observe o exemplo abaixo de como deve ficar a estrutura:</p>
+
         <div class="code-container">
           <pre><code class="language-bash">src/
 │
 ├── components/
-│   ├── atoms/
-│   │   ├── Button.jsx
-│   │   ├── Input.jsx
-│   │   └── Label.jsx
-│   │
-│   ├── molecules/
-│   │   ├── FormField.jsx
-│   │   └── ProductCard.jsx
-│   │
-│   ├── organisms/
-│   │   ├── LoginForm.jsx
-│   │   ├── RegistrarForm.jsx
-│   │   ├── ProductForm.jsx
-│   │   └── ProductList.jsx
-│   │
-│   └── templates/
-│       └── PageLayout.jsx
-│
-├── pages/
-│   ├── Home.jsx
-│   ├── Login.jsx
-│   ├── Registrar.jsx
-│   ├── CriarProduto.jsx
-│   └── EditarProduto.jsx
+│   ├── aulas/
+│     ├── aula1/
+│       ├── Welcome.jsx
+│     ├── aula2/
+│       ├── PlacarDoJogo.jsx
+      ├──// outras aulas 
+│   ├──projeto-final/
+│     ├── atoms/
+│     │   ├── Button.jsx
+│     │   ├── Input.jsx
+│     │   └── Label.jsx
+│     │
+│     ├── molecules/
+│     │   ├── FormField.jsx
+│     │   └── ProductCard.jsx
+│     │
+│     ├── organisms/
+│     │   ├── LoginForm.jsx
+│     │   ├── RegistrarForm.jsx
+│     │   ├── ProductForm.jsx
+│     │   └── ProductList.jsx
+│     │
+│     ├── templates/
+│     │  └── PageLayout.jsx
+│     ├── pages/
+│       ├── Home.jsx
+│       ├── Login.jsx
+│       ├── Registrar.jsx
+│       ├── CriarProduto.jsx
+│       └── EditarProduto.jsx
 │
 ├── App.jsx
 └── main.jsx</code></pre>
