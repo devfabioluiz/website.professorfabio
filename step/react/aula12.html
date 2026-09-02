@@ -193,77 +193,39 @@ function Contador() {
       <section>
         <h2>Passo a Passo: Criando um Theme Toggler com Context API</h2>
 
-        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+        <h3>Passo 0 — Criar a branch</h3>
 
         <p>Acesse o GitHub e crie um novo repositório com o nome abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
-projeto-theme-context
+git fetch
+git checkout aulas-integradas
+git checkout -b aula12-context-api
           </code></pre>
         </div>
+
+        <h3>Passo 1 — Criar o ThemeContext</h3>
 
         <p>
-          Agora crie uma branch chamada <strong>aula12-theme-context</strong>
+          Crie o arquivo <b>src/components/ThemeContext.jsx</b> dentro da pasta
+          <b>src/components</b>
         </p>
 
-        <p>Depois, clone o repositório no seu computador:</p>
-
         <div class="code-container">
           <pre><code class="language-bash">
-git clone https://github.com/{{SEU-USERNAME}}/projeto-theme-context.git
-cd projeto-theme-context
-git fetch
-git checkout aula12-theme-context
-git pull
+cd my-react-app
+type nul > src/components/ThemeContext.jsx
           </code></pre>
-          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <div
-          class="alert-explicando-codigo"
-          style="
-            border-color: #16a34a;
-            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
-          "
-        >
-          <h3 class="alert-title" style="color: #166534">
-            🤔 Explicando o código
-          </h3>
-          <ul>
-            <li>
-              <code>git clone</code> — baixa o repositório remoto para sua
-              máquina local.
-            </li>
-            <li><code>cd</code> — navega para a pasta do projeto clonado.</li>
-            <li>
-              <code>git fetch</code> — sincroniza as referências das branches
-              remotas sem fazer merge.
-            </li>
-            <li>
-              <code>git checkout aula12-theme-context</code> — alterna para a
-              branch específica da aula.
-            </li>
-            <li>
-              <code>git pull</code> — baixa e integra as alterações mais
-              recentes do repositório remoto.
-            </li>
-          </ul>
-        </div>
+        <h3>Passo 2— Inserir código no ThemeContext</h3>
 
-        <h3>Passo 1 — Criar o projeto</h3>
+        <p>
+          Dentro do arquivo <b>src/components/ThemeContext.jsx</b> coloque o
+          código abaixo:
+        </p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-npm create vite@latest . -- --template react
-npm install
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 2 — Criar o ThemeContext</h3>
-
-        <p>Crie o arquivo <b>src/ThemeContext.jsx</b>:</p>
         <div class="code-container">
           <pre><code class="language-javascript">
 import { createContext, useState, useContext } from 'react';
@@ -306,6 +268,19 @@ export const useTheme = () => useContext(ThemeContext);
         <h3>Passo 3 — Criar um componente que use o tema</h3>
 
         <p>Crie o arquivo <b>src/ThemeSwitcher.jsx</b>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd my-react-app
+type nul > src/components/ThemeSwitcher.jsx
+          </code></pre>
+        </div>
+
+        <p>
+          Agora dentro do arquivo <b>src/components/ThemeSwitcher.jsx</b>,
+          coloque o código abaixo:
+        </p>
+
         <div class="code-container">
           <pre><code class="language-javascript">
 import { useTheme } from './ThemeContext';
@@ -348,6 +323,11 @@ export default ThemeSwitcher;
 
         <h3>Passo 4 — Usar o Provider no App.jsx</h3>
 
+        <p>
+          Insira o ThemeProvider no componente App. Não precisa retirar as
+          outras rotas que você já tem da Aula 11
+        </p>
+
         <div class="code-container">
           <pre><code class="language-javascript">
 import { ThemeProvider } from './ThemeContext';
@@ -357,6 +337,7 @@ const App = () => {
   return (
     &lt;ThemeProvider&gt;
       &lt;ThemeSwitcher /&gt;
+      // outros componentes aqui...
     &lt;/ThemeProvider&gt;
   );
 };
