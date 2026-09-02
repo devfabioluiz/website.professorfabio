@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -108,9 +108,9 @@ git checkout -b projeto-final</code></pre>
         <p>
           <strong>Atomic Design</strong> é uma metodologia criada por
           <strong>Brad Frost</strong> que organiza a interface em cinco níveis
-          de complexidade, inspirados na química. Assim como a matéria é
-          formada por átomos que se combinam em moléculas, nossas telas são
-          formadas por pequenos componentes que se combinam em blocos maiores.
+          de complexidade, inspirados na química. Assim como a matéria é formada
+          por átomos que se combinam em moléculas, nossas telas são formadas por
+          pequenos componentes que se combinam em blocos maiores.
         </p>
 
         <p>Os cinco níveis são:</p>
@@ -118,13 +118,13 @@ git checkout -b projeto-final</code></pre>
         <ol>
           <li>
             <strong>Átomos (Atoms)</strong> — os menores elementos da interface:
-            botões, inputs, labels, títulos. Não podem ser divididos e não
-            fazem sentido sozinhos.
+            botões, inputs, labels, títulos. Não podem ser divididos e não fazem
+            sentido sozinhos.
           </li>
           <li>
             <strong>Moléculas (Molecules)</strong> — a união de dois ou mais
-            átomos. Exemplo: um <code>label</code> + um <code>input</code> =
-            um campo de formulário.
+            átomos. Exemplo: um <code>label</code> + um <code>input</code> = um
+            campo de formulário.
           </li>
           <li>
             <strong>Organismos (Organisms)</strong> — a união de várias
@@ -215,901 +215,12 @@ git checkout -b projeto-final</code></pre>
             O componente <code>CriarProduto.jsx</code> da Aula 11, por exemplo,
             misturava tudo: labels, inputs, botão e a requisição. No Atomic
             Design ele se torna uma <strong>página</strong> que apenas compõe
-            organismos (formulários) e moléculas (campos), que por sua vez
-            usam átomos (botões e inputs). A lógica de negócio continua nas
-            páginas e nos organismos.
+            organismos (formulários) e moléculas (campos), que por sua vez usam
+            átomos (botões e inputs). A lógica de negócio continua nas páginas e
+            nos organismos.
           </p>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- PASSO 2 — ÁTOMOS                                              -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          ⚛️ PASSO 2 — CRIAR OS ÁTOMOS
-        </h2>
-
-        <p>
-          Vamos criar as pastas e os três átomos que usaremos em todo o
-          projeto: <code>Button</code>, <code>Input</code> e
-          <code>Label</code>.
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">cd my-react-app/src/components
-mkdir atoms molecules organisms templates
-cd ..</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>
-          Agora acesse <code>src/components</code> e remova a subpasta
-          <code>aulas-integradas</code> (criaremos as novas páginas depois):
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">cd src/components
-rm -rf aulas-integradas</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Label.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const Label = ({ htmlFor, children }) => (
-  &lt;label htmlFor={htmlFor} style={{ fontWeight: 'bold' }}&gt;
-    {children}
-  &lt;/label&gt;
-);
-
-export default Label;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Input.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const Input = ({ id, type, name, value, onChange, placeholder }) => {
-  const style = {
-    width: '100%',
-    padding: '8px',
-    marginTop: '4px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  };
-
-  return (
-    &lt;input
-      id={id}
-      type={type || 'text'}
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      style={style}
-    /&gt;
-  );
-};
-
-export default Input;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Button.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const Button = ({ type, onClick, variant, children }) => {
-  const cores = {
-    primary: { backgroundColor: '#0073e6', color: '#fff' },
-    success: { backgroundColor: '#16a34a', color: '#fff' },
-    danger: { backgroundColor: '#dc2626', color: '#fff' },
-  };
-
-  const estilo = {
-    padding: '10px 14px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginRight: '6px',
-    ...cores[variant || 'primary'],
-  };
-
-  return (
-    &lt;button type={type || 'button'} onClick={onClick} style={estilo}&gt;
-      {children}
-    &lt;/button&gt;
-  );
-};
-
-export default Button;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Os átomos são componentes 100% reutilizáveis: eles recebem dados e
-            funções por <code>props</code> e não conhecem nada do restante da
-            aplicação. O <code>Button</code> aceita uma prop <code>variant</code>
-            que troca as cores (<code>primary</code>, <code>success</code>,
-            <code>danger</code>), permitindo usar o mesmo botão com estilos
-            diferentes. No <code>Input</code>, definimos um estilo padrão que é
-            aplicado a todos os campos.
-          </p>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 3 — MOLÉCULAS                                           -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          🧪 PASSO 3 — CRIAR AS MOLÉCULAS
-        </h2>
-
-        <p>
-          Moléculas combinam dois ou mais átomos. Vamos criar duas:
-          <code>FormField</code> (um <code>Label</code> + um <code>Input</code>)
-          e <code>ProductCard</code> (o nome do produto + os botões de ação).
-        </p>
-
-        <h3>FormField.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import Label from '../atoms/Label';
-import Input from '../atoms/Input';
-
-const FormField = ({ id, label, ...inputProps }) => (
-  &lt;div style={{ marginBottom: '12px' }}&gt;
-    &lt;Label htmlFor={id}&gt;{label}&lt;/Label&gt;
-    &lt;Input id={id} {...inputProps} /&gt;
-  &lt;/div&gt;
-);
-
-export default FormField;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>ProductCard.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import Button from '../atoms/Button';
-
-const ProductCard = ({ produto, onEditar, onDeletar }) => (
-  &lt;li
-    style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '10px',
-      marginBottom: '8px',
-      border: '1px solid #ddd',
-      borderRadius: '6px',
-    }}
-  &gt;
-    &lt;span&gt;{produto.nome}&lt;/span&gt;
-    &lt;div&gt;
-      &lt;Button onClick={() =&gt; onEditar(produto._id)}&gt;editar&lt;/Button&gt;
-      &lt;Button variant="danger" onClick={() =&gt; onDeletar(produto._id)}&gt;
-        deletar
-      &lt;/Button&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-);
-
-export default ProductCard;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            O <code>FormField</code> usa o <em>spread operator</em> (
-            <code>...inputProps</code>) para repassar todas as props do input (
-            <code>type</code>, <code>name</code>, <code>value</code>,
-            <code>onChange</code> etc.) sem precisar listá-las uma a uma. O
-            <code>ProductCard</code> recebe o produto e as funções
-            <code>onEditar</code> e <code>onDeletar</code> — ele não sabe como
-            essas funções funcionam, apenas as chama quando o usuário clica.
-          </p>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 4 — ORGANISMOS                                          -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          🧬 PASSO 4 — CRIAR OS ORGANISMOS
-        </h2>
-
-        <p>
-          Organismos são seções completas formadas por várias moléculas. Vamos
-          criar os formulários (<code>LoginForm</code>,
-          <code>RegistrarForm</code> e <code>ProductForm</code>) e a lista de
-          produtos (<code>ProductList</code>). Toda a lógica de requisições com
-          Axios (incluindo o token no header) fica aqui.
-        </p>
-
-        <h3>LoginForm.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import FormField from '../molecules/FormField';
-import Button from '../atoms/Button';
-
-const LoginForm = () => {
-  const [formData, setFormData] = useState({ email: '', senha: '' });
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        'https://projeto-node-step-t5i1.vercel.app/login',
-        formData
-      );
-      localStorage.setItem('token', response.data.token);
-      alert('Login realizado com sucesso!');
-      navigate('/');
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      alert('Erro ao fazer login');
-    }
-  };
-
-  return (
-    &lt;form onSubmit={handleSubmit}&gt;
-      &lt;FormField
-        id="email"
-        label="Email:"
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Digite seu email"
-      /&gt;
-      &lt;FormField
-        id="senha"
-        label="Senha:"
-        type="password"
-        name="senha"
-        value={formData.senha}
-        onChange={handleChange}
-        placeholder="Digite sua senha"
-      /&gt;
-      &lt;Button type="submit" variant="primary"&gt;Entrar&lt;/Button&gt;
-    &lt;/form&gt;
-  );
-};
-
-export default LoginForm;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>RegistrarForm.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { useState } from 'react';
-import axios from 'axios';
-import FormField from '../molecules/FormField';
-import Button from '../atoms/Button';
-
-const RegistrarForm = () => {
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    role: '',
-    senha: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        'https://projeto-node-step-t5i1.vercel.app/registrar',
-        formData
-      );
-      localStorage.setItem('token', response.data.token);
-      alert('Usuário registrado com sucesso!');
-    } catch (error) {
-      console.error('Erro ao registrar:', error);
-      alert('Erro ao registrar usuário');
-    }
-  };
-
-  return (
-    &lt;form onSubmit={handleSubmit}&gt;
-      &lt;FormField
-        id="nome"
-        label="Nome:"
-        type="text"
-        name="nome"
-        value={formData.nome}
-        onChange={handleChange}
-        placeholder="Digite seu nome"
-      /&gt;
-      &lt;FormField
-        id="email"
-        label="Email:"
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Digite seu email"
-      /&gt;
-      &lt;FormField
-        id="role"
-        label="Role:"
-        type="text"
-        name="role"
-        value={formData.role}
-        onChange={handleChange}
-        placeholder="Ex: admin, manager, employee"
-      /&gt;
-      &lt;FormField
-        id="senha"
-        label="Senha:"
-        type="password"
-        name="senha"
-        value={formData.senha}
-        onChange={handleChange}
-        placeholder="Digite sua senha"
-      /&gt;
-      &lt;Button type="submit" variant="success"&gt;Salvar&lt;/Button&gt;
-    &lt;/form&gt;
-  );
-};
-
-export default RegistrarForm;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>ProductForm.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { useState } from 'react';
-import FormField from '../molecules/FormField';
-import Label from '../atoms/Label';
-import Button from '../atoms/Button';
-
-const ProductForm = ({ inicial, onSubmit, textoBotao }) => {
-  const [formData, setFormData] = useState(
-    inicial || {
-      nome: '',
-      preco: '',
-      descricao: '',
-      categoria: '',
-      imagem: '',
-      avaliacao: { nota: '', quantidade: '' },
-    }
-  );
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleAvaliacaoChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      avaliacao: { ...formData.avaliacao, [name]: value },
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  return (
-    &lt;form onSubmit={handleSubmit}&gt;
-      &lt;FormField
-        id="nome"
-        label="Nome:"
-        type="text"
-        name="nome"
-        value={formData.nome}
-        onChange={handleChange}
-        placeholder="Nome do produto"
-      /&gt;
-      &lt;FormField
-        id="preco"
-        label="Preço:"
-        type="number"
-        step="0.01"
-        name="preco"
-        value={formData.preco}
-        onChange={handleChange}
-        placeholder="0.00"
-      /&gt;
-      &lt;div style={{ marginBottom: '12px' }}&gt;
-        &lt;Label htmlFor="descricao"&gt;Descrição:&lt;/Label&gt;
-        &lt;textarea
-          id="descricao"
-          name="descricao"
-          value={formData.descricao}
-          onChange={handleChange}
-          placeholder="Descrição do produto"
-          style={{
-            width: '100%',
-            padding: '8px',
-            marginTop: '4px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            boxSizing: 'border-box',
-          }}
-        /&gt;
-      &lt;/div&gt;
-      &lt;FormField
-        id="categoria"
-        label="Categoria:"
-        type="text"
-        name="categoria"
-        value={formData.categoria}
-        onChange={handleChange}
-        placeholder="Ex: masculino, feminino, eletronicos"
-      /&gt;
-      &lt;FormField
-        id="imagem"
-        label="Imagem (URL):"
-        type="text"
-        name="imagem"
-        value={formData.imagem}
-        onChange={handleChange}
-        placeholder="https://..."
-      /&gt;
-      &lt;FormField
-        id="nota"
-        label="Nota da avaliação:"
-        type="number"
-        step="0.1"
-        name="nota"
-        value={formData.avaliacao.nota}
-        onChange={handleAvaliacaoChange}
-        placeholder="0.0"
-      /&gt;
-      &lt;FormField
-        id="quantidade"
-        label="Quantidade de avaliações:"
-        type="number"
-        name="quantidade"
-        value={formData.avaliacao.quantidade}
-        onChange={handleAvaliacaoChange}
-        placeholder="0"
-      /&gt;
-      &lt;Button type="submit" variant="success"&gt;{textoBotao || 'Salvar'}&lt;/Button&gt;
-    &lt;/form&gt;
-  );
-};
-
-export default ProductForm;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>ProductList.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import ProductCard from '../molecules/ProductCard';
-
-const ProductList = ({ produtos, onEditar, onDeletar }) => (
-  &lt;ul style={{ listStyle: 'none', padding: 0 }}&gt;
-    {produtos.map((produto) => (
-      &lt;ProductCard
-        key={produto._id}
-        produto={produto}
-        onEditar={onEditar}
-        onDeletar={onDeletar}
-      /&gt;
-    ))}
-  &lt;/ul&gt;
-);
-
-export default ProductList;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Os organismos centralizam a <strong>lógica</strong>: o
-            <code>LoginForm</code> e o <code>RegistrarForm</code> fazem o POST e
-            salvam o token no <code>localStorage</code>; o
-            <code>ProductForm</code> é <strong>reutilizável</strong> — recebe o
-            valor inicial (para edição), chama uma função <code>onSubmit</code>
-            passada pela página e troca o texto do botão. O
-            <code>ProductList</code> apenas renderiza os <code>ProductCard</code>.
-          </p>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 5 — TEMPLATE                                            -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          🖼️ PASSO 5 — CRIAR O TEMPLATE
-        </h2>
-
-        <p>
-          O template define o esqueleto visual das páginas. Criaremos um
-          <code>PageLayout</code> com um card centralizado que recebe um título
-          e o conteúdo de cada página.
-        </p>
-
-        <h3>PageLayout.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">const PageLayout = ({ title, children }) => (
-  &lt;div
-    style={{
-      maxWidth: '600px',
-      margin: '40px auto',
-      padding: '24px',
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    }}
-  &gt;
-    &lt;h1 style={{ textAlign: 'center' }}&gt;{title}&lt;/h1&gt;
-    {children}
-  &lt;/div&gt;
-);
-
-export default PageLayout;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            O <code>PageLayout</code> é um <strong>layout</strong> puro: ele não
-            sabe qual página está renderizando. Recebe um <code>title</code> e o
-            conteúdo via <code>children</code> (os children de JSX). Todas as
-            páginas usarão o mesmo esqueleto, garantindo visual consistente.
-          </p>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 6 — PÁGINAS                                             -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          📄 PASSO 6 — CRIAR AS PÁGINAS
-        </h2>
-
-        <p>
-          As páginas representam cada tela da aplicação. Elas compõem o
-          <code>PageLayout</code> com os organismos e mantêm a lógica de
-          navegação e de acesso aos dados. Vamos criar as cinco páginas do
-          projeto.
-        </p>
-
-        <h3>pages/Login.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import PageLayout from '../components/templates/PageLayout';
-import LoginForm from '../components/organisms/LoginForm';
-
-const Login = () => (
-  &lt;PageLayout title="Login"&gt;
-    &lt;LoginForm /&gt;
-  &lt;/PageLayout&gt;
-);
-
-export default Login;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>pages/Registrar.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import PageLayout from '../components/templates/PageLayout';
-import RegistrarForm from '../components/organisms/RegistrarForm';
-
-const Registrar = () => (
-  &lt;PageLayout title="Registrar"&gt;
-    &lt;RegistrarForm /&gt;
-  &lt;/PageLayout&gt;
-);
-
-export default Registrar;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>pages/Home.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import PageLayout from '../components/templates/PageLayout';
-import ProductList from '../components/organisms/ProductList';
-
-const Home = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  const carregarProdutos = () => {
-    axios
-      .get('https://projeto-node-step-t5i1.vercel.app/produtos')
-      .then((response) => {
-        setProdutos(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    carregarProdutos();
-  }, []);
-
-  const deletarProduto = async (id) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(
-        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      carregarProdutos();
-    } catch (err) {
-      console.error('Erro ao deletar:', err);
-      alert('Erro ao deletar produto');
-    }
-  };
-
-  if (loading) return &lt;p&gt;Carregando produtos...&lt;/p&gt;;
-  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
-
-  return (
-    &lt;PageLayout title="Home"&gt;
-      &lt;h2&gt;Produtos&lt;/h2&gt;
-      &lt;ProductList
-        produtos={produtos}
-        onEditar={(id) =&gt; navigate(`/produto/${id}`)}
-        onDeletar={deletarProduto}
-      /&gt;
-    &lt;/PageLayout&gt;
-  );
-};
-
-export default Home;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>pages/CriarProduto.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import axios from 'axios';
-import PageLayout from '../components/templates/PageLayout';
-import ProductForm from '../components/organisms/ProductForm';
-
-const CriarProduto = () => {
-  const handleSubmit = async (formData) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://projeto-node-step-t5i1.vercel.app/produtos',
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      alert('Produto cadastrado com sucesso!');
-    } catch (error) {
-      console.error('Erro ao cadastrar produto:', error);
-      alert('Erro ao cadastrar produto');
-    }
-  };
-
-  return (
-    &lt;PageLayout title="Criar Produto"&gt;
-      &lt;ProductForm onSubmit={handleSubmit} textoBotao="Salvar" /&gt;
-    &lt;/PageLayout&gt;
-  );
-};
-
-export default CriarProduto;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>pages/EditarProduto.jsx</h3>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import PageLayout from '../components/templates/PageLayout';
-import ProductForm from '../components/organisms/ProductForm';
-
-const EditarProduto = () => {
-  const { id } = useParams();
-  const [produto, setProduto] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(`https://projeto-node-step-t5i1.vercel.app/produtos/${id}`)
-      .then((response) => setProduto(response.data))
-      .catch((err) => console.error('Erro ao buscar produto:', err));
-  }, [id]);
-
-  const handleSubmit = async (formData) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      alert('Produto atualizado com sucesso!');
-    } catch (error) {
-      console.error('Erro ao atualizar produto:', error);
-      alert('Erro ao atualizar produto');
-    }
-  };
-
-  if (!produto) return &lt;p&gt;Carregando produto...&lt;/p&gt;;
-
-  return (
-    &lt;PageLayout title="Editar Produto"&gt;
-      &lt;ProductForm
-        inicial={produto}
-        onSubmit={handleSubmit}
-        textoBotao="Salvar"
-      /&gt;
-    &lt;/PageLayout&gt;
-  );
-};
-
-export default EditarProduto;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            Observe como as páginas ficaram <strong>enxutas</strong>: elas não
-            têm mais dezenas de inputs e estilos repetidos — apenas compõem o
-            <code>PageLayout</code> com os organismos e cuidam da lógica de
-            dados (navegação, carregamento, requisições com o token). A página
-            <code>CriarProduto</code> e a <code>EditarProduto</code> reutilizam
-            o mesmo <code>ProductForm</code>, mudando apenas o valor inicial e o
-            endpoint.
-          </p>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 7 — APP.JSX                                             -->
-        <!-- ============================================================ -->
-        <h2
-          style="
-            margin-top: 40px;
-            border-bottom: 3px solid #4caf50;
-            padding-bottom: 8px;
-          "
-        >
-          🧭 PASSO 7 — ATUALIZAR O App.jsx
-        </h2>
-
-        <p>
-          Agora atualize o <code>App.jsx</code> para importar as páginas da nova
-          pasta <code>src/pages</code>:
-        </p>
-
-        <div class="code-container">
-          <pre><code class="language-javascript">import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Registrar from './pages/Registrar';
-import CriarProduto from './pages/CriarProduto';
-import EditarProduto from './pages/EditarProduto';
-
-const App = () => {
-  return (
-    &lt;BrowserRouter&gt;
-      &lt;Routes&gt;
-        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
-        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
-        &lt;Route path="/registrar" element={&lt;Registrar /&gt;} /&gt;
-        &lt;Route path="/criar-produto" element={&lt;CriarProduto /&gt;} /&gt;
-        &lt;Route path="/produto/:id" element={&lt;EditarProduto /&gt;} /&gt;
-      &lt;/Routes&gt;
-    &lt;/BrowserRouter&gt;
-  );
-};
-
-export default App;</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            🤓 Explicando o código 📝
-          </h2>
-          <p>
-            As rotas são exatamente as mesmas da Aula 11 — apenas os caminhos
-            dos imports mudaram para a nova estrutura de pastas
-            (<code>./pages/...</code>).
-          </p>
-        </div>
-
-        <h3>Testar localmente</h3>
-
-        <p>Rode a aplicação e verifique se está tudo funcionando:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">npm run dev</code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <div class="code-container">
-          <pre><code class="language-bash">http://localhost:5173</code></pre>
-        </div>
-
-        <p>
-          Teste o CRUD completo: registre-se (ou faça login) para obter o token,
-          liste os produtos, crie um novo, edite e delete. Tudo deve continuar
-          funcionando como na Aula 11.
-        </p>
-
-        <!-- ============================================================ -->
-        <!-- PASSO 8 — DEPLOY NA VERCEL                                    -->
-        <!-- ============================================================ -->
         <h2
           style="
             margin-top: 40px;
@@ -1117,7 +228,66 @@ export default App;</code></pre>
             padding-bottom: 8px;
           "
         >
-          🚀 PASSO 8 — PUBLICAR NA VERCEL
+          PASSO 2 — Criar um Header
+        </h2>
+
+        <p>
+          Crie um componente chamado Header e nele coloque o logo, menu de
+          navegação, botão tema escuro/claro e botão de logout.
+        </p>
+
+        <p>
+          <b>Obs1:</b> O Header será usado em todas as páginas do aplicativo.
+        </p>
+        <p>
+          <b>Obs2:</b> O botão de tema escuro/claro deve alternar o tema da
+          página. Conforme vimos na <a href="aula12.html">Aula 12</a>.
+        </p>
+        <p>
+          <b>Obs3:</b> O botão de logout deve redirecionar o usuário para a
+          página de login e limpar o token do localStorage. Conforme vimos na
+          <a href="aula11.html">Aula 11</a>.
+        </p>
+
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          PASSO 3 — Fazer o filtro de produtos
+        </h2>
+
+        <p>
+          Implemente um filtro de produtos que permita aos usuários buscar e
+          filtrar produtos por nome na página Home, a que lista os produtos
+        </p>
+
+        <p>
+          <b>Obs:</b> O filtro deve ser implementado como um componente
+          reutilizável. Além disso, você deve usar o
+          <a href="https://mui.com/material-ui/react-autocomplete/"
+            >AutoComplete do material ui</a
+          >.
+        </p>
+
+        <p>
+          <b>Obs2:</b>Além do AutoComplete, implemente o botão filtrar. Nesse
+          botão você pode adicionar a lógica para aplicar o filtro selecionado.
+          Dica: você pode usar o estado do componente para armazenar o valor
+          selecionado no AutoComplete e, ao clicar no botão filtrar, aplicar a
+          lógica de filtragem na lista de produtos.
+        </p>
+
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          🚀 PASSO 4 — PUBLICAR NA VERCEL
         </h2>
 
         <p>
@@ -1145,16 +315,12 @@ git push --set-upstream origin projeto-final</code></pre>
             <strong>Sign Up</strong> — use o botão
             <strong>"Continue with GitHub"</strong> para conectar sua conta.
           </li>
-          <li>
-            Após entrar, clique em <strong>Add New → Project</strong>.
-          </li>
+          <li>Após entrar, clique em <strong>Add New → Project</strong>.</li>
           <li>
             A Vercel vai listar seus repositórios do GitHub. Selecione o
             repositório <strong>projeto-react-step</strong>.
           </li>
-          <li>
-            Clique em <strong>Import</strong>.
-          </li>
+          <li>Clique em <strong>Import</strong>.</li>
         </ol>
 
         <h3>3. Configurar e fazer o deploy</h3>
@@ -1174,9 +340,7 @@ git push --set-upstream origin projeto-final</code></pre>
               <li>
                 <strong>Build Command:</strong> <code>npm run build</code>
               </li>
-              <li>
-                <strong>Output Directory:</strong> <code>dist</code>
-              </li>
+              <li><strong>Output Directory:</strong> <code>dist</code></li>
             </ul>
           </li>
           <li>
@@ -1185,15 +349,11 @@ git push --set-upstream origin projeto-final</code></pre>
             <code>https://projeto-node-step-t5i1.vercel.app</code> e a URL está
             fixa no código.
           </li>
-          <li>
-            Clique em <strong>Deploy</strong> e aguarde alguns segundos.
-          </li>
+          <li>Clique em <strong>Deploy</strong> e aguarde alguns segundos.</li>
         </ol>
 
         <div class="alert-explicando-codigo">
-          <h2 class="alert-explicando-codigo-title">
-            📌 O que aconteceu?
-          </h2>
+          <h2 class="alert-explicando-codigo-title">📌 O que aconteceu?</h2>
           <p>
             A Vercel rodou o <code>npm run build</code>, que gera a pasta
             <code>dist</code> com o site pronto, e publicou essa pasta em uma
@@ -1212,8 +372,8 @@ git push --set-upstream origin projeto-final</code></pre>
             crie, edite e delete um produto.
           </li>
           <li>
-            Compartilhe a URL com os colegas — qualquer pessoa pode acessar
-            pela internet!
+            Compartilhe a URL com os colegas — qualquer pessoa pode acessar pela
+            internet!
           </li>
         </ol>
 
@@ -1223,7 +383,8 @@ git push --set-upstream origin projeto-final</code></pre>
           </h2>
           <p>
             Toda vez que você fizer um <code>git push</code> para a branch
-            conectada à Vercel, o site é <strong>publicado automaticamente</strong>
+            conectada à Vercel, o site é
+            <strong>publicado automaticamente</strong>
             (deploy automático). Para publicar a branch
             <code>projeto-final</code> pelo painel, garanta que ela esteja
             selecionada em <strong>Settings → Git → Production Branch</strong>,
@@ -1271,11 +432,23 @@ git push</code></pre>
         </h2>
 
         <ol>
-          <li>✅ Criei a branch <code>projeto-final</code> a partir da Aula 11</li>
+          <li>
+            ✅ Criei a branch <code>projeto-final</code> a partir da Aula 11
+          </li>
           <li>✅ Entendi os 5 níveis do Atomic Design</li>
-          <li>✅ Criei os átomos (<code>Button</code>, <code>Input</code>, <code>Label</code>)</li>
-          <li>✅ Criei as moléculas (<code>FormField</code>, <code>ProductCard</code>)</li>
-          <li>✅ Criei os organismos (<code>LoginForm</code>, <code>RegistrarForm</code>, <code>ProductForm</code>, <code>ProductList</code>)</li>
+          <li>
+            ✅ Criei os átomos (<code>Button</code>, <code>Input</code>,
+            <code>Label</code>)
+          </li>
+          <li>
+            ✅ Criei as moléculas (<code>FormField</code>,
+            <code>ProductCard</code>)
+          </li>
+          <li>
+            ✅ Criei os organismos (<code>LoginForm</code>,
+            <code>RegistrarForm</code>, <code>ProductForm</code>,
+            <code>ProductList</code>)
+          </li>
           <li>✅ Criei o template (<code>PageLayout</code>)</li>
           <li>✅ Criei as páginas em <code>src/pages</code></li>
           <li>✅ Atualizei o <code>App.jsx</code> com os novos imports</li>
