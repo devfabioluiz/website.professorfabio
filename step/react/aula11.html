@@ -630,13 +630,22 @@ export default Home;
           </div>
         </div>
 
-        <h3>8ª Parte — Fazer o POST no componente REGISTRAR</h3>
+        <h3>8ª Parte — Fazer o POST no REGISTRAR e no LOGIN</h3>
 
         <p>
           No componente <code>Registrar.jsx</code>, faça o botão
           <strong>Salvar</strong> enviar os dados do formulário através de uma
           requisição <code>POST</code> (usando Axios) para
-          <code>https://projeto-node-step-t5i1.vercel.app/registrar</code>.
+          <code>https://projeto-node-step-t5i1.vercel.app/registrar</code>. No
+          <code>Login.jsx</code>, faça o botão <strong>Entrar</strong> enviar
+          os dados para
+          <code>https://projeto-node-step-t5i1.vercel.app/login</code>.
+        </p>
+        <p>
+          <strong>Importante:</strong> a resposta desses dois endpoints traz um
+          campo <code>token</code>. Guarde esse token no
+          <code>localStorage</code>, pois ele será necessário para criar, editar
+          e deletar produtos (veremos nas próximas partes).
         </p>
 
         <button class="btn-gabarito">Ver gabarito</button>
@@ -667,6 +676,7 @@ const Registrar = () => {
         'https://projeto-node-step-t5i1.vercel.app/registrar',
         formData
       );
+      localStorage.setItem('token', response.data.token);
       console.log('Usuário registrado:', response.data);
       alert('Usuário registrado com sucesso!');
     } catch (error) {
@@ -763,6 +773,108 @@ export default Registrar;
             </code></pre>
             <button class="btn-copy">Copiar Código</button>
           </div>
+          <p><b>Login.jsx:</b></p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: '',
+  });
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        'https://projeto-node-step-t5i1.vercel.app/login',
+        formData
+      );
+      localStorage.setItem('token', response.data.token);
+      console.log('Usuário logado:', response.data);
+      alert('Login realizado com sucesso!');
+      navigate('/');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      alert('Erro ao fazer login');
+    }
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Login&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Senha:&lt;/label&gt;
+          &lt;input
+            type="password"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#0073e6',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Entrar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Login;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
           <div class="alert-explicando-codigo">
             <h2 class="alert-explicando-codigo-title">
               🤓 Explicando o código 📝
@@ -770,10 +882,16 @@ export default Registrar;
             <p>
               <code>handleSubmit</code> agora é <code>async</code> e usa
               <code>await axios.post()</code> para enviar o objeto
-              <code>formData</code> (nome, email, role e senha) para a URL
-              <code>/registrar</code>. Em caso de sucesso, exibimos uma
-              mensagem com <code>alert()</code>; caso contrário, o erro é
-              capturado no bloco <code>catch</code>.
+              <code>formData</code> para a URL correspondente
+              (<code>/registrar</code> ou <code>/login</code>). O mais
+              importante: a resposta traz um <code>token</code>, que salvamos no
+              <code>localStorage</code> com
+              <code>localStorage.setItem('token', response.data.token)</code>.
+              Esse token será lido depois com
+              <code>localStorage.getItem('token')</code> e enviado nas
+              requisições protegidas (criar, editar e deletar produto). No
+              Login, também usamos <code>useNavigate</code> (Aula 10) para
+              redirecionar à Home após o login.
             </p>
           </div>
         </div>
@@ -802,6 +920,64 @@ export default Registrar;
           preenchidos no formulário. Não se esqueça também de criar uma rota
           para esse novo componente no <code>App.jsx</code>.
         </p>
+
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #d97706;
+            background: linear-gradient(135deg, #fffbeb, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #92400e">
+            🔐 Por que precisamos de um token?
+          </h2>
+          <p>
+            A API <strong>protege</strong> as operações de criar, editar e
+            deletar produto. Se tentarmos um <code>POST</code>,
+            <code>PUT</code> ou <code>DELETE</code> em
+            <code>/produtos</code> sem nos identificarmos, ela responde com
+            erro <code>401 - Token não informado</code>. Só a listagem
+            (<code>GET</code>) é pública.
+          </p>
+          <p>
+            O <strong>token</strong> é como uma "carteirinha de acesso" (JWT)
+            que a API devolve ao fazermos <strong>login</strong> ou
+            <strong>registro</strong>. No <code>POST /registrar</code> (e no
+            <code>POST /login</code>), a resposta já vem com o token em
+            <code>response.data.token</code>.
+          </p>
+          <p>
+            <strong>Como armazenar o token:</strong> guardamos no
+            <code>localStorage</code>, que sobrevive ao recarregar ou fechar o
+            navegador:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+localStorage.setItem('token', response.data.token); // salva
+const token = localStorage.getItem('token');        // lê depois
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p>
+            <strong>Como enviar o token:</strong> em toda requisição protegida,
+            mandamos o header <code>Authorization</code> no formato
+            <code>Bearer &lt;token&gt;</code>:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+axios.post(url, formData, {
+  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+});
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p>
+            <strong>Regra de ouro:</strong> <code>GET</code> é aberto;
+            <code>POST</code>, <code>PUT</code> e <code>DELETE</code> de produto
+            exigem o token no header. Vamos aplicar isso nas partes 10ª, 13ª e
+            14ª.
+          </p>
+        </div>
 
         <button class="btn-gabarito">Ver gabarito</button>
         <div class="gabarito">
@@ -1011,9 +1187,13 @@ const CriarProduto = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(
         'https://projeto-node-step-t5i1.vercel.app/produtos',
-        formData
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       console.log('Produto cadastrado:', response.data);
       alert('Produto cadastrado com sucesso!');
@@ -1153,7 +1333,11 @@ export default CriarProduto;
               O <code>handleSubmit</code> usa <code>await axios.post()</code>
               para enviar o objeto <code>formData</code> (que já inclui o objeto
               aninhado <code>avaliacao</code>) para a URL
-              <code>/produtos</code>, cadastrando o novo produto.
+              <code>/produtos</code>. Como essa rota é protegida, passamos o
+              token no terceiro argumento do Axios, no header
+              <code>Authorization</code>, no formato
+              <code>Bearer &lt;token&gt;</code>. O token é lido do
+              <code>localStorage</code> (guardado na 8ª parte).
             </p>
           </div>
         </div>
@@ -1493,9 +1677,13 @@ const EditarProduto = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.put(
         `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`,
-        formData
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       console.log('Produto atualizado:', response.data);
       alert('Produto atualizado com sucesso!');
@@ -1632,8 +1820,9 @@ export default EditarProduto;
               que o id mudar ele faz uma nova requisição <code>GET</code> para
               <code>/produtos/:id</code> e preenche o formulário com os dados
               retornados. O <code>handleSubmit</code> usa <code>axios.put()</code>
-              para atualizar o produto (completando o "U" do CRUD). Enquanto os
-              dados não chegam, exibimos "Carregando produto...".
+              para atualizar o produto (completando o "U" do CRUD) e, como a rota
+              é protegida, envia o token no header <code>Authorization</code>.
+              Enquanto os dados não chegam, exibimos "Carregando produto...".
             </p>
           </div>
         </div>
@@ -1658,8 +1847,12 @@ export default EditarProduto;
             <pre><code class="language-javascript">
   const deletarProduto = async (id) => {
     try {
+      const token = localStorage.getItem('token');
       await axios.delete(
-        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`
+        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       carregarProdutos();
     } catch (err) {
@@ -1678,7 +1871,9 @@ export default EditarProduto;
               A função <code>deletarProduto</code> agora é <code>async</code> e
               usa <code>await axios.delete()</code> com a URL dinâmica
               <code>/produtos/:id</code> (método <code>DELETE</code>, que
-              aprendemos na Aula 8). Após deletar, chamamos
+              aprendemos na Aula 8). Como a rota é protegida, enviamos o token
+              no header <code>Authorization</code> como segundo argumento do
+              <code>axios.delete()</code>. Após deletar, chamamos
               <code>carregarProdutos()</code> para recarregar a lista sem o
               produto removido.
             </p>
@@ -1730,12 +1925,16 @@ http://localhost:5173
         </div>
 
         <p>
-          Teste toda a aplicação: acesse <code>/</code> para ver a lista de
+          <strong>Primeiro, autentique-se:</strong> acesse
+          <code>/registrar</code> (ou <code>/login</code>) e salve. Assim o
+          token é armazenado no <code>localStorage</code> do navegador. Só
+          depois teste o CRUD: acesse <code>/</code> para ver a lista de
           produtos, <code>/criar-produto</code> para cadastrar um novo produto,
           clique em <strong>editar</strong> em um produto para alterá-lo (rota
           <code>/produto/:id</code>) e em <strong>deletar</strong> para
-          removê-lo. Não se esqueça de testar também <code>/login</code> e
-          <code>/registrar</code>. Depois, salve tudo no repositório:
+          removê-lo. Sem o token, essas ações retornarão erro
+          <code>401 - Token não informado</code>. Depois, salve tudo no
+          repositório:
         </p>
 
         <div class="code-container">

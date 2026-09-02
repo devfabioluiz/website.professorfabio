@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 13 de React - Step</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  </head>
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+    <header>
+      <h1>Aula 13</h1>
+      <h4 class="text-center">React</h4>
+      <h4 class="text-center">Autorização e Controle de Acesso por Papel (Role)</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Autenticação vs Autorização, Role-Based Access Control (RBAC), Context
+        API aplicado ao usuário logado, Rotas protegidas por papel (role) e
+        Renderização condicional por permissão.
+      </div>
+    </header>
+    <main class="container">
+      <section>
+        <p>
+          Na Aula 10 vimos o básico de <strong>rotas protegidas</strong> e, na
+          Aula 12, a <strong>Context API</strong>. Agora vamos juntar esses dois
+          conceitos para controlar o acesso de acordo com a
+          <strong>função (role)</strong> do usuário — por exemplo, permitir que
+          apenas um <code>admin</code> crie, edite ou delete produtos, enquanto
+          um <code>employee</code> apenas visualiza a lista.
+        </p>
+        <p>
+          Vamos continuar o projeto que criamos na Aula 11 (branch
+          <code>aulas-integradas</code>). Siga as instruções de cada parte e,
+          caso precise, confira o gabarito clicando em
+          <strong>Ver gabarito</strong> (é preciso digitar a senha).
+        </p>
+
+        <h3>Autenticação vs Autorização</h3>
+        <p>
+          <strong>Autenticação</strong> responde à pergunta
+          <em>"quem é você?"</em> — é o processo de verificar a identidade do
+          usuário (login/senha). Já a <strong>Autorização</strong> responde
+          <em>"o que você pode fazer?"</em> — é o controle do que um usuário
+          autenticado tem permissão de acessar ou executar, baseado na sua
+          <strong>função/papel (role)</strong>.
+        </p>
+        <p>
+          A técnica de associar permissões a papéis se chama
+          <strong>RBAC</strong> (Role-Based Access Control). Nela, definimos
+          papéis (ex: <code>admin</code>, <code>employee</code>) e cada papel
+          tem um conjunto de permissões.
+        </p>
+      </section>
+
+      <!-- PASSO A PASSO -->
+      <section>
+        <h2>Passo a Passo: Protegendo rotas e componentes por papel</h2>
+
+        <h3>1ª Parte — Criar a branch</h3>
+
+        <p>
+          Crie uma branch chamada <strong>aula13-autorizacao-rbac</strong>
+          baseada na branch da Aula 11 (<code>aulas-integradas</code>).
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-bash">
+git fetch
+git checkout aulas-integradas
+git checkout -b aula13-autorizacao-rbac
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              <code>git checkout aulas-integradas</code> alterna para a branch do
+              projeto da Aula 11 e
+              <code>git checkout -b aula13-autorizacao-rbac</code> cria a nova
+              branch a partir dela.
+            </p>
+          </div>
+        </div>
+
+        <h3>2ª Parte — Criar o AuthContext</h3>
+
+        <p>
+          Crie o arquivo <code>src/context/AuthContext.jsx</code>. Ele deve
+          guardar o usuário logado (com <code>nome</code>, <code>email</code> e
+          <code>role</code>), persistir esse usuário no <code>localStorage</code>
+          e expor as funções <code>login</code> e <code>logout</code>, além do
+          hook <code>useAuth</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { createContext, useContext, useState, useEffect } from 'react';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => {
+    const salvo = localStorage.getItem('usuario-logado');
+    return salvo ? JSON.parse(salvo) : null;
+  });
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('usuario-logado', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('usuario-logado');
+    }
+  }, [user]);
+
+  const login = (usuario) => setUser(usuario);
+  const logout = () => setUser(null);
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O estado <code>user</code> é inicializado lendo o
+              <code>localStorage</code> (assim o usuário continua logado ao
+              recarregar a página). O <code>useEffect</code> salva o usuário no
+              <code>localStorage</code> sempre que ele muda, ou remove quando é
+              <code>null</code>. O hook customizado <code>useAuth</code>
+              encapsula <code>useContext(AuthContext)</code>.
+            </p>
+          </div>
+        </div>
+
+        <h3>3ª Parte — Envolver a aplicação com o AuthProvider</h3>
+
+        <p>
+          No <code>main.jsx</code>, envolva o componente <code>&lt;App /&gt;</code>
+          com o <code>&lt;AuthProvider&gt;</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
+import { AuthProvider } from './context/AuthContext';
+
+createRoot(document.getElementById('root')).render(
+  &lt;StrictMode&gt;
+    &lt;AuthProvider&gt;
+      &lt;App /&gt;
+    &lt;/AuthProvider&gt;
+  &lt;/StrictMode&gt;
+);
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>AuthProvider</code> deve estar no nível mais alto da
+              aplicação para que qualquer componente consiga acessar o usuário
+              logado através do <code>useAuth</code>.
+            </p>
+          </div>
+        </div>
+
+        <h3>4ª Parte — Criar o ProtectedRoute</h3>
+
+        <p>
+          Crie o componente <code>src/components/ProtectedRoute.jsx</code>. Ele
+          deve receber uma prop <code>role</code> e os <code>children</code>:
+          se o usuário não estiver logado, redireciona para
+          <code>/login</code>; se estiver logado mas sem o papel necessário,
+          redireciona para <code>/</code>; caso contrário, renderiza os
+          <code>children</code>.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+const ProtectedRoute = ({ role, children }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return &lt;Navigate to="/login" /&gt;;
+  }
+
+  if (role && user.role !== role) {
+    return &lt;Navigate to="/" /&gt;;
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              O <code>ProtectedRoute</code> atua como um guardião: verifica se
+              existe usuário e se o <code>user.role</code> corresponde ao papel
+              exigido. Se qualquer verificação falhar, usa o
+              <code>&lt;Navigate&gt;</code> para redirecionar o usuário.
+            </p>
+          </div>
+        </div>
+
+        <h3>5ª Parte — Proteger as rotas no App.jsx</h3>
+
+        <p>
+          No <code>App.jsx</code>, proteja as rotas <code>/criar-produto</code>
+          e <code>/produto/:id</code> para que apenas usuários com papel
+          <code>admin</code> possam acessá-las.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './components/aulas-integradas/Login';
+import Registrar from './components/aulas-integradas/Registrar';
+import Home from './components/aulas-integradas/Home';
+import CriarProduto from './components/aulas-integradas/CriarProduto';
+import EditarProduto from './components/aulas-integradas/EditarProduto';
+import ProtectedRoute from './components/ProtectedRoute';
+
+const App = () => {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="/registrar" element={&lt;Registrar /&gt;} /&gt;
+        &lt;Route
+          path="/criar-produto"
+          element={
+            &lt;ProtectedRoute role="admin"&gt;
+              &lt;CriarProduto /&gt;
+            &lt;/ProtectedRoute&gt;
+          }
+        /&gt;
+        &lt;Route
+          path="/produto/:id"
+          element={
+            &lt;ProtectedRoute role="admin"&gt;
+              &lt;EditarProduto /&gt;
+            &lt;/ProtectedRoute&gt;
+          }
+        /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};
+
+export default App;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Envolvemos o componente com <code>ProtectedRoute</code> passando
+              <code>role="admin"</code>. Assim, apenas usuários com esse papel
+              conseguem acessar a criação e a edição de produtos.
+            </p>
+          </div>
+        </div>
+
+        <h3>6ª Parte — Fazer o Login salvar o usuário no contexto</h3>
+
+        <p>
+          No <code>Login.jsx</code>, adicione um campo de seleção de
+          <strong>role</strong> (para testar <code>admin</code> e
+          <code>employee</code>) e, ao enviar o formulário, chame a função
+          <code>login</code> do contexto salvando o usuário e redirecione para
+          a Home.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: '',
+    role: 'employee',
+  });
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login({ email: formData.email, role: formData.role });
+    navigate('/');
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '8px',
+    marginTop: '4px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
+
+  return (
+    &lt;div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '24px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }}&gt;
+      &lt;h1 style={{ textAlign: 'center' }}&gt;Login&lt;/h1&gt;
+      &lt;form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      &gt;
+        &lt;div&gt;
+          &lt;label&gt;Email:&lt;/label&gt;
+          &lt;input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Senha:&lt;/label&gt;
+          &lt;input
+            type="password"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            style={inputStyle}
+          /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label&gt;Role:&lt;/label&gt;
+          &lt;select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            style={inputStyle}
+          &gt;
+            &lt;option value="employee"&gt;employee&lt;/option&gt;
+            &lt;option value="admin"&gt;admin&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+        &lt;button
+          type="submit"
+          style={{
+            padding: '10px',
+            backgroundColor: '#0073e6',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        &gt;
+          Entrar
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Login;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Ao enviar o formulário, chamamos <code>login({ email, role })</code>
+              que atualiza o contexto (e o <code>localStorage</code>) com o
+              usuário logado, e depois usamos <code>navigate('/')</code> para
+              voltar à Home. Como não temos um endpoint real de login na API,
+              simulamos a autenticação escolhendo o papel no formulário.
+            </p>
+          </div>
+        </div>
+
+        <h3>7ª Parte — Renderização condicional na Home</h3>
+
+        <p>
+          No <code>Home.jsx</code>, use o <code>useAuth</code> para exibir o
+          usuário logado e mostrar os botões <strong>Criar Produto</strong>,
+          <strong>editar</strong> e <strong>deletar</strong> apenas para
+          <code>admin</code>. O <code>employee</code> deve ver apenas a lista de
+          produtos, sem botões de ação.
+        </p>
+
+        <button class="btn-gabarito">Ver gabarito</button>
+        <div class="gabarito">
+          <b>Gabarito:</b>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+
+const Home = () => {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const carregarProdutos = () => {
+    axios
+      .get('https://projeto-node-step-t5i1.vercel.app/produtos')
+      .then((response) => {
+        setProdutos(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    carregarProdutos();
+  }, []);
+
+  const deletarProduto = async (id) => {
+    try {
+      await axios.delete(
+        `https://projeto-node-step-t5i1.vercel.app/produtos/${id}`
+      );
+      carregarProdutos();
+    } catch (err) {
+      console.error('Erro ao deletar:', err);
+      alert('Erro ao deletar produto');
+    }
+  };
+
+  if (loading) return &lt;p&gt;Carregando produtos...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div style={{ maxWidth: '600px', margin: '40px auto', padding: '0 20px' }}&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;p&gt;
+        Usuário: {user ? user.email : 'não logado'} ({user ? user.role : '-'})
+      &lt;/p&gt;
+
+      {user?.role === 'admin' && (
+        &lt;Link to="/criar-produto"&gt;Criar Produto&lt;/Link&gt;
+      )}
+
+      &lt;h2&gt;Produtos&lt;/h2&gt;
+      &lt;ul&gt;
+        {produtos.map((produto) => (
+          &lt;li key={produto._id} style={{ marginBottom: '8px' }}&gt;
+            {produto.nome}{' '}
+            {user?.role === 'admin' && (
+              &lt;&gt;
+                &lt;button onClick={() =&gt; navigate(`/produto/${produto._id}`)}&gt;
+                  editar
+                &lt;/button&gt;{' '}
+                &lt;button onClick={() =&gt; deletarProduto(produto._id)}&gt;
+                  deletar
+                &lt;/button&gt;
+              &lt;/&gt;
+            )}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Home;
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <div class="alert-explicando-codigo">
+            <h2 class="alert-explicando-codigo-title">
+              🤓 Explicando o código 📝
+            </h2>
+            <p>
+              Usamos <code>user?.role === 'admin'</code> com o operador
+              <code>&&</code> para renderizar condicionalmente (Aula 5) o link
+              "Criar Produto" e os botões "editar"/"deletar". O operador
+              <code>?</code> (optional chaining) evita erro quando
+              <code>user</code> é <code>null</code>. Assim, um
+              <code>employee</code> (ou um usuário não logado) só vê a lista.
+            </p>
+          </div>
+        </div>
+
+        <h3>8ª Parte — Testar e subir para o Git</h3>
+
+        <p>
+          Rode a aplicação e teste o controle de acesso:
+        </p>
+        <ul>
+          <li>
+            Sem logar, tente acessar <code>/criar-produto</code> — você deve ser
+            redirecionado para <code>/login</code>.
+          </li>
+          <li>
+            Logue como <code>employee</code> — você deve ver apenas a lista de
+            produtos, sem botões de ação.
+          </li>
+          <li>
+            Logue como <code>admin</code> — você deve ver os botões "Criar
+            Produto", "editar" e "deletar".
+          </li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm run dev
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Acesse no navegador:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+http://localhost:5173
+          </code></pre>
+        </div>
+
+        <p>Depois, salve tudo no repositório:</p>
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 13: autorizacao e controle de acesso por papel"
+git push --set-upstream origin aula13-autorizacao-rbac
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            🤓 Explicando o código 📝
+          </h2>
+          <ul>
+            <li>
+              <code>git add .</code> — adiciona todos os arquivos modificados à
+              área de staging.
+            </li>
+            <li>
+              <code>git commit -m "mensagem"</code> — cria um snapshot com as
+              alterações e uma mensagem descritiva.
+            </li>
+            <li>
+              <code>git push</code> — envia os commits da branch local para o
+              repositório remoto no GitHub.
+            </li>
+          </ul>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">📌 Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no
+            repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-react-step"
+            target="_blank"
+            class="alert-link-github"
+            >github.com/devfabioluiz/projeto-react-step</a
+          >
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula13-autorizacao-rbac</code></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <script src="../../scripts/copy-clipboard.js"></script>
+    <script>
+      const SENHA_GABARITO = "SOU-PROGRAMADOR-FORMADO-NA-STEP";
+
+      document.querySelectorAll(".btn-gabarito").forEach((botao) => {
+        botao.addEventListener("click", () => {
+          const gabarito = botao.nextElementSibling;
+
+          if (gabarito.style.display === "block") {
+            gabarito.style.display = "none";
+            botao.textContent = "Ver gabarito";
+            return;
+          }
+
+          const senha = prompt("Digite a senha para ver o gabarito:");
+          if (senha === SENHA_GABARITO) {
+            gabarito.style.display = "block";
+            botao.textContent = "Esconder gabarito";
+          } else {
+            alert("Senha incorreta!");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
