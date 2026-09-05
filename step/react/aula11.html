@@ -50,7 +50,7 @@
       <section>
         <h2>Passo a Passo: Integrando Formulários, Rotas e API</h2>
 
-        <h3>1ª Parte — Criar a branch aulas-integradas</h3>
+        <h3>Passo 1 — Criar a branch aulas-integradas</h3>
 
         <p>
           A nossa última aula foi a Aula 10 (roteamento). Crie a branch
@@ -82,9 +82,7 @@ git checkout -b aulas-integradas
           </div>
         </div>
 
-        <h3>
-          2ª Parte — Criar os componentes LOGIN, REGISTRAR e HOME
-        </h3>
+        <h3>Passo 2 — Criar os componentes LOGIN, REGISTRAR e HOME</h3>
 
         <p>
           Crie a subpasta <code>aulas-integradas</code> dentro de
@@ -120,14 +118,14 @@ type nul &gt; aulas-integradas/Home.jsx
           </div>
         </div>
 
-        <h3>3ª Parte — Criar as rotas para cada componente</h3>
+        <h3>Passo 3 — Criar as rotas para cada componente</h3>
 
         <p>
-          Conforme aprendemos na Aula 10, use o <code>react-router-dom</code>
-          (já instalado na branch da Aula 10) para criar uma URL para cada
-          componente no <code>App.jsx</code>: <code>/</code> para a Home,
-          <code>/login</code> para o Login e <code>/registrar</code> para o
-          Registrar.
+          Conforme aprendemos na Aula 10, use o
+          <code>react-router-dom</code> (já instalado na branch da Aula 10) para
+          criar uma URL para cada componente no <code>App.jsx</code>:
+          <code>/</code> para a Home, <code>/login</code> para o Login e
+          <code>/registrar</code> para o Registrar.
         </p>
 
         <button class="btn-gabarito">Ver gabarito</button>
@@ -162,14 +160,15 @@ export default App;
             </h2>
             <p>
               O <code>BrowserRouter</code> envolve toda a aplicação, o
-              <code>Routes</code> agrupa as rotas e cada <code>Route</code>
-              associa um <code>path</code> (URL) a um <code>element</code>
+              <code>Routes</code> agrupa as rotas e cada
+              <code>Route</code> associa um <code>path</code> (URL) a um
+              <code>element</code>
               (componente).
             </p>
           </div>
         </div>
 
-        <h3>4ª Parte — Criar o formulário do componente LOGIN</h3>
+        <h3>Passo 4 — Criar o formulário do componente LOGIN</h3>
 
         <p>
           Conforme aprendemos na Aula 9, crie um formulário controlado no
@@ -237,20 +236,22 @@ export default Login;
             <p>
               O estado <code>formData</code> armazena os campos
               <code>email</code> e <code>senha</code>. O
-              <code>handleChange</code> usa <em>dynamic property assignment</em>
-              (<code>[name]: value</code>) para atualizar apenas o campo
-              digitado. O <code>handleSubmit</code> previne o recarregamento da
-              página e, por enquanto, exibe os dados no console.
+              <code>handleChange</code> usa
+              <em>dynamic property assignment</em> (<code>[name]: value</code>)
+              para atualizar apenas o campo digitado. O
+              <code>handleSubmit</code> previne o recarregamento da página e,
+              por enquanto, exibe os dados no console.
             </p>
           </div>
         </div>
 
-        <h3>5ª Parte — Criar o formulário do componente REGISTRAR</h3>
+        <h3>Passo 5 — Criar o formulário do componente REGISTRAR</h3>
 
         <p>
           Crie o formulário do <code>Registrar.jsx</code> com os campos
-          <strong>nome</strong>, <strong>e-mail</strong>, <strong>role</strong>
-          (função do empregado em inglês) e <strong>senha</strong>.
+          <strong>nome</strong>, <strong>e-mail</strong>,
+          <strong>role</strong> (função do empregado em inglês) e
+          <strong>senha</strong>.
         </p>
 
         <button class="btn-gabarito">Ver gabarito</button>
@@ -332,16 +333,15 @@ export default Registrar;
             </h2>
             <p>
               Seguindo o mesmo padrão do Login, o estado
-              <code>formData</code> possui quatro campos:
-              <code>nome</code>, <code>email</code>, <code>role</code> e
-              <code>senha</code>. O campo <code>role</code> representa a função
-              do empregado (por exemplo: <em>admin</em>, <em>manager</em>,
-              <em>employee</em>).
+              <code>formData</code> possui quatro campos: <code>nome</code>,
+              <code>email</code>, <code>role</code> e <code>senha</code>. O
+              campo <code>role</code> representa a função do empregado (por
+              exemplo: <em>admin</em>, <em>manager</em>, <em>employee</em>).
             </p>
           </div>
         </div>
 
-        <h3>6ª Parte — Estilizar os formulários</h3>
+        <h3>Passo 6 — Estilizar os formulários</h3>
 
         <p>
           Estilize os formulários dos componentes <strong>Registrar</strong> e
@@ -560,7 +560,7 @@ export default Registrar;
           </div>
         </div>
 
-        <h3>7ª Parte — Chamar a API no componente HOME</h3>
+        <h3>Passo 7 — Chamar a API no componente HOME</h3>
 
         <p>
           Conforme aprendemos na Aula 8, faça uma requisição <code>GET</code>
@@ -630,15 +630,15 @@ export default Home;
           </div>
         </div>
 
-        <h3>8ª Parte — Fazer o POST no REGISTRAR e no LOGIN</h3>
+        <h3>Passo 8 — Fazer o POST no REGISTRAR e no LOGIN</h3>
 
         <p>
           No componente <code>Registrar.jsx</code>, faça o botão
           <strong>Salvar</strong> enviar os dados do formulário através de uma
           requisição <code>POST</code> (usando Axios) para
           <code>https://projeto-node-step-t5i1.vercel.app/registrar</code>. No
-          <code>Login.jsx</code>, faça o botão <strong>Entrar</strong> enviar
-          os dados para
+          <code>Login.jsx</code>, faça o botão <strong>Entrar</strong> enviar os
+          dados para
           <code>https://projeto-node-step-t5i1.vercel.app/login</code>.
         </p>
         <p>
@@ -647,6 +647,64 @@ export default Home;
           <code>localStorage</code>, pois ele será necessário para criar, editar
           e deletar produtos (veremos nas próximas partes).
         </p>
+
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #d97706;
+            background: linear-gradient(135deg, #fffbeb, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #92400e">
+            🔐 Por que precisamos de um token?
+          </h2>
+          <p>
+            A API <strong>protege</strong> as operações de criar, editar e
+            deletar produto. Se tentarmos um <code>POST</code>,
+            <code>PUT</code> ou <code>DELETE</code> em
+            <code>/produtos</code> sem nos identificarmos, ela responde com erro
+            <code>401 - Token não informado</code>. Só a listagem
+            (<code>GET</code>) é pública.
+          </p>
+          <p>
+            O <strong>token</strong> é como uma "carteirinha de acesso" (JWT)
+            que a API devolve ao fazermos <strong>login</strong> ou
+            <strong>registro</strong>. No <code>POST /registrar</code> (e no
+            <code>POST /login</code>), a resposta já vem com o token em
+            <code>response.data.token</code>.
+          </p>
+          <p>
+            <strong>Como armazenar o token:</strong> guardamos no
+            <code>localStorage</code>, que sobrevive ao recarregar ou fechar o
+            navegador:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+localStorage.setItem('token', response.data.token); // salva
+const token = localStorage.getItem('token');        // lê depois
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p>
+            <strong>Como enviar o token:</strong> em toda requisição protegida,
+            mandamos o header <code>Authorization</code> no formato
+            <code>Bearer &lt;token&gt;</code>:
+          </p>
+          <div class="code-container">
+            <pre><code class="language-javascript">
+axios.post(url, formData, {
+  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+});
+            </code></pre>
+            <button class="btn-copy">Copiar Código</button>
+          </div>
+          <p>
+            <strong>Regra de ouro:</strong> <code>GET</code> é aberto;
+            <code>POST</code>, <code>PUT</code> e <code>DELETE</code> de produto
+            exigem o token no header. Vamos aplicar isso nas partes 10ª, 13ª e
+            14ª.
+          </p>
+        </div>
 
         <button class="btn-gabarito">Ver gabarito</button>
         <div class="gabarito">
@@ -882,10 +940,11 @@ export default Login;
             <p>
               <code>handleSubmit</code> agora é <code>async</code> e usa
               <code>await axios.post()</code> para enviar o objeto
-              <code>formData</code> para a URL correspondente
-              (<code>/registrar</code> ou <code>/login</code>). O mais
-              importante: a resposta traz um <code>token</code>, que salvamos no
-              <code>localStorage</code> com
+              <code>formData</code> para a URL correspondente (<code
+                >/registrar</code
+              >
+              ou <code>/login</code>). O mais importante: a resposta traz um
+              <code>token</code>, que salvamos no <code>localStorage</code> com
               <code>localStorage.setItem('token', response.data.token)</code>.
               Esse token será lido depois com
               <code>localStorage.getItem('token')</code> e enviado nas
@@ -896,7 +955,7 @@ export default Login;
           </div>
         </div>
 
-        <h3>9ª Parte — Criar o componente CriarProduto</h3>
+        <h3>Passo 9 — Criar o componente CriarProduto</h3>
 
         <p>
           Crie o componente <code>CriarProduto.jsx</code> na subpasta
@@ -915,69 +974,11 @@ export default Login;
           </li>
         </ul>
         <p>
-          <strong>Obs:</strong> os campos <code>_id</code> e <code>__v</code>
-          são gerados automaticamente pela API, então não precisam ser
-          preenchidos no formulário. Não se esqueça também de criar uma rota
-          para esse novo componente no <code>App.jsx</code>.
+          <strong>Obs:</strong> os campos <code>_id</code> e
+          <code>__v</code> são gerados automaticamente pela API, então não
+          precisam ser preenchidos no formulário. Não se esqueça também de criar
+          uma rota para esse novo componente no <code>App.jsx</code>.
         </p>
-
-        <div
-          class="alert-explicando-codigo"
-          style="
-            border-color: #d97706;
-            background: linear-gradient(135deg, #fffbeb, #f8fafc);
-          "
-        >
-          <h2 class="alert-explicando-codigo-title" style="color: #92400e">
-            🔐 Por que precisamos de um token?
-          </h2>
-          <p>
-            A API <strong>protege</strong> as operações de criar, editar e
-            deletar produto. Se tentarmos um <code>POST</code>,
-            <code>PUT</code> ou <code>DELETE</code> em
-            <code>/produtos</code> sem nos identificarmos, ela responde com
-            erro <code>401 - Token não informado</code>. Só a listagem
-            (<code>GET</code>) é pública.
-          </p>
-          <p>
-            O <strong>token</strong> é como uma "carteirinha de acesso" (JWT)
-            que a API devolve ao fazermos <strong>login</strong> ou
-            <strong>registro</strong>. No <code>POST /registrar</code> (e no
-            <code>POST /login</code>), a resposta já vem com o token em
-            <code>response.data.token</code>.
-          </p>
-          <p>
-            <strong>Como armazenar o token:</strong> guardamos no
-            <code>localStorage</code>, que sobrevive ao recarregar ou fechar o
-            navegador:
-          </p>
-          <div class="code-container">
-            <pre><code class="language-javascript">
-localStorage.setItem('token', response.data.token); // salva
-const token = localStorage.getItem('token');        // lê depois
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <p>
-            <strong>Como enviar o token:</strong> em toda requisição protegida,
-            mandamos o header <code>Authorization</code> no formato
-            <code>Bearer &lt;token&gt;</code>:
-          </p>
-          <div class="code-container">
-            <pre><code class="language-javascript">
-axios.post(url, formData, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-});
-            </code></pre>
-            <button class="btn-copy">Copiar Código</button>
-          </div>
-          <p>
-            <strong>Regra de ouro:</strong> <code>GET</code> é aberto;
-            <code>POST</code>, <code>PUT</code> e <code>DELETE</code> de produto
-            exigem o token no header. Vamos aplicar isso nas partes 10ª, 13ª e
-            14ª.
-          </p>
-        </div>
 
         <button class="btn-gabarito">Ver gabarito</button>
         <div class="gabarito">
@@ -1134,14 +1135,15 @@ export default App;
             <p>
               Como <code>avaliacao</code> é um objeto aninhado, criamos um
               segundo handler (<code>handleAvaliacaoChange</code>) que atualiza
-              apenas as propriedades <code>nota</code> e <code>quantidade</code>
-              dentro de <code>avaliacao</code>. Também registramos a rota
-              <code>/criar-produto</code> no <code>App.jsx</code>.
+              apenas as propriedades <code>nota</code> e
+              <code>quantidade</code> dentro de <code>avaliacao</code>. Também
+              registramos a rota <code>/criar-produto</code> no
+              <code>App.jsx</code>.
             </p>
           </div>
         </div>
 
-        <h3>10ª Parte — Cadastrar produto com POST</h3>
+        <h3>Passo 10 — Cadastrar produto com POST</h3>
 
         <p>
           Dentro do componente <code>CriarProduto.jsx</code>, faça o botão
@@ -1330,26 +1332,27 @@ export default CriarProduto;
               🤓 Explicando o código 📝
             </h2>
             <p>
-              O <code>handleSubmit</code> usa <code>await axios.post()</code>
-              para enviar o objeto <code>formData</code> (que já inclui o objeto
-              aninhado <code>avaliacao</code>) para a URL
-              <code>/produtos</code>. Como essa rota é protegida, passamos o
-              token no terceiro argumento do Axios, no header
-              <code>Authorization</code>, no formato
+              O <code>handleSubmit</code> usa
+              <code>await axios.post()</code> para enviar o objeto
+              <code>formData</code> (que já inclui o objeto aninhado
+              <code>avaliacao</code>) para a URL <code>/produtos</code>. Como
+              essa rota é protegida, passamos o token no terceiro argumento do
+              Axios, no header <code>Authorization</code>, no formato
               <code>Bearer &lt;token&gt;</code>. O token é lido do
               <code>localStorage</code> (guardado na 8ª parte).
             </p>
           </div>
         </div>
 
-        <h3>11ª Parte — Botões editar e deletar na Home</h3>
+        <h3>Passo 11 — Botões editar e deletar na Home</h3>
 
         <p>
           No componente <code>Home.jsx</code>, na lista de produtos, crie um
           botão <strong>editar</strong> e outro <strong>deletar</strong> para
-          cada produto listado. O botão <strong>editar</strong> deve redirecionar
-          para a rota <code>/produto/:id</code>, que chamará o componente
-          <strong>EditarProduto</strong> (que criaremos nas próximas partes).
+          cada produto listado. O botão <strong>editar</strong> deve
+          redirecionar para a rota <code>/produto/:id</code>, que chamará o
+          componente <strong>EditarProduto</strong> (que criaremos nas próximas
+          partes).
         </p>
 
         <button class="btn-gabarito">Ver gabarito</button>
@@ -1431,7 +1434,7 @@ export default Home;
           </div>
         </div>
 
-        <h3>12ª Parte — Criar o componente EditarProduto</h3>
+        <h3>Passo 12 — Criar o componente EditarProduto</h3>
 
         <p>
           Crie o componente <code>EditarProduto.jsx</code> com todos os campos
@@ -1594,15 +1597,16 @@ export default EditarProduto;
               🤓 Explicando o código 📝
             </h2>
             <p>
-              A rota <code>/produto/:id</code> é uma <strong>rota dinâmica</strong>
-              (Aula 10): o <code>:id</code> é um parâmetro que varia conforme o
-              produto selecionado. O componente <strong>EditarProduto</strong>
+              A rota <code>/produto/:id</code> é uma
+              <strong>rota dinâmica</strong> (Aula 10): o <code>:id</code> é um
+              parâmetro que varia conforme o produto selecionado. O componente
+              <strong>EditarProduto</strong>
               possui os mesmos campos do CriarProduto.
             </p>
           </div>
         </div>
 
-        <h3>13ª Parte — Buscar os dados do produto pelo id</h3>
+        <h3>Passo 13 — Buscar os dados do produto pelo id</h3>
 
         <p>
           No componente <code>EditarProduto.jsx</code>, use o hook
@@ -1819,15 +1823,16 @@ export default EditarProduto;
               <code>useEffect</code> depende de <code>[id]</code>, então sempre
               que o id mudar ele faz uma nova requisição <code>GET</code> para
               <code>/produtos/:id</code> e preenche o formulário com os dados
-              retornados. O <code>handleSubmit</code> usa <code>axios.put()</code>
-              para atualizar o produto (completando o "U" do CRUD) e, como a rota
-              é protegida, envia o token no header <code>Authorization</code>.
-              Enquanto os dados não chegam, exibimos "Carregando produto...".
+              retornados. O <code>handleSubmit</code> usa
+              <code>axios.put()</code> para atualizar o produto (completando o
+              "U" do CRUD) e, como a rota é protegida, envia o token no header
+              <code>Authorization</code>. Enquanto os dados não chegam, exibimos
+              "Carregando produto...".
             </p>
           </div>
         </div>
 
-        <h3>14ª Parte — Deletar produto com DELETE</h3>
+        <h3>Passo 14 — Deletar produto com DELETE</h3>
 
         <p>
           Faça com que o botão <strong>deletar</strong> na Home chame a API
@@ -1880,7 +1885,7 @@ export default EditarProduto;
           </div>
         </div>
 
-        <h3>15ª Parte — Testar a aplicação (CRUD completo)</h3>
+        <h3>Passo 15 — Testar a aplicação (CRUD completo)</h3>
 
         <p>
           Parabéns! Você acabou de construir um <strong>CRUD</strong> completo.
