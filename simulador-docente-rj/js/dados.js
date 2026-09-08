@@ -204,6 +204,26 @@ var FUNCOES = {
     ajudaCusto: 300.00,        // Lei 6.834/14 Art. 4º (indenizatório)
     incidePrev: false,         // ajuda de custo é indenizatória
   },
+  agente_pessoal: {
+    nome: "Agente de Pessoal",
+    gratificacao: null,
+    faixas: { "30-199": 300.00, "200+": 500.00 },  // Dec. 44.712/14
+    faixaDefault: "200+",
+    carga40h: false,
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: false,
+  },
+  agente_pessoal_auxiliar: {
+    nome: "Auxiliar de Agente de Pessoal",
+    gratificacao: 200.00,                          // Dec. 44.712/14
+    carga40h: false,
+    permiteGLP: false,
+    permiteDPDA: false,
+    ajudaCusto: 0,
+    incidePrev: false,
+  },
   orientador_educacional: {
     nome: "Orientador Educacional",
     gratificacao: 950.00,      // Dec. 44.711/14

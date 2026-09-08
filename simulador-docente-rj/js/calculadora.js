@@ -70,7 +70,7 @@ function calcularVencimentos(params) {
 
   var vb = aplicarRecomposicoes(ref.vb, dataSim);
 
-  var pisoKey = params.usarPiso2026 !== false ? PISO_2026 : PISO_2025;
+  var pisoKey = PISO_2026;
   var piso = pisoKey[cargaEfetiva];
   var complemento = Math.max(0, round2(piso - vb));
   var total = round2(vb + complemento);
@@ -81,7 +81,7 @@ function calcularVencimentos(params) {
   var aqValor = params.qualificacao === "nenhuma" ? 0 : aplicarRecomposicoes(AQ[cargaEfetiva][params.qualificacao], dataSim);
 
   var glpTempos = funcao.permiteGLP ? (params.glpTempos || 0) : 0;
-  var glpBase = aplicarRecomposicoes(GLP.baseMensal, dataSim);
+  var glpBase = GLP.baseMensal;
   var glpValor = glpTempos > 0 ? round2(glpTempos * 4 * (glpBase / GLP.temposBase)) : 0;
 
   var dpValor = (params.dificilProvimento && funcao.permiteDPDA) ? aplicarRecomposicoes(DIFICIL_PROVIMENTO, dataSim) : 0;
@@ -96,8 +96,12 @@ function calcularVencimentos(params) {
   var gratFuncao = 0;
   if (funcao.categorias && params.categoriaEscola && funcao.categorias[params.categoriaEscola]) {
     gratFuncao = funcao.categorias[params.categoriaEscola];
+  } else if (funcao.faixas && params.faixaKey && funcao.faixas[params.faixaKey] !== undefined) {
+    gratFuncao = funcao.faixas[params.faixaKey];
   } else if (funcao.gratificacao > 0) {
     gratFuncao = funcao.gratificacao;
+  } else if (funcao.faixas && funcao.faixaDefault && funcao.faixas[funcao.faixaDefault] !== undefined) {
+    gratFuncao = funcao.faixas[funcao.faixaDefault];
   }
   var ajudaCusto = funcao.ajudaCusto;
   var adicionalFuncao = (funcao.adicionalCatD && params.categoriaEscola === "D")
@@ -266,6 +270,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     usarPiso2026: params1.usarPiso2026,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
+    faixaKey: params1.faixaKey,
   });
 
   var r2 = calcularVencimentos({
@@ -287,6 +292,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     usarPiso2026: params2.usarPiso2026,
     dependentes: 0,
     dataSimulacao: dataSimulacao,
+    faixaKey: params2.faixaKey,
   });
 
   var baseIRRF_semDep1 = round2(r1.basePrev + r1.glpValor - r1.previdencia);

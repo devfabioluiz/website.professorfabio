@@ -65,31 +65,11 @@
             id="sim-periodo"
             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
           >
-            <option value="2026-06">Até Junho/26 - sem reajuste</option>
             <option value="2026-07">
               De Junho/26 a Outubro/26 — 1ª parcela
             </option>
             <option value="2026-10">Outubro/26 em diante — 2ª parcela</option>
           </select>
-        </div>
-
-        <!-- Decreto 50.361/2026 — Piso do Magistério -->
-        <div class="mb-4">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              id="chk-usar-piso-2026"
-              checked
-              class="accent-blue-600 w-4 h-4"
-            />
-            <span class="text-sm font-semibold text-gray-700"
-              >Aplicar Decreto 50.361/2026 (piso R$ 5.130,63)
-              <span class="text-gray-400 font-normal"
-                >— desmarque para simular com o piso anterior de R$
-                4.867,77</span
-              ></span
-            >
-          </label>
         </div>
 
         <!-- Matrícula 1 Section -->
@@ -208,6 +188,12 @@
               <option value="agente_acompanhamento">
                 Agente de Acomp. da Gestão Escolar
               </option>
+              <option value="agente_pessoal">
+                Agente de Pessoal
+              </option>
+              <option value="agente_pessoal_auxiliar">
+                Auxiliar de Agente de Pessoal
+              </option>
               <option value="orientador_educacional">
                 Orientador Educacional
               </option>
@@ -230,6 +216,20 @@
               <option value="C">C — 16 a 30 turmas</option>
               <option value="D">D — 6 a 15 turmas</option>
               <option value="E">E — até 5 turmas</option>
+            </select>
+          </div>
+
+          <!-- Faixa Agente de Pessoal -->
+          <div class="mb-4 hidden" id="agente-pessoal-faixa-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Faixa de servidores da unidade</label
+            >
+            <select
+              id="agente-pessoal-faixa"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+            >
+              <option value="30-199">30 a 199 servidores — R$ 300,00</option>
+              <option value="200+" selected>200 ou mais servidores — R$ 500,00</option>
             </select>
           </div>
 
@@ -718,6 +718,12 @@
             <option value="agente_acompanhamento">
               Agente de Acomp. da Gestão Escolar
             </option>
+            <option value="agente_pessoal">
+              Agente de Pessoal
+            </option>
+            <option value="agente_pessoal_auxiliar">
+              Auxiliar de Agente de Pessoal
+            </option>
             <option value="orientador_educacional">
               Orientador Educacional
             </option>
@@ -738,6 +744,20 @@
             <option value="C">C — 16 a 30 turmas</option>
             <option value="D">D — 6 a 15 turmas</option>
             <option value="E">E — até 5 turmas</option>
+          </select>
+        </div>
+
+        <!-- m2: Faixa Agente de Pessoal -->
+        <div class="mb-4 hidden" id="m2-agente-pessoal-faixa-section">
+          <label class="block text-sm font-semibold text-gray-700 mb-1"
+            >Faixa de servidores da unidade</label
+          >
+          <select
+            id="m2-agente-pessoal-faixa"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          >
+            <option value="30-199">30 a 199 servidores — R$ 300,00</option>
+            <option value="200+" selected>200 ou mais servidores — R$ 500,00</option>
           </select>
         </div>
 
@@ -1696,7 +1716,12 @@
               );
               return r && r.value === "sim";
             })(),
-            usarPiso2026: document.getElementById("chk-usar-piso-2026").checked,
+            faixaKey: (function () {
+              var funcao = getFuncaoKey(prefix);
+              if (funcao !== "agente_pessoal") return null;
+              var elFaixa = prefix === "" ? document.getElementById("agente-pessoal-faixa") : document.getElementById("m2-agente-pessoal-faixa");
+              return elFaixa ? elFaixa.value : "200+";
+            })(),
           };
         }
 
@@ -1842,6 +1867,10 @@
             "hidden",
             !temCategorias,
           );
+
+          var temFaixaAgente = !cedido && !!funcao.faixas;
+          var faixaSec = prefix === "" ? document.getElementById("agente-pessoal-faixa-section") : document.getElementById("m2-agente-pessoal-faixa-section");
+          if (faixaSec) faixaSec.classList.toggle("hidden", !temFaixaAgente);
 
           el(prefix, "msg-cedido").classList.toggle("hidden", !cedido);
 
@@ -2533,6 +2562,11 @@
             atualizarResultado,
           );
 
+          var faixaSel = prefix === "" ? document.getElementById("agente-pessoal-faixa") : document.getElementById("m2-agente-pessoal-faixa");
+          if (faixaSel) {
+            faixaSel.addEventListener("change", atualizarResultado);
+          }
+
           document
             .querySelectorAll("." + prefix + "ingresso-radio")
             .forEach(function (radio) {
@@ -2685,11 +2719,6 @@
 
         var elSimPeriodo = document.getElementById("sim-periodo");
         elSimPeriodo.addEventListener("change", atualizarResultado);
-
-        // Checkbox Decreto 50.361/2026
-        document
-          .getElementById("chk-usar-piso-2026")
-          .addEventListener("change", atualizarResultado);
 
         // ── EVENTOS OUTRAS RENDAS ──
         elTipoOutraRenda.addEventListener("change", atualizarResultado);
