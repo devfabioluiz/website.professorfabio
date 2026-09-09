@@ -257,9 +257,307 @@ console.log("Olá, " + nome);</code></pre>
           <button class="btn-copy">copiar código</button>
         </div>
       </section>
+
+      <section>
+        <h2>Passo a Passo:</h2>
+
+        <h3>Passo 0 — Criar o repositório e a branch no GitHub</h3>
+
+        <ul>
+          <li>
+            Crie o repositório no GitHub chamado <strong>projeto-typescript-step</strong> clicando
+            no botão "Create repository"
+          </li>
+          <li>
+            Adicione um arquivo <code>.gitignore</code> e um <code>README</code> conforme aparece na etapa
+            de criação de repositório no GitHub
+          </li>
+          <li>Acesse o repositório no GitHub</li>
+          <li>Clique em <strong>1 branch</strong></li>
+          <li>Clique em <strong>New Branch</strong></li>
+          <li>Digite o nome <code>aula1-typescript</code></li>
+          <li>Clique em <strong>Create branch</strong></li>
+          <li>Abra o VSCode, abra o terminal e digite:</li>
+        </ul>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+cd C:/
+git clone https://github.com/SEU USUARIO AQUI/projeto-typescript-step.git
+cd projeto-typescript-step
+git checkout main
+git fetch
+git checkout -b aula1-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>cd C:/</code></strong> — Navega para a raiz do disco C, onde o repositório será clonado.
+          </p>
+          <p>
+            <strong><code>git clone [URL]</code></strong> — Baixa o repositório remoto do GitHub para o seu computador,
+            criando uma pasta com o nome do repositório e todo o histórico de versões.
+          </p>
+          <p>
+            <strong><code>cd projeto-typescript-step</code></strong> — Entra na pasta do repositório recém-clonado.
+          </p>
+          <p>
+            <strong><code>git checkout main</code></strong> — Muda para a branch <code>main</code> (principal) do repositório.
+          </p>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as referências e branches mais recentes do repositório remoto
+            sem alterar os arquivos locais.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula1-typescript</code></strong> — Cria uma <strong>nova branch</strong> chamada
+            <code>aula1-typescript</code> <em>e já muda para ela</em>. A flag <code>-b</code> significa "branch" — sem ela,
+            o Git tentaria mudar para uma branch existente.
+          </p>
+        </div>
+
+        <h3>Passo 1 — Criar projeto TypeScript</h3>
+
+        <p>Inicialize o projeto com npm e instale o TypeScript como dependência de desenvolvimento:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm init -y
+npm install typescript --save-dev
+npx tsc --init
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora crie a pasta <code>src</code> e configure o <code>tsconfig.json</code> da seguinte forma:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist"]
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o codigo</h2>
+          <p>
+            <strong><code>target: "ES6"</code></strong> — Define a versão do JavaScript de saída. ES6 é amplamente suportada e permite usar <code>let</code>, <code>const</code>, arrow functions e template literals.
+          </p>
+          <p>
+            <strong><code>module: "commonjs"</code></strong> — Define o sistema de módulos. CommonJS é o padrão do Node.js.
+          </p>
+          <p>
+            <strong><code>strict: true</code></strong> — Ativa todas as verificações de tipo estritas, o que ajuda a encontrar erros antes de rodar o código.
+          </p>
+          <p>
+            <strong><code>outDir: "./dist"</code></strong> — Pasta onde os arquivos compilados (.js) serão salvos.
+          </p>
+          <p>
+            <strong><code>rootDir: "./src"</code></strong> — Pasta onde ficam os arquivos-fonte TypeScript (.ts).
+          </p>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo <code>src/index.ts</code></h3>
+
+        <p>Crie o arquivo <code>index.ts</code> dentro da pasta <code>src</code> e insira o código abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+type Pessoa = {
+  nome: string;
+  saldo: number;
+};
+
+const exemplo: Pessoa = {
+  nome: "Fabio",
+  saldo: 3000,
+};
+
+function deposito(saldoCliente: number, valorDeposito: number): number {
+  return saldoCliente + valorDeposito;
+}
+
+console.log(deposito(exemplo.saldo, 152));
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o codigo</h2>
+          <p>
+            <strong><code>type Pessoa</code></strong> — Cria um <strong>alias de tipo</strong> (type alias). É como definir uma estrutura de dados: toda variável do tipo <code>Pessoa</code> deve ter as propriedades <code>nome</code> (string) e <code>saldo</code> (number).
+          </p>
+          <p>
+            <strong><code>const exemplo: Pessoa</code></strong> — Declara uma constante e a tipa como <code>Pessoa</code>. Se tentarmos adicionar uma propriedade que não existe no tipo, o TypeScript gera um erro.
+          </p>
+          <p>
+            <strong><code>function deposito(...): number</code></strong> — Os parâmetros <code>saldoCliente</code> e <code>valorDeposito</code> são tipados como <code>number</code>, e o retorno da função também é declarado como <code>number</code>. Se tentarmos passar uma string, o TypeScript avisa o erro antes de rodar o código.
+          </p>
+        </div>
+
+        <h3>Passo 3 — Compilar e rodar o projeto</h3>
+
+        <p>Adicione o script de execução no <code>package.json</code>. Abra o arquivo e altere a seção <code>"scripts"</code> para:</p>
+
+        <div class="code-container">
+          <pre><code class="language-javascript">
+"scripts": {
+  "start": "npx tsc &amp;&amp; node dist/index.js"
+}
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora execute o projeto com:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npm start
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          O TypeScript compilará os arquivos <code>.ts</code> da pasta <code>src</code> para <code>.js</code> na pasta <code>dist</code>,
+          e o Node.js executará o arquivo resultante. Você verá no terminal:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+3152
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Esse é o resultado de <code>deposito(3000, 152)</code>, ou seja, o saldo de 3000 + depósito de 152 = 3152.
+        </p>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <p>Agora vamos subir as alterações para o repositório do Git. Execute os comandos abaixo:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 1 typescript introducao"
+git push
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Adiciona <strong>todos</strong> os arquivos
+            modificados (o <code>.</code> representa o diretório atual) à <strong>área de staging</strong>
+            (preparação). É como "marcar" quais arquivos farão parte do próximo commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "mensagem"</code></strong> — Cria um <strong>commit</strong>
+            (um ponto na história do repositório) com os arquivos que estão em staging. A flag
+            <code>-m</code> permite escrever a mensagem descritiva diretamente no comando.
+          </p>
+          <p>
+            <strong><code>git push</code></strong> — Envia os commits locais para o
+            <strong>repositório remoto</strong> no GitHub. Como a branch <code>aula1-typescript</code>
+            foi criada localmente com <code>checkout -b</code>, o Git pode pedir para usar
+            <code>--set-upstream</code> na primeira vez (em aulas seguintes veremos isso).
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-typescript-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-typescript-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula1-typescript</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Criar uma funcao saque e um tipo Conta</h3>
+            <p>Crie um tipo chamado <b>Conta</b> com as propriedades <code>titular</code> (string) e <code>saldo</code> (number).</p>
+            <p>Em seguida, crie uma funcao chamada <b>saque</b> que receba o saldo atual e o valor do saque, e retorne o saldo subtraido.</p>
+            <p>Use o tipo <code>Conta</code> para criar um objeto e chame a funcao <code>saque</code> passando o saldo do objeto e um valor de sua escolha. Exiba o resultado no console.</p>
+            <p><strong>Obs</strong>: Nao se esqueca de subir as alteracoes para o Git na branch dessa aula apos terminar o dever.</p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>src/index.ts</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-javascript">
+type Conta = {
+  titular: string;
+  saldo: number;
+};
+
+const minhaConta: Conta = {
+  titular: "Fabio",
+  saldo: 3000,
+};
+
+function saque(saldoAtual: number, valorSaque: number): number {
+  return saldoAtual - valorSaque;
+}
+
+const saldoFinal = saque(minhaConta.saldo, 500);
+
+console.log(`Saldo de ${minhaConta.titular}: ${saldoFinal}`);
+                </code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">Explicando o codigo</h2>
+                <p>
+                  O tipo <code>Conta</code> funciona igual ao tipo <code>Pessoa</code> da aula: define a estrutura
+                  que o objeto deve seguir. A funcao <code>saque</code> segue o mesmo padrao da funcao <code>deposito</code>,
+                  porem subtraindo em vez de somar.
+                </p>
+                <p>
+                  A variavel <code>saldoFinal</code> recebe o resultado da funcao e usamos um
+                  <strong>template literal</strong> (<code>${ }</code>) para exibir o nome do titular junto
+                  com o saldo no console.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>
