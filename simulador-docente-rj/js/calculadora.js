@@ -63,6 +63,7 @@ function calcularVencimentos(params) {
   var funcao = (params.funcaoKey && FUNCOES[params.funcaoKey]) ? FUNCOES[params.funcaoKey] : FUNCOES.nenhuma;
 
   var dataSim = params.dataSimulacao;
+  var incluirGratPrev = params.incluirGratPrev || false;
 
   var cargaEfetiva = cargaOriginal;
   var cargaParaGLP = (!params.cedido && funcao.carga40h) ? 40 : cargaOriginal;
@@ -93,15 +94,19 @@ function calcularVencimentos(params) {
     diespValor = aplicarRecomposicoes(DIESP[key], dataSim);
   }
 
-  var gratFuncao = 0;
+  var gratFuncaoD25959 = 0;
+  var gratFuncaoESC = 0;
   if (funcao.categorias && params.categoriaEscola && funcao.categorias[params.categoriaEscola]) {
-    gratFuncao = funcao.categorias[params.categoriaEscola];
+    gratFuncaoD25959 = funcao.categorias[params.categoriaEscola];
+    if (funcao.categoriasESC && funcao.categoriasESC[params.categoriaEscola] !== undefined) {
+      gratFuncaoESC = funcao.categoriasESC[params.categoriaEscola];
+    }
   } else if (funcao.faixas && params.faixaKey && funcao.faixas[params.faixaKey] !== undefined) {
-    gratFuncao = funcao.faixas[params.faixaKey];
+    gratFuncaoD25959 = funcao.faixas[params.faixaKey];
   } else if (funcao.gratificacao > 0) {
-    gratFuncao = funcao.gratificacao;
+    gratFuncaoD25959 = funcao.gratificacao;
   } else if (funcao.faixas && funcao.faixaDefault && funcao.faixas[funcao.faixaDefault] !== undefined) {
-    gratFuncao = funcao.faixas[funcao.faixaDefault];
+    gratFuncaoD25959 = funcao.faixas[funcao.faixaDefault];
   }
   var ajudaCusto = funcao.ajudaCusto;
   var adicionalFuncao = (funcao.adicionalCatD && params.categoriaEscola === "D")
@@ -113,12 +118,15 @@ function calcularVencimentos(params) {
     dpValor = 0;
     daValor = 0;
     diespValor = 0;
-    gratFuncao = 0;
+    gratFuncaoD25959 = 0;
+    gratFuncaoESC = 0;
     ajudaCusto = 0;
     adicionalFuncao = 0;
   }
 
-  var basePrev = round2(total + trienioValor + aqValor + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
+  var gratFuncaoTotal = round2(gratFuncaoD25959 + gratFuncaoESC + adicionalFuncao);
+  var incidePrev = incluirGratPrev;
+  var basePrev = round2(total + trienioValor + aqValor + (incidePrev ? gratFuncaoTotal : 0));
   var previdencia = round2(basePrev * PREVIDENCIA_ALIQUOTA);
 
   // ── Migração 18h → 30h (Decreto 49.026/2024) ──
@@ -131,7 +139,7 @@ function calcularVencimentos(params) {
       var total18h = round2(vb18h + Math.max(0, round2(pisoKey[18] - vb18h)));
       var trienioValor18h = trienioPct > 0 ? round2(total18h * trienioPct / 100) : 0;
       var aq18h = params.qualificacao === "nenhuma" ? 0 : aplicarRecomposicoes(AQ[18][params.qualificacao], dataSim);
-      var basePrev18h = round2(total18h + trienioValor18h + aq18h + (funcao.incidePrev ? round2(gratFuncao + adicionalFuncao) : 0));
+      var basePrev18h = round2(total18h + trienioValor18h + aq18h + (incluirGratPrev ? gratFuncaoTotal : 0));
       rubricaMigracao = round2(basePrev - basePrev18h);
       previdencia = round2(basePrev18h * PREVIDENCIA_ALIQUOTA);
     }
@@ -143,7 +151,7 @@ function calcularVencimentos(params) {
   var auxAlimentacao = ALIMENTACAO[cargaParaAuxilios];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + diespValor + gratFuncao + adicionalFuncao + ajudaCusto + auxilios);
+  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + diespValor + gratFuncaoTotal + ajudaCusto + auxilios);
 
   return {
     cargo: cargo,
@@ -160,7 +168,9 @@ function calcularVencimentos(params) {
     dpValor: dpValor,
     daValor: daValor,
     diespValor: diespValor,
-    gratFuncao: gratFuncao,
+    gratFuncaoD25959: gratFuncaoD25959,
+    gratFuncaoESC: gratFuncaoESC,
+    gratFuncao: gratFuncaoTotal,
     adicionalFuncao: adicionalFuncao,
     ajudaCusto: ajudaCusto,
     funcaoNome: funcao.nome !== "Nenhuma" ? funcao.nome : null,
@@ -183,16 +193,40 @@ function calcularVencimentos(params) {
     exibeDP: dpValor > 0,
     exibeDA: daValor > 0,
     exibeDIESP: diespValor > 0,
-    exibeGratFuncao: gratFuncao > 0,
+    exibeGratFuncao: gratFuncaoTotal > 0,
+    exibeGratFuncaoD25959: gratFuncaoD25959 > 0,
+    exibeGratFuncaoESC: gratFuncaoESC > 0,
     exibeAdicionalFuncao: adicionalFuncao > 0,
     exibeAjudaCusto: ajudaCusto > 0,
     exibeConversao40h: false,
     rubricaMigracao: rubricaMigracao,
+    incluirGratPrev: incidePrev,
   };
 }
 
 function calcular(params) {
-  var r = calcularVencimentos(params);
+  var r = calcularVencimentos({
+    cargoKey: params.cargoKey,
+    refIndex: params.refIndex,
+    trienios: params.trienios,
+    qualificacao: params.qualificacao,
+    funcaoKey: params.funcaoKey,
+    categoriaEscola: params.categoriaEscola,
+    comRegencia: params.comRegencia,
+    glpTempos: params.glpTempos,
+    dificilProvimento: params.dificilProvimento,
+    dificilAcesso: params.dificilAcesso,
+    diesp: params.diesp,
+    cedido: params.cedido,
+    abonoPermanencia: params.abonoPermanencia,
+    migrado18h: params.migrado18h,
+    incluirRubricaPrev: params.incluirRubricaPrev,
+    usarPiso2026: params.usarPiso2026,
+    dependentes: params.dependentes,
+    dataSimulacao: params.dataSimulacao,
+    faixaKey: params.faixaKey,
+    incluirGratPrev: params.incluirGratPrev,
+  });
 
   var pensao = params.pensaoAlimenticia || 0;
   var baseIRRF = round2(r.basePrev + r.glpValor - r.previdencia - pensao - (params.dependentes * DEDUCAO_DEPENDENTE));
@@ -215,6 +249,8 @@ function calcular(params) {
     dpValor: r.dpValor,
     daValor: r.daValor,
     diespValor: r.diespValor,
+    gratFuncaoD25959: r.gratFuncaoD25959,
+    gratFuncaoESC: r.gratFuncaoESC,
     gratFuncao: r.gratFuncao,
     adicionalFuncao: r.adicionalFuncao,
     ajudaCusto: r.ajudaCusto,
@@ -243,10 +279,13 @@ function calcular(params) {
     exibeDA: r.exibeDA,
     exibeDIESP: r.exibeDIESP,
     exibeGratFuncao: r.exibeGratFuncao,
+    exibeGratFuncaoD25959: r.exibeGratFuncaoD25959,
+    exibeGratFuncaoESC: r.exibeGratFuncaoESC,
     exibeAdicionalFuncao: r.exibeAdicionalFuncao,
     exibeAjudaCusto: r.exibeAjudaCusto,
     exibeConversao40h: false,
     rubricaMigracao: r.rubricaMigracao,
+    incluirGratPrev: r.incluirGratPrev,
   };
 }
 
@@ -271,6 +310,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     dependentes: 0,
     dataSimulacao: dataSimulacao,
     faixaKey: params1.faixaKey,
+    incluirGratPrev: params1.incluirGratPrev,
   });
 
   var r2 = calcularVencimentos({
@@ -293,6 +333,7 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     dependentes: 0,
     dataSimulacao: dataSimulacao,
     faixaKey: params2.faixaKey,
+    incluirGratPrev: params2.incluirGratPrev,
   });
 
   var baseIRRF_semDep1 = round2(r1.basePrev + r1.glpValor - r1.previdencia);
@@ -357,6 +398,8 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       dpValor: sum('dpValor'),
       daValor: sum('daValor'),
       diespValor: sum('diespValor'),
+      gratFuncaoD25959: sum('gratFuncaoD25959'),
+      gratFuncaoESC: sum('gratFuncaoESC'),
       gratFuncao: sum('gratFuncao'),
       adicionalFuncao: sum('adicionalFuncao'),
       ajudaCusto: sum('ajudaCusto'),
@@ -389,6 +432,8 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       exibeDA: r1.exibeDA || r2.exibeDA,
       exibeDIESP: r1.exibeDIESP || r2.exibeDIESP,
       exibeGratFuncao: r1.exibeGratFuncao || r2.exibeGratFuncao,
+      exibeGratFuncaoD25959: r1.exibeGratFuncaoD25959 || r2.exibeGratFuncaoD25959,
+      exibeGratFuncaoESC: r1.exibeGratFuncaoESC || r2.exibeGratFuncaoESC,
       exibeAdicionalFuncao: r1.exibeAdicionalFuncao || r2.exibeAdicionalFuncao,
       exibeAjudaCusto: r1.exibeAjudaCusto || r2.exibeAjudaCusto,
       exibeAbonoPermanencia: r1.exibeAbonoPermanencia || r2.exibeAbonoPermanencia,

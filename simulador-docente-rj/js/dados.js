@@ -146,17 +146,24 @@ var FUNCOES = {
     permiteGLP: true,           // Art. 7 §único Dec. 46.920/20
     permiteDPDA: false,
     ajudaCusto: 0,
-    incidePrev: true,           // gratificação de encargos especiais
+    incidePrev: true,
   },
   diretor_geral: {
     nome: "Diretor Geral",
     gratificacao: null,
     categorias: {
-      A: 2689.32,  // Dec. 42.926/11
+      A: 2689.32,  // Dec. 42.926/11 - DIR/SEC D25959
       B: 2370.96,
       C: 1911.26,
       D: 1751.58,
       E: 1603.56,
+    },
+    categoriasESC: {
+      A: 300.00,   // Dec. 17.301/92 - DIR/SEC ESC
+      B: 240.00,
+      C: 192.00,
+      D: 115.20,
+      E: 57.60,
     },
     carga40h: true,            // Lei 9.584/2022
     permiteGLP: false,
@@ -168,10 +175,17 @@ var FUNCOES = {
     nome: "Diretor Adjunto",
     gratificacao: null,
     categorias: {
-      A: 1251.76,  // Dec. 43.299/11
+      A: 1251.76,  // Dec. 43.299/11 - DIR/SEC D25959
       B: 1092.06,
       C: 1047.24,
       D:  950.00,
+    },
+    categoriasESC: {
+      A: 240.00,   // Dec. 17.301/92 - DIR/SEC ESC
+      B: 192.00,
+      C: 153.60,
+      D: 95.00,
+      E: 0,
     },
     adicionalCatD: 71.82,  // Dec. 43.894/2012 — adicional para escolas Tipo D
     carga40h: true,            // Lei 9.584/2022
@@ -183,11 +197,18 @@ var FUNCOES = {
   secretario_escolar: {
     nome: "Secretário Escolar",
     categorias: {
-      A: 915.42,   // Dec. 43.668/12
+      A: 915.42,   // Dec. 43.668/12 - DIR/SEC D25959
       B: 835.58,
       C: 754.48,
       D: 684.22,
       E: 622.90,
+    },
+    categoriasESC: {
+      A: 180.00,   // Dec. 17.301/92 - DIR/SEC ESC
+      B: 144.00,
+      C: 115.20,
+      D: 68.40,
+      E: 34.56,
     },
     carga40h: false,           // Lei 9.584 NÃO menciona secretário
     permiteGLP: false,
@@ -231,7 +252,7 @@ var FUNCOES = {
     permiteGLP: true,           // Art. 6, III e Art. 7 §único Dec. 46.920/20
     permiteDPDA: false,
     ajudaCusto: 0,
-    incidePrev: true,           // gratificação de encargos especiais
+    incidePrev: true,
   },
 };
 

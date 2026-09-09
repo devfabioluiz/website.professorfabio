@@ -219,6 +219,38 @@
             </select>
           </div>
 
+          <!-- Incluir gratificação na base previdenciária -->
+          <div class="mb-4 hidden" id="grat-prev-section">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Incluir gratificação na base de contribuição previdenciária?
+              <span class="cursor-help text-gray-400" title="Sim: a gratificação entra na base de cálculo da contribuição (14%), aumentando a aposentadoria pela média. Não (padrão): base apenas sobre vencimento + triênio + AQ, mantendo paridade para quem ingressou até 2003.">&#x2139;</span>
+            </label>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="incluirGratPrev"
+                  value="nao"
+                  checked
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Não (padrão)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="incluirGratPrev"
+                  value="sim"
+                  class="accent-blue-600"
+                />
+                <span class="text-sm text-gray-700">Sim</span>
+              </label>
+            </div>
+            <p class="text-xs text-amber-600 mt-1">
+              Padrão: apenas vencimento + triênio + AQ na base. Opção "Sim" afeta cálculo da aposentadoria (média vs paridade).
+            </p>
+          </div>
+
           <!-- Faixa Agente de Pessoal -->
           <div class="mb-4 hidden" id="agente-pessoal-faixa-section">
             <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -745,6 +777,38 @@
             <option value="D">D — 6 a 15 turmas</option>
             <option value="E">E — até 5 turmas</option>
           </select>
+        </div>
+
+        <!-- m2: Incluir gratificação na base previdenciária -->
+        <div class="mb-4 hidden" id="m2-grat-prev-section">
+          <label class="block text-sm font-semibold text-gray-700 mb-2"
+            >Incluir gratificação na base de contribuição previdenciária?
+            <span class="cursor-help text-gray-400" title="Sim: a gratificação entra na base de cálculo da contribuição (14%), aumentando a aposentadoria pela média. Não (padrão): base apenas sobre vencimento + triênio + AQ, mantendo paridade para quem ingressou até 2003.">&#x2139;</span>
+          </label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="m2-incluirGratPrev"
+                value="nao"
+                checked
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Não (padrão)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="m2-incluirGratPrev"
+                value="sim"
+                class="accent-blue-600"
+              />
+              <span class="text-sm text-gray-700">Sim</span>
+            </label>
+          </div>
+          <p class="text-xs text-amber-600 mt-1">
+            Padrão: apenas vencimento + triênio + AQ na base. Opção "Sim" afeta cálculo da aposentadoria (média vs paridade).
+          </p>
         </div>
 
         <!-- m2: Faixa Agente de Pessoal -->
@@ -1716,6 +1780,12 @@
               );
               return r && r.value === "sim";
             })(),
+            incluirGratPrev: (function () {
+              var r = document.querySelector(
+                'input[name="' + prefix + 'incluirGratPrev"]:checked',
+              );
+              return r && r.value === "sim";
+            })(),
             faixaKey: (function () {
               var funcao = getFuncaoKey(prefix);
               if (funcao !== "agente_pessoal") return null;
@@ -1867,6 +1937,17 @@
             "hidden",
             !temCategorias,
           );
+
+          var funcoesComGratPrev = [
+            "diretor_geral",
+            "diretor_adjunto",
+            "secretario_escolar",
+            "coordenador_pedagogico",
+            "orientador_educacional",
+          ];
+          var temGratPrev = !cedido && funcoesComGratPrev.indexOf(getFuncaoKey(prefix)) !== -1;
+          var gratPrevSec = el(prefix, "grat-prev-section");
+          if (gratPrevSec) gratPrevSec.classList.toggle("hidden", !temGratPrev);
 
           var temFaixaAgente = !cedido && !!funcao.faixas;
           var faixaSec = prefix === "" ? document.getElementById("agente-pessoal-faixa-section") : document.getElementById("m2-agente-pessoal-faixa-section");
@@ -2640,6 +2721,12 @@
 
           document
             .querySelectorAll("." + prefix + "diesp-radio")
+            .forEach(function (radio) {
+              radio.addEventListener("change", atualizarResultado);
+            });
+
+          document
+            .querySelectorAll('input[name="' + prefix + 'incluirGratPrev"]')
             .forEach(function (radio) {
               radio.addEventListener("change", atualizarResultado);
             });
