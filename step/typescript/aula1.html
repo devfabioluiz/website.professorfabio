@@ -158,46 +158,6 @@ dividir("abc", 2); </code></pre>
       </section>
 
       <section>
-        <h2>Configurando um Projeto com TypeScript</h2>
-        <ol>
-          <li>Crie uma pasta para o projeto:
-            <pre><code>mkdir meu-projeto-typescript</code></pre>
-          </li>
-          <li>
-            <pre><code>cd meu-projeto-typescript</code></pre>
-          </li>
-          <li>
-            Inicialize o projeto com npm:
-            <pre><code>npm init -y</code></pre>
-          </li>
-          <li>
-            Adicione o TypeScript como dependência do projeto:
-            <pre><code>npm install typescript --save-dev</code></pre>
-          </li>
-          <li>
-            Crie o arquivo de configuração do TypeScript:
-            <pre><code>tsc --init</code></pre>
-          </li>
-        </ol>
-        <p>
-          Isso criará um arquivo <code>tsconfig.json</code>, onde você pode ajustar configurações como o diretório de saída (<code>outDir</code>) e o diretório de entrada (<code>rootDir</code>).
-        </p>
-        <div class="code-container">
-          <pre><code class="language-javascript">// Exemplo básico de `tsconfig.json`:
-{
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "strict": true,
-    "outDir": "./dist",
-    "rootDir": "./src"
-  }
-}
-          </code></pre>
-        </div>
-      </section>
-
-      <section>
         <p>Agora instale o TypeScript globalmente:</p>
         <div class="code-container">
           <pre><code class="language-javascript">npm install -g typescript</code></pre>
