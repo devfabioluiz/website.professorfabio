@@ -161,27 +161,10 @@ dividir("abc", 2); </code></pre>
         <p>Agora instale o TypeScript globalmente:</p>
         <div class="code-container">
           <pre><code class="language-javascript">npm install -g typescript</code></pre>
-          <button class="btn-copy">copiar código</button>
         </div>
         <p>Verificar versão:</p>
         <div class="code-container">
           <pre><code class="language-javascript">tsc -v</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-      </section>
-
-      <section>
-        <h2>Compilação de aplicativos TypeScript</h2>
-        <p>Criar arquivo <code>index.ts</code>:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let nome: string = "Maria";
-console.log(`Olá, ${nome}`);</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-        <p>Compilar com o comando:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">tsc index.ts</code></pre>
-          <button class="btn-copy">copiar código</button>
         </div>
       </section>
 
@@ -193,7 +176,6 @@ let idade: number = 30;
 let ativo: boolean = true;
 let lista: number[] = [1, 2, 3];
 let qualquer: any = "pode ser qualquer coisa";</code></pre>
-          <button class="btn-copy">copiar código</button>
         </div>
       </section>
 
@@ -205,7 +187,6 @@ let qualquer: any = "pode ser qualquer coisa";</code></pre>
         <div class="code-container">
           <pre><code class="language-javascript">let nome: string = "Carlos";
 const PI: number = 3.14;</code></pre>
-          <button class="btn-copy">copiar código</button>
         </div>
       </section>
 
@@ -214,7 +195,6 @@ const PI: number = 3.14;</code></pre>
         <div class="code-container">
           <pre><code class="language-javascript">let nome: string = "Aline";
 console.log("Olá, " + nome);</code></pre>
-          <button class="btn-copy">copiar código</button>
         </div>
       </section>
 
@@ -287,11 +267,13 @@ git checkout -b aula1-typescript
 npm init -y
 npm install typescript --save-dev
 npx tsc --init
+mkdir src
+type nul > src/index.ts
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Agora crie a pasta <code>src</code> e configure o <code>tsconfig.json</code> da seguinte forma:</p>
+        <p>Agora substitua todo o código existente em <code>tsconfig.json</code>por este abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-javascript">
