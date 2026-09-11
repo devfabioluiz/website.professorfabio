@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -14,15 +14,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 2</h1>
       <h4 class="text-center">TypeScript</h4>
       <h4 class="text-center">Operadores Condicionais e ENUM</h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Operadores condicionais (if, if else, if else if, switch), Tipos de dados (ENUM),
-        const enum, union types, nullish coalescing, optional chaining, discriminated unions.
+        Operadores condicionais (if, if else, if else if, switch), Tipos de
+        dados (ENUM), const enum, union types, nullish coalescing, optional
+        chaining, discriminated unions.
       </div>
     </header>
 
@@ -34,18 +37,20 @@
         <h2>Operadores Condicionais</h2>
 
         <p>
-          Operadores condicionais permitem que o programa tome <strong>decisões</strong>
-          com base em condições. São a base da lógica de qualquer aplicação — sem eles,
-          não seria possível reagir a diferentes situações.
+          Operadores condicionais permitem que o programa tome
+          <strong>decisões</strong>
+          com base em condições. São a base da lógica de qualquer aplicação —
+          sem eles, não seria possível reagir a diferentes situações.
         </p>
 
-        <h3><code class="language-typescript">if</code></h3>
+        <h3><code class="language-javascript">if</code></h3>
         <p>
-          Verifica uma condição. Se for <code>true</code>, executa o bloco de código.
+          Verifica uma condição. Se for <code>true</code>, executa o bloco de
+          código.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const usuarioEstaLogado: boolean = true;
+          <pre><code class="language-javascript">const usuarioEstaLogado: boolean = true;
 
 if (usuarioEstaLogado) {
   console.log("Bem-vindo ao painel!");
@@ -56,19 +61,20 @@ if (usuarioEstaLogado) {
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            A variável <code>usuarioEstaLogado</code> é do tipo <code>boolean</code>.
-            Como seu valor é <code>true</code>, o bloco do <code>if</code> é executado
-            e a mensagem é exibida no console. Se fosse <code>false</code>, nada aconteceria.
+            A variável <code>usuarioEstaLogado</code> é do tipo
+            <code>boolean</code>. Como seu valor é <code>true</code>, o bloco do
+            <code>if</code> é executado e a mensagem é exibida no console. Se
+            fosse <code>false</code>, nada aconteceria.
           </p>
         </div>
 
-        <h3><code class="language-typescript">if...else</code></h3>
+        <h3><code class="language-javascript">if...else</code></h3>
         <p>
           Executa um bloco se a condição for verdadeira e outro se for falsa.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const saldo: number = 200;
+          <pre><code class="language-javascript">const saldo: number = 200;
 const valorCompra: number = 350;
 
 if (saldo >= valorCompra) {
@@ -84,15 +90,16 @@ if (saldo >= valorCompra) {
           <p>
             O TypeScript compara se <code>saldo</code> (200) é maior ou igual a
             <code>valorCompra</code> (350). Como 200 < 350, a condição é falsa e
-            o bloco do <code>else</code> é executado — exibindo "Saldo insuficiente."
+            o bloco do <code>else</code> é executado — exibindo "Saldo
+            insuficiente."
           </p>
         </div>
 
-        <h3><code class="language-typescript">if...else if...else</code></h3>
+        <h3><code class="language-javascript">if...else if...else</code></h3>
         <p>Permite múltiplas condições encadeadas em sequência.</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const nota: number = 72;
+          <pre><code class="language-javascript">const nota: number = 72;
 
 if (nota >= 90) {
   console.log("Excelente!");
@@ -109,25 +116,27 @@ if (nota >= 90) {
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            O TypeScript avalia as condições de cima para baixo. A nota 72 não atinge 90,
-            mas atinge 70 — então <code>else if (nota >= 70)</code> é executado. Assim
-            que uma condição é satisfeita, as demais são ignoradas.
+            O TypeScript avalia as condições de cima para baixo. A nota 72 não
+            atinge 90, mas atinge 70 — então <code>else if (nota >= 70)</code> é
+            executado. Assim que uma condição é satisfeita, as demais são
+            ignoradas.
           </p>
           <p>
-            <strong>Dica:</strong> Organize sempre do valor mais alto para o mais baixo.
-            Se colocasse <code>nota >= 50</code> primeiro, uma nota de 72 cairia nele
-            e os outros blocos nunca seriam avaliados.
+            <strong>Dica:</strong> Organize sempre do valor mais alto para o
+            mais baixo. Se colocasse <code>nota >= 50</code> primeiro, uma nota
+            de 72 cairia nele e os outros blocos nunca seriam avaliados.
           </p>
         </div>
 
-        <h3><code class="language-typescript">switch</code></h3>
+        <h3><code class="language-javascript">switch</code></h3>
         <p>
-          Ideal quando você precisa comparar uma variável contra <strong>vários valores fixos</strong>.
-          Mais limpo que múltiplos <code>else if</code> quando os valores são conhecidos.
+          Ideal quando você precisa comparar uma variável contra
+          <strong>vários valores fixos</strong>. Mais limpo que múltiplos
+          <code>else if</code> quando os valores são conhecidos.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const metodoPagamento: string = "pix";
+          <pre><code class="language-javascript">const metodoPagamento: string = "pix";
 
 switch (metodoPagamento) {
   case "pix":
@@ -149,17 +158,19 @@ switch (metodoPagamento) {
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
             O <code>switch</code> compara <code>metodoPagamento</code> com cada
-            <code>case</code>. Quando encontra <code>"pix"</code>, executa aquele
-            bloco e o <code>break</code> impede que continue para os próximos cases.
+            <code>case</code>. Quando encontra <code>"pix"</code>, executa
+            aquele bloco e o <code>break</code> impede que continue para os
+            próximos cases.
           </p>
           <p>
-            O <code>default</code> funciona como um "else" — executa quando nenhum
-            case é correspondido. É boa prática sempre incluí-lo para tratar valores inesperados.
+            O <code>default</code> funciona como um "else" — executa quando
+            nenhum case é correspondido. É boa prática sempre incluí-lo para
+            tratar valores inesperados.
           </p>
           <p>
-            <strong>Importante:</strong> Sempre use <code>break</code> ao final de cada case.
-            Sem ele, o JavaScript "cai" no próximo case mesmo sem a condição ser verdadeira
-            (chamado <em>fall-through</em>).
+            <strong>Importante:</strong> Sempre use <code>break</code> ao final
+            de cada case. Sem ele, o JavaScript "cai" no próximo case mesmo sem
+            a condição ser verdadeira (chamado <em>fall-through</em>).
           </p>
         </div>
 
@@ -192,48 +203,56 @@ switch (metodoPagamento) {
       <!-- ENUM                                         -->
       <!-- ============================================ -->
       <section>
-        <h2>O que é <code class="language-typescript">enum</code> em TypeScript?</h2>
+        <h2>
+          O que é <code class="language-javascript">enum</code> em TypeScript?
+        </h2>
 
         <p>
-          <code class="language-typescript">enum</code> (abreviação de <em>enumeration</em>) é uma
-          construção do TypeScript que permite declarar um <strong>conjunto de constantes nomeadas</strong>.
-          É como criar um "dicionário fixo" de valores que o seu código pode usar.
+          <code class="language-javascript">enum</code> (abreviação de
+          <em>enumeration</em>) é uma construção do TypeScript que permite
+          declarar um <strong>conjunto de constantes nomeadas</strong>. É como
+          criar um "dicionário fixo" de valores que o seu código pode usar.
         </p>
 
         <p>
-          Imagine que você está construindo um sistema de pedidos. Em vez de espalhar
-          strings como <code>"pendente"</code>, <code>"processando"</code>,
-          <code>"concluido"</code> por todo o código (e correr o risco de digitar errado),
-          você centraliza tudo em um <code>enum</code>.
+          Imagine que você está construindo um sistema de pedidos. Em vez de
+          espalhar strings como <code>"pendente"</code>,
+          <code>"processando"</code>, <code>"concluido"</code> por todo o código
+          (e correr o risco de digitar errado), você centraliza tudo em um
+          <code>enum</code>.
         </p>
 
         <h3>Por que usar <code>enum</code>?</h3>
         <ul>
           <li>
-            <strong>Segurança de tipo:</strong> O TypeScript impede que você use valores
-            que não existem no enum. Se digitar errado, o compilador avisa.
+            <strong>Segurança de tipo:</strong> O TypeScript impede que você use
+            valores que não existem no enum. Se digitar errado, o compilador
+            avisa.
           </li>
           <li>
-            <strong>Legibilidade:</strong> Em vez de <code>status === "PENDENTE"</code>,
-            você usa <code>status === StatusPedido.Pendente</code> — muito mais claro.
+            <strong>Legibilidade:</strong> Em vez de
+            <code>status === "PENDENTE"</code>, você usa
+            <code>status === StatusPedido.Pendente</code> — muito mais claro.
           </li>
           <li>
-            <strong>Manutenibilidade:</strong> Se precisar renomear um valor, você muda
-            em um único lugar e o TypeScript atualiza em todo o projeto.
+            <strong>Manutenibilidade:</strong> Se precisar renomear um valor,
+            você muda em um único lugar e o TypeScript atualiza em todo o
+            projeto.
           </li>
           <li>
-            <strong>Autocomplete:</strong> Sua IDE mostra todas as opções disponíveis
-            ao digitar o nome do enum.
+            <strong>Autocomplete:</strong> Sua IDE mostra todas as opções
+            disponíveis ao digitar o nome do enum.
           </li>
         </ul>
 
         <h3>Enum numérico</h3>
         <p>
-          Por padrão, o TypeScript atribui valores numéricos incrementais a partir de 0.
+          Por padrão, o TypeScript atribui valores numéricos incrementais a
+          partir de 0.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum DiaSemana {
+          <pre><code class="language-javascript">enum DiaSemana {
   Domingo,    // 0
   Segunda,    // 1
   Terca,      // 2
@@ -253,25 +272,27 @@ console.log(DiaSemana[hoje]); // "Quarta" (busca reversa)</code></pre>
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            O enum <code>DiaSemana</code> começa em 0 automaticamente. Quando atribuímos
-            <code>DiaSemana.Quarta</code> à variável <code>hoje</code>, o valor armazenado
-            é 3. A expressão <code>DiaSemana[hoje]</code> faz a <strong>busca reversa</strong>:
+            O enum <code>DiaSemana</code> começa em 0 automaticamente. Quando
+            atribuímos <code>DiaSemana.Quarta</code> à variável
+            <code>hoje</code>, o valor armazenado é 3. A expressão
+            <code>DiaSemana[hoje]</code> faz a <strong>busca reversa</strong>:
             dado o número 3, retorna a string "Quarta".
           </p>
           <p>
-            Essa busca reversa é uma particularidade dos enums numéricos em TypeScript.
-            Ela pode ser útil para logs, mas deve ser usada com cuidado em tempo de execução.
+            Essa busca reversa é uma particularidade dos enums numéricos em
+            TypeScript. Ela pode ser útil para logs, mas deve ser usada com
+            cuidado em tempo de execução.
           </p>
         </div>
 
         <h3>Enum de string</h3>
         <p>
-          Mais recomendado para a maioria dos casos. Os valores ficam mais legíveis
-          nos logs e na depuração.
+          Mais recomendado para a maioria dos casos. Os valores ficam mais
+          legíveis nos logs e na depuração.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum StatusPedido {
+          <pre><code class="language-javascript">enum StatusPedido {
   Pendente = "PENDENTE",
   Processando = "PROCESSANDO",
   Enviado = "ENVIADO",
@@ -291,13 +312,13 @@ exibirStatus(StatusPedido.Enviado); // Status atual: ENVIADO</code></pre>
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
             Cada membro do enum recebe uma string como valor. Quando chamamos
-            <code>StatusPedido.Enviado</code>, o valor real é <code>"ENVIADO"</code>.
-            Isso torna os logs muito mais legíveis — em vez de vermos o número 2,
-            vemos a palavra completa.
+            <code>StatusPedido.Enviado</code>, o valor real é
+            <code>"ENVIADO"</code>. Isso torna os logs muito mais legíveis — em
+            vez de vermos o número 2, vemos a palavra completa.
           </p>
           <p>
-            Outra vantagem: se alguém tentar passar uma string que não existe no enum,
-            o TypeScript gera um erro de compilação. Exemplo:
+            Outra vantagem: se alguém tentar passar uma string que não existe no
+            enum, o TypeScript gera um erro de compilação. Exemplo:
             <code>exibirStatus("enviado")</code> gera erro — o correto é
             <code>StatusPedido.Enviado</code>.
           </p>
@@ -305,12 +326,12 @@ exibirStatus(StatusPedido.Enviado); // Status atual: ENVIADO</code></pre>
 
         <h3>Enum personalizado (começando de 1)</h3>
         <p>
-          Você pode definir os valores manualmente. Útil quando os números
-          têm significado (como níveis de acesso).
+          Você pode definir os valores manualmente. Útil quando os números têm
+          significado (como níveis de acesso).
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum NivelAcesso {
+          <pre><code class="language-javascript">enum NivelAcesso {
   Leitor = 1,
   Editor = 2,
   Administrador = 3
@@ -330,12 +351,13 @@ console.log(podeEditar(NivelAcesso.Administrador)); // true</code></pre>
           <p>
             Ao atribuir <code>Leitor = 1</code>, os valores seguintes continuam
             incrementando normalmente (Editor = 2, Administrador = 3). A função
-            <code>podeEditar</code> usa comparação numérica — alguém com nível
-            2 ou superior pode editar.
+            <code>podeEditar</code> usa comparação numérica — alguém com nível 2
+            ou superior pode editar.
           </p>
           <p>
-            <strong>Cuidado:</strong> Essa comparação numérica funciona porque os valores
-            são inteiros crescentes. Se os valores fossem strings, essa abordagem não funcionaria.
+            <strong>Cuidado:</strong> Essa comparação numérica funciona porque
+            os valores são inteiros crescentes. Se os valores fossem strings,
+            essa abordagem não funcionaria.
           </p>
         </div>
 
@@ -347,7 +369,7 @@ console.log(podeEditar(NivelAcesso.Administrador)); // true</code></pre>
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Enum normal — gera um objeto no JS compilado
+          <pre><code class="language-javascript">// Enum normal — gera um objeto no JS compilado
 enum Cor {
   Vermelho,
   Verde,
@@ -370,30 +392,35 @@ console.log(cor); // 1</code></pre>
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
             Um <code>enum</code> normal gera algo como
-            <code>var Cor; (function(Cor) { Cor[Cor["Vermelho"] = 0] = "Vermelho"; ... })</code>
+            <code
+              >var Cor; (function(Cor) { Cor[Cor["Vermelho"] = 0] = "Vermelho";
+              ... })</code
+            >
             no JavaScript final. O <code>const enum</code> não gera nada — ele é
             "embutido" diretamente onde é usado.
           </p>
           <p>
-            <strong>Quando usar:</strong> Prefira <code>const enum</code> quando você não
-            precisa da busca reversa (ex: <code>Cor[0]</code>) e quer código mais leve.
-            Para a maioria dos casos, <code>enum</code> normal já é suficiente.
+            <strong>Quando usar:</strong> Prefira <code>const enum</code> quando
+            você não precisa da busca reversa (ex: <code>Cor[0]</code>) e quer
+            código mais leve. Para a maioria dos casos, <code>enum</code> normal
+            já é suficiente.
           </p>
           <p>
-            <strong>Restrição:</strong> <code>const enum</code> não pode ser usado com
-            <code>computed values</code> e tem limitações em módulos. Na dúvida, use
-            <code>enum</code> normal.
+            <strong>Restrição:</strong> <code>const enum</code> não pode ser
+            usado com <code>computed values</code> e tem limitações em módulos.
+            Na dúvida, use <code>enum</code> normal.
           </p>
         </div>
 
         <h3>Enum com switch — o padrão completo</h3>
         <p>
-          A combinação de <code>enum</code> com <code>switch</code> é um dos padrões
-          mais usados no TypeScript moderno. Veja um exemplo prático de sistema de pedidos:
+          A combinação de <code>enum</code> com <code>switch</code> é um dos
+          padrões mais usados no TypeScript moderno. Veja um exemplo prático de
+          sistema de pedidos:
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum StatusPedido {
+          <pre><code class="language-javascript">enum StatusPedido {
   Pendente = "PENDENTE",
   Processando = "PROCESSANDO",
   Enviado = "ENVIADO",
@@ -430,14 +457,16 @@ processarPedido(StatusPedido.Enviado); // Pedido a caminho! Código de rastreio:
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Note que cada <code>case</code> usa <code>StatusPedido.NomeDoStatus</code>
-            em vez de strings soltas. Se alguém digitar <code>StatusPedido.Enviad</code>
-            (sem o "o"), o TypeScript gera um erro imediato — algo que não aconteceria
-            com strings normais.
+            Note que cada <code>case</code> usa
+            <code>StatusPedido.NomeDoStatus</code> em vez de strings soltas. Se
+            alguém digitar <code>StatusPedido.Enviad</code>
+            (sem o "o"), o TypeScript gera um erro imediato — algo que não
+            aconteceria com strings normais.
           </p>
           <p>
-            Esse padrão é extremamente comum em sistemas reais: gerenciar estados de
-            pedidos, assinaturas, chamados de suporte, fluxos de aprovação, etc.
+            Esse padrão é extremamente comum em sistemas reais: gerenciar
+            estados de pedidos, assinaturas, chamados de suporte, fluxos de
+            aprovação, etc.
           </p>
         </div>
       </section>
@@ -450,12 +479,12 @@ processarPedido(StatusPedido.Enviado); // Pedido a caminho! Código de rastreio:
 
         <p>
           O TypeScript oferece uma alternativa moderna aos enums: as
-          <strong>union types</strong> (união de tipos). Em muitos casos, elas são
-          mais simples e leves.
+          <strong>union types</strong> (união de tipos). Em muitos casos, elas
+          são mais simples e leves.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Com enum
+          <pre><code class="language-javascript">// Com enum
 enum Status {
   Ativo = "ATIVO",
   Inativo = "INATIVO"
@@ -476,9 +505,10 @@ const usuarioStatusAlt: StatusAlternativo = "ATIVO";
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            A <code>union type</code> define que <code>StatusAlternativo</code> só pode
-            ser <code>"ATIVO"</code> ou <code>"INATIVO"</code>. Qualquer outro valor
-            gera erro. É mais enxuto que enum e não gera nenhum código JavaScript extra.
+            A <code>union type</code> define que
+            <code>StatusAlternativo</code> só pode ser <code>"ATIVO"</code> ou
+            <code>"INATIVO"</code>. Qualquer outro valor gera erro. É mais
+            enxuto que enum e não gera nenhum código JavaScript extra.
           </p>
         </div>
 
@@ -491,7 +521,9 @@ const usuarioStatusAlt: StatusAlternativo = "ATIVO";
           </tr>
           <tr>
             <td><code>enum</code></td>
-            <td>Precisa de busca reversa, valores numéricos, ou múltiplos membros</td>
+            <td>
+              Precisa de busca reversa, valores numéricos, ou múltiplos membros
+            </td>
             <td>Status de pedido, roles de usuário, dias da semana</td>
           </tr>
           <tr>
@@ -503,7 +535,7 @@ const usuarioStatusAlt: StatusAlternativo = "ATIVO";
 
         <h3>Exemplo prático: métodos HTTP</h3>
         <div class="code-container">
-          <pre><code class="language-typescript">type MetodoHTTP = "GET" | "POST" | "PUT" | "DELETE";
+          <pre><code class="language-javascript">type MetodoHTTP = "GET" | "POST" | "PUT" | "DELETE";
 
 function fazerRequisicao(url: string, metodo: MetodoHTTP): void {
   console.log(`${metodo} ${url}`);
@@ -518,9 +550,10 @@ fazerRequisicao("/api/usuarios", "POST");    // OK
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Para métodos HTTP, uma <code>union type</code> é perfeita — são poucos
-            valores fixos, todos strings, sem necessidade de busca reversa. O TypeScript
-            garante que apenas valores válidos sejam usados.
+            Para métodos HTTP, uma <code>union type</code> é perfeita — são
+            poucos valores fixos, todos strings, sem necessidade de busca
+            reversa. O TypeScript garante que apenas valores válidos sejam
+            usados.
           </p>
         </div>
       </section>
@@ -532,20 +565,24 @@ fazerRequisicao("/api/usuarios", "POST");    // OK
         <h2>Conceitos Modernos do TypeScript</h2>
 
         <p>
-          O TypeScript evoluiu bastante nos últimos anos. Alguns recursos modernos
-          se conectam diretamente com condicionais e enums, tornando o código mais
-          seguro e conciso.
+          O TypeScript evoluiu bastante nos últimos anos. Alguns recursos
+          modernos se conectam diretamente com condicionais e enums, tornando o
+          código mais seguro e conciso.
         </p>
 
-        <h3>Nullish Coalescing (<code class="language-typescript">??</code>)</h3>
+        <h3>
+          Nullish Coalescing (<code class="language-javascript">??</code>)
+        </h3>
         <p>
-          O operador <code>??</code> retorna o valor à direita <strong>apenas quando</strong>
-          o valor à esquerda for <code>null</code> ou <code>undefined</code>. Diferente do
-          <code>||</code> que considera <em>qualquer valor falso</em> (0, "", false).
+          O operador <code>??</code> retorna o valor à direita
+          <strong>apenas quando</strong> o valor à esquerda for
+          <code>null</code> ou <code>undefined</code>. Diferente do
+          <code>||</code> que considera <em>qualquer valor falso</em> (0, "",
+          false).
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const nomeDigitado: string | null = "";
+          <pre><code class="language-javascript">const nomeDigitado: string | null = "";
 const nomePadrao: string = "Visitante";
 
 // Com || — valores falsos (0, "", false) também ativam o padrão
@@ -561,26 +598,27 @@ console.log(nomeComNullish); // "" (mantém o valor vazio, que é válido)</code
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            O <code>||</code> trata <code>""</code> como falsy, então substitui pelo padrão.
-            Mas <code>""</code> pode ser uma escolha válida do usuário. O <code>??</code>
-            é mais preciso: só entra em ação quando o valor é <code>null</code> ou
-            <code>undefined</code>.
+            O <code>||</code> trata <code>""</code> como falsy, então substitui
+            pelo padrão. Mas <code>""</code> pode ser uma escolha válida do
+            usuário. O <code>??</code> é mais preciso: só entra em ação quando o
+            valor é <code>null</code> ou <code>undefined</code>.
           </p>
           <p>
-            <strong>Uso real:</strong> Configurações de aplicação, parâmetros de URL,
-            dados de formulário com valores opcionais.
+            <strong>Uso real:</strong> Configurações de aplicação, parâmetros de
+            URL, dados de formulário com valores opcionais.
           </p>
         </div>
 
-        <h3>Optional Chaining (<code class="language-typescript">?.</code>)</h3>
+        <h3>Optional Chaining (<code class="language-javascript">?.</code>)</h3>
         <p>
           Acessa propriedades de forma segura. Se algum nível da cadeia for
-          <code>null</code> ou <code>undefined</code>, retorna <code>undefined</code>
+          <code>null</code> ou <code>undefined</code>, retorna
+          <code>undefined</code>
           em vez de lançar erro.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">type Usuario = {
+          <pre><code class="language-javascript">type Usuario = {
   nome: string;
   endereco?: {
     cidade?: string;
@@ -613,25 +651,27 @@ console.log(usuarioSemEndereco.endereco?.cep?.toUpperCase()); // undefined</code
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Sem o <code>?.</code>, acessar <code>usuarioSemEndereco.endereco.cidade</code>
-            geraria um erro: <code>Cannot read properties of undefined</code>. O
-            optional chaining verifica cada nível antes de acessar o próximo.
+            Sem o <code>?.</code>, acessar
+            <code>usuarioSemEndereco.endereco.cidade</code> geraria um erro:
+            <code>Cannot read properties of undefined</code>. O optional
+            chaining verifica cada nível antes de acessar o próximo.
           </p>
           <p>
-            O <code>?</code> no tipo (<code>endereco?: { ... }</code>) indica que a
-            propriedade é <strong>opcional</strong> — o objeto pode ou não tê-la.
-            O <code>?.</code> no acesso trata o caso de ela não existir.
+            O <code>?</code> no tipo (<code>endereco?: { ... }</code>) indica
+            que a propriedade é <strong>opcional</strong> — o objeto pode ou não
+            tê-la. O <code>?.</code> no acesso trata o caso de ela não existir.
           </p>
         </div>
 
         <h3><code>as const</code> — Assertions de constante</h3>
         <p>
-          O <code>as const</code> força o TypeScript a tratar valores como literais
-          fixos (não como tipos amplos). É uma alternativa leve a enums.
+          O <code>as const</code> força o TypeScript a tratar valores como
+          literais fixos (não como tipos amplos). É uma alternativa leve a
+          enums.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Sem as const — tipo é "string"
+          <pre><code class="language-javascript">// Sem as const — tipo é "string"
 const cores = ["vermelho", "verde", "azul"];
 // tipo: string[]
 
@@ -654,27 +694,28 @@ pintar("vermelho"); // OK
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Sem <code>as const</code>, o TypeScript infere <code>cores</code> como
-            <code>string[]</code> — qualquer string seria aceita. Com
-            <code>as const</code>, cada elemento mantém seu valor literal e o array
-            vira <code>readonly</code> (imutável).
+            Sem <code>as const</code>, o TypeScript infere
+            <code>cores</code> como <code>string[]</code> — qualquer string
+            seria aceita. Com <code>as const</code>, cada elemento mantém seu
+            valor literal e o array vira <code>readonly</code> (imutável).
           </p>
           <p>
-            A expressão <code>typeof coresFixas[number]</code> é um padrão avançado
-            que extrai o tipo de todos os elementos do array, criando uma union type
-            automaticamente. É como criar um enum sem declarar um.
+            A expressão <code>typeof coresFixas[number]</code> é um padrão
+            avançado que extrai o tipo de todos os elementos do array, criando
+            uma union type automaticamente. É como criar um enum sem declarar
+            um.
           </p>
         </div>
 
         <h3>Discriminated Unions — o padrão moderno</h3>
         <p>
           Uma <strong>discriminated union</strong> (união discriminada) combina
-          interfaces com union types para criar estados bem definidos. É o padrão
-          mais usado em aplicações TypeScript modernas.
+          interfaces com union types para criar estados bem definidos. É o
+          padrão mais usado em aplicações TypeScript modernas.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Cada estado tem uma "propriedade discriminante" (kind)
+          <pre><code class="language-javascript">// Cada estado tem uma "propriedade discriminante" (kind)
 type ResultadoBusca =
   | { kind: "carregando" }
   | { kind: "sucesso"; dados: Usuario[] }
@@ -715,32 +756,37 @@ renderizarResultado({
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Cada variante da union tem uma propriedade <code>kind</code> que funciona
-            como "discriminante" — ela identifica qual estado é qual. No <code>switch</code>,
-            o TypeScript usa o <code>kind</code> para restringir quais propriedades
-            estão disponíveis em cada caso.
+            Cada variante da union tem uma propriedade <code>kind</code> que
+            funciona como "discriminante" — ela identifica qual estado é qual.
+            No <code>switch</code>, o TypeScript usa o <code>kind</code> para
+            restringir quais propriedades estão disponíveis em cada caso.
           </p>
           <p>
-            Note que no caso <code>"sucesso"</code>, temos acesso a <code>resultado.dados</code>,
-            e no caso <code>"erro"</code>, temos acesso a <code>resultado.mensagem</code>.
-            Em <code>"carregando"</code>, não há dados extras. Isso é <strong>type narrowing</strong> —
-            o TypeScript "estreita" o tipo baseado no discriminante.
+            Note que no caso <code>"sucesso"</code>, temos acesso a
+            <code>resultado.dados</code>, e no caso <code>"erro"</code>, temos
+            acesso a <code>resultado.mensagem</code>. Em
+            <code>"carregando"</code>, não há dados extras. Isso é
+            <strong>type narrowing</strong> — o TypeScript "estreita" o tipo
+            baseado no discriminante.
           </p>
           <p>
-            <strong>Onde é usado:</strong> Estados de requisições HTTP, fluxos de autenticação,
-            status de uploads, resultados de validação de formulário.
+            <strong>Onde é usado:</strong> Estados de requisições HTTP, fluxos
+            de autenticação, status de uploads, resultados de validação de
+            formulário.
           </p>
         </div>
 
-        <h3><code>satisfies</code> — validação sem widening (TypeScript 4.9+)</h3>
+        <h3>
+          <code>satisfies</code> — validação sem widening (TypeScript 4.9+)
+        </h3>
         <p>
-          O operador <code>satisfies</code> valida se um valor corresponde a um tipo
-          <strong>sem alterar</strong> o tipo inferido. Diferente da anotação de tipo
-          tradicional, ele mantém a informação literal.
+          O operador <code>satisfies</code> valida se um valor corresponde a um
+          tipo <strong>sem alterar</strong> o tipo inferido. Diferente da
+          anotação de tipo tradicional, ele mantém a informação literal.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Com anotação de tipo tradicional — o tipo é "ampliado"
+          <pre><code class="language-javascript">// Com anotação de tipo tradicional — o tipo é "ampliado"
 type CoresMap = {
   [key: string]: [number, number, number];
 };
@@ -765,15 +811,17 @@ const paletaSatisfies = {
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Com <code>: CoresMap</code>, o TypeScript "amplia" os tipos — os arrays
-            viram <code>[number, number, number]</code> genérico. Com
-            <code>satisfies CoresMap</code>, o TypeScript valida que a estrutura está
-            correta, mas mantém os valores literais: <code>[255, 0, 0]</code> em vez
-            de apenas <code>[number, number, number]</code>.
+            Com <code>: CoresMap</code>, o TypeScript "amplia" os tipos — os
+            arrays viram <code>[number, number, number]</code> genérico. Com
+            <code>satisfies CoresMap</code>, o TypeScript valida que a estrutura
+            está correta, mas mantém os valores literais:
+            <code>[255, 0, 0]</code> em vez de apenas
+            <code>[number, number, number]</code>.
           </p>
           <p>
-            <strong>Benefício:</strong> Sua IDE mostra os valores exatos ao passar o
-            mouse, e você ainda tem a segurança de que o objeto segue o tipo definido.
+            <strong>Benefício:</strong> Sua IDE mostra os valores exatos ao
+            passar o mouse, e você ainda tem a segurança de que o objeto segue o
+            tipo definido.
           </p>
         </div>
       </section>
@@ -851,9 +899,7 @@ const paletaSatisfies = {
 
         <h3>Passo 0 — Criar a branch no GitHub</h3>
 
-        <p>
-          Abra o terminal do VSCode (opção Command Prompt) e execute:
-        </p>
+        <p>Abra o terminal do VSCode (opção Command Prompt) e execute:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -861,35 +907,52 @@ git fetch
 git checkout aula1-typescript
 git pull
 git checkout -b aula2-typescript
+type nul > src/condicionais.ts
+type nul > src/enums.ts
+type nul > src/modernos.ts
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            Entendendo os comandos Git
+          </h2>
           <p>
-            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+            <strong><code>git fetch</code></strong> — Busca as branches mais
+            recentes do remoto.
           </p>
           <p>
-            <strong><code>git checkout aula1-typescript</code></strong> — Muda para a branch da aula anterior.
-            Isso garante que a nova branch parta do código correto.
+            <strong><code>git checkout aula1-typescript</code></strong> — Muda
+            para a branch da aula anterior. Isso garante que a nova branch parta
+            do código correto.
           </p>
           <p>
-            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes
-            da branch remota com sua branch local.
+            <strong><code>git pull</code></strong> — Baixa e mescla as
+            alterações mais recentes da branch remota com sua branch local.
           </p>
           <p>
-            <strong><code>git checkout -b aula2-typescript</code></strong> — Cria e muda para a nova branch
-            <code>aula2-typescript</code> a partir do estado atual da <code>aula1-typescript</code>.
+            <strong><code>git checkout -b aula2-typescript</code></strong> —
+            Cria e muda para a nova branch <code>aula2-typescript</code> a
+            partir do estado atual da <code>aula1-typescript</code>.
           </p>
         </div>
 
         <h3>Passo 1 — Criar o arquivo de condicionais</h3>
 
-        <p>Crie o arquivo <code>src/condicionais.ts</code> com o seguinte código:</p>
+        <p>
+          Agora acesse o arquivo <code>src/condicionais.ts</code>e coloque o
+          seguinte código:
+        </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/condicionais.ts
+          <pre><code class="language-javascript">// src/condicionais.ts
 
 // --- Exemplo 1: Sistema de Login ---
 const usuarioLogado: boolean = true;
@@ -937,10 +1000,13 @@ switch (pagamento) {
 
         <h3>Passo 2 — Criar o arquivo de enums</h3>
 
-        <p>Crie o arquivo <code>src/enums.ts</code> com o seguinte código:</p>
+        <p>
+          Agora entra no arquivo <code>src/enums.ts</code> e coloque o seguinte
+          código:
+        </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/enums.ts
+          <pre><code class="language-javascript">// src/enums.ts
 
 // --- Enum de Status de Pedido ---
 enum StatusPedido {
@@ -1011,10 +1077,13 @@ console.log(`Frete Sedex: R$ ${calcularFrete("sedex")}`);</code></pre>
 
         <h3>Passo 3 — Criar o arquivo de conceitos modernos</h3>
 
-        <p>Crie o arquivo <code>src/modernos.ts</code> com o seguinte código:</p>
+        <p>
+          Agora entre no arquivo <code>src/modernos.ts</code> e coloque o
+          seguinte código:
+        </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/modernos.ts
+          <pre><code class="language-javascript">// src/modernos.ts
 
 // --- Nullish Coalescing ---
 type Configuracoes = {
@@ -1085,25 +1154,33 @@ processarResultado({ status: "sucesso", dados: ["item1", "item2"] });</code></pr
 
         <h3>Passo 4 — Compilar e rodar</h3>
 
-        <p>Execute cada arquivo individualmente:</p>
+        <p>Execute os códigos abaixo um de cada vez:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 npx tsc src/condicionais.ts --outDir dist
 node dist/condicionais.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
+        <div class="code-container">
+          <pre><code class="language-bash">
 npx tsc src/enums.ts --outDir dist
 node dist/enums.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
 
+        <div class="code-container">
+          <pre><code class="language-bash">
 npx tsc src/modernos.ts --outDir dist
 node dist/modernos.js
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>
-          Ou compile todos de uma vez:
-        </p>
+        <p>Agora teste compilando todos de uma vez:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
@@ -1114,8 +1191,9 @@ npm start
         </div>
 
         <p>
-          Observe os resultados no terminal. Cada arquivo demonstra um conceito diferente
-          — condicionais básicos, enums com switch, e recursos modernos do TypeScript.
+          Observe os resultados no terminal. Cada arquivo demonstra um conceito
+          diferente — condicionais básicos, enums com switch, e recursos
+          modernos do TypeScript.
         </p>
 
         <h3>Último Passo — Subindo para o Git</h3>
@@ -1129,17 +1207,32 @@ git push --set-upstream origin aula2-typescript
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            Entendendo os comandos Git
+          </h2>
           <p>
-            <strong><code>git add .</code></strong> — Prepara todos os arquivos modificados para o commit.
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos
+            modificados para o commit.
           </p>
           <p>
-            <strong><code>git commit -m "..."</code></strong> — Cria o commit com a mensagem descritiva.
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit
+            com a mensagem descritiva.
           </p>
           <p>
-            <strong><code>git push --set-upstream origin aula2-typescript</code></strong> — Envia a branch
-            para o GitHub e define a origem remota. Nas próximas vezes, apenas <code>git push</code>
+            <strong
+              ><code
+                >git push --set-upstream origin aula2-typescript</code
+              ></strong
+            >
+            — Envia a branch para o GitHub e define a origem remota. Nas
+            próximas vezes, apenas <code>git push</code>
             será suficiente.
           </p>
         </div>
@@ -1147,7 +1240,8 @@ git push --set-upstream origin aula2-typescript
         <div class="alert-box-github">
           <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
           <p>
-            Compare sua implementação com o código completo da aula no repositório oficial:
+            Compare sua implementação com o código completo da aula no
+            repositório oficial:
           </p>
           <a
             href="https://github.com/devfabioluiz/projeto-typescript-step"
@@ -1173,37 +1267,39 @@ git push --set-upstream origin aula2-typescript
           <div class="question">
             <h3>Sistema de Gerenciamento de Pedidos</h3>
             <p>
-              Crie um arquivo <b>src/pedidos.ts</b> com um sistema completo de pedidos
-              usando os conceitos desta aula:
+              Crie um arquivo <b>src/pedidos.ts</b> com um sistema completo de
+              pedidos usando os conceitos desta aula:
             </p>
             <ol>
               <li>
-                Crie um <b>enum</b> chamado <code>StatusPedido</code> com os valores:
-                Novo, EmPreparo, Enviado, Entregue, Cancelado
+                Crie um <b>enum</b> chamado <code>StatusPedido</code> com os
+                valores: Novo, EmPreparo, Enviado, Entregue, Cancelado
               </li>
               <li>
-                Crie um <b>enum</b> chamado <code>TipoPagamento</code> com os valores:
-                Pix, Credito, Debito
+                Crie um <b>enum</b> chamado <code>TipoPagamento</code> com os
+                valores: Pix, Credito, Debito
               </li>
               <li>
-                Crie uma <b>type</b> (union type) chamada <code>RegiaoEnvio</code> com os valores:
-                "norte", "nordeste", "centro-oeste", "sudeste", "sul"
+                Crie uma <b>type</b> (union type) chamada
+                <code>RegiaoEnvio</code> com os valores: "norte", "nordeste",
+                "centro-oeste", "sudeste", "sul"
               </li>
               <li>
-                Crie uma função <code>processarPedido</code> que receba o status e exiba
-                uma mensagem adequada usando <code>switch</code>
+                Crie uma função <code>processarPedido</code> que receba o status
+                e exiba uma mensagem adequada usando <code>switch</code>
               </li>
               <li>
-                Crie uma função <code>calcularFrete</code> que receba a região e retorne
-                o valor do frete (use <code>switch</code> ou <code>if/else</code>)
+                Crie uma função <code>calcularFrete</code> que receba a região e
+                retorne o valor do frete (use <code>switch</code> ou
+                <code>if/else</code>)
               </li>
               <li>
                 Use <b>nullish coalescing</b> para tratar um campo opcional
                 <code>cupomDesconto: string | null</code>
               </li>
               <li>
-                Use <b>optional chaining</b> para acessar dados de um cliente que pode
-                ou não ter endereço cadastrado
+                Use <b>optional chaining</b> para acessar dados de um cliente
+                que pode ou não ter endereço cadastrado
               </li>
             </ol>
             <p>
@@ -1215,9 +1311,11 @@ git push --set-upstream origin aula2-typescript
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Arquivo <code>src/pedidos.ts</code>:</b></p>
+              <p>
+                <b>Arquivo <code>src/pedidos.ts</code>:</b>
+              </p>
               <div class="code-container">
-                <pre><code class="language-typescript">// src/pedidos.ts
+                <pre><code class="language-javascript">// src/pedidos.ts
 
 // --- Enums ---
 enum StatusPedido {
@@ -1306,23 +1404,28 @@ exibirCliente({ nome: "Carlos" });</code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
-              <div class="alert-explicando-codigo" style="margin-top: 15px;">
-                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+              <div class="alert-explicando-codigo" style="margin-top: 15px">
+                <h2 class="alert-explicando-codigo-title">
+                  Explicando o código
+                </h2>
                 <p>
-                  O exercício combina todos os conceitos da aula em um único arquivo
-                  coeso. Os enums definem os estados possíveis, as union types criam
-                  restrições para regiões, e as funções usam <code>switch</code> e
-                  <code>if/else</code> para tomar decisões.
+                  O exercício combina todos os conceitos da aula em um único
+                  arquivo coeso. Os enums definem os estados possíveis, as union
+                  types criam restrições para regiões, e as funções usam
+                  <code>switch</code> e <code>if/else</code> para tomar
+                  decisões.
                 </p>
                 <p>
-                  O <code>nullish coalescing</code> trata o cupom de desconto — se for
-                  <code>null</code>, usa "SEM_DESCONTO". O <code>optional chaining</code>
-                  acessa endereço do cliente sem risco de erro quando ele não está cadastrado.
+                  O <code>nullish coalescing</code> trata o cupom de desconto —
+                  se for <code>null</code>, usa "SEM_DESCONTO". O
+                  <code>optional chaining</code>
+                  acessa endereço do cliente sem risco de erro quando ele não
+                  está cadastrado.
                 </p>
                 <p>
-                  A discriminated union <code>ResultadoPedido</code> mostra como definir
-                  estados bem tipados para resultados de operações — um padrão essencial
-                  em aplicações reais.
+                  A discriminated union <code>ResultadoPedido</code> mostra como
+                  definir estados bem tipados para resultados de operações — um
+                  padrão essencial em aplicações reais.
                 </p>
               </div>
             </div>
