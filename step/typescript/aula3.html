@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,9 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
-      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
     <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
@@ -17,99 +19,1157 @@
       <h1>Aula 3</h1>
       <h4 class="text-center">TypeScript</h4>
       <h4 class="text-center">Laços de Repetição em TypeScript</h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Laços de repetição (for, while, do while), Palavras-chave break e continue.</div>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Laços de repetição (for, while, do while, for...of, for...in),
+        Palavras-chave break e continue, break com label, Integração com enums e condicionais.
+      </div>
     </header>
 
-    <main class="container"><section>
+    <main class="container">
+      <!-- ============================================ -->
+      <!-- LAÇOS DE REPETIÇÃO                           -->
+      <!-- ============================================ -->
+      <section>
         <h2>Laços de Repetição</h2>
 
-        <h3><code>for</code></h3>
-        <p>Útil quando se sabe o número de repetições.</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">for (let i = 0; i < 5; i++) {
-  console.log(`Contador: ${i}`);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3><code>while</code></h3>
-        <p>Executa enquanto a condição for verdadeira.</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let contador: number = 0;
-
-while (contador < 3) {
-  console.log(`Tentativa ${contador + 1}`);
-  contador++;
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3><code>do...while</code></h3>
         <p>
-          Executa o bloco ao menos uma vez, mesmo que a condição seja falsa no
-          início.
+          Laços de repetição permitem executar um bloco de código
+          <strong>várias vezes</strong> de forma automática. Em vez de escrever
+          a mesma linha 10 vezes, você cria um laço que faz isso por você.
         </p>
+
+        <p>
+          Cada tipo de laço tem um uso ideal — saber escolher o certo torna
+          seu código mais legível e eficiente.
+        </p>
+
+        <h3><code class="language-typescript">for</code> — o clássico</h3>
+        <p>
+          Ideal quando você <strong>sabe quantas vezes</strong> precisa repetir.
+          Ele gerencia automaticamente uma variável contadora.
+        </p>
+
         <div class="code-container">
-          <pre><code class="language-javascript">let senhaDigitada: string = "";
-let senhaCorreta: string = "1234";
+          <pre><code class="language-typescript">// Exemplo real: calcular preço total de um carrinho de compras
+const precos: number[] = [49.9, 29.9, 89.9, 15.9];
+let total: number = 0;
+
+for (let i = 0; i < precos.length; i++) {
+  total += precos[i];
+}
+
+console.log(`Total do carrinho: R$ ${total.toFixed(2)}`);
+// Total do carrinho: R$ 185.60</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>for</code> funciona em três partes: <code>let i = 0</code> (inicia
+            o contador em 0), <code>i < precos.length</code> (roda enquanto for menor
+            que 4, que é o tamanho do array), <code>i++</code> (incrementa 1 a cada volta).
+          </p>
+          <p>
+            A cada iteração, somamos <code>precos[i]</code> ao <code>total</code>.
+            No final, temos a soma de todos os preços.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">while</code> — repete enquanto a condição for verdadeira</h3>
+        <p>
+          Útil quando você <strong>não sabe quantas vezes</strong> vai repetir —
+          a repetição depende de uma condição que pode mudar durante a execução.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo real: simular tentativas de login
+let tentativas: number = 0;
+const maxTentativas: number = 3;
+const senhaCorreta: string = "minhaSena123";
+let senhaDigitada: string = "errada";
+
+while (tentativas < maxTentativas && senhaDigitada !== senhaCorreta) {
+  tentativas++;
+  console.log(`Tentativa ${tentativas}: senha incorreta`);
+
+  // Simulando que na 2ª tentativa o usuário acerta
+  if (tentativas === 2) {
+    senhaDigitada = "minhaSena123";
+  }
+}
+
+if (senhaDigitada === senhaCorreta) {
+  console.log("Login realizado com sucesso!");
+} else {
+  console.log("Conta bloqueada. Tente novamente mais tarde.");
+}
+// Tentativa 1: senha incorreta
+// Tentativa 2: senha incorreta
+// Login realizado com sucesso!</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>while</code> verifica a condição <strong>antes</strong> de cada
+            repetição. Enquanto o número de tentativas for menor que 3 E a senha
+            estiver errada, o laço continua.
+          </p>
+          <p>
+            Note que a condição tem duas partes ligadas por <code>&&</code>:
+            se o usuário acertar a senha antes de esgotar as tentativas, o laço
+            para. Se errar 3 vezes, também para.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">do...while</code> — executa pelo menos uma vez</h3>
+        <p>
+          Diferente do <code>while</code>, o <code>do...while</code> executa o bloco
+          <strong>primeiro</strong> e depois verifica a condição. Útil quando a
+          primeira execução é garantida.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo real: exibir menu de opções até o usuário escolher sair
+let opcao: number;
 
 do {
-  senhaDigitada = prompt("Digite a senha:") || "";
-} while (senhaDigitada !== senhaCorreta);
+  console.log("===== MENU =====");
+  console.log("1 - Ver saldo");
+  console.log("2 - Fazer depósito");
+  console.log("3 - Ver extrato");
+  console.log("0 - Sair");
 
-console.log("Acesso concedido!");</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
+  // Simulando seleção do usuário (em app real seria input)
+  opcao = Math.floor(Math.random() * 5); // gera 0 a 4
 
-        <p>
-          <em>Obs.: <code>prompt()</code> funciona apenas em navegadores.</em>
-        </p>
-
-        <h3><code>break</code></h3>
-        <p>
-          A palavra-chave <code>break</code> interrompe completamente um laço de
-          repetição (<code>for</code>, <code>while</code>,
-          <code>do...while</code>) ou um <code>switch</code>. Ou seja, o código
-          sai do bloco atual imediatamente.
-        </p>
-        <div class="code-container">
-          <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
-  if (i === 3) {
-    break; // para o loop quando i for 3
+  switch (opcao) {
+    case 1:
+      console.log("Saldo: R$ 1.250,00");
+      break;
+    case 2:
+      console.log("Depósito realizado!");
+      break;
+    case 3:
+      console.log("Extrato: última transação R$ -50,00");
+      break;
+    case 0:
+      console.log("Saindo do sistema...");
+      break;
+    default:
+      console.log("Opção inválida. Tente novamente.");
   }
-  console.log(i);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
+} while (opcao !== 0);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p><strong>Saída:</strong></p>
-        <pre><code>1
-2</code></pre>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O menu é exibido <strong>pelo menos uma vez</strong> antes de qualquer
+            verificação. O <code>do...while</code> é perfeito para menus, formulários
+            interativos e qualquer cenário onde a primeira execução é garantida.
+          </p>
+          <p>
+            O <code>Math.floor(Math.random() * 5)</code> gera um número aleatório
+            entre 0 e 4. Em uma aplicação real, o valor viria de um input do usuário.
+          </p>
+        </div>
+      </section>
 
-        <h3><code>continue</code></h3>
+      <!-- ============================================ -->
+      <!-- for...of e for...in                          -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Laços Modernos: <code class="language-typescript">for...of</code> e <code class="language-typescript">for...in</code></h2>
+
         <p>
-          A palavra-chave <code>continue</code> pula a iteração atual do laço e
-          vai direto para a próxima.
+          O TypeScript/JavaScript moderno oferece duas formas mais limpas de iterar:
+          <code>for...of</code> para <strong>valores</strong> e
+          <code>for...in</code> para <strong>índices/propriedades</strong>.
         </p>
+
+        <h3><code class="language-typescript">for...of</code> — itera sobre valores</h3>
+        <p>
+          Percorre os <strong>valores</strong> de um array, string ou qualquer
+          objeto iterável. É mais limpo que o <code>for</code> clássico porque
+          não precisa de contador.
+        </p>
+
         <div class="code-container">
-          <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
-  if (i === 3) {
-    continue; // pula o número 3
-  }
-  console.log(i);
-}</code></pre>
-          <button class="btn-copy">copiar código</button>
+          <pre><code class="language-typescript">// Exemplo: processar lista de pedidos
+const pedidos: string[] = ["Notebook", "Mouse", "Teclado"];
+
+// Com for clássico (mais verboso)
+for (let i = 0; i < pedidos.length; i++) {
+  console.log(`Pedido ${i + 1}: ${pedidos[i]}`);
+}
+
+// Com for...of (mais limpo)
+for (const pedido of pedidos) {
+  console.log(`Pedido: ${pedido}`);
+}
+// Pedido: Notebook
+// Pedido: Mouse
+// Pedido: Teclado</code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p><strong>Saída:</strong></p>
-        <pre><code>1
-2
-4
-5</code></pre>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>for...of</code> direto nos dá o valor de cada elemento.
+            Não precisamos de <code>pedidos[i]</code> — a variável <code>pedido</code>
+            já contém o valor. Código mais limpo, menos propenso a erros.
+          </p>
+          <p>
+            <strong>Importante:</strong> <code>for...of</code> funciona com arrays,
+            strings, maps e sets. NÃO funciona com objetos comuns (para isso,
+            use <code>for...in</code>).
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">for...of</code> com strings</h3>
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo: contar letras de uma palavra
+const palavra: string = "TypeScript";
+let vogais: number = 0;
+
+for (const letra of palavra) {
+  if ("aeiouAEIOU".includes(letra)) {
+    vogais++;
+  }
+}
+
+console.log(`"${palavra}" tem ${vogais} vogais`);
+// "TypeScript" tem 3 vogais</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Strings são iteráveis — cada iteração nos dá uma letra. O método
+            <code>.includes()</code> verifica se a letra está na string de vogais.
+            Combinando <code>for...of</code> com condicionais, fazemos análises
+            simples de texto.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">for...in</code> — itera sobre propriedades</h3>
+        <p>
+          Percorre os <strong>índices</strong> de um array ou
+          <strong>propriedades</strong> de um objeto. Útil quando você precisa
+          do nome da chave, não só do valor.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo: exibir dados de um usuário
+const usuario: { nome: string; email: string; idade: number } = {
+  nome: "Ana",
+  email: "ana@email.com",
+  idade: 28
+};
+
+for (const chave in usuario) {
+  const valor = usuario[chave as keyof typeof usuario];
+  console.log(`${chave}: ${valor}`);
+}
+// nome: Ana
+// email: ana@email.com
+// idade: 28</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>for...in</code> percorre as <strong>chaves</strong> do objeto:
+            "nome", "email", "idade". Para acessar o valor, usamos
+            <code>usuario[chave]</code>.
+          </p>
+          <p>
+            A expressão <code>chave as keyof typeof usuario</code> é uma
+            <strong>type assertion</strong> — informa ao TypeScript que a chave
+            é uma das propriedades válidas do objeto. Sem isso, o TypeScript
+            não permitiria o acesso dinâmico.
+          </p>
+        </div>
+
+        <h3>Comparação: <code>for...of</code> vs <code>for...in</code></h3>
+        <table>
+          <tr>
+            <th>Laço</th>
+            <th>O que percorre</th>
+            <th>Retorna</th>
+            <th>Use para</th>
+          </tr>
+          <tr>
+            <td><code>for...of</code></td>
+            <td>Valores de array/string</td>
+            <td>O valor</td>
+            <td>Processar dados, calcular totais</td>
+          </tr>
+          <tr>
+            <td><code>for...in</code></td>
+            <td>Chaves de objeto</td>
+            <td>O nome da propriedade</td>
+            <td>Exibir campos, serializar dados</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- BREAK E CONTINUE                             -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Palavras-chave: <code class="language-typescript">break</code> e <code class="language-typescript">continue</code></h2>
+
+        <p>
+          Essas duas palavras-chave controlam o fluxo dentro de um laço:
+          <code>break</code> <strong>para completamente</strong> o laço, enquanto
+          <code>continue</code> <strong>pula para a próxima iteração</strong>.
+        </p>
+
+        <h3><code class="language-typescript">break</code> — parar o laço</h3>
+        <p>
+          Útil quando você encontrou o que procurava e não precisa continuar.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo real: buscar um produto pelo ID em uma lista
+type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500 },
+  { id: 2, nome: "Mouse", preco: 89 },
+  { id: 3, nome: "Teclado", preco: 199 },
+  { id: 4, nome: "Monitor", preco: 1200 }
+];
+
+const idBuscado: number = 3;
+let encontrado: Produto | null = null;
+
+for (const produto of produtos) {
+  if (produto.id === idBuscado) {
+    encontrado = produto;
+    break; // encontrou, para o loop
+  }
+}
+
+if (encontrado) {
+  console.log(`Produto: ${encontrado.nome} — R$ ${encontrado.preco}`);
+} else {
+  console.log("Produto não encontrado.");
+}
+// Produto: Teclado — R$ 199</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Ao encontrar o produto com <code>id === 3</code>, o <code>break</code>
+            interrompe o laço imediatamente. Sem ele, o laço continuaria verificando
+            os produtos restantes (Monitor) mesmo depois de encontrar o Teclado.
+          </p>
+          <p>
+            Em listas grandes, o <code>break</code> economiza processamento —
+            para tudo quando encontra o que precisa.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">continue</code> — pular para a próxima iteração</h3>
+        <p>
+          Quando você quer <strong>pular</strong> um item específico mas continuar
+          processando os outros.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo real: processar pedidos, pulando os cancelados
+type Pedido = {
+  id: number;
+  cliente: string;
+  status: "pendente" | "processando" | "cancelado";
+};
+
+const pedidos: Pedido[] = [
+  { id: 1, cliente: "Ana", status: "pendente" },
+  { id: 2, cliente: "Bob", status: "cancelado" },
+  { id: 3, cliente: "Carlos", status: "processando" },
+  { id: 4, cliente: "Diana", status: "cancelado" },
+  { id: 5, cliente: "Eva", status: "pendente" }
+];
+
+let processados: number = 0;
+
+for (const pedido of pedidos) {
+  if (pedido.status === "cancelado") {
+    console.log(`Pedido #${pedido.id} cancelado — pulando...`);
+    continue; // pula para o próximo pedido
+  }
+
+  processados++;
+  console.log(`Processando pedido #${pedido.id} (${pedido.cliente})`);
+}
+
+console.log(`Total processados: ${processados}`);
+// Pedido #2 cancelado — pulando...
+// Processando pedido #1 (Ana)
+// Processando pedido #3 (Carlos)
+// Pedido #4 cancelado — pulando...
+// Processando pedido #5 (Eva)
+// Total processados: 3</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>continue</code> pula o restante do bloco e vai direto para a
+            próxima iteração. Os pedidos cancelados são registrados no log mas
+            não são processados — o <code>processados++</code> só acontece para
+            pedidos válidos.
+          </p>
+          <p>
+            Sem o <code>continue</code>, precisaríamos de um <code>if</code> maior
+            envolvendo todo o código de processamento, tornando o código mais
+            indentado e difícil de ler.
+          </p>
+        </div>
+
+        <h3><code>break</code> com label — sair de loop aninhado</h3>
+        <p>
+          Quando loops estão aninhados, o <code>break</code> só sai do laço mais
+          interno. Com um <strong>label</strong>, você pode sair de qualquer nível.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Exemplo real: buscar produto em múltiplas lojas
+const lojas: string[][] = [
+  ["Notebook", "Mouse"],        // Loja Centro
+  ["Teclado", "Monitor"],       // Loja Zona Sul
+  ["Webcam", "Headset"],        // Loja Leste
+];
+
+const itemBuscado: string = "Monitor";
+let encontrado: boolean = false;
+
+// Label "lojaLoop" no laço externo
+lojaLoop: for (let i = 0; i < lojas.length; i++) {
+  for (let j = 0; j < lojas[i].length; j++) {
+    if (lojas[i][j] === itemBuscado) {
+      console.log(`Encontrado na Loja ${i + 1}, posição ${j + 1}`);
+      encontrado = true;
+      break lojaLoop; // sai de AMBOS os loops
+    }
+  }
+}
+
+if (!encontrado) {
+  console.log("Produto não encontrado em nenhuma loja.");
+}
+// Encontrado na Loja 2, posição 2</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O label <code>lojaLoop:</code> é colocado antes do laço externo.
+            Quando usamos <code>break lojaLoop</code>, saímos de <strong>todos</strong>
+            os loops aninhados — tanto o interno (produtos da loja) quanto o externo
+            (lojas).
+          </p>
+          <p>
+            Sem o label, o <code>break</code> sairia apenas do loop interno e
+            começaria a verificar a próxima loja. O label é essencial para
+            buscas em estruturas aninhadas.
+          </p>
+        </div>
+
+        <h3>Comparação: <code>break</code> vs <code>continue</code></h3>
+        <table>
+          <tr>
+            <th>Palavra-chave</th>
+            <th>O que faz</th>
+            <th>Exemplo de uso</th>
+          </tr>
+          <tr>
+            <td><code>break</code></td>
+            <td>Para o laço completamente</td>
+            <td>Encontrou o item que buscava</td>
+          </tr>
+          <tr>
+            <td><code>continue</code></td>
+            <td>Pula para a próxima iteração</td>
+            <td>Quer ignorar itens inválidos</td>
+          </tr>
+          <tr>
+            <td><code>break label</code></td>
+            <td>Sai de loop aninhado</td>
+            <td>Busca em estrutura 2D</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- LAÇOS COM ENUMS E CONDICIONAIS                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Integrando Laços com Enums e Condicionais</h2>
+
+        <p>
+          Na aula anterior, aprendemos enums e condicionais. Agora vamos combiná-los
+          com laços — algo que acontece constantemente em projetos reais.
+        </p>
+
+        <h3>Exemplo: processar diferentes status de pedido</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">enum StatusPedido {
+  Pendente = "PENDENTE",
+  Processando = "PROCESSANDO",
+  Enviado = "ENVIADO",
+  Entregue = "ENTREGUE",
+  Cancelado = "CANCELADO"
+}
+
+const listaPedidos: StatusPedido[] = [
+  StatusPedido.Pendente,
+  StatusPedido.Processando,
+  StatusPedido.Enviado,
+  StatusPedido.Pendente,
+  StatusPedido.Entregue
+];
+
+let pendentes: number = 0;
+let emTransito: number = 0;
+
+for (const status of listaPedidos) {
+  switch (status) {
+    case StatusPedido.Pendente:
+      pendentes++;
+      break;
+    case StatusPedido.Enviado:
+    case StatusPedido.Processando:
+      emTransito++;
+      break;
+    case StatusPedido.Entregue:
+      console.log("Pedido entregue com sucesso!");
+      break;
+    case StatusPedido.Cancelado:
+      console.log("Pedido cancelado — ignorando...");
+      break;
+  }
+}
+
+console.log(`Pendentes: ${pendentes}`);
+console.log(`Em trânsito: ${emTransito}`);
+// Pendentes: 2
+// Em trânsito: 2</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Note o <code>case StatusPedido.Enviado:</case> seguido de
+            <code>case StatusPedido.Processando:</code> sem <code>break</code> entre eles
+            — isso é <strong>fall-through intencional</strong>. Ambos os status
+            são tratados da mesma forma (incrementar <code>emTransito</code>).
+          </p>
+          <p>
+            Esse padrão é muito usado quando múltiplos valores devem ter o mesmo
+            tratamento. É como um "ou" no switch.
+          </p>
+        </div>
+
+        <h3>Exemplo: gerar relatório com while e enum</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">enum NivelLog {
+  Info = "INFO",
+  Warning = "WARNING",
+  Error = "ERROR"
+}
+
+type LogEntry = {
+  nivel: NivelLog;
+  mensagem: string;
+};
+
+const logs: LogEntry[] = [
+  { nivel: NivelLog.Info, mensagem: "Servidor iniciado" },
+  { nivel: NivelLog.Warning, mensagem: "Uso de memória alto" },
+  { nivel: NivelLog.Error, mensagem: "Falha na conexão com banco" },
+  { nivel: NivelLog.Info, mensagem: "Reconectando..." },
+  { nivel: NivelLog.Error, mensagem: "Timeout na requisição" }
+];
+
+let index: number = 0;
+let erros: number = 0;
+
+while (index < logs.length) {
+  const log = logs[index];
+
+  if (log.nivel === NivelLog.Error) {
+    erros++;
+    console.log(`[ERRO] ${log.mensagem}`);
+  }
+
+  index++;
+}
+
+console.log(`\nTotal de erros encontrados: ${erros}`);
+// [ERRO] Falha na conexão com banco
+// [ERRO] Timeout na requisição
+// Total de erros encontrados: 2</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>while</code> percorre o array de logs com um contador manual.
+            A cada iteração, verifica se o nível é <code>Error</code> e conta
+            quantos erros ocorreram. Em um sistema real, esse tipo de lógica é
+            usado para dashboards de monitoramento e alertas.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- TABELA COMPARATIVA                           -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Quando usar cada tipo de laço</h2>
+
+        <table>
+          <tr>
+            <th>Laço</th>
+            <th>Use quando...</th>
+            <th>Não use quando...</th>
+          </tr>
+          <tr>
+            <td><code>for</code></td>
+            <td>Sabe o número de iterações, precisa do índice</td>
+            <td>Só precisa dos valores (use <code>for...of</code>)</td>
+          </tr>
+          <tr>
+            <td><code>for...of</code></td>
+            <td>Iterar valores de array/string sem precisar do índice</td>
+            <td>Precisa do índice ou das propriedades de um objeto</td>
+          </tr>
+          <tr>
+            <td><code>for...in</code></td>
+            <td>Percorrer propriedades de um objeto</td>
+            <td>Iterar arrays (use <code>for</code> ou <code>for...of</code>)</td>
+          </tr>
+          <tr>
+            <td><code>while</code></td>
+            <td>Conição baseada em estado, número de iterações desconhecido</td>
+            <td>Precisa executar pelo menos uma vez (use <code>do...while</code>)</td>
+          </tr>
+          <tr>
+            <td><code>do...while</code></td>
+            <td>Precisa executar pelo menos uma vez (menus, formulários)</td>
+            <td>A primeira execução pode ser desnecessária</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- PASSO A PASSO                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Passo a Passo: Praticando Laços de Repetição</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <p>
+          Abra o terminal do VSCode (opção Command Prompt) e execute:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula2-typescript
+git pull
+git checkout -b aula3-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula2-typescript</code></strong> — Muda para a branch da aula anterior.
+            Isso garante que a nova branch parta do código correto.
+          </p>
+          <p>
+            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes
+            da branch remota com sua branch local.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula3-typescript</code></strong> — Cria e muda para a nova branch
+            <code>aula3-typescript</code> a partir do estado atual da <code>aula2-typescript</code>.
+          </p>
+        </div>
+
+        <h3>Passo 1 — Criar o arquivo de laços básicos</h3>
+
+        <p>Crie o arquivo <code>src/lacos.ts</code> com o seguinte código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/lacos.ts
+
+// --- Exemplo 1: for clássico — Carrinho de compras ---
+const precos: number[] = [49.9, 29.9, 89.9, 15.9];
+let total: number = 0;
+
+for (let i = 0; i < precos.length; i++) {
+  total += precos[i];
+}
+
+console.log(`Total do carrinho: R$ ${total.toFixed(2)}`);
+
+// --- Exemplo 2: while — Tentativas de login ---
+let tentativas: number = 0;
+const maxTentativas: number = 3;
+const senhaCorreta: string = "minhaSena123";
+let senhaDigitada: string = "errada";
+
+while (tentativas < maxTentativas && senhaDigitada !== senhaCorreta) {
+  tentativas++;
+  console.log(`Tentativa ${tentativas}: senha incorreta`);
+  if (tentativas === 2) {
+    senhaDigitada = "minhaSena123";
+  }
+}
+
+if (senhaDigitada === senhaCorreta) {
+  console.log("Login realizado com sucesso!");
+} else {
+  console.log("Conta bloqueada.");
+}
+
+// --- Exemplo 3: do...while — Menu de opções ---
+let opcao: number;
+
+do {
+  console.log("\n===== MENU =====");
+  console.log("1 - Ver saldo");
+  console.log("2 - Fazer depósito");
+  console.log("0 - Sair");
+
+  opcao = Math.floor(Math.random() * 3);
+
+  switch (opcao) {
+    case 1:
+      console.log("Saldo: R$ 1.250,00");
+      break;
+    case 2:
+      console.log("Depósito realizado!");
+      break;
+    case 0:
+      console.log("Saindo do sistema...");
+      break;
+  }
+} while (opcao !== 0);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo de laços modernos</h3>
+
+        <p>Crie o arquivo <code>src/lacos-modernos.ts</code> com o seguinte código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/lacos-modernos.ts
+
+// --- for...of com array ---
+const frutas: string[] = ["Maçã", "Banana", "Laranja"];
+
+for (const fruta of frutas) {
+  console.log(`Fruta: ${fruta}`);
+}
+
+// --- for...of com string ---
+const palavra: string = "TypeScript";
+let vogais: number = 0;
+
+for (const letra of palavra) {
+  if ("aeiouAEIOU".includes(letra)) {
+    vogais++;
+  }
+}
+
+console.log(`"${palavra}" tem ${vogais} vogais`);
+
+// --- for...in com objeto ---
+const usuario: { nome: string; email: string; idade: number } = {
+  nome: "Ana",
+  email: "ana@email.com",
+  idade: 28
+};
+
+for (const chave in usuario) {
+  const valor = usuario[chave as keyof typeof usuario];
+  console.log(`${chave}: ${valor}`);
+}
+
+// --- Array de objetos com for...of ---
+type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500 },
+  { id: 2, nome: "Mouse", preco: 89 },
+  { id: 3, nome: "Teclado", preco: 199 }
+];
+
+console.log("\n--- Lista de Produtos ---");
+for (const produto of produtos) {
+  console.log(`${produto.nome}: R$ ${produto.preco}`);
+}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o arquivo de break/continue</h3>
+
+        <p>Crie o arquivo <code>src/break-continue.ts</code> com o seguinte código:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/break-continue.ts
+
+type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500 },
+  { id: 2, nome: "Mouse", preco: 89 },
+  { id: 3, nome: "Teclado", preco: 199 },
+  { id: 4, nome: "Monitor", preco: 1200 }
+];
+
+// --- break: buscar produto pelo ID ---
+const idBuscado: number = 3;
+let encontrado: Produto | null = null;
+
+for (const produto of produtos) {
+  if (produto.id === idBuscado) {
+    encontrado = produto;
+    break;
+  }
+}
+
+if (encontrado) {
+  console.log(`Produto: ${encontrado.nome} — R$ ${encontrado.preco}`);
+}
+
+// --- continue: processar pedidos, pulando cancelados ---
+type Pedido = {
+  id: number;
+  cliente: string;
+  status: "pendente" | "processando" | "cancelado";
+};
+
+const pedidos: Pedido[] = [
+  { id: 1, cliente: "Ana", status: "pendente" },
+  { id: 2, cliente: "Bob", status: "cancelado" },
+  { id: 3, cliente: "Carlos", status: "processando" },
+  { id: 4, cliente: "Diana", status: "cancelado" },
+  { id: 5, cliente: "Eva", status: "pendente" }
+];
+
+let processados: number = 0;
+
+for (const pedido of pedidos) {
+  if (pedido.status === "cancelado") {
+    console.log(`Pedido #${pedido.id} cancelado — pulando...`);
+    continue;
+  }
+
+  processados++;
+  console.log(`Processando pedido #${pedido.id} (${pedido.cliente})`);
+}
+
+console.log(`Total processados: ${processados}`);
+
+// --- break com label: buscar em estrutura aninhada ---
+const lojas: string[][] = [
+  ["Notebook", "Mouse"],
+  ["Teclado", "Monitor"],
+  ["Webcam", "Headset"]
+];
+
+const itemBuscado: string = "Monitor";
+let encontradoLoja: boolean = false;
+
+lojaLoop: for (let i = 0; i < lojas.length; i++) {
+  for (let j = 0; j < lojas[i].length; j++) {
+    if (lojas[i][j] === itemBuscado) {
+      console.log(`\nEncontrado na Loja ${i + 1}, posição ${j + 1}`);
+      encontradoLoja = true;
+      break lojaLoop;
+    }
+  }
+}
+
+if (!encontradoLoja) {
+  console.log("Produto não encontrado em nenhuma loja.");
+}</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Compilar e rodar</h3>
+
+        <p>Execute cada arquivo individualmente:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npx tsc src/lacos.ts --outDir dist
+node dist/lacos.js
+
+npx tsc src/lacos-modernos.ts --outDir dist
+node dist/lacos-modernos.js
+
+npx tsc src/break-continue.ts --outDir dist
+node dist/break-continue.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Ou compile todos de uma vez:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npx tsc
+npm start
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Observe os resultados no terminal. Cada arquivo demonstra um conceito diferente
+          — laços básicos, iterações modernas, e controle de fluxo com break/continue.
+        </p>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 3 typescript lacos de repeticao"
+git push --set-upstream origin aula3-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos modificados para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit com a mensagem descritiva.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula3-typescript</code></strong> — Envia a branch
+            para o GitHub e define a origem remota. Nas próximas vezes, apenas <code>git push</code>
+            será suficiente.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-typescript-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-typescript-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula3-typescript</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- DEVER DE CASA                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Sistema de Processamento de Pedidos</h3>
+            <p>
+              Crie um arquivo <b>src/pedidos-lacos.ts</b> que combine laços, enums
+              e condicionais para processar pedidos de uma loja online:
+            </p>
+            <ol>
+              <li>
+                Crie um <b>enum</b> chamado <code>StatusPedido</code> com os valores:
+                Novo, EmPreparo, Enviado, Entregue, Cancelado
+              </li>
+              <li>
+                Crie um array de pelo menos 8 pedidos, com status variados
+                (inclua pelo menos 2 cancelados)
+              </li>
+              <li>
+                Use <b>for...of</b> para percorrer todos os pedidos
+              </li>
+              <li>
+                Use <b>if/else</b> para pular pedidos cancelados (com <code>continue</code>)
+              </li>
+              <li>
+                Use <b>switch</b> para contar quantos pedidos estão em cada status válido
+              </li>
+              <li>
+                Use <b>break</b> para parar ao encontrar o primeiro pedido com status "EmPreparo"
+              </li>
+              <li>
+                Exiba um relatório final com o total de cada status
+              </li>
+            </ol>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>src/pedidos-lacos.ts</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-typescript">// src/pedidos-lacos.ts
+
+enum StatusPedido {
+  Novo = "NOVO",
+  EmPreparo = "EM_PREPARO",
+  Enviado = "ENVIADO",
+  Entregue = "ENTREGUE",
+  Cancelado = "CANCELADO"
+}
+
+type Pedido = {
+  id: number;
+  cliente: string;
+  status: StatusPedido;
+};
+
+const pedidos: Pedido[] = [
+  { id: 1, cliente: "Ana", status: StatusPedido.Novo },
+  { id: 2, cliente: "Bob", status: StatusPedido.Cancelado },
+  { id: 3, cliente: "Carlos", status: StatusPedido.EmPreparo },
+  { id: 4, cliente: "Diana", status: StatusPedido.Enviado },
+  { id: 5, cliente: "Eva", status: StatusPedido.Cancelado },
+  { id: 6, cliente: "Frank", status: StatusPedido.Entregue },
+  { id: 7, cliente: "Gabriela", status: StatusPedido.Novo },
+  { id: 8, cliente: "Hugo", status: StatusPedido.Enviado }
+];
+
+let novos: number = 0;
+let emPreparo: number = 0;
+let enviados: number = 0;
+let entregues: number = 0;
+let cancelados: number = 0;
+let parouEmPreparo: boolean = false;
+
+for (const pedido of pedidos) {
+  // Pular cancelados
+  if (pedido.status === StatusPedido.Cancelado) {
+    cancelados++;
+    console.log(`Pedido #${pedido.id} cancelado — pulando...`);
+    continue;
+  }
+
+  // Parar ao encontrar "EmPreparo"
+  if (pedido.status === StatusPedido.EmPreparo && !parouEmPreparo) {
+    console.log(`\nPedido #${pedido.id} em preparo — parando busca.`);
+    parouEmPreparo = true;
+    // Não dá break aqui para continuar contando os outros status
+  }
+
+  switch (pedido.status) {
+    case StatusPedido.Novo:
+      novos++;
+      break;
+    case StatusPedido.EmPreparo:
+      emPreparo++;
+      break;
+    case StatusPedido.Enviado:
+      enviados++;
+      break;
+    case StatusPedido.Entregue:
+      entregues++;
+      break;
+  }
+}
+
+// Relatório final
+console.log("\n===== RELATÓRIO =====");
+console.log(`Novos: ${novos}`);
+console.log(`Em preparo: ${emPreparo}`);
+console.log(`Enviados: ${enviados}`);
+console.log(`Entregues: ${entregues}`);
+console.log(`Cancelados: ${cancelados}`);</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+                <p>
+                  O exercício combina todos os conceitos da aula: enums para definir
+                  status, <code>for...of</code> para iterar, <code>continue</code>
+                  para pular cancelados, <code>switch</code> para contar cada status,
+                  e uma flag <code>parouEmPreparo</code> para rastrear quando encontramos
+                  o primeiro pedido em preparo.
+                </p>
+                <p>
+                  Note que o <code>continue</code> é executado antes do <code>switch</code> —
+                  pedidos cancelados nem chegam ao switch. Isso mantém o código limpo
+                  e evita processamento desnecessário.
+                </p>
+                <p>
+                  A flag <code>parouEmPreparo</code> é um padrão comum quando você
+                  quer executar algo apenas na primeira ocorrência mas continuar
+                  o loop para processar os demais.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>
