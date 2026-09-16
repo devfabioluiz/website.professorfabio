@@ -44,14 +44,14 @@
           seu código mais legível e eficiente.
         </p>
 
-        <h3><code class="language-typescript">for</code> — o clássico</h3>
+        <h3><code class="language-javascript">for</code> — o clássico</h3>
         <p>
           Ideal quando você <strong>sabe quantas vezes</strong> precisa repetir.
           Ele gerencia automaticamente uma variável contadora.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: calcular preço total de um carrinho de compras
+          <pre><code class="language-javascript">// Exemplo real: calcular preço total de um carrinho de compras
 const precos: number[] = [49.9, 29.9, 89.9, 15.9];
 let total: number = 0;
 
@@ -77,14 +77,14 @@ console.log(`Total do carrinho: R$ ${total.toFixed(2)}`);
           </p>
         </div>
 
-        <h3><code class="language-typescript">while</code> — repete enquanto a condição for verdadeira</h3>
+        <h3><code class="language-javascript">while</code> — repete enquanto a condição for verdadeira</h3>
         <p>
           Útil quando você <strong>não sabe quantas vezes</strong> vai repetir —
           a repetição depende de uma condição que pode mudar durante a execução.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: simular tentativas de login
+          <pre><code class="language-javascript">// Exemplo real: simular tentativas de login
 let tentativas: number = 0;
 const maxTentativas: number = 3;
 const senhaCorreta: string = "minhaSena123";
@@ -125,7 +125,7 @@ if (senhaDigitada === senhaCorreta) {
           </p>
         </div>
 
-        <h3><code class="language-typescript">do...while</code> — executa pelo menos uma vez</h3>
+        <h3><code class="language-javascript">do...while</code> — executa pelo menos uma vez</h3>
         <p>
           Diferente do <code>while</code>, o <code>do...while</code> executa o bloco
           <strong>primeiro</strong> e depois verifica a condição. Útil quando a
@@ -133,7 +133,7 @@ if (senhaDigitada === senhaCorreta) {
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: exibir menu de opções até o usuário escolher sair
+          <pre><code class="language-javascript">// Exemplo real: exibir menu de opções até o usuário escolher sair
 let opcao: number;
 
 do {
@@ -184,7 +184,7 @@ do {
       <!-- for...of e for...in                          -->
       <!-- ============================================ -->
       <section>
-        <h2>Laços Modernos: <code class="language-typescript">for...of</code> e <code class="language-typescript">for...in</code></h2>
+        <h2>Laços Modernos: <code class="language-javascript">for...of</code> e <code class="language-javascript">for...in</code></h2>
 
         <p>
           O TypeScript/JavaScript moderno oferece duas formas mais limpas de iterar:
@@ -192,7 +192,7 @@ do {
           <code>for...in</code> para <strong>índices/propriedades</strong>.
         </p>
 
-        <h3><code class="language-typescript">for...of</code> — itera sobre valores</h3>
+        <h3><code class="language-javascript">for...of</code> — itera sobre valores</h3>
         <p>
           Percorre os <strong>valores</strong> de um array, string ou qualquer
           objeto iterável. É mais limpo que o <code>for</code> clássico porque
@@ -200,7 +200,7 @@ do {
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo: processar lista de pedidos
+          <pre><code class="language-javascript">// Exemplo: processar lista de pedidos
 const pedidos: string[] = ["Notebook", "Mouse", "Teclado"];
 
 // Com for clássico (mais verboso)
@@ -232,9 +232,9 @@ for (const pedido of pedidos) {
           </p>
         </div>
 
-        <h3><code class="language-typescript">for...of</code> com strings</h3>
+        <h3><code class="language-javascript">for...of</code> com strings</h3>
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo: contar letras de uma palavra
+          <pre><code class="language-javascript">// Exemplo: contar letras de uma palavra
 const palavra: string = "TypeScript";
 let vogais: number = 0;
 
@@ -259,7 +259,7 @@ console.log(`"${palavra}" tem ${vogais} vogais`);
           </p>
         </div>
 
-        <h3><code class="language-typescript">for...in</code> — itera sobre propriedades</h3>
+        <h3><code class="language-javascript">for...in</code> — itera sobre propriedades</h3>
         <p>
           Percorre os <strong>índices</strong> de um array ou
           <strong>propriedades</strong> de um objeto. Útil quando você precisa
@@ -267,7 +267,7 @@ console.log(`"${palavra}" tem ${vogais} vogais`);
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo: exibir dados de um usuário
+          <pre><code class="language-javascript">// Exemplo: exibir dados de um usuário
 const usuario: { nome: string; email: string; idade: number } = {
   nome: "Ana",
   email: "ana@email.com",
@@ -326,7 +326,7 @@ for (const chave in usuario) {
       <!-- BREAK E CONTINUE                             -->
       <!-- ============================================ -->
       <section>
-        <h2>Palavras-chave: <code class="language-typescript">break</code> e <code class="language-typescript">continue</code></h2>
+        <h2>Palavras-chave: <code class="language-javascript">break</code> e <code class="language-javascript">continue</code></h2>
 
         <p>
           Essas duas palavras-chave controlam o fluxo dentro de um laço:
@@ -334,13 +334,13 @@ for (const chave in usuario) {
           <code>continue</code> <strong>pula para a próxima iteração</strong>.
         </p>
 
-        <h3><code class="language-typescript">break</code> — parar o laço</h3>
+        <h3><code class="language-javascript">break</code> — parar o laço</h3>
         <p>
           Útil quando você encontrou o que procurava e não precisa continuar.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: buscar um produto pelo ID em uma lista
+          <pre><code class="language-javascript">// Exemplo real: buscar um produto pelo ID em uma lista
 type Produto = {
   id: number;
   nome: string;
@@ -386,14 +386,14 @@ if (encontrado) {
           </p>
         </div>
 
-        <h3><code class="language-typescript">continue</code> — pular para a próxima iteração</h3>
+        <h3><code class="language-javascript">continue</code> — pular para a próxima iteração</h3>
         <p>
           Quando você quer <strong>pular</strong> um item específico mas continuar
           processando os outros.
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: processar pedidos, pulando os cancelados
+          <pre><code class="language-javascript">// Exemplo real: processar pedidos, pulando os cancelados
 type Pedido = {
   id: number;
   cliente: string;
@@ -452,7 +452,7 @@ console.log(`Total processados: ${processados}`);
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo real: buscar produto em múltiplas lojas
+          <pre><code class="language-javascript">// Exemplo real: buscar produto em múltiplas lojas
 const lojas: string[][] = [
   ["Notebook", "Mouse"],        // Loja Centro
   ["Teclado", "Monitor"],       // Loja Zona Sul
@@ -534,7 +534,7 @@ if (!encontrado) {
         <h3>Exemplo: processar diferentes status de pedido</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum StatusPedido {
+          <pre><code class="language-javascript">enum StatusPedido {
   Pendente = "PENDENTE",
   Processando = "PROCESSANDO",
   Enviado = "ENVIADO",
@@ -595,7 +595,7 @@ console.log(`Em trânsito: ${emTransito}`);
         <h3>Exemplo: gerar relatório com while e enum</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">enum NivelLog {
+          <pre><code class="language-javascript">enum NivelLog {
   Info = "INFO",
   Warning = "WARNING",
   Error = "ERROR"
@@ -732,7 +732,7 @@ git checkout -b aula3-typescript
         <p>Crie o arquivo <code>src/lacos.ts</code> com o seguinte código:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/lacos.ts
+          <pre><code class="language-javascript">// src/lacos.ts
 
 // --- Exemplo 1: for clássico — Carrinho de compras ---
 const precos: number[] = [49.9, 29.9, 89.9, 15.9];
@@ -795,7 +795,7 @@ do {
         <p>Crie o arquivo <code>src/lacos-modernos.ts</code> com o seguinte código:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/lacos-modernos.ts
+          <pre><code class="language-javascript">// src/lacos-modernos.ts
 
 // --- for...of com array ---
 const frutas: string[] = ["Maçã", "Banana", "Laranja"];
@@ -853,7 +853,7 @@ for (const produto of produtos) {
         <p>Crie o arquivo <code>src/break-continue.ts</code> com o seguinte código:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/break-continue.ts
+          <pre><code class="language-javascript">// src/break-continue.ts
 
 type Produto = {
   id: number;
@@ -1067,7 +1067,7 @@ git push --set-upstream origin aula3-typescript
 
               <p><b>Arquivo <code>src/pedidos-lacos.ts</code>:</b></p>
               <div class="code-container">
-                <pre><code class="language-typescript">// src/pedidos-lacos.ts
+                <pre><code class="language-javascript">// src/pedidos-lacos.ts
 
 enum StatusPedido {
   Novo = "NOVO",
