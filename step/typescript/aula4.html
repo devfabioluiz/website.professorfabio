@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,9 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
-      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
     <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
@@ -17,145 +19,1073 @@
       <h1>Aula 4</h1>
       <h4 class="text-center">TypeScript</h4>
       <h4 class="text-center">Arrays e Arrays Genéricos</h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Arrays, Arrays genéricos, Generics.</div>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Arrays, Métodos de array, Tuples, Generics, Arrays genéricos, Funções genéricas,
+        Interfaces genéricas, Classes genéricas, Restrições em generics.
+      </div>
     </header>
-    <main class="container"><section>
-        <h2>Arrays</h2>
+
+    <main class="container">
+      <!-- ============================================ -->
+      <!-- ARRAYS — SINTAXE E TIPOS                    -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Arrays em TypeScript</h2>
+
         <p>
-          Um array é uma coleção ordenada de elementos do mesmo tipo. No
-          TypeScript, você pode declarar arrays com tipos explícitos.
+          Um array é uma coleção ordenada de elementos. No TypeScript, arrays
+          são <strong>fortemente tipados</strong> — você define qual tipo de
+          dado o array pode armazenar, e o compilador garante que apenas valores
+          válidos entrem nele.
         </p>
 
-        <h3>Sintaxe</h3>
+        <h3>Sintaxe básica</h3>
+
         <div class="code-container">
-          <pre><code class="language-javascript">let numeros: number[] = [1, 2, 3, 4];
-let nomes: string[] = ["Ana", "João", "Maria"];</code></pre>
-          <button class="btn-copy">copiar código</button>
+          <pre><code class="language-typescript">// Sintaxe com colchetes (mais comum)
+const numeros: number[] = [10, 20, 30, 40];
+const nomes: string[] = ["Ana", "João", "Maria"];
+const ativo: boolean[] = [true, false, true];
+
+// Sintaxe com Array<> (alternativa)
+const notas: Array&lt;number&gt; = [7.5, 8.0, 9.2];
+
+// Array vazio com tipo explícito
+const itens: string[] = [];</code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>Alternativa:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let notas: Array&lt;number&gt; = [7.5, 8.0, 9.2];</code></pre>
-          <button class="btn-copy">copiar código</button>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A sintaxe <code>number[]</code> é equivalente a <code>Array&lt;number&gt;</code> —
+            ambas criam um array que só aceita números. A primeira é mais usada
+            por ser mais curta e legível.
+          </p>
+          <p>
+            Se tentar fazer <code>numeros.push("texto")</code>, o TypeScript gera
+            um erro de compilação. Isso evita bugs silenciosos em tempo de execução.
+          </p>
         </div>
 
-        <h3>Métodos úteis com arrays</h3>
+        <h3>Arrays de objetos</h3>
 
-        <h4><code>forEach</code></h4>
-        <p>Executa uma função para cada item do array:</p>
         <div class="code-container">
-          <pre><code class="language-javascript">nomes.forEach((nome) => {
-  console.log("Olá, " + nome);
-});</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h4><code>filter</code></h4>
-        <p>Filtra os elementos com base em uma condição:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let maiores: number[] = numeros.filter(n => n > 2);
-console.log(maiores); // [3, 4]</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h4><code>map</code></h4>
-        <p>Cria um novo array com base no original:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">let dobrados: number[] = numeros.map(n => n * 2);
-console.log(dobrados); // [2, 4, 6, 8]</code></pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-
-        <h3>Tipos de arrays mais avançados</h3>
-
-        <p>Array de objetos:</p>
-        <div class="code-container">
-          <pre><code class="language-javascript">type Pessoa = {
+          <pre><code class="language-typescript">type Produto = {
+  id: number;
   nome: string;
-  idade: number;
+  preco: number;
 };
 
-let pessoas: Pessoa[] = [
-  { nome: "Carlos", idade: 30 },
-  { nome: "Ana", idade: 25 },
+const carrinho: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500 },
+  { id: 2, nome: "Mouse", preco: 89 },
+  { id: 3, nome: "Teclado", preco: 199 }
 ];</code></pre>
-          <button class="btn-copy">copiar código</button>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Ao definir <code>Produto[]</code>, cada elemento do array deve seguir
+            a estrutura do tipo <code>Produto</code>: ter <code>id</code> (number),
+            <code>nome</code> (string) e <code>preco</code> (number). Se faltar
+            uma propriedade ou o tipo estiver errado, o TypeScript avisa.
+          </p>
         </div>
       </section>
+
+      <!-- ============================================ -->
+      <!-- TUPLES                                       -->
+      <!-- ============================================ -->
       <section>
-        <h2>Generics (Tipos Genéricos) — Conceito</h2>
+        <h2>Tuples</h2>
+
         <p>
-          <strong>Generics</strong> permitem criar componentes (funções,
-          classes, interfaces) que funcionam com vários tipos de dados, sem
-          perder a segurança de tipos.
-        </p>
-        <h2>Objetivos e Vantagens dos Generics</h2>
-        <ul>
-          <li>
-            Permitir reuso de código com tipos diferentes sem perder tipagem.
-          </li>
-          <li>
-            Evitar o uso do tipo <code>any</code>, mantendo a segurança de
-            tipos.
-          </li>
-          <li>Facilitar a manutenção e flexibilidade do código.</li>
-        </ul>
-        <h2>Arrays Genéricos</h2>
-        <p>
-          Arrays genéricos são arrays que armazenam elementos de um tipo
-          genérico, garantindo segurança de tipo.
+          Uma <strong>tuple</strong> (tupla) é um array com um número fixo de
+          elementos, onde cada posição tem um tipo específico. É como um
+          "mini-objeto" muito leve.
         </p>
 
-        <h4>Exemplo 1</h4>
         <div class="code-container">
-          <pre>
-            <code class="language-javascript">
-function mostrarItens<T>(itens: Array<T>): void {
-  itens.forEach(item => console.log(item));
-}
+          <pre><code class="language-typescript">// Tuple: [string, number] — primeiro é string, segundo é number
+const pessoa: [string, number] = ["Ana", 28];
 
-mostrarItens<string>(["Angular", "React", "Vue"]);
-mostrarItens<number>([1, 2, 3]);
+console.log(pessoa[0]); // "Ana" (string)
+console.log(pessoa[1]); // 28 (number)
 
-            </code>
-          </pre>
-          <button class="btn-copy">copiar código</button>
+// pessoa[0] = 100; // ERRO: não pode atribuir number a string
+
+// Named tuples (mais legível — apenas anotação)
+type Coordenada = [number, number];
+
+const posicao: Coordenada = [10, 25];
+
+// Tuple com readonly (imutável)
+const registro: readonly [string, boolean] = ["ativo", true];</code></pre>
+          <button class="btn-copy">Copiar Código</button>
         </div>
-        <h4>Exemplo 2</h4>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Diferente de um array normal (<code>number[]</code> — qualquer
+            quantidade de números), uma tuple tem tamanho fixo e tipos
+            específicos por posição. <code>[string, number]</code> sempre terá
+            exatamente 2 elementos: o primeiro string, o segundo number.
+          </p>
+          <p>
+            O <code>readonly</code> torna a tuple imutável — nem os valores
+            podem ser alterados após a criação.
+          </p>
+        </div>
+
+        <h3>Quando usar tuple vs objeto</h3>
+        <table>
+          <tr>
+            <th>Tuple</th>
+            <th>Objeto</th>
+          </tr>
+          <tr>
+            <td>Posições fixas com tipos diferentes</td>
+            <td>Propriedades nomeadas</td>
+          </tr>
+          <tr>
+            <td>Leve, sem overhead de chaves</td>
+            <td> Mais legível quando há muitas propriedades</td>
+          </tr>
+          <tr>
+            <td>Útil para retorno de funções com poucos valores</td>
+            <td>Útil para dados complexos</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- MÉTODOS DE ARRAY                             -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Métodos essenciais de Array</h2>
+
+        <p>
+          Os métodos de array são funções que manipulam coleções de dados. No
+          TypeScript, eles são <strong>totalmente tipados</code> — o retorno
+          de cada método é inferido automaticamente.
+        </p>
+
+        <h3><code class="language-typescript">forEach</code> — iterar sem retorno</h3>
+
         <div class="code-container">
-          <pre>
-            <code class="language-javascript">
-function primeiroElemento<T>(arr: T[]): T {
+          <pre><code class="language-typescript">const frutas: string[] = ["Maçã", "Banana", "Laranja"];
+
+frutas.forEach((fruta, index) => {
+  console.log(`${index + 1}. ${fruta}`);
+});
+// 1. Maçã
+// 2. Banana
+// 3. Laranja</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3><code class="language-typescript">map</code> — transformar cada elemento</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">const precos: number[] = [10, 20, 30];
+
+// Cria um NOVO array com cada preço com 10% de desconto
+const precosComDesconto = precos.map(preco => preco * 0.9);
+
+console.log(precosComDesconto); // [9, 18, 27]
+console.log(precos);            // [10, 20, 30] (original não muda)</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>map</code> retorna um novo array — o original não é modificado.
+            Cada elemento passa pela função e o resultado substitui o item na
+            mesma posição. É um dos métodos mais usados no desenvolvimento front-end
+            (React, Angular) para renderizar listas.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">filter</code> — manter apenas elementos que passam no teste</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+  emEstoque: boolean;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500, emEstoque: true },
+  { id: 2, nome: "Mouse", preco: 89, emEstoque: false },
+  { id: 3, nome: "Teclado", preco: 199, emEstoque: true },
+  { id: 4, nome: "Monitor", preco: 1200, emEstoque: true }
+];
+
+// Filtrar apenas produtos em estoque
+const disponiveis = produtos.filter(p => p.emEstoque);
+console.log(disponiveis.length); // 3
+
+// Filtrar por preço
+const baratos = produtos.filter(p => p.preco < 200);
+console.log(baratos.map(p => p.nome)); // ["Mouse", "Teclado"]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>filter</code> recebe uma função que retorna <code>true</code>
+            ou <code>false</code>. Apenas os elementos cuja função retornar
+            <code>true</code> ficam no novo array. O tipo do retorno é inferido
+            automaticamente — <code>disponiveis</code> tem tipo <code>Produto[]</code>.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">find</code> — buscar o primeiro elemento</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">const usuarios: { id: number; nome: string }[] = [
+  { id: 1, nome: "Ana" },
+  { id: 2, nome: "Bob" },
+  { id: 3, nome: "Carlos" }
+];
+
+// Retorna o primeiro que satisfaz a condição (ou undefined)
+const bob = usuarios.find(u => u.nome === "Bob");
+console.log(bob); // { id: 2, nome: "Bob" }
+
+const inexistente = usuarios.find(u => u.nome === "Diana");
+console.log(inexistente); // undefined</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3><code class="language-typescript">reduce</code> — agregar em um único valor</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">const numeros: number[] = [10, 20, 30, 40];
+
+// Somar todos os valores
+const total = numeros.reduce((acumulador, atual) => acumulador + atual, 0);
+console.log(total); // 100
+
+// Agrupar produtos por categoria
+type Produto = {
+  nome: string;
+  categoria: string;
+  preco: number;
+};
+
+const produtos: Produto[] = [
+  { nome: "Notebook", categoria: "TI", preco: 3500 },
+  { nome: "Mouse", categoria: "TI", preco: 89 },
+  { nome: "Cadeira", categoria: "Móvel", preco: 450 }
+];
+
+const porCategoria = produtos.reduce((acc, produto) => {
+  if (!acc[produto.categoria]) {
+    acc[produto.categoria] = [];
+  }
+  acc[produto.categoria].push(produto);
+  return acc;
+}, {} as Record&lt;string, Produto[]&gt;);
+
+console.log(porCategoria);
+// { TI: [Notebook, Mouse], Móvel: [Cadeira] }</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>reduce</code> percorre o array e vai acumulando resultados em
+            uma variável (o primeiro parâmetro, <code>acumulador</code>). O segundo
+            parâmetro (<code>0</code> ou <code>{}</code>) é o valor inicial.
+          </p>
+          <p>
+            No primeiro exemplo, somamos números. No segundo, agrupamos objetos
+            por categoria — um padrão muito usado para transformar listas em
+            dados estruturados.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">some</code> e <code>every</code> — verificar condições</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">const idades: number[] = [22, 17, 25, 30, 15];
+
+// some: pelo menos UM elemento satisfaz?
+const temMenor = idades.some(idade => idade < 18);
+console.log(temMenor); // true (17 e 15)
+
+// every: TODOS satisfazem?
+const todosMaiores = idades.every(idade => idade >= 18);
+console.log(todosMaiores); // false (17 e 15 existem)</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3><code class="language-typescript">sort</code> — ordenar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Strings — ordenação alfabética
+const nomes: string[] = ["Carlos", "Ana", "Bruno"];
+nomes.sort();
+console.log(nomes); // ["Ana", "Bruno", "Carlos"]
+
+// Números — precisa de comparador!
+const notas: number[] = [7.5, 9.0, 6.2, 8.8];
+notas.sort((a, b) => a - b); // crescente
+console.log(notas); // [6.2, 7.5, 8.8, 9.0]
+
+notas.sort((a, b) => b - a); // decrescente
+console.log(notas); // [9.0, 8.8, 7.5, 6.2]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            <strong>Cuidado:</strong> o <code>sort()</code> sem comparador ordena
+            como strings — <code>[10, 9, 80]</code> ficaria <code>[10, 80, 9]</code>.
+            Para números, sempre passe uma função comparadora:
+            <code>(a, b) => a - b</code> para crescente.
+          </p>
+          <p>
+            Outro ponto: o <code>sort()</code> modifica o array original. Para
+            ordenar sem alterar, faça uma cópia primeiro:
+            <code>[...notas].sort((a, b) => a - b)</code>.
+          </p>
+        </div>
+
+        <h3>Outros métodos úteis</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">const cores: string[] = ["vermelho", "azul", "verde"];
+
+// includes — verificar se existe
+console.log(cores.includes("azul")); // true
+
+// indexOf — posição de um elemento
+console.log(cores.indexOf("verde")); // 2
+
+// slice — extrair parte
+const doisPrimeiros = cores.slice(0, 2);
+console.log(doisPrimeiros); // ["vermelho", "azul"]
+
+// splice — remover/inserir (modifica o original)
+const copia = [...copia];
+copia.splice(1, 1); // remove 1 item a partir da posição 1
+console.log(copia); // ["vermelho", "verde"]
+
+// flat — aplanar array aninhado
+const aninhado: number[][] = [[1, 2], [3, 4], [5]];
+console.log(aninhado.flat()); // [1, 2, 3, 4, 5]
+
+// concat — juntar arrays
+const a = [1, 2];
+const b = [3, 4];
+console.log(a.concat(b)); // [1, 2, 3, 4]</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- EXEMPLO INTEGRADOR: CARRINHO                 -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Exemplo Integrador: Sistema de Carrinho</h2>
+
+        <p>
+          Vamos combinar os métodos de array em um cenário real — um sistema
+          de carrinho de compras com filtros, totais e ordenação.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+  categoria: string;
+  emEstoque: boolean;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500, categoria: "TI", emEstoque: true },
+  { id: 2, nome: "Mouse", preco: 89, categoria: "TI", emEstoque: true },
+  { id: 3, nome: "Cadeira", preco: 450, categoria: "Móvel", emEstoque: false },
+  { id: 4, nome: "Teclado", preco: 199, categoria: "TI", emEstoque: true },
+  { id: 5, nome: "Monitor", preco: 1200, categoria: "TI", emEstoque: true },
+  { id: 6, nome: "Mesa", preco: 800, categoria: "Móvel", emEstoque: true }
+];
+
+// 1. Filtrar apenas produtos em estoque
+const disponiveis = produtos.filter(p => p.emEstoque);
+
+// 2. Produtos de TI com preço inferior a R$ 500
+const tiBaratos = produtos.filter(p => p.categoria === "TI" && p.preco < 500);
+console.log("TI baratos:", tiBaratos.map(p => p.nome));
+// ["Mouse", "Teclado"]
+
+// 3. Total do carrinho (todos os disponíveis)
+const total = disponiveis.reduce((soma, p) => soma + p.preco, 0);
+console.log(`Total: R$ ${total}`);
+// Total: R$ 5188
+
+// 4. Ordenar por preço crescente
+const porPreco = [...disponiveis].sort((a, b) => a.preco - b.preco);
+console.log("Mais baratos:", porPreco.map(p => `${p.nome}: R$ ${p.preco}`));
+// Mouse: R$ 89, Teclado: R$ 199, ...
+
+// 5. Existe produto acima de R$ 3000?
+const temCaro = disponiveis.some(p => p.preco > 3000);
+console.log("Tem produto caro?", temCaro); // true
+
+// 6. Todos estão em estoque?
+const todosDisponiveis = disponiveis.every(p => p.emEstoque);
+console.log("Todos disponíveis?", todosDisponiveis); // true
+
+// 7. Buscar produto por ID
+const produto = produtos.find(p => p.id === 3);
+console.log("Produto 3:", produto?.nome); // "Cadeira"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Este exemplo mostra como os métodos de array se complementam:
+            <code>filter</code> seleciona, <code>map</code> transforma,
+            <code>reduce</code> agrega, <code>sort</code> ordena,
+            <code>some</code>/<code>every</code> verificam, e <code>find</code> busca.
+          </p>
+          <p>
+            Note o uso de <code>[...disponiveis]</code> para copiar o array antes
+            de ordenar — assim não modificamos o array filtrado original.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- GENERICS — CONCEITO                          -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Generics (Tipos Genéricos)</h2>
+
+        <p>
+          <strong>Generics</strong> permitem criar funções, interfaces e classes
+          que funcionam com <strong>qualquer tipo</strong>, mas sem perder a
+          segurança de tipos. É como um "placeholder de tipo" que só será
+          definido quando o código for usado.
+        </p>
+
+        <h3>Por que Generics?</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// SEM generics — precisamos usar any (perde segurança)
+function pegarPrimeiroAny(arr: any[]): any {
   return arr[0];
 }
 
-const nome = primeiroElemento<string>(["Ana", "João"]);
-const numero = primeiroElemento<number>([10, 20, 30]);
+const nome = pegarPrimeiroAny(["Ana", "João"]); // any — sem tipo!
+const numero = pegarPrimeiroAny([10, 20, 30]);  // any — sem tipo!
 
-            </code>
-          </pre>
-          <button class="btn-copy">copiar código</button>
-        </div>
-        <h4>
-          Exemplo 3
-        </h4>
-        <div class="code-container">
-          <pre>
-            <code class="language-javascript">
-function combinarArrays<T, U>(arr1: T[], arr2: U[]): (T | U)[] {
-  return [...arr1, ...arr2];
+// COM generics — tipo é inferido e mantido
+function pegarPrimeiro&lt;T&gt;(arr: T[]): T {
+  return arr[0];
 }
 
-const resultado = combinarArrays<number, string>([1, 2], ["a", "b"]);
-console.log(resultado); // [1, 2, "a", "b"]
+const nome2 = pegarPrimeiro(["Ana", "João"]);  // tipo: string
+const numero2 = pegarPrimeiro([10, 20, 30]);    // tipo: number
 
-            </code>
-          </pre>
-          <button class="btn-copy">copiar código</button>
+// O TypeScript SABE que nome2 é string:
+console.log(nome2.toUpperCase()); // OK
+// console.log(numero2.toUpperCase()); // ERRO: number não tem toUpperCase</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Sem generics, usamos <code>any</code> — o TypeScript perde toda a
+            verificação de tipo. Com generics, o <code>T</code> é substituído
+            pelo tipo real quando a função é chamada. Se passarmos
+            <code>["Ana", "João"]</code>, o <code>T</code> vira <code>string</code>.
+          </p>
+          <p>
+            A grande vantagem: o TypeScript <strong>infere</strong> o tipo
+            automaticamente. Não precisamos escrever
+            <code>pegarPrimeiro&lt;string&gt;([...])</code> — ele descobre sozinho.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- GENERICS — RESTRIÇÕES                       -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Restrições em Generics</h2>
+
+        <p>
+          Às vezes precisamos garantir que o tipo genérico tenha certas
+          propriedades. Usamos <code>extends</code> para definir essas restrições.
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Restrição: T deve ter uma propriedade "length"
+function logComprimento&lt;T extends { length: number }&gt;(item: T): void {
+  console.log(`Comprimento: ${item.length}`);
+}
+
+logComprimento("Hello");           // OK: string tem length
+logComprimento([1, 2, 3]);         // OK: array tem length
+// logComprimento(123);            // ERRO: number não tem length
+
+// Restrição: T deve ser um objeto com "id"
+type ComId = { id: number };
+
+function buscarPorId&lt;T extends ComId&gt;(lista: T[], id: number): T | undefined {
+  return lista.find(item => item.id === id);
+}
+
+type Usuario = { id: number; nome: string };
+type Produto = { id: number; nome: string; preco: number };
+
+const usuarios: Usuario[] = [{ id: 1, nome: "Ana" }];
+const produtos: Produto[] = [{ id: 1, nome: "Notebook", preco: 3500 }];
+
+buscarPorId(usuarios, 1);  // OK: Usuario tem id
+buscarPorId(produtos, 1);  // OK: Produto tem id</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            <code>T extends { length: number }</code> significa: "T pode ser
+            qualquer tipo, <strong>desde que</strong> tenha uma propriedade
+            <code>length</code> do tipo number". Strings, arrays e typed arrays
+            atendem a essa restrição; números e booleans não.
+          </p>
+          <p>
+            Isso é extremamente útil para criar funções genéricas que funcionam
+            com múltiplos tipos mas ainda assim garantem que certas propriedades
+            existam.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- INTERFACES E CLASSES GENÉRICAS               -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Interfaces e Classes Genéricas</h2>
+
+        <h3>Interface genérica</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Interface que funciona com qualquer tipo de dado
+interface RespostaAPI&lt;T&gt; {
+  dados: T;
+  status: number;
+  mensagem: string;
+  timestamp: Date;
+}
+
+// Usando com diferentes tipos
+const respostaUsuarios: RespostaAPI&lt;Usuario[]&gt; = {
+  dados: [{ id: 1, nome: "Ana" }],
+  status: 200,
+  mensagem: "Sucesso",
+  timestamp: new Date()
+};
+
+type Usuario = { id: number; nome: string };
+
+const respostaErro: RespostaAPI&lt;null&gt; = {
+  dados: null,
+  status: 500,
+  mensagem: "Erro interno",
+  timestamp: new Date()
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A interface <code>RespostaAPI&lt;T&gt;</code> define a estrutura de
+            uma resposta de API. O tipo <code>T</code> é o tipo dos dados
+            retornados — pode ser <code>Usuario[]</code>, <code>null</code>,
+            ou qualquer outro tipo. Isso reutiliza a mesma estrutura para
+            diferentes endpoints.
+          </p>
+        </div>
+
+        <h3>Classe genérica</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Repositório genérico — funciona com qualquer tipo de dados
+class Repository&lt;T&gt; {
+  private items: T[] = [];
+
+  adicionar(item: T): void {
+    this.items.push(item);
+  }
+
+  buscarPorIndice(index: number): T | undefined {
+    return this.items[index];
+  }
+
+  listar(): T[] {
+    return [...this.items];
+  }
+
+  filtrar(predicate: (item: T) => boolean): T[] {
+    return this.items.filter(predicate);
+  }
+}
+
+// Usando com Produto
+type Produto = { id: number; nome: string; preco: number };
+
+const produtoRepo = new Repository&lt;Produto&gt;();
+produtoRepo.adicionar({ id: 1, nome: "Notebook", preco: 3500 });
+produtoRepo.adicionar({ id: 2, nome: "Mouse", preco: 89 });
+
+const baratos = produtoRepo.filtrar(p => p.preco < 200);
+console.log(baratos.map(p => p.nome)); // ["Mouse"]
+
+// Usando com Usuário
+type Usuario = { id: number; nome: string };
+
+const usuarioRepo = new Repository&lt;Usuario&gt;();
+usuarioRepo.adicionar({ id: 1, nome: "Ana" });
+usuarioRepo.adicionar({ id: 2, nome: "Bob" });
+
+const todos = usuarioRepo.listar();
+console.log(todos.length); // 2</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A classe <code>Repository&lt;T&gt;</code> é um padrão muito usado em
+            aplicações reais — ela gerencia uma coleção de dados de qualquer
+            tipo. Criamos uma instância para <code>Produto</code> e outra para
+            <code>Usuario</code>, e cada uma só aceita o tipo correspondente.
+          </p>
+          <p>
+            Isso elimina a necessidade de criar classes separadas
+            (<code>ProdutoRepository</code>, <code>UsuarioRepository</code>)
+            com código duplicado.
+          </p>
+        </div>
+
+        <h3>Interface genérica com constraint</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Interface que exige que T tenha "id"
+interface EntidadeComId {
+  id: number;
+}
+
+interface Cache&lt;T extends EntidadeComId&gt; {
+  dados: Map&lt;number, T&gt;;
+  obter(id: number): T | undefined;
+  salvar(item: T): void;
+  remover(id: number): void;
+}
+
+// Implementação concreta
+class CacheLocal&lt;T extends EntidadeComId&gt; implements Cache&lt;T&gt; {
+  dados = new Map&lt;number, T&gt;();
+
+  obter(id: number): T | undefined {
+    return this.dados.get(id);
+  }
+
+  salvar(item: T): void {
+    this.dados.set(item.id, item);
+  }
+
+  remover(id: number): void {
+    this.dados.delete(id);
+  }
+}
+
+type Produto = { id: number; nome: string; preco: number };
+
+const cache = new CacheLocal&lt;Produto&gt;();
+cache.salvar({ id: 1, nome: "Notebook", preco: 3500 });
+console.log(cache.obter(1)?.nome); // "Notebook"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- PASSO A PASSO                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Passo a Passo: Praticando Arrays e Generics</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula3-typescript
+git pull
+git checkout -b aula4-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula3-typescript</code></strong> — Muda para a branch da aula anterior.
+          </p>
+          <p>
+            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula4-typescript</code></strong> — Cria e muda para a nova branch.
+          </p>
+        </div>
+
+        <h3>Passo 1 — Criar o arquivo de arrays</h3>
+
+        <p>Crie o arquivo <code>src/arrays.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/arrays.ts
+
+// --- Sintaxe básica ---
+const numeros: number[] = [10, 20, 30, 40];
+const nomes: string[] = ["Ana", "João", "Maria"];
+
+// --- Arrays de objetos ---
+type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+  categoria: string;
+  emEstoque: boolean;
+};
+
+const produtos: Produto[] = [
+  { id: 1, nome: "Notebook", preco: 3500, categoria: "TI", emEstoque: true },
+  { id: 2, nome: "Mouse", preco: 89, categoria: "TI", emEstoque: true },
+  { id: 3, nome: "Cadeira", preco: 450, categoria: "Móvel", emEstoque: false },
+  { id: 4, nome: "Teclado", preco: 199, categoria: "TI", emEstoque: true },
+  { id: 5, nome: "Monitor", preco: 1200, categoria: "TI", emEstoque: true }
+];
+
+// --- filter: produtos em estoque ---
+const disponiveis = produtos.filter(p => p.emEstoque);
+console.log("Disponíveis:", disponiveis.map(p => p.nome));
+
+// --- map: nomes dos produtos ---
+const nomesProdutos = produtos.map(p => p.nome);
+console.log("Produtos:", nomesProdutos);
+
+// --- find: buscar por ID ---
+const produto = produtos.find(p => p.id === 3);
+console.log("Produto 3:", produto?.nome);
+
+// --- reduce: total do carrinho ---
+const total = disponiveis.reduce((soma, p) => soma + p.preco, 0);
+console.log(`Total: R$ ${total}`);
+
+// --- some/every ---
+const temCaro = produtos.some(p => p.preco > 3000);
+const todosDisponiveis = disponiveis.every(p => p.emEstoque);
+console.log("Tem caro?", temCaro);
+console.log("Todos disponíveis?", todosDisponiveis);
+
+// --- sort: ordenar por preço ---
+const porPreco = [...produtos].sort((a, b) => a.preco - b.preco);
+console.log("Por preço:", porPreco.map(p => `${p.nome}: R$ ${p.preco}`));
+
+// --- Tuple ---
+type Coordenada = [number, number];
+const ponto: Coordenada = [10, 25];
+console.log(`Posição: ${ponto[0]}, ${ponto[1]}`);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo de generics</h3>
+
+        <p>Crie o arquivo <code>src/generics.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/generics.ts
+
+// --- Função genérica ---
+function pegarPrimeiro&lt;T&gt;(arr: T[]): T {
+  return arr[0];
+}
+
+const primeiroNome = pegarPrimeiro(["Ana", "João"]);
+const primeiroNum = pegarPrimeiro([10, 20, 30]);
+console.log(primeiroNome.toUpperCase()); // "ANA"
+console.log(primeiroNum * 2);            // 20
+
+// --- Restrição com extends ---
+function logComprimento&lt;T extends { length: number }&gt;(item: T): void {
+  console.log(`Comprimento: ${item.length}`);
+}
+
+logComprimento("Hello");
+logComprimento([1, 2, 3]);
+
+// --- Interface genérica ---
+interface RespostaAPI&lt;T&gt; {
+  dados: T;
+  status: number;
+  mensagem: string;
+}
+
+type Usuario = { id: number; nome: string };
+
+const resposta: RespostaAPI&lt;Usuario[]&gt; = {
+  dados: [{ id: 1, nome: "Ana" }, { id: 2, nome: "Bob" }],
+  status: 200,
+  mensagem: "Sucesso"
+};
+
+console.log(`${resposta.dados.length} usuários encontrados`);
+
+// --- Classe genérica ---
+class Repository&lt;T&gt; {
+  private items: T[] = [];
+
+  adicionar(item: T): void {
+    this.items.push(item);
+  }
+
+  listar(): T[] {
+    return [...this.items];
+  }
+
+  filtrar(predicate: (item: T) => boolean): T[] {
+    return this.items.filter(predicate);
+  }
+}
+
+type Produto = { id: number; nome: string; preco: number };
+
+const repo = new Repository&lt;Produto&gt;();
+repo.adicionar({ id: 1, nome: "Notebook", preco: 3500 });
+repo.adicionar({ id: 2, nome: "Mouse", preco: 89 });
+
+const baratos = repo.filtrar(p => p.preco < 200);
+console.log("Baratos:", baratos.map(p => p.nome));</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Compilar e rodar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npx tsc src/arrays.ts --outDir dist
+node dist/arrays.js
+
+npx tsc src/generics.ts --outDir dist
+node dist/generics.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 4 typescript arrays e generics"
+git push --set-upstream origin aula4-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos modificados para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit com a mensagem descritiva.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula4-typescript</code></strong> — Envia a branch
+            para o GitHub e define a origem remota.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-typescript-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-typescript-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula4-typescript</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- DEVER DE CASA                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Catálogo de Produtos com Generics</h3>
+            <p>
+              Crie um arquivo <b>src/catalogo.ts</b> com um sistema de catálogo
+              que use arrays e generics:
+            </p>
+            <ol>
+              <li>
+                Crie um <b>type</b> chamado <code>Produto</code> com: id, nome,
+                preco, categoria, emEstoque
+              </li>
+              <li>
+                Crie um array de pelo menos 6 produtos com categorias variadas
+              </li>
+              <li>
+                Crie uma <b>classe genérica</b> chamada <code>Catalogo&lt;T&gt;</code>
+                com métodos: adicionar, listar, filtrar, buscarPorId
+              </li>
+              <li>
+                Use a classe para criar um catálogo de produtos e outro de usuários
+              </li>
+              <li>
+                Demonstre: filtrar por categoria, ordenar por preço, calcular total,
+                buscar por ID
+              </li>
+            </ol>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>src/catalogo.ts</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-typescript">// src/catalogo.ts
+
+type Produto = {
+  id: number;
+  nome: string;
+  preco: number;
+  categoria: string;
+  emEstoque: boolean;
+};
+
+type Usuario = {
+  id: number;
+  nome: string;
+  email: string;
+};
+
+// Classe genérica
+class Catalogo&lt;T&gt; {
+  private items: T[] = [];
+
+  adicionar(item: T): void {
+    this.items.push(item);
+  }
+
+  listar(): T[] {
+    return [...this.items];
+  }
+
+  filtrar(predicate: (item: T) => boolean): T[] {
+    return this.items.filter(predicate);
+  }
+
+  buscarPorIndice(index: number): T | undefined {
+    return this.items[index];
+  }
+}
+
+// Catálogo de produtos
+const produtos = new Catalogo&lt;Produto&gt;();
+produtos.adicionar({ id: 1, nome: "Notebook", preco: 3500, categoria: "TI", emEstoque: true });
+produtos.adicionar({ id: 2, nome: "Mouse", preco: 89, categoria: "TI", emEstoque: true });
+produtos.adicionar({ id: 3, nome: "Cadeira", preco: 450, categoria: "Móvel", emEstoque: false });
+produtos.adicionar({ id: 4, nome: "Teclado", preco: 199, categoria: "TI", emEstoque: true });
+produtos.adicionar({ id: 5, nome: "Mesa", preco: 800, categoria: "Móvel", emEstoque: true });
+produtos.adicionar({ id: 6, nome: "Monitor", preco: 1200, categoria: "TI", emEstoque: true });
+
+// Filtrar por categoria
+const ti = produtos.filtrar(p => p.categoria === "TI");
+console.log("Produtos TI:", ti.map(p => p.nome));
+
+// Ordenar por preço
+const porPreco = [...produtos.listar()].sort((a, b) => a.preco - b.preco);
+console.log("Por preço:", porPreco.map(p => `${p.nome}: R$ ${p.preco}`));
+
+// Total dos disponíveis
+const total = produtos.filtrar(p => p.emEstoque).reduce((soma, p) => soma + p.preco, 0);
+console.log(`Total: R$ ${total}`);
+
+// Catálogo de usuários
+const usuarios = new Catalogo&lt;Usuario&gt;();
+usuarios.adicionar({ id: 1, nome: "Ana", email: "ana@email.com" });
+usuarios.adicionar({ id: 2, nome: "Bob", email: "bob@email.com" });
+
+console.log("Usuários:", usuarios.listar().map(u => u.nome));</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+                <p>
+                  A classe <code>Catalogo&lt;T&gt;</code> funciona para qualquer
+                  tipo de dados — produtos, usuários, ou qualquer coisa que tenha
+                  uma estrutura definida. Isso elimina código duplicado e mantém
+                  a segurança de tipos.
+                </p>
+                <p>
+                  Cada catálogo (produtos e usuários) é uma instância separada
+                  da mesma classe genérica. O TypeScript garante que o catálogo
+                  de produtos só aceite <code>Produto</code> e o de usuários só
+                  aceite <code>Usuario</code>.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
+
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>
