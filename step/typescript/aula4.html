@@ -43,7 +43,7 @@
         <h3>Sintaxe básica</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Sintaxe com colchetes (mais comum)
+          <pre><code class="language-javascript">// Sintaxe com colchetes (mais comum)
 const numeros: number[] = [10, 20, 30, 40];
 const nomes: string[] = ["Ana", "João", "Maria"];
 const ativo: boolean[] = [true, false, true];
@@ -72,7 +72,7 @@ const itens: string[] = [];</code></pre>
         <h3>Arrays de objetos</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">type Produto = {
+          <pre><code class="language-javascript">type Produto = {
   id: number;
   nome: string;
   preco: number;
@@ -110,7 +110,7 @@ const carrinho: Produto[] = [
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Tuple: [string, number] — primeiro é string, segundo é number
+          <pre><code class="language-javascript">// Tuple: [string, number] — primeiro é string, segundo é number
 const pessoa: [string, number] = ["Ana", 28];
 
 console.log(pessoa[0]); // "Ana" (string)
@@ -175,10 +175,10 @@ const registro: readonly [string, boolean] = ["ativo", true];</code></pre>
           de cada método é inferido automaticamente.
         </p>
 
-        <h3><code class="language-typescript">forEach</code> — iterar sem retorno</h3>
+        <h3><code class="language-javascript">forEach</code> — iterar sem retorno</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const frutas: string[] = ["Maçã", "Banana", "Laranja"];
+          <pre><code class="language-javascript">const frutas: string[] = ["Maçã", "Banana", "Laranja"];
 
 frutas.forEach((fruta, index) => {
   console.log(`${index + 1}. ${fruta}`);
@@ -189,10 +189,10 @@ frutas.forEach((fruta, index) => {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3><code class="language-typescript">map</code> — transformar cada elemento</h3>
+        <h3><code class="language-javascript">map</code> — transformar cada elemento</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const precos: number[] = [10, 20, 30];
+          <pre><code class="language-javascript">const precos: number[] = [10, 20, 30];
 
 // Cria um NOVO array com cada preço com 10% de desconto
 const precosComDesconto = precos.map(preco => preco * 0.9);
@@ -212,10 +212,10 @@ console.log(precos);            // [10, 20, 30] (original não muda)</code></pre
           </p>
         </div>
 
-        <h3><code class="language-typescript">filter</code> — manter apenas elementos que passam no teste</h3>
+        <h3><code class="language-javascript">filter</code> — manter apenas elementos que passam no teste</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">type Produto = {
+          <pre><code class="language-javascript">type Produto = {
   id: number;
   nome: string;
   preco: number;
@@ -249,10 +249,10 @@ console.log(baratos.map(p => p.nome)); // ["Mouse", "Teclado"]</code></pre>
           </p>
         </div>
 
-        <h3><code class="language-typescript">find</code> — buscar o primeiro elemento</h3>
+        <h3><code class="language-javascript">find</code> — buscar o primeiro elemento</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const usuarios: { id: number; nome: string }[] = [
+          <pre><code class="language-javascript">const usuarios: { id: number; nome: string }[] = [
   { id: 1, nome: "Ana" },
   { id: 2, nome: "Bob" },
   { id: 3, nome: "Carlos" }
@@ -267,10 +267,10 @@ console.log(inexistente); // undefined</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3><code class="language-typescript">reduce</code> — agregar em um único valor</h3>
+        <h3><code class="language-javascript">reduce</code> — agregar em um único valor</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const numeros: number[] = [10, 20, 30, 40];
+          <pre><code class="language-javascript">const numeros: number[] = [10, 20, 30, 40];
 
 // Somar todos os valores
 const total = numeros.reduce((acumulador, atual) => acumulador + atual, 0);
@@ -316,10 +316,10 @@ console.log(porCategoria);
           </p>
         </div>
 
-        <h3><code class="language-typescript">some</code> e <code>every</code> — verificar condições</h3>
+        <h3><code class="language-javascript">some</code> e <code>every</code> — verificar condições</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const idades: number[] = [22, 17, 25, 30, 15];
+          <pre><code class="language-javascript">const idades: number[] = [22, 17, 25, 30, 15];
 
 // some: pelo menos UM elemento satisfaz?
 const temMenor = idades.some(idade => idade < 18);
@@ -331,10 +331,10 @@ console.log(todosMaiores); // false (17 e 15 existem)</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3><code class="language-typescript">sort</code> — ordenar</h3>
+        <h3><code class="language-javascript">sort</code> — ordenar</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Strings — ordenação alfabética
+          <pre><code class="language-javascript">// Strings — ordenação alfabética
 const nomes: string[] = ["Carlos", "Ana", "Bruno"];
 nomes.sort();
 console.log(nomes); // ["Ana", "Bruno", "Carlos"]
@@ -367,7 +367,7 @@ console.log(notas); // [9.0, 8.8, 7.5, 6.2]</code></pre>
         <h3>Outros métodos úteis</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">const cores: string[] = ["vermelho", "azul", "verde"];
+          <pre><code class="language-javascript">const cores: string[] = ["vermelho", "azul", "verde"];
 
 // includes — verificar se existe
 console.log(cores.includes("azul")); // true
@@ -408,7 +408,7 @@ console.log(a.concat(b)); // [1, 2, 3, 4]</code></pre>
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">type Produto = {
+          <pre><code class="language-javascript">type Produto = {
   id: number;
   nome: string;
   preco: number;
@@ -488,7 +488,7 @@ console.log("Produto 3:", produto?.nome); // "Cadeira"</code></pre>
         <h3>Por que Generics?</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// SEM generics — precisamos usar any (perde segurança)
+          <pre><code class="language-javascript">// SEM generics — precisamos usar any (perde segurança)
 function pegarPrimeiroAny(arr: any[]): any {
   return arr[0];
 }
@@ -538,7 +538,7 @@ console.log(nome2.toUpperCase()); // OK
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Restrição: T deve ter uma propriedade "length"
+          <pre><code class="language-javascript">// Restrição: T deve ter uma propriedade "length"
 function logComprimento&lt;T extends { length: number }&gt;(item: T): void {
   console.log(`Comprimento: ${item.length}`);
 }
@@ -590,7 +590,7 @@ buscarPorId(produtos, 1);  // OK: Produto tem id</code></pre>
         <h3>Interface genérica</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Interface que funciona com qualquer tipo de dado
+          <pre><code class="language-javascript">// Interface que funciona com qualquer tipo de dado
 interface RespostaAPI&lt;T&gt; {
   dados: T;
   status: number;
@@ -631,7 +631,7 @@ const respostaErro: RespostaAPI&lt;null&gt; = {
         <h3>Classe genérica</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Repositório genérico — funciona com qualquer tipo de dados
+          <pre><code class="language-javascript">// Repositório genérico — funciona com qualquer tipo de dados
 class Repository&lt;T&gt; {
   private items: T[] = [];
 
@@ -692,7 +692,7 @@ console.log(todos.length); // 2</code></pre>
         <h3>Interface genérica com constraint</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Interface que exige que T tenha "id"
+          <pre><code class="language-javascript">// Interface que exige que T tenha "id"
 interface EntidadeComId {
   id: number;
 }
@@ -769,7 +769,7 @@ git checkout -b aula4-typescript
         <p>Crie o arquivo <code>src/arrays.ts</code>:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/arrays.ts
+          <pre><code class="language-javascript">// src/arrays.ts
 
 // --- Sintaxe básica ---
 const numeros: number[] = [10, 20, 30, 40];
@@ -830,7 +830,7 @@ console.log(`Posição: ${ponto[0]}, ${ponto[1]}`);</code></pre>
         <p>Crie o arquivo <code>src/generics.ts</code>:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/generics.ts
+          <pre><code class="language-javascript">// src/generics.ts
 
 // --- Função genérica ---
 function pegarPrimeiro&lt;T&gt;(arr: T[]): T {
@@ -996,7 +996,7 @@ git push --set-upstream origin aula4-typescript
 
               <p><b>Arquivo <code>src/catalogo.ts</code>:</b></p>
               <div class="code-container">
-                <pre><code class="language-typescript">// src/catalogo.ts
+                <pre><code class="language-javascript">// src/catalogo.ts
 
 type Produto = {
   id: number;
