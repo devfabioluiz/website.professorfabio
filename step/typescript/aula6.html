@@ -1,274 +1,1077 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 8 - TypeScript</title>
+    <title>Aula 6 - TypeScript</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
-      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
     <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
-      <h1>Aula 8</h1>
+      <h1>Aula 6</h1>
       <h4 class="text-center">TypeScript</h4>
-      <h4 class="text-center">
-        POO (parte 1 - Classe, Objetos, Propriedades, Métodos e Interfaces)
-      </h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Classes e objetos, Propriedades e métodos, Modificadores de acesso, Interfaces, Construtores.</div>
+      <h4 class="text-center">POO Parte 1 — Classes, Objetos e Interfaces</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Classes e objetos, Construtores, Modificadores de acesso (public, private, protected, readonly),
+        Getters e Setters, Propriedades estáticas, Interfaces, Tipagem estrutural,
+        Classes abstratas, Métodos abstratos.
+      </div>
     </header>
-    <main class="container"><section>
-        <h2>Introdução à Orientação a Objetos com TypeScript</h2>
+
+    <main class="container">
+      <!-- ============================================ -->
+      <!-- CLASSES                                      -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Classes em TypeScript</h2>
+
         <p>
-          A Programação Orientada a Objetos (POO) organiza o código em entidades
-          chamadas <b>objetos</b>, que encapsulam <b>dados</b> (propriedades) e
-          <b>comportamentos</b> (métodos). Com TypeScript, esse paradigma é
-          fortalecido com a adição de <b>tipagem estática</b>,
-          <b>interfaces</b> e <b>modificadores de acesso</b>, tornando o código
-          mais robusto e legível.
+          Uma <strong>classe</strong> é um molde para criar objetos. Ela define
+          <strong>propriedades</strong> (dados) e <strong>métodos</strong>
+          (comportamentos). No TypeScript, classes ganham tipos, modificadores
+          de acesso e outros recursos que não existem no JavaScript puro.
         </p>
 
-        <h4>Classe com Tipagem</h4>
-        <p>
-          Uma <b>classe</b> define a estrutura de um objeto. No TypeScript,
-          utilizamos tipos explícitos para garantir segurança e clareza.
-        </p>
+        <h3>Construtor e propriedades</h3>
 
         <div class="code-container">
-          <pre><code class="language-javascript">
-class Animal {
+          <pre><code class="language-typescript">class ContaBancaria {
+  // Propriedades declaradas com modificadores no constructor
   constructor(
-    public name: string,
-    public species: string
+    public titular: string,
+    private saldo: number
   ) {}
 
-  describe(): string {
-    return `${this.name} é um ${this.species}.`;
+  // Método público
+  depositar(valor: number): void {
+    if (valor > 0) {
+      this.saldo += valor;
+      console.log(`Depositado: R$ ${valor}`);
+    }
+  }
+
+  // Método público
+  getSaldo(): number {
+    return this.saldo;
   }
 }
-    </code></pre>
+
+const conta = new ContaBancaria("Ana", 1000);
+conta.depositar(500);
+console.log(`Saldo: R$ ${conta.getSaldo()}`); // 1500
+// console.log(conta.saldo); // ERRO: saldo é private</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>Objeto (Instância da Classe)</h4>
-        <p>
-          Um <b>objeto</b> é criado a partir de uma classe usando a
-          palavra-chave <code>new</code>. O TypeScript garante que os valores
-          estejam de acordo com os tipos definidos na classe.
-        </p>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>constructor</code> é chamado quando criamos um novo objeto
+            com <code>new</code>. Colocar <code>public titular</code> e
+            <code>private saldo</code> como parâmetros do constructor cria
+            as propriedades automaticamente — não precisamos declarar separadamente.
+          </p>
+          <p>
+            <code>private saldo</code> significa que só a própria classe pode
+            acessar e modificar o saldo. Quem usar a classe só consegue
+            interagir com <code>depositar()</code> e <code>getSaldo()</code>.
+          </p>
+        </div>
+
+        <h3>Modificadores de acesso</h3>
+
+        <table>
+          <tr>
+            <th>Modificador</th>
+            <th>Classe</th>
+            <th>Subclasse</th>
+            <th>Fora da classe</th>
+          </tr>
+          <tr>
+            <td><code>public</code></td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td><code>private</code></td>
+            <td>✓</td>
+            <td>✗</td>
+            <td>✗</td>
+          </tr>
+          <tr>
+            <td><code>protected</code></td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✗</td>
+          </tr>
+          <tr>
+            <td><code>readonly</code></td>
+            <td>✓ (leitura)</td>
+            <td>✓ (leitura)</td>
+            <td>✓ (leitura)</td>
+          </tr>
+        </table>
 
         <div class="code-container">
-          <pre><code class="language-javascript">
-const dog = new Animal('Rex', 'cachorro');
-console.log(dog.describe()); // Rex é um cachorro.
-    </code></pre>
+          <pre><code class="language-typescript">class Funcionario {
+  public nome: string;           // acessível por todos
+  protected departamento: string; // acessível por subclasses
+  private salario: number;        // acessível só pela classe
+  readonly id: number;            // acessível por todos, mas não modifica
+
+  constructor(nome: string, departamento: string, salario: number, id: number) {
+    this.nome = nome;
+    this.departamento = departamento;
+    this.salario = salario;
+    this.id = id;
+  }
+
+  // Só pode ser acessado dentro da classe
+  private calcularBonus(): number {
+    return this.salario * 0.1;
+  }
+
+  public getResumo(): string {
+    return `${this.nome} (${this.departamento}) — Bônus: R$ ${this.calcularBonus()}`;
+  }
+}
+
+const func = new Funcionario("Ana", "TI", 5000, 1);
+console.log(func.nome);          // "Ana"
+// console.log(func.salario);    // ERRO: private
+// console.log(func.departamento); // ERRO: protected
+console.log(func.id);            // 1
+// func.id = 2;                  // ERRO: readonly</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>Propriedades e Métodos com Acessibilidade</h4>
-        <p>
-          <b>Propriedades</b> armazenam valores, enquanto <b>métodos</b> são
-          funções associadas à classe. No TypeScript, usamos
-          <code>public</code>, <code>private</code> e <code>readonly</code> para
-          controlar o acesso e a modificação desses elementos.
-        </p>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            <code>private</code> restringe o acesso à própria classe.
+            <code>protected</code> permite acesso em subclasses (herança).
+            <code>readonly</code> permite leitura mas impede modificação após
+            a construção.
+          </p>
+        </div>
+
+        <h3>Getters e Setters</h3>
 
         <div class="code-container">
-          <pre><code class="language-javascript">
-class Calculator {
-  private history: string[] = [];
+          <pre><code class="language-typescript">class Temperature {
+  private _celsius: number;
 
-  public add(a: number, b: number): number {
-    const result = a + b;
-    this.log(`${a} + ${b} = ${result}`);
-    return result;
+  constructor(celsius: number) {
+    this._celsius = celsius;
   }
 
-  private log(operation: string): void {
-    this.history.push(operation);
+  // Getter: acessado como propriedade (sem parênteses)
+  get fahrenheit(): number {
+    return this._celsius * 1.8 + 32;
   }
 
-  public getHistory(): string[] {
-    return this.history;
+  // Setter: atribuído como propriedade
+  set celsius(valor: number) {
+    if (valor < -273.15) {
+      console.log("Temperatura abaixo do zero absoluto!");
+      return;
+    }
+    this._celsius = valor;
+  }
+
+  get celsius(): number {
+    return this._celsius;
   }
 }
 
-const calc = new Calculator();
-console.log(calc.add(5, 3)); // 8
-console.log(calc.getHistory()); // ['5 + 3 = 8']
-    </code></pre>
+const temp = new Temperature(25);
+console.log(temp.celsius);    // 25 (getter)
+console.log(temp.fahrenheit); // 77 (getter calculado)
+
+temp.celsius = 30;             // setter com validação
+console.log(temp.fahrenheit); // 86
+
+temp.celsius = -300;           // "Temperatura abaixo do zero absoluto!"</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h4>Interfaces</h4>
-        <p>
-          Interfaces definem a estrutura que uma classe deve seguir. Elas não
-          geram código no JavaScript final, mas ajudam a garantir que certas
-          propriedades e métodos estejam presentes.
-        </p>
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Getters e setters permitem controlar acesso a propriedades como
+            se fossem atributos normais (<code>temp.fahrenheit</code>), mas
+            com lógica por trás. O setter valida o valor antes de atribuir —
+            um padrão essencial para manter a integridade dos dados.
+          </p>
+        </div>
+
+        <h3>Propriedades e métodos estáticos</h3>
 
         <div class="code-container">
-          <pre><code class="language-javascript">
-interface Describable {
-  name: string;
-  describe(): string;
-}
+          <pre><code class="language-typescript">class Contador {
+  // Propriedade estática — compartilhada entre todas as instâncias
+  static totalInstancias: number = 0;
 
-class Person implements Describable {
-  constructor(public name: string, public age: number) {}
+  public id: number;
 
-  describe(): string {
-    return `${this.name} tem ${this.age} anos.`;
+  constructor() {
+    Contador.totalInstancias++;
+    this.id = Contador.totalInstancias;
+  }
+
+  // Método estáticp — chamado na classe, não na instância
+  static obterTotal(): number {
+    return Contador.totalInstancias;
   }
 }
 
-const user: Describable = new Person('Ana', 28);
-console.log(user.describe()); // Ana tem 28 anos.
-    </code></pre>
+const c1 = new Contador();
+const c2 = new Contador();
+const c3 = new Contador();
+
+console.log(c1.id);              // 1
+console.log(c3.id);              // 3
+console.log(Contador.obterTotal()); // 3</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Membros <code>static</code> pertencem à <strong>classe</strong>, não
+            às instâncias. <code>Contador.totalInstancias</code> é único para
+            todas as instâncias — é como uma "variável global" encapsulada na classe.
+          </p>
+        </div>
+
+        <h3>Exemplo completo: Conta Bancária</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">class ContaBancaria {
+  private _saldo: number;
+  private _historico: string[] = [];
+  static totalContas: number = 0;
+
+  constructor(
+    public readonly titular: string,
+    saldoInicial: number
+  ) {
+    this._saldo = saldoInicial;
+    ContaBancaria.totalContas++;
+    this.registrar(`Conta criada com saldo R$ ${saldoInicial}`);
+  }
+
+  get saldo(): number {
+    return this._saldo;
+  }
+
+  depositar(valor: number): void {
+    if (valor <= 0) {
+      console.log("Valor deve ser positivo.");
+      return;
+    }
+    this._saldo += valor;
+    this.registrar(`Depósito: R$ ${valor}`);
+  }
+
+  sacar(valor: number): boolean {
+    if (valor > this._saldo) {
+      console.log("Saldo insuficiente.");
+      return false;
+    }
+    this._saldo -= valor;
+    this.registrar(`Saque: R$ ${valor}`);
+    return true;
+  }
+
+  transferir(destino: ContaBancaria, valor: number): boolean {
+    if (this.sacar(valor)) {
+      destino.depositar(valor);
+      this.registrar(`Transferência de R$ ${valor} para ${destino.titular}`);
+      return true;
+    }
+    return false;
+  }
+
+  private registrar(mensagem: string): void {
+    this._historico.push(mensagem);
+  }
+
+  getHistorico(): string[] {
+    return [...this._historico];
+  }
+
+  static getTotalContas(): number {
+    return ContaBancaria.totalContas;
+  }
+}
+
+const ana = new ContaBancaria("Ana", 1000);
+const bob = new ContaBancaria("Bob", 500);
+
+ana.depositar(300);
+ana.sacar(200);
+ana.transferir(bob, 500);
+
+console.log(`Saldo Ana: R$ ${ana.saldo}`);    // 600
+console.log(`Saldo Bob: R$ ${bob.saldo}`);    // 1000
+console.log(`Total de contas: ${ContaBancaria.getTotalContas()}`); // 2
+console.log("Histórico Ana:", ana.getHistorico());</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
       </section>
+
+      <!-- ============================================ -->
+      <!-- INTERFACES                                  -->
+      <!-- ============================================ -->
       <section>
-        <h2>Classes Genéricas</h2>
+        <h2>Interfaces</h2>
+
         <p>
-          Classes que aceitam tipos genéricos para seus membros, métodos ou
-          propriedades.
+          Interfaces definem a <strong>estrutura</strong> que um objeto deve
+          seguir. No TypeScript, elas são usadas para tipagem — o compilador
+          verifica se um objeto "obedece" à interface.
         </p>
-        <h4>Exemplo 1: Classe genérica que armazena um valor</h4>
+
+        <h3>Interface básica</h3>
+
         <div class="code-container">
-          <pre><code class="language-javascript">
-class Storage&lt;T&gt; {
-  private _value: T;
-  constructor(value: T) {
-    this._value = value;
-  }
-  getValue(): T {
-    return this._value;
-  }
-}</code>
-        </pre>
+          <pre><code class="language-typescript">interface Produto {
+  id: number;
+  nome: string;
+  preco: number;
+}
+
+// Função que recebe qualquer objeto que tenha id, nome e preco
+function exibirProduto(p: Produto): void {
+  console.log(`${p.nome}: R$ ${p.preco}`);
+}
+
+// Funciona — tem id, nome e preco
+exibirProduto({ id: 1, nome: "Notebook", preco: 3500 });
+
+// Funciona — tem propriedades extras (ok!)
+exibirProduto({ id: 2, nome: "Mouse", preco: 89, categoria: "TI" });
+
+// ERRO — falta "preco"
+// exibirProduto({ id: 3, nome: "Teclado" });</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <h4>Exemplo 2: Classe genérica que representa um par de valores</h4>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Interfaces definem um "contrato" — o objeto precisa ter no mínimo
+            as propriedades declaradas. Propriedades extras são aceitas (isso
+            é a <strong>tipagem estrutural</strong> do TypeScript). O que não
+            pode é faltar uma propriedade ou ter o tipo errado.
+          </p>
+        </div>
+
+        <h3>Tipagem Estrutural (Structural Typing)</h3>
+
+        <p>
+          Essa é a grande diferença do TypeScript para outras linguagens.
+          Em Java ou C#, um objeto precisa <strong>declarar explicitamente</strong>
+          que implementa uma interface. No TypeScript, basta ter a estrutura
+          correta — não precisa de <code>implements</code>.
+        </p>
+
         <div class="code-container">
-          <pre><code class="language-javascript">class Pair&lt;T, U&gt; {
-  constructor(public first: T, public second: U) {}
-}</code>
-        </pre>
+          <pre><code class="language-typescript">interface Ponto {
+  x: number;
+  y: number;
+}
+
+// Esta função aceita QUALQUER objeto com x e y
+function distancia(p: Ponto): number {
+  return Math.sqrt(p.x ** 2 + p.y ** 2);
+}
+
+// Funciona: objeto literal
+console.log(distancia({ x: 3, y: 4 })); // 5
+
+// Funciona: objeto com propriedades extras
+const meuPonto = { x: 3, y: 4, cor: "vermelho" };
+console.log(distancia(meuPonto)); // 5
+
+// Funciona: outro objeto, mesma estrutura
+class Coordenada {
+  constructor(public x: number, public y: number) {}
+}
+
+console.log(distancia(new Coordenada(3, 4))); // 5</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <h4>Exemplo 3: Classe genérica que representa uma pilha (stack)</h4>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A função <code>distancia</code> aceita qualquer objeto que tenha
+            <code>x</code> e <code>y</code> como números — não importa se é
+            um literal, uma classe, ou um objeto com propriedades extras. Isso
+            é tipagem estrutural: o tipo é definido pela <strong>forma</strong>,
+            não pela declaração.
+          </p>
+        </div>
+
+        <h3>Propriedades opcionais e readonly</h3>
+
         <div class="code-container">
-          <pre><code class="language-javascript">class Stack&lt;T&gt; {
-  private items: T[] = [];
-  push(item: T) {
-    this.items.push(item);
-  }
-  pop(): T | undefined {
-    return this.items.pop();
-  }
-}</code>
-        </pre>
+          <pre><code class="language-typescript">interface Configuracao {
+  readonly host: string;       // não pode ser alterado
+  readonly port: number;
+  timeout?: number;            // opcional
+  debug?: boolean;             // opcional
+}
+
+const config: Configuracao = {
+  host: "localhost",
+  port: 3000
+};
+
+// config.host = "outro"; // ERRO: readonly
+
+function conectar(config: Configuracao): void {
+  const timeout = config.timeout ?? 5000;  // padrão: 5000
+  const debug = config.debug ?? false;     // padrão: false
+
+  console.log(`Conectando em ${config.host}:${config.port}`);
+  console.log(`Timeout: ${timeout}ms, Debug: ${debug}`);
+}
+
+conectar(config);</code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Estendendo interfaces</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">interface Animal {
+  nome: string;
+  idade: number;
+}
+
+// AnimalMamifero herda todas as propriedades de Animal
+interface AnimalMamifero extends Animal {
+  races: string[];
+  domesticado: boolean;
+}
+
+// AnimalAve herda de Animal e adiciona características de ave
+interface AnimalAve extends Animal {
+  voa: boolean;
+  corPlumagem: string;
+}
+
+const cachorro: AnimalMamifero = {
+  nome: "Rex",
+  idade: 5,
+  races: ["Labrador", "Pastor Alemão"],
+  domesticado: true
+};
+
+const aguia: AnimalAve = {
+  nome: "Águia",
+  idade: 3,
+  voa: true,
+  corPlumagem: "Marrom"
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Interface para função e interface híbrida</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Interface para função
+interface Comparador&lt;T&gt; {
+  (a: T, b: T): number;
+}
+
+const compararNumeros: Comparador&lt;number&gt; = (a, b) => a - b;
+const compararStrings: Comparador&lt;string&gt; = (a, b) => a.localeCompare(b);
+
+console.log([3, 1, 2].sort(compararNumeros)); // [1, 2, 3]
+console.log(["banana", "abacaxi"].sort(compararStrings)); // ["abacaxi", "banana"]
+
+// Interface híbrida: função com propriedades
+interface Logger {
+  (mensagem: string): void;
+  nivel: string;
+  timestamp: boolean;
+}
+
+function criarLogger(nivel: string): Logger {
+  const log = ((msg: string) => {
+    const prefixo = nivel.toUpperCase();
+    console.log(`[${prefixo}] ${msg}`);
+  }) as Logger;
+
+  log.nivel = nivel;
+  log.timestamp = true;
+  return log;
+}
+
+const logger = criarLogger("info");
+logger("Servidor iniciado"); // [INFO] Servidor iniciado
+console.log(logger.nivel);   // "info"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            Uma <strong>interface híbrida</strong> define tanto a assinatura de
+            uma função quanto propriedades. É usada em bibliotecas como
+            jQuery e Express.js onde a mesma entidade é chamada como função
+            e também tem propriedades.
+          </p>
         </div>
       </section>
+
+      <!-- ============================================ -->
+      <!-- CLASSES ABSTRATAS                            -->
+      <!-- ============================================ -->
       <section>
-        <h2>Interfaces Genéricas</h2>
+        <h2>Classes Abstratas</h2>
+
         <p>
-          Interfaces que definem contratos genéricos, flexíveis para diferentes
-          tipos.
+          Uma classe <code>abstract</code> não pode ser instanciada diretamente.
+          Ela serve como <strong>base</strong> para outras classes. Métodos
+          abstratos são declarados sem implementação — cada subclasse deve
+          implementá-los.
         </p>
-        <h4>
-          Exemplo 1: Interface genérica para uma função que recebe e retorna o
-          mesmo tipo
-        </h4>
+
         <div class="code-container">
-          <pre><code class="language-javascript">
-interface IdentityFn&lt;T&gt; {
-  (arg: T): T;
-}</code>
-        </pre>
+          <pre><code class="language-typescript">// Classe abstrata — não pode fazer "new FormaGeometrica()"
+abstract class FormaGeometrica {
+  constructor(public nome: string) {}
+
+  // Método abstrato — cada subclasse DEVE implementar
+  abstract calcularArea(): number;
+  abstract calcularPerimetro(): number;
+
+  // Método concreto — herda normalmente
+  describer(): string {
+    return `${this.nome} — Área: ${this.calcularArea()}, Perímetro: ${this.calcularPerimetro()}`;
+  }
+}
+
+class Circulo extends FormaGeometrica {
+  constructor(public raio: number) {
+    super("Círculo");
+  }
+
+  calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * Math.PI * this.raio;
+  }
+}
+
+class Retangulo extends FormaGeometrica {
+  constructor(public largura: number, public altura: number) {
+    super("Retângulo");
+  }
+
+  calcularArea(): number {
+    return this.largura * this.altura;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * (this.largura + this.altura);
+  }
+}
+
+const circulo = new Circulo(5);
+const retangulo = new Retangulo(4, 6);
+
+console.log(circulo.describer());
+// Círculo — Área: 78.54, Perímetro: 31.42
+
+console.log(retangulo.describer());
+// Retângulo — Área: 24, Perímetro: 20</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <h4>
-          Exemplo 2: Interface genérica para um objeto com propriedade data
-        </h4>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A classe abstrata define um <strong>contrato</strong>: qualquer
+            classe que herdar de <code>FormaGeometrica</code> é obrigada a
+            implementar <code>calcularArea()</code> e <code>calcularPerimetro()</code>.
+          </p>
+          <p>
+            O método <code>describer()</code> é concreto — ele é herdado
+            normalmente pelas subclasses. As subclasses podem usar métodos
+            abstratos sem precisar redeclará-los.
+          </p>
+        </div>
+
+        <h3>Classe abstrata vs Interface</h3>
+
+        <table>
+          <tr>
+            <th>Classe Abstrata</th>
+            <th>Interface</th>
+          </tr>
+          <tr>
+            <td>Pode ter construtores</td>
+            <td>Não pode</td>
+          </tr>
+          <tr>
+            <td>Pode ter propriedades com valores</td>
+            <td>Só declaração de tipo</td>
+          </tr>
+          <tr>
+            <td>Pode ter métodos concretos</td>
+            <td>Só assinaturas</td>
+          </tr>
+          <tr>
+            <td>Herança única (<code>extends</code>)</td>
+            <td>Múltipla (<code>implements A, B</code>)</td>
+          </tr>
+          <tr>
+            <td>Gera código JavaScript</td>
+            <td>Removida na compilação</td>
+          </tr>
+          <tr>
+            <td>Use quando: compartilhar implementação</td>
+            <td>Use quando: definir contrato puro</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- PASSO A PASSO                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Passo a Passo: Praticando POO</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
         <div class="code-container">
-          <pre><code class="language-javascript">interface Container&lt;T&gt; {
-  data: T;
-}</code>
-        </pre>
+          <pre><code class="language-bash">
+git fetch
+git checkout aula5-typescript
+git pull
+git checkout -b aula6-typescript
+          </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
-        <h4>
-          Exemplo 3: Interface genérica para uma estrutura que pode armazenar
-          múltiplos tipos
-        </h4>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula5-typescript</code></strong> — Muda para a branch da aula anterior.
+          </p>
+          <p>
+            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula6-typescript</code></strong> — Cria e muda para a nova branch.
+          </p>
+        </div>
+
+        <h3>Passo 1 — Criar o arquivo de classes</h3>
+
+        <p>Crie o arquivo <code>src/classes.ts</code>:</p>
+
         <div class="code-container">
-          <pre><code class="language-javascript">class Stack&lt;T&gt; {
-interface KeyValuePair&lt;K, V&gt; {
-  key: K;
-  value: V;
-}}</code>
-        </pre>
+          <pre><code class="language-typescript">// src/classes.ts
+
+// --- Classe com construtor e modificadores ---
+class ContaBancaria {
+  private _saldo: number;
+  private _historico: string[] = [];
+  static totalContas: number = 0;
+
+  constructor(
+    public readonly titular: string,
+    saldoInicial: number
+  ) {
+    this._saldo = saldoInicial;
+    ContaBancaria.totalContas++;
+    this.registrar(`Conta criada com R$ ${saldoInicial}`);
+  }
+
+  get saldo(): number {
+    return this._saldo;
+  }
+
+  depositar(valor: number): void {
+    if (valor <= 0) return;
+    this._saldo += valor;
+    this.registrar(`Depósito: R$ ${valor}`);
+  }
+
+  sacar(valor: number): boolean {
+    if (valor > this._saldo) return false;
+    this._saldo -= valor;
+    this.registrar(`Saque: R$ ${valor}`);
+    return true;
+  }
+
+  private registrar(msg: string): void {
+    this._historico.push(msg);
+  }
+
+  getHistorico(): string[] {
+    return [...this._historico];
+  }
+}
+
+const ana = new ContaBancaria("Ana", 1000);
+ana.depositar(500);
+ana.sacar(200);
+console.log(`Saldo Ana: R$ ${ana.saldo}`);
+console.log("Histórico:", ana.getHistorico());
+
+// --- Getters e Setters ---
+class Temperature {
+  private _celsius: number;
+
+  constructor(celsius: number) {
+    this._celsius = celsius;
+  }
+
+  get fahrenheit(): number {
+    return this._celsius * 1.8 + 32;
+  }
+
+  set celsius(valor: number) {
+    if (valor < -273.15) {
+      console.log("Temperatura inválida!");
+      return;
+    }
+    this._celsius = valor;
+  }
+
+  get celsius(): number {
+    return this._celsius;
+  }
+}
+
+const temp = new Temperature(25);
+console.log(`${temp.celsius}°C = ${temp.fahrenheit}°F`);
+temp.celsius = 100;
+console.log(`${temp.celsius}°C = ${temp.fahrenheit}°F`);</code></pre>
           <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo de interfaces</h3>
+
+        <p>Crie o arquivo <code>src/interfaces.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/interfaces.ts
+
+// --- Interface básica ---
+interface Produto {
+  id: number;
+  nome: string;
+  preco: number;
+}
+
+function exibirProduto(p: Produto): void {
+  console.log(`${p.nome}: R$ ${p.preco}`);
+}
+
+exibirProduto({ id: 1, nome: "Notebook", preco: 3500 });
+
+// --- Propriedades opcionais e readonly ---
+interface Configuracao {
+  readonly host: string;
+  port: number;
+  timeout?: number;
+}
+
+const config: Configuracao = { host: "localhost", port: 3000 };
+// config.host = "outro"; // ERRO: readonly
+
+// --- Estendendo interfaces ---
+interface Animal {
+  nome: string;
+  idade: number;
+}
+
+interface Mamifero extends Animal {
+  domesticado: boolean;
+}
+
+const rex: Mamifero = { nome: "Rex", idade: 5, domesticado: true };
+
+// --- Interface para função ---
+interface Comparador&lt;T&gt; {
+  (a: T, b: T): number;
+}
+
+const compararNumeros: Comparador&lt;number&gt; = (a, b) => a - b;
+console.log([3, 1, 2].sort(compararNumeros));
+
+// --- Usando implements ---
+interface Forma {
+  calcularArea(): number;
+}
+
+class Circulo implements Forma {
+  constructor(public raio: number) {}
+
+  calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+}
+
+const c = new Circulo(5);
+console.log(`Área: ${c.calcularArea().toFixed(2)}`);</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Criar o arquivo de abstratas</h3>
+
+        <p>Crie o arquivo <code>src/abstratas.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/abstratas.ts
+
+// --- Classe abstrata ---
+abstract class FormaGeometrica {
+  constructor(public nome: string) {}
+
+  abstract calcularArea(): number;
+  abstract calcularPerimetro(): number;
+
+  describer(): string {
+    return `${this.nome}: Área=${this.calcularArea().toFixed(2)}, Perímetro=${this.calcularPerimetro().toFixed(2)}`;
+  }
+}
+
+class Circulo extends FormaGeometrica {
+  constructor(public raio: number) {
+    super("Círculo");
+  }
+
+  calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * Math.PI * this.raio;
+  }
+}
+
+class Retangulo extends FormaGeometrica {
+  constructor(public largura: number, public altura: number) {
+    super("Retângulo");
+  }
+
+  calcularArea(): number {
+    return this.largura * this.altura;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * (this.largura + this.altura);
+  }
+}
+
+// const f = new FormaGeometrica("Teste"); // ERRO: abstrata
+const circulo = new Circulo(5);
+const retangulo = new Retangulo(4, 6);
+
+console.log(circulo.describer());
+console.log(retangulo.describer());</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 4 — Compilar e rodar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npx tsc src/classes.ts --outDir dist
+node dist/classes.js
+
+npx tsc src/interfaces.ts --outDir dist
+node dist/interfaces.js
+
+npx tsc src/abstratas.ts --outDir dist
+node dist/abstratas.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 6 typescript poo parte 1 classes e interfaces"
+git push --set-upstream origin aula6-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula6-typescript</code></strong> — Envia a branch para o GitHub.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-typescript-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-typescript-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula6-typescript</code></li>
+          </ul>
         </div>
       </section>
+
+      <!-- ============================================ -->
+      <!-- DEVER DE CASA                                -->
+      <!-- ============================================ -->
       <section>
-        <h2>Restrições nos Genéricos</h2>
-        <p>
-          Restrições limitam os tipos genéricos para garantir que eles possuam
-          certas propriedades ou métodos.
-        </p>
-        <h4>Exemplo 1: Restringindo T para tipos que possuem length</h4>
-        <div class="code-container">
-          <pre><code class="language-javascript">
-function loggingIdentity&lt;T extends { length: number }&gt;(arg: T): T {
-  console.log(arg.length);
-  return arg;
-}}</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <h4>
-          Exemplo 2: Interface para restrição de tipo que deve possuir método
-          toString
-        </h4>
-        <div class="code-container">
-          <pre><code class="language-javascript">interface Stringifiable {
-  toString(): string;
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Sistema de Funcionários</h3>
+            <p>
+              Crie um arquivo <b>src/funcionarios.ts</b> que use classes,
+              interfaces e classes abstratas:
+            </p>
+            <ol>
+              <li>
+                Crie uma <b>interface</b> <code>IFuncionario</code> com: nome,
+                salario, calcularBonus()
+              </li>
+              <li>
+                Crie uma <b>classe abstrata</b> <code>Funcionario</code> que
+                implemente <code>IFuncionario</code>
+              </li>
+              <li>
+                Crie subclasses <code>Gerente</code> e <code>Desenvolvedor</code>
+                com cálculos de bônus diferentes
+              </li>
+              <li>
+                Crie um <b>array de IFuncionario</b> e itere calculando o bônus
+                de cada um (polimorfismo)
+              </li>
+            </ol>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>src/funcionarios.ts</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-typescript">// src/funcionarios.ts
+
+interface IFuncionario {
+  nome: string;
+  salario: number;
+  calcularBonus(): number;
 }
-function printString&lt;T extends Stringifiable&gt;(arg: T): void {
-  console.log(arg.toString());
-}</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-        <h4>
-          Exemplo 3: Classe genérica com restrição para tipos que têm método
-          compareTo
-        </h4>
-        <div class="code-container">
-          <pre><code class="language-javascript">interface Comparable {
-  compareTo(other: this): number;
-}
-class SortedCollection&lt;T extends Comparable&gt; {
-  private items: T[] = [];
-  add(item: T) {
-    this.items.push(item);
-    this.items.sort((a, b) => a.compareTo(b));
+
+abstract class Funcionario implements IFuncionario {
+  constructor(
+    public nome: string,
+    public salario: number
+  ) {}
+
+  abstract calcularBonus(): number;
+
+  getResumo(): string {
+    return `${this.nome} — Salário: R$ ${this.salario}, Bônus: R$ ${this.calcularBonus()}`;
   }
-}</code>
-        </pre>
-          <button class="btn-copy">Copiar Código</button>
+}
+
+class Gerente extends Funcionario {
+  calcularBonus(): number {
+    return this.salario * 0.2; // 20%
+  }
+}
+
+class Desenvolvedor extends Funcionario {
+  calcularBonus(): number {
+    return this.salario * 0.1; // 10%
+  }
+}
+
+const equipe: IFuncionario[] = [
+  new Gerente("Ana", 10000),
+  new Desenvolvedor("Bob", 6000),
+  new Desenvolvedor("Carlos", 7000)
+];
+
+console.log("=== Relatório de Bônus ===");
+for (const func of equipe) {
+  console.log(`${func.nome}: R$ ${func.calcularBonus()}`);
+}
+
+const totalBonus = equipe.reduce((soma, f) => soma + f.calcularBonus(), 0);
+console.log(`Total de bônus: R$ ${totalBonus}`);</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+                <p>
+                  O array <code>equipe</code> tem tipo <code>IFuncionario[]</code> —
+                  ele aceita qualquer classe que implemente a interface. Quando
+                  iteramos com <code>for...of</code>, cada funcionário calcula
+                  seu bônus de forma diferente (polimorfismo).
+                </p>
+                <p>
+                  A classe abstrata <code>Funcionario</code> implementa o
+                  construtor e o método <code>getResumo()</code>, mas delega
+                  o cálculo do bônus para cada subclasse. Isso é o princípio
+                  de substituição de Liskov — cada subclasse pode ser usada
+                  no lugar da classe pai.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
+
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>

@@ -3,126 +3,929 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aula 9 - TypeScript</title>
+    <title>Aula 7 - TypeScript</title>
     <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
     />
-      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
     <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
     <header>
-      <h1>Aula 9</h1>
+      <h1>Aula 7</h1>
       <h4 class="text-center">TypeScript</h4>
-      <h4 class="text-center">POO (parte 2 - Herança e Polimorfismo)</h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Herança, Sobrescrita de métodos, Classes abstratas, Polimorfismo.</div>
+      <h4 class="text-center">POO Parte 2 — Herança e Polimorfismo</h4>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Herança (extends, super), Sobrescrita de métodos (override),
+        Construtores na herança, Polimorfismo, Substituibilidade,
+        instanceof, Polimorfismo com interfaces.
+      </div>
     </header>
-    <main class="container"><h2>Herança</h2>
-      <p>
-        A <b>herança</b> permite que uma classe reutilize propriedades e métodos
-        de outra classe. Em TypeScript, isso é feito com a palavra-chave
-        <code>extends</code>, e adicionamos tipagem explícita nas propriedades e
-        nos parâmetros.
-      </p>
-      <div class="code-container">
-        <pre><code class="language-javascript">
-class Animal {
-  constructor(public name: string, public species: string) {}
 
-  describe(): string {
-    return `${this.name} é um ${this.species}.`;
-  }
-}
+    <main class="container">
+      <!-- ============================================ -->
+      <!-- HERANÇA                                      -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Herança em TypeScript</h2>
 
-class Mammal extends Animal {
-  constructor(name: string, species: string, public isDomestic: boolean) {
-    super(name, species);
-  }
+        <p>
+          <strong>Herança</strong> permite que uma classe filha reutilize
+          propriedades e métodos de uma classe pai. É um dos pilares da POO —
+          evita código duplicado e cria hierarquias naturais.
+        </p>
 
-  mammalInfo(): string {
-    return `${this.name} é um ${this.species} e é ${this.isDomestic ? 'domesticado' : 'selvagem'}.`;
-  }
-}
+        <h3><code class="language-typescript">extends</code> e <code class="language-typescript">super()</code></h3>
 
-const cat = new Mammal('Mimi', 'gato', true);
-console.log(cat.mammalInfo()); // Mimi é um gato e é domesticado.
-        </code></pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h2>Polimorfismo</h2>
-      <p>
-        O <b>polimorfismo</b> permite que métodos em classes filhas redefinam o
-        comportamento dos métodos herdados da classe pai. Em TypeScript, podemos
-        usar o modificador <code>override</code> para deixar isso explícito.
-      </p>
-      <div class="code-container">
-        <pre><code class="language-javascript">
-class Bird extends Animal {
-  override describe(): string {
-    return `${this.name} é um pássaro da espécie ${this.species}.`;
-  }
-}
-
-const parrot = new Bird('Loro', 'papagaio');
-console.log(parrot.describe()); // Loro é um pássaro da espécie papagaio.
-        </code></pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
-
-      <h4>Exemplo Completo - Sistema de Veículos</h4>
-      <p>
-        Veja abaixo um sistema que gerencia veículos com classes especializadas
-        para
-        <i>carros</i> e <i>motos</i>. Note o uso da tipagem estática nos
-        atributos e métodos.
-      </p>
-      <div class="code-container">
-        <pre><code class="language-javascript">
-class Vehicle {
+        <div class="code-container">
+          <pre><code class="language-typescript">class Animal {
   constructor(
-    public make: string,
-    public model: string,
-    public year: number
+    public nome: string,
+    public especie: string
+  ) {}
+
+  descrever(): string {
+    return `${this.nome} é um ${this.especie}`;
+  }
+}
+
+class Cachorro extends Animal {
+  constructor(
+    nome: string,
+    public raca: string
+  ) {
+    super(nome, "cachorro"); // chama o constructor da classe pai
+  }
+
+  latir(): void {
+    console.log(`${this.nome} diz: Au au!`);
+  }
+
+  descrever(): string {
+    // Usando super para acessar o método do pai
+    return `${super.descrever()} da raça ${this.raca}`;
+  }
+}
+
+const rex = new Cachorro("Rex", "Labrador");
+rex.latir();                    // "Rex diz: Au au!"
+console.log(rex.descrever());   // "Rex é um cachorro da raça Labrador"</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            <code>extends Animal</code> faz <code>Cachorro</code> herdar todas
+            as propriedades e métodos de <code>Animal</code>. O
+            <code>super(nome, "cachorro")</code> chama o construtor do pai,
+            passando os parâmetros que ele espera.
+          </p>
+          <p>
+            O método <code>descrever()</code> é <strong>sobrescrito</code> na
+            classe filha — ele tem o mesmo nome mas um comportamento diferente.
+            <code>super.descrever()</code> permite reutilizar a lógica do pai
+            dentro da sobrescrita.
+          </p>
+        </div>
+
+        <h3>Construtores na herança</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">class Veiculo {
+  constructor(
+    public marca: string,
+    public modelo: string,
+    public ano: number
   ) {}
 
   getDetails(): string {
-    return `${this.year} ${this.make} ${this.model}`;
+    return `${this.ano} ${this.marca} ${this.modelo}`;
   }
 }
 
-class Car extends Vehicle {
-  constructor(make: string, model: string, year: number, public doors: number) {
-    super(make, model, year);
+class Carro extends Veiculo {
+  constructor(
+    marca: string,
+    modelo: string,
+    ano: number,
+    public portas: number,
+    public motor: string
+  ) {
+    super(marca, modelo, ano); // Obrigatório antes de usar "this"
   }
 
   override getDetails(): string {
-    return `${super.getDetails()} com ${this.doors} portas.`;
+    return `${super.getDetails()} — ${this.portas} portas, motor ${this.motor}`;
   }
 }
 
-class Motorcycle extends Vehicle {
-  constructor(make: string, model: string, year: number, public type: string) {
-    super(make, model, year);
+class Moto extends Veiculo {
+  constructor(
+    marca: string,
+    modelo: string,
+    ano: number,
+    public cilindradas: number
+  ) {
+    super(marca, modelo, ano);
   }
 
   override getDetails(): string {
-    return `${super.getDetails()} que é uma moto do tipo ${this.type}.`;
+    return `${super.getDetails()} — ${this.cilindradas}cc`;
   }
 }
 
-const myCar = new Car('Toyota', 'Corolla', 2022, 4);
-const myBike = new Motorcycle('Honda', 'CBR', 2021, 'esportiva');
+const meuCarro = new Carro("Toyota", "Corolla", 2022, 4, "2.0");
+const minhaMoto = new Moto("Honda", "CBR", 2023, 600);
 
-console.log(myCar.getDetails()); // 2022 Toyota Corolla com 4 portas.
-console.log(myBike.getDetails()); // 2021 Honda CBR que é uma moto do tipo esportiva.
-        </code></pre>
-        <button class="btn-copy">Copiar Código</button>
-      </div>
+console.log(meuCarro.getDetails());
+// 2022 Toyota Corolla — 4 portas, motor 2.0
+
+console.log(minhaMoto.getDetails());
+// 2023 Honda CBR — 600cc</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O construtor da classe filha <strong>deve</strong> chamar
+            <code>super()</code> antes de usar <code>this</code>. Isso garante
+            que as propriedades da classe pai sejam inicializadas primeiro.
+          </p>
+          <p>
+            Note que <code>Carro</code> tem propriedades extras (<code>portas</code>,
+            <code>motor</code>) e <code>Moto</code> tem <code>cilindradas</code>.
+            Cada classe especializa o comportamento do pai.
+          </p>
+        </div>
+
+        <h3>Herança de interfaces</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">interface Funcionario {
+  nome: string;
+  salario: number;
+  calcularBonus(): number;
+}
+
+// Estendendo interface
+interface Gerente extends Funcionario {
+  departamento: string;
+  numSubordinados: number;
+}
+
+// Múltipla herança de interfaces
+interface Estagiario extends Funcionario {
+  duracaoContrato: number;
+  universidade: string;
+}
+
+const ana: Gerente = {
+  nome: "Ana",
+  salario: 10000,
+  calcularBonus() { return this.salario * 0.2; },
+  departamento: "TI",
+  numSubordinados: 5
+};
+
+const bob: Estagiario = {
+  nome: "Bob",
+  salario: 2000,
+  calcularBonus() { return this.salario * 0.05; },
+  duracaoContrato: 12,
+  universidade: "USP"
+};</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- POLIMORFISMO                                 -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Polimorfismo</h2>
+
+        <p>
+          <strong>Polimorfismo</strong> significa "muitas formas" — objetos de
+          classes diferentes podem ser tratados pela mesma interface, mas cada
+          um responde de forma diferente. É o que torna o código flexível e
+          extensível.
+        </p>
+
+        <h3>Polimorfismo com herança</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">class FormaGeometrica {
+  constructor(public nome: string) {}
+
+  calcularArea(): number {
+    return 0;
+  }
+}
+
+class Circulo extends FormaGeometrica {
+  constructor(public raio: number) {
+    super("Círculo");
+  }
+
+  override calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+}
+
+class Retangulo extends FormaGeometrica {
+  constructor(public largura: number, public altura: number) {
+    super("Retângulo");
+  }
+
+  override calcularArea(): number {
+    return this.largura * this.altura;
+  }
+}
+
+class Triangulo extends FormaGeometrica {
+  constructor(public base: number, public altura: number) {
+    super("Triângulo");
+  }
+
+  override calcularArea(): number {
+    return (this.base * this.altura) / 2;
+  }
+}
+
+// Mesma função, diferentes comportamentos
+function imprimirArea(forma: FormaGeometrica): void {
+  console.log(`${forma.nome}: ${forma.calcularArea().toFixed(2)}`);
+}
+
+imprimirArea(new Circulo(5));          // Círculo: 78.54
+imprimirArea(new Retangulo(4, 6));     // Retângulo: 24.00
+imprimirArea(new Triangulo(10, 8));    // Triângulo: 40.00</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A função <code>imprimirArea</code> recebe um <code>FormaGeometrica</code>,
+            mas na verdade pode receber qualquer subclasse. Cada forma calcula
+            sua área de forma diferente — o TypeScript chama o método correto
+            em tempo de execução. Isso é polimorfismo: uma interface, múltiplos
+            comportamentos.
+          </p>
+        </div>
+
+        <h3><code class="language-typescript">instanceof</code> — verificar tipo em runtime</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">function processarAnimal(animal: Animal): void {
+  // Verificar o tipo exato do objeto
+  if (animal instanceof Cachorro) {
+    animal.latir(); // TypeScript SABE que é Cachorro aqui
+    console.log(`Raça: ${animal.raca}`);
+  } else if (animal instanceof Gato) {
+    animal.miar(); // TypeScript SABE que é Gato aqui
+  } else {
+    console.log(animal.descrever());
+  }
+}
+
+class Gato extends Animal {
+  constructor(nome: string) {
+    super(nome, "gato");
+  }
+
+  miar(): void {
+    console.log(`${this.nome} diz: Miau!`);
+  }
+}
+
+processarAnimal(new Cachorro("Rex", "Labrador"));
+// Rex diz: Au au!
+// Raça: Labrador
+
+processarAnimal(new Gato("Mimi"));
+// Mimi diz: Miau!</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            O <code>instanceof</code> verifica se um objeto é instância de uma
+            classe específica. Dentro do bloco <code>if</code>, o TypeScript
+            faz <strong>type narrowing</strong> — "estreita" o tipo para que
+            possamos acessar propriedades e métodos específicos daquela classe.
+          </p>
+        </div>
+
+        <h3>Polimorfismo com interfaces — o mais poderoso</h3>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// Interface que define um contrato de pagamento
+interface MetodoPagamento {
+  pagar(valor: number): boolean;
+  getDescricao(): string;
+}
+
+// Cada forma de pagamento implementa a interface
+class Pix implements MetodoPagamento {
+  constructor(private chave: string) {}
+
+  pagar(valor: number): boolean {
+    console.log(`PIX: Pagando R$ ${valor} para ${this.chave}`);
+    return true;
+  }
+
+  getDescricao(): string {
+    return `PIX (${this.chave})`;
+  }
+}
+
+class CartaoCredito implements MetodoPagamento {
+  constructor(private numero: string, private parcelas: number = 1) {}
+
+  pagar(valor: number): boolean {
+    const valorParcela = valor / this.parcelas;
+    console.log(`Crédito: ${this.parcelas}x de R$ ${valorParcela.toFixed(2)}`);
+    return true;
+  }
+
+  getDescricao(): string {
+    return `Cartão de crédito (final ${this.numero.slice(-4)})`;
+  }
+}
+
+class Boleto implements MetodoPagamento {
+  pagar(valor: number): boolean {
+    console.log(`Boleto: R$ ${valor} — pagamento à vista`);
+    return true;
+  }
+
+  getDescricao(): string {
+    return "Boleto bancário";
+  }
+}
+
+// Função que aceita QUALQUER método de pagamento
+function checkout(valor: number, metodo: MetodoPagamento): void {
+  console.log(`\n--- Checkout ---`);
+  console.log(`Método: ${metodo.getDescricao()}`);
+  metodo.pagar(valor);
+  console.log("Pedido confirmado!");
+}
+
+// Polimorfismo em ação
+checkout(150, new Pix("ana@email.com"));
+checkout(300, new CartaoCredito("4111111111111234", 3));
+checkout(80, new Boleto());</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+          <p>
+            A função <code>checkout</code> recebe qualquer objeto que implemente
+            <code>MetodoPagamento</code>. Não importa se é Pix, Cartão ou Boleto —
+            cada um paga de forma diferente, mas a função não precisa saber disso.
+          </p>
+          <p>
+            Esse é o poder do polimorfismo com interfaces: você pode adicionar
+            novas formas de pagamento (PayPal, criptomoeda, etc.) sem modificar
+            a função <code>checkout</code>. Basta criar uma nova classe que
+            implemente a interface.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- RESUMO DE POO                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Resumo de POO em TypeScript</h2>
+
+        <h3>Conceitos das aulas 6 e 7</h3>
+
+        <table>
+          <tr>
+            <th>Conceito</th>
+            <th>O que é</th>
+            <th>Quando usar</th>
+          </tr>
+          <tr>
+            <td>Classe</td>
+            <td>Molde para criar objetos</td>
+            <td>Quando precisa de múltiplas instâncias com mesma estrutura</td>
+          </tr>
+          <tr>
+            <td>Construtor</td>
+            <td>Inicializa propriedades ao criar objeto</td>
+            <td>Sempre que a classe precisa de dados iniciais</td>
+          </tr>
+          <tr>
+            <td>Modificadores</td>
+            <td>Controlam acesso (public/private/protected/readonly)</td>
+            <td>Para proteger dados e definir visibilidade</td>
+          </tr>
+          <tr>
+            <td>Getters/Setters</td>
+            <td>Controlam leitura/escrita de propriedades</td>
+            <td>Quando precisa de validação ou lógica no acesso</td>
+          </tr>
+          <tr>
+            <td>Static</td>
+            <td>Membros compartilhados entre instâncias</td>
+            <td>Contadores, fábricas, utilitários da classe</td>
+          </tr>
+          <tr>
+            <td>Interface</td>
+            <td>Define estrutura/contrato</td>
+            <td>Para tipar objetos e criar contratos</td>
+          </tr>
+          <tr>
+            <td>Classe Abstrata</td>
+            <td>Base para subclasses (não instanciável)</td>
+            <td>Quando precisa compartilhar implementação</td>
+          </tr>
+          <tr>
+            <td>Herança</td>
+            <td>Classe filha reutiliza código do pai</td>
+            <td>Hierarquias naturais (Animal → Cachorro)</td>
+          </tr>
+          <tr>
+            <td>Polimorfismo</td>
+            <td>Objetos diferentes respondem da mesma forma</td>
+            <td>Sistemas extensíveis (pagamentos, formas, etc.)</td>
+          </tr>
+        </table>
+
+        <h3>Herança vs Composição</h3>
+
+        <table>
+          <tr>
+            <th>Herança ("é um")</th>
+            <th>Composição ("tem um")</th>
+          </tr>
+          <tr>
+            <td>Cachorro <strong>é</strong> um Animal</td>
+            <td>Carro <strong>tem</strong> um Motor</td>
+          </tr>
+          <tr>
+            <td>Cria hierarquias fortes</td>
+            <td>Cria relações flexíveis</td>
+          </tr>
+          <tr>
+            <td>Acoplamento forte entre classes</td>
+            <td>Baixo acoplamento</td>
+          </tr>
+          <tr>
+            <td>Use quando: relação natural de herança</td>
+            <td>Use quando: quer flexibilidade e reuso</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- PASSO A PASSO                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Passo a Passo: Praticando Herança e Polimorfismo</h2>
+
+        <h3>Passo 0 — Criar a branch no GitHub</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git fetch
+git checkout aula6-typescript
+git pull
+git checkout -b aula7-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+          </p>
+          <p>
+            <strong><code>git checkout aula6-typescript</code></strong> — Muda para a branch da aula anterior.
+          </p>
+          <p>
+            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes.
+          </p>
+          <p>
+            <strong><code>git checkout -b aula7-typescript</code></strong> — Cria e muda para a nova branch.
+          </p>
+        </div>
+
+        <h3>Passo 1 — Criar o arquivo de herança</h3>
+
+        <p>Crie o arquivo <code>src/heranca.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/heranca.ts
+
+// --- Classe base ---
+class Animal {
+  constructor(
+    public nome: string,
+    public especie: string
+  ) {}
+
+  descrever(): string {
+    return `${this.nome} é um ${this.especie}`;
+  }
+}
+
+// --- Herança ---
+class Cachorro extends Animal {
+  constructor(nome: string, public raca: string) {
+    super(nome, "cachorro");
+  }
+
+  latir(): void {
+    console.log(`${this.nome}: Au au!`);
+  }
+
+  override descrever(): string {
+    return `${super.descrever()} da raça ${this.raca}`;
+  }
+}
+
+class Gato extends Animal {
+  constructor(nome: string) {
+    super(nome, "gato");
+  }
+
+  miar(): void {
+    console.log(`${this.nome}: Miau!`);
+  }
+}
+
+// --- Herança de interfaces ---
+interface IVeiculo {
+  ligar(): void;
+  desligar(): void;
+  getInfo(): string;
+}
+
+interface IEletrico {
+  carregar(): void;
+  nivelBateria: number;
+}
+
+// Implementação múltipla de interfaces
+class CarroEletrico implements IVeiculo, IEletrico {
+  nivelBateria: number = 100;
+
+  constructor(
+    public marca: string,
+    public modelo: string
+  ) {}
+
+  ligar(): void {
+    console.log(`${this.modelo} ligado.`);
+  }
+
+  desligar(): void {
+    console.log(`${this.modelo} desligado.`);
+  }
+
+  getInfo(): string {
+    return `${this.marca} ${this.modelo} — Bateria: ${this.nivelBateria}%`;
+  }
+
+  carregar(): void {
+    this.nivelBateria = 100;
+    console.log("Bateria carregada!");
+  }
+}
+
+// --- Testes ---
+const rex = new Cachorro("Rex", "Labrador");
+const mimi = new Gato("Mimi");
+
+rex.latir();                    // Rex: Au au!
+console.log(rex.descrever());   // Rex é um cachorro da raça Labrador
+mimi.miar();                    // Mimi: Miau!
+
+const tesla = new CarroEletrico("Tesla", "Model 3");
+tesla.ligar();
+console.log(tesla.getInfo());</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 2 — Criar o arquivo de polimorfismo</h3>
+
+        <p>Crie o arquivo <code>src/polimorfismo.ts</code>:</p>
+
+        <div class="code-container">
+          <pre><code class="language-typescript">// src/polimorfismo.ts
+
+// --- Polimorfismo com herança ---
+abstract class FormaGeometrica {
+  constructor(public nome: string) {}
+  abstract calcularArea(): number;
+}
+
+class Circulo extends FormaGeometrica {
+  constructor(public raio: number) {
+    super("Círculo");
+  }
+  calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+}
+
+class Retangulo extends FormaGeometrica {
+  constructor(public largura: number, public altura: number) {
+    super("Retângulo");
+  }
+  calcularArea(): number {
+    return this.largura * this.altura;
+  }
+}
+
+// Mesma função, diferentes comportamentos
+function imprimirArea(forma: FormaGeometrica): void {
+  console.log(`${forma.nome}: ${forma.calcularArea().toFixed(2)}`);
+}
+
+imprimirArea(new Circulo(5));       // Círculo: 78.54
+imprimirArea(new Retangulo(4, 6));  // Retângulo: 24.00
+
+// --- instanceof ---
+function processarAnimal(animal: Animal): void {
+  if (animal instanceof Cachorro) {
+    animal.latir();
+  } else if (animal instanceof Gato) {
+    animal.miar();
+  }
+}
+
+// --- Polimorfismo com interfaces ---
+interface MetodoPagamento {
+  pagar(valor: number): boolean;
+  getDescricao(): string;
+}
+
+class Pix implements MetodoPagamento {
+  constructor(private chave: string) {}
+  pagar(valor: number): boolean {
+    console.log(`PIX: R$ ${valor} para ${this.chave}`);
+    return true;
+  }
+  getDescricao(): string { return `PIX (${this.chave})`; }
+}
+
+class CartaoCredito implements MetodoPagamento {
+  constructor(private numero: string, private parcelas: number = 1) {}
+  pagar(valor: number): boolean {
+    console.log(`Crédito: ${this.parcelas}x de R$ ${(valor / this.parcelas).toFixed(2)}`);
+    return true;
+  }
+  getDescricao(): string { return `Cartão (final ${this.numero.slice(-4)})`; }
+}
+
+function checkout(valor: number, metodo: MetodoPagamento): void {
+  console.log(`\n--- Checkout ---`);
+  console.log(`Método: ${metodo.getDescricao()}`);
+  metodo.pagar(valor);
+  console.log("Pedido confirmado!");
+}
+
+checkout(150, new Pix("ana@email.com"));
+checkout(300, new CartaoCredito("4111111111111234", 3));</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Passo 3 — Compilar e rodar</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+npx tsc src/heranca.ts --outDir dist
+node dist/heranca.js
+
+npx tsc src/polimorfismo.ts --outDir dist
+node dist/polimorfismo.js
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <h3>Último Passo — Subindo para o Git</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+git add .
+git commit -m "aula 7 typescript poo parte 2 heranca e polimorfismo"
+git push --set-upstream origin aula7-typescript
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
+          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+          <p>
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos para o commit.
+          </p>
+          <p>
+            <strong><code>git commit -m "..."</code></strong> — Cria o commit.
+          </p>
+          <p>
+            <strong><code>git push --set-upstream origin aula7-typescript</code></strong> — Envia a branch para o GitHub.
+          </p>
+        </div>
+
+        <div class="alert-box-github">
+          <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
+          <p>
+            Compare sua implementação com o código completo da aula no repositório oficial:
+          </p>
+          <a
+            href="https://github.com/devfabioluiz/projeto-typescript-step"
+            target="_blank"
+            class="alert-link-github"
+          >
+            github.com/devfabioluiz/projeto-typescript-step
+          </a>
+          <p>Selecione a branch correspondente a esta aula:</p>
+          <ul>
+            <li><code>aula7-typescript</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- DEVER DE CASA                                -->
+      <!-- ============================================ -->
+      <section>
+        <h2>Dever de Casa</h2>
+
+        <div id="question-container-casa">
+          <div class="question">
+            <h3>Sistema de Formas Geométricas com Polimorfismo</h3>
+            <p>
+              Crie um arquivo <b>src/formas.ts</b> que use herança e polimorfismo:
+            </p>
+            <ol>
+              <li>
+                Crie uma <b>classe abstrata</b> <code>Forma</code> com:
+                nome, calcularArea(), calcularPerimetro(), descrever()
+              </li>
+              <li>
+                Crie subclasses: <code>Circulo</code>, <code>Retangulo</code>,
+                <code>Triangulo</code>
+              </li>
+              <li>
+                Crie uma <b>interface</b> <code>Colorido</code> com propriedade
+                <code>cor</code> e método <code>pintar()</code>
+              </li>
+              <li>
+                Faça pelo menos uma classe implementar ambas (<code>Forma</code>
+                e <code>Colorido</code>)
+              </li>
+              <li>
+                Crie um array de <code>Forma[]</code> e itere imprimindo área,
+                perímetro e descrição de cada uma
+              </li>
+            </ol>
+            <p>
+              <strong>Obs</strong>: Não se esqueça de subir as alterações para o
+              Git na branch dessa aula após terminar o dever.
+            </p>
+
+            <button class="btn-gabarito">Ver gabarito</button>
+            <div class="gabarito">
+              <b>Gabarito:</b>
+
+              <p><b>Arquivo <code>src/formas.ts</code>:</b></p>
+              <div class="code-container">
+                <pre><code class="language-typescript">// src/formas.ts
+
+// --- Classe abstrata ---
+abstract class Forma {
+  constructor(public nome: string) {}
+
+  abstract calcularArea(): number;
+  abstract calcularPerimetro(): number;
+
+  descrever(): string {
+    return `${this.nome}: Área=${this.calcularArea().toFixed(2)}, Perímetro=${this.calcularPerimetro().toFixed(2)}`;
+  }
+}
+
+// --- Interface Colorido ---
+interface Colorido {
+  cor: string;
+  pintar(): void;
+}
+
+// --- Subclasses ---
+class Circulo extends Forma {
+  constructor(public raio: number) {
+    super("Círculo");
+  }
+
+  calcularArea(): number {
+    return Math.PI * this.raio ** 2;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * Math.PI * this.raio;
+  }
+}
+
+class Retangulo extends Forma implements Colorido {
+  cor: string;
+
+  constructor(
+    public largura: number,
+    public altura: number,
+    cor: string = "sem cor"
+  ) {
+    super("Retângulo");
+    this.cor = cor;
+  }
+
+  calcularArea(): number {
+    return this.largura * this.altura;
+  }
+
+  calcularPerimetro(): number {
+    return 2 * (this.largura + this.altura);
+  }
+
+  pintar(): void {
+    console.log(`Retângulo pintado de ${this.cor}`);
+  }
+}
+
+class Triangulo extends Forma {
+  constructor(public base: number, public altura: number) {
+    super("Triângulo");
+  }
+
+  calcularArea(): number {
+    return (this.base * this.altura) / 2;
+  }
+
+  calcularPerimetro(): number {
+    // Triângulo equilátero para simplificar
+    return this.base * 3;
+  }
+}
+
+// --- Polimorfismo em ação ---
+const formas: Forma[] = [
+  new Circulo(5),
+  new Retangulo(4, 6, "azul"),
+  new Triangulo(10, 8)
+];
+
+console.log("=== Relatório de Formas ===");
+for (const forma of formas) {
+  console.log(forma.descrever());
+}
+
+// Verificar se é Colorido
+for (const forma of formas) {
+  if ("pintar" in forma) {
+    (forma as Colorido).pintar();
+  }
+}</code></pre>
+                <button class="btn-copy">Copiar Código</button>
+              </div>
+
+              <div class="alert-explicando-codigo" style="margin-top: 15px;">
+                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+                <p>
+                  O array <code>formas</code> contém diferentes subclasses de
+                  <code>Forma</code>. Quando chamamos <code>forma.descrever()</code>,
+                  cada subclasse retorna uma descrição diferente — polimorfismo em ação.
+                </p>
+                <p>
+                  A verificação <code>"pintar" in forma</code> detecta se o objeto
+                  implementa a interface <code>Colorido</code>. O <code>as Colorido</code>
+                  faz o type casting para acessar o método. Isso permite que formas
+                  coloridas sejam pintadas, enquanto as sem essa interface simplesmente
+                  são ignoradas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
     <script src="../../scripts/copy-clipboard.js"></script>
+    <script src="../../scripts/check-gabarito.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   </body>
 </html>
