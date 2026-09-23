@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -14,16 +14,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 5</h1>
       <h4 class="text-center">TypeScript</h4>
       <h4 class="text-center">Funções e Funções Genéricas</h4>
       <div class="topicos-aula">
         <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
-        Criação de funções, Tipagem de retorno, Parâmetros (obrigatórios, opcionais, padrão, rest),
-        Sobrecarga, Funções anônimas e arrow, Tipo de função, Closures, Callbacks tipados,
-        Funções assíncronas, Funções genéricas.
+        Criação de funções, Tipagem de retorno, Parâmetros (obrigatórios,
+        opcionais, padrão, rest), Sobrecarga, Funções anônimas e arrow, Tipo de
+        função, Closures, Callbacks tipados, Funções assíncronas, Funções
+        genéricas.
       </div>
     </header>
 
@@ -37,14 +40,15 @@
         <p>
           Funções são blocos de código reutilizáveis que executam uma tarefa
           específica. No TypeScript, funções ganham superpoderes com a
-          <strong>tipagem</strong> — você define os tipos de entrada e saída,
-          e o compilador garante que tudo esteja correto.
+          <strong>tipagem</strong> — você define os tipos de entrada e saída, e
+          o compilador garante que tudo esteja correto.
         </p>
 
         <h3>Criação de funções com tipo de retorno</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Tipo de retorno explícito (mais seguro)
+          <pre><code class="language-javascript">// Tipo de retorno explícito (mais seguro)
+export {};
 function somar(a: number, b: number): number {
   return a + b;
 }
@@ -70,15 +74,19 @@ exibirMensagem("Olá!");</code></pre>
           <p>
             O tipo de retorno após os parâmetros (<code>: number</code>) garante
             que a função sempre retorne um número. Se tentarmos retornar uma
-            string, o compilador avisa. O TypeScript também <strong>infere</strong>
-            o tipo quando não declaramos — mas explícito é mais seguro e legível.
+            string, o compilador avisa. O TypeScript também
+            <strong>infere</strong>
+            o tipo quando não declaramos — mas explícito é mais seguro e
+            legível.
           </p>
         </div>
 
         <h3>Parâmetros obrigatórios</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">function criarUsuario(nome: string, email: string, idade: number): string {
+          <pre><code class="language-javascript">
+export {};
+function criarUsuario(nome: string, email: string, idade: number): string {
   return `Usuário: ${nome}, ${idade} anos, email: ${email}`;
 }
 
@@ -90,7 +98,8 @@ console.log(criarUsuario("Ana", "ana@email.com", 28));
         <h3>Parâmetros opcionais</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// O "?" torna o parâmetro opcional (pode ser undefined)
+          <pre><code class="language-javascript">// O "?" torna o parâmetro opcional (pode ser undefined)
+export {};
 function criarUsuario(nome: string, email: string, idade?: number): string {
   if (idade !== undefined) {
     return `${nome}, ${idade} anos`;
@@ -108,7 +117,8 @@ console.log(criarUsuario("Bob", "bob@email.com"));     // "Bob"</code></pre>
           <p>
             O <code>?</code> antes do tipo indica que o parâmetro é opcional.
             Dentro da função, <code>idade</code> pode ser <code>number</code> ou
-            <code>undefined</code>. A verificação <code>idade !== undefined</code>
+            <code>undefined</code>. A verificação
+            <code>idade !== undefined</code>
             garante que só usamos o valor quando ele existe.
           </p>
         </div>
@@ -116,7 +126,8 @@ console.log(criarUsuario("Bob", "bob@email.com"));     // "Bob"</code></pre>
         <h3>Parâmetros com valores padrão</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Valor padrão é usado quando o parâmetro não é passado
+          <pre><code class="language-javascript">// Valor padrão é usado quando o parâmetro não é passado
+export {};
 function criarPagina(titulo: string, idioma: string = "pt-BR"): string {
   return `Página: ${titulo} (${idioma})`;
 }
@@ -134,7 +145,8 @@ function gerarId(prefixo: string = `ID-${Date.now()}`): string {
         <h3>Rest parameters — múltiplos argumentos</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// "..." coleta todos os argumentos extras em um array
+          <pre><code class="language-javascript">// "..." coleta todos os argumentos extras em um array
+export {};
 function somarTudo(...numeros: number[]): number {
   return numeros.reduce((total, n) => total + n, 0);
 }
@@ -179,7 +191,8 @@ logNivel("INFO", "Servidor", "iniciado", "com sucesso");
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Sobrecarga: definir múltiplas assinaturas
+          <pre><code class="language-javascript">// Sobrecarga: definir múltiplas assinaturas
+export {};
 function formatar(valor: number): string;
 function formatar(valor: string): string;
 function formatar(valor: number | string): string {
@@ -197,21 +210,23 @@ console.log(formatar("hello")); // "HELLO"</code></pre>
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            As duas primeiras linhas são as <strong>assinaturas de sobrecarga</strong>
-            — elas dizem ao TypeScript quais combinações são aceitas. A terceira
-            linha é a <strong>implementação</strong> que trata os dois casos.
+            As duas primeiras linhas são as
+            <strong>assinaturas de sobrecarga</strong> — elas dizem ao
+            TypeScript quais combinações são aceitas. A terceira linha é a
+            <strong>implementação</strong> que trata os dois casos.
           </p>
           <p>
             <strong>Quando usar:</strong> quando uma função pode retornar tipos
-            diferentes dependendo da entrada. Caso contrário, prefira union types
-            simples (<code>string | number</code>).
+            diferentes dependendo da entrada. Caso contrário, prefira union
+            types simples (<code>string | number</code>).
           </p>
         </div>
 
         <h3>Tipo de função</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Definir um "tipo" para funções
+          <pre><code class="language-javascript">// Definir um "tipo" para funções
+export {};
 type OperacaoMatematica = (a: number, b: number) => number;
 
 const somar: OperacaoMatematica = (a, b) => a + b;
@@ -232,14 +247,14 @@ console.log(calcular(10, 5, multiplicar)); // 50</code></pre>
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            O tipo <code>OperacaoMatematica</code> define a "forma" de uma função:
-            recebe dois números e retorna um número. Qualquer função que siga
-            essa assinatura pode ser passada como argumento.
+            O tipo <code>OperacaoMatematica</code> define a "forma" de uma
+            função: recebe dois números e retorna um número. Qualquer função que
+            siga essa assinatura pode ser passada como argumento.
           </p>
           <p>
             Esse padrão é fundamental para programação funcional e é usado
-            extensivamente em métodos de array (<code>map</code>, <code>filter</code>,
-            <code>reduce</code>).
+            extensivamente em métodos de array (<code>map</code>,
+            <code>filter</code>, <code>reduce</code>).
           </p>
         </div>
       </section>
@@ -253,7 +268,8 @@ console.log(calcular(10, 5, multiplicar)); // 50</code></pre>
         <h3>Função anônima</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Função atribuída a uma variável (sem nome)
+          <pre><code class="language-javascript">// Função atribuída a uma variável (sem nome)
+export {};
 const dobrar = function (x: number): number {
   return x * 2;
 };
@@ -265,7 +281,7 @@ console.log(dobrar(5)); // 10</code></pre>
         <h3>Arrow function</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Sintaxe curta com =>
+          <pre><code class="language-javascript">// Sintaxe curta com =>
 const subtrair = (a: number, b: number): number => a - b;
 
 // Uma linha sem chaves: retorna automaticamente
@@ -286,17 +302,17 @@ console.log(calcularIdade(1995));  // 30</code></pre>
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Arrow functions são mais curtas que funções tradicionais. Quando
-            o corpo tem <strong>apenas uma expressão</strong>, podemos omitir
-            as chaves <code>{}</code> e o <code>return</code>. Quando há
-            múltiplas linhas, usamos chaves e <code>return</code> explícito.
+            Arrow functions são mais curtas que funções tradicionais. Quando o
+            corpo tem <strong>apenas uma expressão</strong>, podemos omitir as
+            chaves <code>{}</code> e o <code>return</code>. Quando há múltiplas
+            linhas, usamos chaves e <code>return</code> explícito.
           </p>
         </div>
 
         <h3>Funções como parâmetros (callbacks)</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Callback tipado — padrão muito usado no dia a dia
+          <pre><code class="language-javascript">// Callback tipado — padrão muito usado no dia a dia
 function processarLista&lt;T&gt;(lista: T[], callback: (item: T) => void): void {
   for (const item of lista) {
     callback(item);
@@ -333,14 +349,14 @@ buscarDados("/api/usuarios", (dados, erro) => {
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            O padrão de <strong>callback</strong> é quando uma função recebe outra
-            função como argumento e a chama em algum momento. É a base de
+            O padrão de <strong>callback</strong> é quando uma função recebe
+            outra função como argumento e a chama em algum momento. É a base de
             programação assíncrona, eventos e métodos de array.
           </p>
           <p>
-            Note o tipo do callback: <code>(item: T) => void</code> — recebe
-            um item e não retorna nada. O TypeScript valida que o callback
-            passado tenha essa assinatura.
+            Note o tipo do callback: <code>(item: T) => void</code> — recebe um
+            item e não retorna nada. O TypeScript valida que o callback passado
+            tenha essa assinatura.
           </p>
         </div>
       </section>
@@ -358,7 +374,7 @@ buscarDados("/api/usuarios", (dados, erro) => {
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Exemplo 1: Contador
+          <pre><code class="language-javascript">// Exemplo 1: Contador
 function criarContador(): () => number {
   let count: number = 0; // variável do escopo externo
 
@@ -405,13 +421,14 @@ console.log(buscaComCache("usuarios")); // Cache HIT (sem buscar)</code></pre>
           <p>
             No exemplo do contador, a variável <code>count</code> existe dentro
             de <code>criarContador</code>. Quando a função retorna, normalmente
-            essas variáveis seriam destruídas. Mas a closure mantém <code>count</code>
+            essas variáveis seriam destruídas. Mas a closure mantém
+            <code>count</code>
             "viva" — cada chamada ao contador incrementa o mesmo valor.
           </p>
           <p>
             O cache é um padrão real: a closure armazena os dados no
-            <code>Map</code> e reutiliza resultados anteriores. É como criar
-            uma "memória" encapsulada.
+            <code>Map</code> e reutiliza resultados anteriores. É como criar uma
+            "memória" encapsulada.
           </p>
         </div>
       </section>
@@ -420,7 +437,10 @@ console.log(buscaComCache("usuarios")); // Cache HIT (sem buscar)</code></pre>
       <!-- FUNÇÕES ASSÍNCRONAS                          -->
       <!-- ============================================ -->
       <section>
-        <h2>Funções Assíncronas com <code class="language-typescript">async/await</code></h2>
+        <h2>
+          Funções Assíncronas com
+          <code class="language-javascript">async/await</code>
+        </h2>
 
         <p>
           Funções assíncronas retornam <code>Promise</code>. O TypeScript
@@ -428,7 +448,7 @@ console.log(buscaComCache("usuarios")); // Cache HIT (sem buscar)</code></pre>
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Promise tipada: Promise&lt;tipo do resolve&gt;
+          <pre><code class="language-javascript">// Promise tipada: Promise&lt;tipo do resolve&gt;
 function buscarUsuario(id: number): Promise&lt;string&gt; {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -470,13 +490,15 @@ buscarTodos().then(r => console.log(r));</code></pre>
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            <code>Promise&lt;string&gt;</code> diz que a Promise vai resolver com
-            um valor do tipo <code>string</code>. Quando usamos <code>await</code>,
-            o TypeScript "desempacota" a Promise e nos dá o valor diretamente.
+            <code>Promise&lt;string&gt;</code> diz que a Promise vai resolver
+            com um valor do tipo <code>string</code>. Quando usamos
+            <code>await</code>, o TypeScript "desempacota" a Promise e nos dá o
+            valor diretamente.
           </p>
           <p>
-            <code>async function</code> é obrigatório para usar <code>await</code>
-            dentro de uma função. O tipo de retorno é sempre <code>Promise&lt;T&gt;</code>.
+            <code>async function</code> é obrigatório para usar
+            <code>await</code> dentro de uma função. O tipo de retorno é sempre
+            <code>Promise&lt;T&gt;</code>.
           </p>
         </div>
       </section>
@@ -493,7 +515,7 @@ buscarTodos().then(r => console.log(r));</code></pre>
         </p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// SEM generics — usa any (perde segurança)
+          <pre><code class="language-javascript">// SEM generics — usa any (perde segurança)
 function primeiroAny(arr: any[]): any {
   return arr[0];
 }
@@ -515,8 +537,8 @@ console.log(nome.toUpperCase()); // OK: TypeScript sabe que é string
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
             O <code>T</code> é um "placeholder" que só será definido quando
-            chamarmos a função. Se passarmos <code>["Ana", "João"]</code>,
-            o <code>T</code> vira <code>string</code>. O TypeScript infere
+            chamarmos a função. Se passarmos <code>["Ana", "João"]</code>, o
+            <code>T</code> vira <code>string</code>. O TypeScript infere
             automaticamente — não precisamos declarar.
           </p>
         </div>
@@ -524,7 +546,7 @@ console.log(nome.toUpperCase()); // OK: TypeScript sabe que é string
         <h3>Função genérica com constraint</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// T deve ter uma propriedade "id"
+          <pre><code class="language-javascript">// T deve ter uma propriedade "id"
 function buscarPorId&lt;T extends { id: number }&gt;(lista: T[], id: number): T | undefined {
   return lista.find(item => item.id === id);
 }
@@ -551,7 +573,7 @@ buscarPorId(produtos, 2); // OK: Produto tem id
         <h3>Função genérica com múltiplos tipos</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// Dois tipos genéricos: T e U
+          <pre><code class="language-javascript">// Dois tipos genéricos: T e U
 function combinar&lt;T, U&gt;(chave: T, valor: U): { [K in string]: U } {
   return { [chave as string]: valor };
 }
@@ -591,17 +613,17 @@ console.log(porCategoria.get("TI")); // [Notebook, Mouse]</code></pre>
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
             A função <code>agruparPor</code> usa <code>keyof T</code> para
-            garantir que a propriedade passada existe no tipo <code>T</code>.
-            Se tentarmos passar <code>"cor"</code> para um array de
-            <code>Produto</code>, o TypeScript gera erro — porque <code>Produto</code>
-            não tem propriedade <code>cor</code>.
+            garantir que a propriedade passada existe no tipo <code>T</code>. Se
+            tentarmos passar <code>"cor"</code> para um array de
+            <code>Produto</code>, o TypeScript gera erro — porque
+            <code>Produto</code> não tem propriedade <code>cor</code>.
           </p>
         </div>
 
         <h3>Exemplo integrador: função genérica de busca em API</h3>
 
         <div class="code-container">
-          <pre><code class="language-typescript">type Resultado&lt;T&gt; =
+          <pre><code class="language-javascript">type Resultado&lt;T&gt; =
   | { ok: true; dados: T }
   | { ok: false; erro: string };
 
@@ -638,11 +660,12 @@ async function carregarUsuarios() {
         <div class="alert-explicando-codigo">
           <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
           <p>
-            Esta função combina <strong>async/await</strong>, <strong>generics</strong>
-            e <strong>discriminated unions</strong> — tudo que vimos nas aulas
-            anteriores. Ela funciona para qualquer tipo de dados da API, e o
-            TypeScript garante que, quando <code>resultado.ok</code> for
-            <code>true</code>, temos acesso a <code>resultado.dados</code>.
+            Esta função combina <strong>async/await</strong>,
+            <strong>generics</strong> e <strong>discriminated unions</strong> —
+            tudo que vimos nas aulas anteriores. Ela funciona para qualquer tipo
+            de dados da API, e o TypeScript garante que, quando
+            <code>resultado.ok</code> for <code>true</code>, temos acesso a
+            <code>resultado.dados</code>.
           </p>
         </div>
       </section>
@@ -665,19 +688,31 @@ git checkout -b aula5-typescript
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            Entendendo os comandos Git
+          </h2>
           <p>
-            <strong><code>git fetch</code></strong> — Busca as branches mais recentes do remoto.
+            <strong><code>git fetch</code></strong> — Busca as branches mais
+            recentes do remoto.
           </p>
           <p>
-            <strong><code>git checkout aula4-typescript</code></strong> — Muda para a branch da aula anterior.
+            <strong><code>git checkout aula4-typescript</code></strong> — Muda
+            para a branch da aula anterior.
           </p>
           <p>
-            <strong><code>git pull</code></strong> — Baixa e mescla as alterações mais recentes.
+            <strong><code>git pull</code></strong> — Baixa e mescla as
+            alterações mais recentes.
           </p>
           <p>
-            <strong><code>git checkout -b aula5-typescript</code></strong> — Cria e muda para a nova branch.
+            <strong><code>git checkout -b aula5-typescript</code></strong> —
+            Cria e muda para a nova branch.
           </p>
         </div>
 
@@ -686,8 +721,8 @@ git checkout -b aula5-typescript
         <p>Crie o arquivo <code>src/funcoes.ts</code>:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/funcoes.ts
-
+          <pre><code class="language-javascript">// src/funcoes.ts
+export {};
 // --- Funções básicas ---
 function somar(a: number, b: number): number {
   return a + b;
@@ -763,7 +798,8 @@ executar();</code></pre>
         <p>Crie o arquivo <code>src/funcoes-genericas.ts</code>:</p>
 
         <div class="code-container">
-          <pre><code class="language-typescript">// src/funcoes-genericas.ts
+          <pre><code class="language-javascript">// src/funcoes-genericas.ts
+export {};
 
 // --- Função genérica básica ---
 function primeiro&lt;T&gt;(arr: T[]): T {
@@ -830,10 +866,8 @@ if (!r2.ok) {
 
         <div class="code-container">
           <pre><code class="language-bash">
-npx tsc src/funcoes.ts --outDir dist
+npx tsc
 node dist/funcoes.js
-
-npx tsc src/funcoes-genericas.ts --outDir dist
 node dist/funcoes-genericas.js
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -850,24 +884,38 @@ git push --set-upstream origin aula5-typescript
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <div class="alert-explicando-codigo" style="border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #f8fafc);">
-          <h2 class="alert-explicando-codigo-title" style="color: #166534;">Entendendo os comandos Git</h2>
+        <div
+          class="alert-explicando-codigo"
+          style="
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f8fafc);
+          "
+        >
+          <h2 class="alert-explicando-codigo-title" style="color: #166534">
+            Entendendo os comandos Git
+          </h2>
           <p>
-            <strong><code>git add .</code></strong> — Prepara todos os arquivos para o commit.
+            <strong><code>git add .</code></strong> — Prepara todos os arquivos
+            para o commit.
           </p>
           <p>
             <strong><code>git commit -m "..."</code></strong> — Cria o commit.
           </p>
           <p>
-            <strong><code>git push --set-upstream origin aula5-typescript</code></strong> — Envia a branch
-            para o GitHub.
+            <strong
+              ><code
+                >git push --set-upstream origin aula5-typescript</code
+              ></strong
+            >
+            — Envia a branch para o GitHub.
           </p>
         </div>
 
         <div class="alert-box-github">
           <h2 class="alert-title-github">Confira o resultado no GitHub</h2>
           <p>
-            Compare sua implementação com o código completo da aula no repositório oficial:
+            Compare sua implementação com o código completo da aula no
+            repositório oficial:
           </p>
           <a
             href="https://github.com/devfabioluiz/projeto-typescript-step"
@@ -910,8 +958,8 @@ git push --set-upstream origin aula5-typescript
                 o maior valor de uma propriedade numérica
               </li>
               <li>
-                Uma função <code>cacheFn</code> que crie uma versão com cache
-                de qualquer função de busca
+                Uma função <code>cacheFn</code> que crie uma versão com cache de
+                qualquer função de busca
               </li>
             </ol>
             <p>
@@ -923,9 +971,11 @@ git push --set-upstream origin aula5-typescript
             <div class="gabarito">
               <b>Gabarito:</b>
 
-              <p><b>Arquivo <code>src/utilitarios.ts</code>:</b></p>
+              <p>
+                <b>Arquivo <code>src/utilitarios.ts</code>:</b>
+              </p>
               <div class="code-container">
-                <pre><code class="language-typescript">// src/utilitarios.ts
+                <pre><code class="language-javascript">// src/utilitarios.ts
 
 // 1. Agrupar por propriedade
 function agruparPor&lt;T, K extends keyof T&gt;(lista: T[], prop: K): Map&lt;T[K], T[]&gt; {
@@ -998,13 +1048,16 @@ console.log(buscarComCache(1)); // cache hit</code></pre>
                 <button class="btn-copy">Copiar Código</button>
               </div>
 
-              <div class="alert-explicando-codigo" style="margin-top: 15px;">
-                <h2 class="alert-explicando-codigo-title">Explicando o código</h2>
+              <div class="alert-explicando-codigo" style="margin-top: 15px">
+                <h2 class="alert-explicando-codigo-title">
+                  Explicando o código
+                </h2>
                 <p>
-                  Cada função genérica resolve um problema real: <code>agruparPor</code>
-                  organiza dados, <code>ordenarPor</code> ordena por qualquer campo numérico,
-                  <code>buscarMaior</code> encontra extremos, e <code>cacheFn</code> memoriza
-                  resultados.
+                  Cada função genérica resolve um problema real:
+                  <code>agruparPor</code> organiza dados,
+                  <code>ordenarPor</code> ordena por qualquer campo numérico,
+                  <code>buscarMaior</code> encontra extremos, e
+                  <code>cacheFn</code> memoriza resultados.
                 </p>
                 <p>
                   Todas usam <code>extends keyof T</code> para garantir que a
