@@ -142,6 +142,7 @@ var FUNCOES = {
   coordenador_pedagogico: {
     nome: "Coordenador Pedagógico",
     gratificacao: 950.00,      // Dec. 44.711/14
+    decretoRef: "Dec. 44.711/14",
     carga40h: true,             // Lei 9.584/2022
     permiteGLP: true,           // Art. 7 §único Dec. 46.920/20
     permiteDPDA: false,
@@ -223,6 +224,7 @@ var FUNCOES = {
   agente_acompanhamento: {
     nome: "Agente de Acomp. da Gestão Escolar",
     gratificacao: null,        // Anexo Dec. 44.812/14
+    decretoRef: "Dec. 44.812/14",
     carga40h: false,           // já é 40h por criação (Lei 6.479/13 Art. 2º §2º)
     permiteGLP: false,
     permiteDPDA: false,
@@ -232,6 +234,7 @@ var FUNCOES = {
   agente_pessoal: {
     nome: "Agente de Pessoal",
     gratificacao: null,
+    decretoRef: "Dec. 44.712/14",
     faixas: { "30-199": 300.00, "200+": 500.00 },  // Dec. 44.712/14
     faixaDefault: "200+",
     carga40h: false,
@@ -243,6 +246,7 @@ var FUNCOES = {
   agente_pessoal_auxiliar: {
     nome: "Auxiliar de Agente de Pessoal",
     gratificacao: 200.00,                          // Dec. 44.712/14
+    decretoRef: "Dec. 44.712/14",
     carga40h: false,
     permiteGLP: false,
     permiteDPDA: false,
@@ -252,6 +256,7 @@ var FUNCOES = {
   orientador_educacional: {
     nome: "Orientador Educacional",
     gratificacao: 950.00,      // Dec. 44.711/14
+    decretoRef: "Dec. 44.711/14",
     carga40h: true,             // Lei 9.584/2022
     permiteGLP: true,           // Art. 6, III e Art. 7 §único Dec. 46.920/20
     permiteDPDA: false,

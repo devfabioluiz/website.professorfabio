@@ -237,6 +237,7 @@ function calcular(params) {
   var aliquotaEfetivaIR = baseIRRF > 0 ? round2((irrf / baseIRRF) * 100) : 0;
 
   return {
+    funcao: r.funcao,
     vb: r.vb,
     complemento: r.complemento,
     total: r.total,
