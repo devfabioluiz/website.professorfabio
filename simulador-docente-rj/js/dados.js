@@ -151,6 +151,7 @@ var FUNCOES = {
   diretor_geral: {
     nome: "Diretor Geral",
     gratificacao: null,
+    decretoRef: "Dec. 42.926/11",
     categorias: {
       A: 2689.32,  // Dec. 42.926/11 - DIR/SEC D25959
       B: 2370.96,
@@ -159,11 +160,11 @@ var FUNCOES = {
       E: 1603.56,
     },
     categoriasESC: {
-      A: 300.00,   // Dec. 17.301/92 - DIR/SEC ESC
-      B: 240.00,
-      C: 192.00,
-      D: 115.20,
-      E: 57.60,
+      A: 187.34,   // Lei 1026/86 - DIR/SEC (parcela original)
+      B: 140.12,
+      C: 116.77,
+      D: 93.41,
+      E: 62.22,
     },
     carga40h: true,            // Lei 9.584/2022
     permiteGLP: false,
@@ -174,6 +175,7 @@ var FUNCOES = {
   diretor_adjunto: {
     nome: "Diretor Adjunto",
     gratificacao: null,
+    decretoRef: "Dec. 43.299/11",
     categorias: {
       A: 1251.76,  // Dec. 43.299/11 - DIR/SEC D25959
       B: 1092.06,
@@ -181,10 +183,10 @@ var FUNCOES = {
       D:  950.00,
     },
     categoriasESC: {
-      A: 240.00,   // Dec. 17.301/92 - DIR/SEC ESC
-      B: 192.00,
-      C: 153.60,
-      D: 95.00,
+      A: 140.12,   // Lei 1026/86 - DIR/SEC (parcela original)
+      B: 116.77,
+      C: 87.58,
+      D: 71.82,
       E: 0,
     },
     adicionalCatD: 71.82,  // Dec. 43.894/2012 — adicional para escolas Tipo D
@@ -196,19 +198,21 @@ var FUNCOES = {
   },
   secretario_escolar: {
     nome: "Secretário Escolar",
+    gratificacao: null,
+    decretoRef: "Dec. 43.668/12",
     categorias: {
       A: 915.42,   // Dec. 43.668/12 - DIR/SEC D25959
       B: 835.58,
-      C: 754.48,
+      C: 744.48,
       D: 684.22,
       E: 622.90,
     },
     categoriasESC: {
-      A: 180.00,   // Dec. 17.301/92 - DIR/SEC ESC
-      B: 144.00,
-      C: 115.20,
-      D: 68.40,
-      E: 34.56,
+      A: 105.09,   // Lei 1026/86 - DIR/SEC (parcela original)
+      B: 93.41,
+      C: 82.36,
+      D: 65.89,
+      E: 44.95,
     },
     carga40h: false,           // Lei 9.584 NÃO menciona secretário
     permiteGLP: false,

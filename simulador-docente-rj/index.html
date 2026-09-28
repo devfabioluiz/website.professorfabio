@@ -2068,11 +2068,20 @@
           if (r.exibeDIESP) {
             linhas.push(linha("Grat. DIESP", r.diespValor, "text-purple-600"));
           }
-          if (r.exibeGratFuncao) {
+          if (r.exibeGratFuncaoESC) {
             linhas.push(
               linha(
-                "Gratificação (" + r.funcaoNome + ")",
-                r.gratFuncao,
+                "Gratificação Lei 1026/86 (" + r.funcaoNome + ")",
+                r.gratFuncaoESC,
+                "text-purple-600",
+              ),
+            );
+          }
+          if (r.exibeGratFuncaoD25959) {
+            linhas.push(
+              linha(
+                "Gratificação " + r.funcao.decretoRef + " (" + r.funcaoNome + ")",
+                r.gratFuncaoD25959,
                 "text-purple-600",
               ),
             );
@@ -2229,8 +2238,11 @@
             (m1.exibeDP ? linhaSimples("Dif.Provimento", m1.dpValor) : "") +
             (m1.exibeDA ? linhaSimples("Dif.Acesso", m1.daValor) : "") +
             (m1.exibeDIESP ? linhaSimples("Grat.DIESP", m1.diespValor) : "") +
-            (m1.exibeGratFuncao
-              ? linhaSimples("Grat.Função", m1.gratFuncao)
+            (m1.exibeGratFuncaoESC
+              ? linhaSimples("Grat.Lei 1026/86", m1.gratFuncaoESC)
+              : "") +
+            (m1.exibeGratFuncaoD25959
+              ? linhaSimples("Grat." + m1.funcao.decretoRef, m1.gratFuncaoD25959)
               : "") +
             (m1.exibeAdicionalFuncao
               ? linhaSimples("Adic.Cat.D", m1.adicionalFuncao)
@@ -2280,8 +2292,11 @@
             (m2.exibeDP ? linhaSimples("Dif.Provimento", m2.dpValor) : "") +
             (m2.exibeDA ? linhaSimples("Dif.Acesso", m2.daValor) : "") +
             (m2.exibeDIESP ? linhaSimples("Grat.DIESP", m2.diespValor) : "") +
-            (m2.exibeGratFuncao
-              ? linhaSimples("Grat.Função", m2.gratFuncao)
+            (m2.exibeGratFuncaoESC
+              ? linhaSimples("Grat.Lei 1026/86", m2.gratFuncaoESC)
+              : "") +
+            (m2.exibeGratFuncaoD25959
+              ? linhaSimples("Grat." + m2.funcao.decretoRef, m2.gratFuncaoD25959)
               : "") +
             (m2.exibeAdicionalFuncao
               ? linhaSimples("Adic.Cat.D", m2.adicionalFuncao)
@@ -2360,9 +2375,14 @@
           if (c.exibeDIESP) {
             linhas.push(linha("Grat. DIESP", c.diespValor, "text-purple-600"));
           }
-          if (c.exibeGratFuncao) {
+          if (c.exibeGratFuncaoESC) {
             linhas.push(
-              linha("Gratificação (total)", c.gratFuncao, "text-purple-600"),
+              linha("Gratificação Lei 1026/86 (total)", c.gratFuncaoESC, "text-purple-600"),
+            );
+          }
+          if (c.exibeGratFuncaoD25959) {
+            linhas.push(
+              linha("Gratificação Decretos (total)", c.gratFuncaoD25959, "text-purple-600"),
             );
           }
           if (c.exibeAdicionalFuncao) {
