@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciando nosso Projeto Final - React com TypeScript</title>
+    <link rel="stylesheet" href="../../estilos/estilos-aulas.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  </head>
+
+  <body>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
+
+    <header>
+      <h1>Iniciando nosso Projeto Final</h1>
+      <h4 class="text-center">React com TypeScript</h4>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>O Projeto Final</h2>
+
+        <p>
+          Chegou a hora de construir o nosso <strong>projeto final</strong> em
+          <strong>TypeScript</strong>! Ele será <strong>exatamente igual</strong>
+          ao <a href="../react/iniciando-projeto-final.html">projeto final de React</a>
+          — mesmas telas, mesma lógica e a mesma organização em
+          <strong>Atomic Design</strong> —, a única diferença é que tudo será
+          escrito em <strong>TypeScript</strong> (arquivos
+          <code>.ts</code> e <code>.tsx</code>) em vez de JavaScript.
+        </p>
+
+        <p>
+          <strong>Turma 20WOPS20:</strong> ENTREGAR ATÉ O DIA
+          <strong>20/10/2026</strong>
+        </p>
+        <p>
+          <strong>Turma 08SPS11:</strong> ENTREGAR ATÉ O DIA
+          <strong>30/10/2026</strong>
+        </p>
+
+        <ul>
+          <li>
+            <strong>Novo projeto com Vite + TypeScript</strong> — vamos criar do
+            zero o projeto <code>projeto-react-com-typescript</code> com o
+            template <code>react-ts</code> do Vite, exatamente como vimos na
+            <a href="aula8.html">Aula 8</a> do TypeScript.
+          </li>
+          <li>
+            <strong>Organização do código</strong> — reorganizar os componentes
+            seguindo a arquitetura <strong>Atomic Design</strong>, um padrão
+            muito usado no mercado.
+          </li>
+          <li>
+            <strong>Tipagem completa</strong> — interfaces, enums e tipos em
+            todos os componentes, funções e chamadas de API.
+          </li>
+        </ul>
+
+        <p>
+          A lógica (login, cadastro de usuário, listagem, criação, edição e
+          exclusão de produtos usando a
+          <a href="../react/iniciando-projeto-final.html">API Node já publicada</a>)
+          continua a mesma do projeto de React — vamos apenas reescrevê-la com
+          a segurança dos tipos do TypeScript.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🎯 O que muda em relação ao projeto de React?
+          </h2>
+          <ul>
+            <li>
+              O projeto é <strong>novo</strong>: criamos ele com o Vite, não
+              partimos de um repositório antigo.
+            </li>
+            <li>
+              Os arquivos de componente têm a extensão <code>.tsx</code> e os
+              de lógica/tipos a extensão <code>.ts</code>.
+            </li>
+            <li>
+              Todo componente, estado, evento, função e resposta de API recebe
+              seu <strong>tipo</strong>.
+            </li>
+            <li>
+              O repositório no GitHub se chama
+              <strong>projeto-react-com-typescript</strong>.
+            </li>
+            <li>
+              Como o projeto é novo, <strong>não temos a etapa de publicação
+              na Vercel</strong> — entregamos apenas pelo GitHub.
+            </li>
+          </ul>
+        </div>
+
+        <h2>Passo a Passo</h2>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 0 — CRIAR O PROJETO COM O VITE                         -->
+        <!-- ============================================================ -->
+        <h3>Passo 0 — Criar o projeto React com TypeScript (Vite)</h3>
+
+        <p>
+          O <strong>Vite</strong> é a ferramenta de build usada atualmente na
+          comunidade React. O template <code>react-ts</code> já vem com
+          TypeScript configurado e com a pasta <code>src</code> cheia de
+          arquivos <code>.tsx</code> prontos. Crie o projeto com o nome
+          <strong>projeto-react-com-typescript</strong>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">npm create vite@latest projeto-react-com-typescript -- --template react-ts
+cd projeto-react-com-typescript
+npm install
+npm run dev</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+          <p>
+            <code>npm create vite@latest</code> — cria um novo projeto com o
+            Vite. O argumento <code>projeto-react-com-typescript</code> é o
+            nome da pasta e do projeto.
+          </p>
+          <p>
+            <code>-- --template react-ts</code> — o que vem depois do
+            <code>--</code> é repassado ao Vite: o template
+            <strong>react-ts</strong> significa <strong>React +
+            TypeScript</strong>. É o mesmo comando da
+            <a href="aula8.html">Aula 8</a>, só mudando o nome do projeto.
+          </p>
+          <p>
+            <code>cd</code> entra na pasta, <code>npm install</code> instala as
+            dependências e <code>npm run dev</code> sobe o servidor de
+            desenvolvimento (normalmente em <code>http://localhost:5173</code>).
+          </p>
+          <p>
+            Extensões: <code>.ts</code> é arquivo TypeScript puro;
+            <code>.tsx</code> é TypeScript com JSX (só React usa). O Vite não
+            compila TypeScript sozinho — ele delega ao compilador
+            <code>tsc</code>.
+          </p>
+        </div>
+
+        <h3>A estrutura que o Vite gera</h3>
+
+        <div class="code-container">
+          <pre><code class="language-bash">projeto-react-com-typescript/
+│
+├── index.html
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── vite.config.ts
+│
+└── src/
+    ├── main.tsx
+    ├── App.tsx
+    ├── App.css
+    ├── index.css
+    └── vite-env.d.ts</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 O que são esses arquivos? 📝
+          </h2>
+          <p>
+            <code>src/main.tsx</code> — ponto de entrada da aplicação (o que o
+            <code>index.html</code> carrega).
+          </p>
+          <p>
+            <code>src/App.tsx</code> — componente raiz; é nele que montamos as
+            rotas e os componentes.
+          </p>
+          <p>
+            <code>tsconfig.json</code> e seus arquivos irmãos — configuração do
+            compilador TypeScript. O mais importante é
+            <strong><code>"strict": true</code></strong>, que obriga todo valor
+            a ter tipo declarado. Veja a explicação completa na
+            <a href="aula8.html">Aula 8</a>.
+          </p>
+          <p>
+            <code>vite.config.ts</code> — configuração do próprio Vite (já está
+            em TypeScript, como tudo no projeto).
+          </p>
+        </div>
+
+        <p>Para conferir se o TypeScript está funcionando, rode:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash"># Só checa os tipos, não gera arquivo (usa o tsconfig.json)
+npx tsc --noEmit
+
+# Build de produção: roda o tsc e depois o Vite
+npm run build
+
+# Sobe o app em modo desenvolvimento
+npm run dev</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+          <p>
+            <code>npx tsc --noEmit</code> — valida todos os tipos do projeto e
+            <strong>não gera</strong> nenhum arquivo. Se aparecer algum erro
+            <code>TS....</code>, corrija antes de continuar.
+          </p>
+          <p>
+            <code>npm run build</code> — é o comando que a gente usa antes de
+            subir o código: primeiro o <code>tsc</code> checa os tipos e
+            depois o Vite gera a pasta <code>dist</code>.
+          </p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 1 — GIT                                                 -->
+        <!-- ============================================================ -->
+        <h3>Passo 1 — Criar o repositório e a branch projeto-final</h3>
+
+        <p>
+          Crie um repositório <strong>vazio</strong> (sem README, sem
+          .gitignore) no GitHub chamado
+          <strong>projeto-react-com-typescript</strong> e depois conecte o
+          projeto local a ele:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git init
+git add .
+git commit -m "projeto final: cria o projeto com vite react-ts"
+git branch -M main
+git checkout -b projeto-final
+git remote add origin https://github.com/SEU-USUARIO/projeto-react-com-typescript.git
+git push --set-upstream origin projeto-final</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Explicando o código 📝
+          </h2>
+          <p>
+            <code>git init</code> transforma a pasta em um repositório Git
+            local; <code>git add .</code> e <code>git commit</code> salvam o
+            projeto criado pelo Vite.
+          </p>
+          <p>
+            <code>git branch -M main</code> garante que a branch principal se
+            chama <code>main</code> e
+            <code>git checkout -b projeto-final</code> cria e alterna para a
+            branch do projeto final.
+          </p>
+          <p>
+            <code>git remote add origin ...</code> aponta para o repositório
+            que você criou no GitHub (troque <code>SEU-USUARIO</code>) e
+            <code>git push --set-upstream origin projeto-final</code> envia a
+            branch e a vincula ao remoto.
+          </p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 2 — ATOMIC DESIGN                                       -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 8px;
+          "
+        >
+          🧩 PASSO 2 — ENTENDER O ATOMIC DESIGN
+        </h2>
+
+        <p>
+          <strong>Atomic Design</strong> é uma metodologia criada por
+          <strong>Brad Frost</strong> que organiza a interface em cinco níveis
+          de complexidade, inspirados na química. Assim como a matéria é formada
+          por átomos que se combinam em moléculas, nossas telas são formadas por
+          pequenos componentes que se combinam em blocos maiores.
+        </p>
+
+        <p>Os cinco níveis são:</p>
+
+        <ol>
+          <li>
+            <strong>Átomos (Atoms)</strong> — os menores elementos da interface:
+            botões, inputs, labels, títulos. Não podem ser divididos e não fazem
+            sentido sozinhos.
+          </li>
+          <li>
+            <strong>Moléculas (Molecules)</strong> — a união de dois ou mais
+            átomos. Exemplo: um <code>label</code> + um <code>input</code> = um
+            campo de formulário.
+          </li>
+          <li>
+            <strong>Organismos (Organisms)</strong> — a união de várias
+            moléculas formando uma seção completa. Exemplo: um formulário de
+            login inteiro, ou a lista de produtos.
+          </li>
+          <li>
+            <strong>Templates</strong> — o esqueleto da página: definem onde os
+            organismos ficam posicionados, sem conteúdo real (layout).
+          </li>
+          <li>
+            <strong>Páginas (Pages)</strong> — o template com o conteúdo real,
+            ou seja, a tela que o usuário vê.
+          </li>
+        </ol>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🎯 Por que usar Atomic Design?
+          </h2>
+          <ul>
+            <li>
+              <strong>Reutilização:</strong> o mesmo botão e o mesmo input são
+              usados em várias telas.
+            </li>
+            <li>
+              <strong>Manutenção:</strong> para mudar a cor de todos os botões,
+              alteramos um único arquivo.
+            </li>
+            <li>
+              <strong>Organização:</strong> pastas claras tornam o projeto
+              previsível e fácil de navegar.
+            </li>
+            <li>
+              <strong>Escala:</strong> padrão muito usado em projetos
+              profissionais de larga escala.
+            </li>
+            <li>
+              <strong>Tipagem:</strong> cada pasta tem seus próprios arquivos de
+              tipos, deixando as interfaces de cada componente bem definidas.
+            </li>
+          </ul>
+        </div>
+
+        <h3>Como nosso projeto ficará organizado</h3>
+
+        <p>
+          Como o projeto é novo, começamos direto na estrutura final. Os
+          componentes do projeto ficam em
+          <code>src/components/projeto-final</code>, separados por nível do
+          Atomic Design, e os tipos do projeto ficam em <code>src/types</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">projeto-react-com-typescript/
+│
+└── src/
+    │
+    ├── components/
+    │   └── projeto-final/
+    │       ├── atoms/
+    │       │   ├── Button.tsx
+    │       │   ├── Input.tsx
+    │       │   └── Label.tsx
+    │       │
+    │       ├── molecules/
+    │       │   ├── FormField.tsx
+    │       │   └── ProductCard.tsx
+    │       │
+    │       ├── organisms/
+    │       │   ├── Header.tsx
+    │       │   ├── LoginForm.tsx
+    │       │   ├── RegistrarForm.tsx
+    │       │   ├── ProductForm.tsx
+    │       │   └── ProductList.tsx
+    │       │
+    │       ├── templates/
+    │       │   └── PageLayout.tsx
+    │       │
+    │       └── pages/
+    │           ├── Home.tsx
+    │           ├── Login.tsx
+    │           ├── Registrar.tsx
+    │           ├── CriarProduto.tsx
+    │           └── EditarProduto.tsx
+    │
+    ├── types/
+    │   ├── produto.ts
+    │   └── usuario.ts
+    │
+    ├── App.tsx
+    └── main.tsx</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Mapeando o que já fizemos 📝
+          </h2>
+          <p>
+            No projeto de React, o componente <code>CriarProduto.jsx</code> da
+            Aula 11 misturava tudo: labels, inputs, botão e a requisição. No
+            Atomic Design ele se torna uma <strong>página</strong>
+            (<code>CriarProduto.tsx</code>) que apenas compõe organismos
+            (formulários) e moléculas (campos), que por sua vez usam átomos
+            (botões e inputs). A lógica de negócio continua nas páginas e nos
+            organismos — agora com tipos.
+          </p>
+          <p>
+            Repare que todo arquivo de componente termina em <code>.tsx</code>
+            (contém JSX) e os arquivos de <code>src/types</code> terminam em
+            <code>.ts</code> (só declaram tipos, sem JSX).
+          </p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 3 — HEADER                                              -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          PASSO 3 — Criar um Header
+        </h2>
+
+        <p>
+          Crie um componente chamado <code>Header.tsx</code> e nele coloque o
+          logo, menu de navegação, botão tema escuro/claro e botão de logout.
+        </p>
+
+        <p>
+          <b>Obs1:</b> O Header será usado em todas as páginas do aplicativo,
+          dentro do template <code>PageLayout.tsx</code>.
+        </p>
+        <p>
+          <b>Obs2:</b> O botão de tema escuro/claro deve alternar o tema da
+          página. Conforme vimos na <a href="../react/aula12.html">Aula 12 de
+          React</a>.
+        </p>
+        <p>
+          <b>Obs3:</b> O botão de logout deve redirecionar o usuário para a
+          página de login e limpar o token do localStorage. Conforme vimos na
+          <a href="../react/aula11.html">Aula 11 de React</a>.
+        </p>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 4 — FILTRO                                              -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #2196f3;
+            padding-bottom: 8px;
+          "
+        >
+          PASSO 4 — Fazer o filtro de produtos
+        </h2>
+
+        <p>
+          Implemente um filtro de produtos que permita aos usuários buscar e
+          filtrar produtos por nome na página Home, a que lista os produtos
+        </p>
+
+        <p>
+          <b>Obs:</b> O filtro deve ser implementado como um componente
+          reutilizável. Além disso, você deve usar o
+          <a href="https://mui.com/material-ui/react-autocomplete/"
+            >AutoComplete do material ui</a
+          >.
+        </p>
+
+        <p>
+          <b>Obs2:</b>Além do AutoComplete, implemente o botão filtrar. Nesse
+          botão você pode adicionar a lógica para aplicar o filtro selecionado.
+          Dica: você pode usar o estado do componente para armazenar o valor
+          selecionado no AutoComplete e, ao clicar no botão filtrar, aplicar a
+          lógica de filtragem na lista de produtos.
+        </p>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 5 — TIPOS (INFORMAÇÃO)                                  -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 8px;
+          "
+        >
+          🔎 PASSO 5 — O que precisa de tipo no projeto (apenas informação)
+        </h2>
+
+        <p>
+          Esta etapa é diferente das outras: aqui
+          <strong>não vamos mostrar como fazer</strong>. Vamos apenas
+          <strong>informar</strong> quais partes do projeto precisam de tipos,
+          interfaces e enums. A aplicação prática é com vocês — usem o que
+          estudamos na <a href="aula8.html">Aula 8 do TypeScript</a> como
+          referência.
+        </p>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            ⚠️ Objetivo desta etapa
+          </h2>
+          <p>
+            Vocês devem aplicar a tipagem <strong>por conta própria</strong>,
+            seguindo a tabela abaixo. Nenhuma dessas implementações será dada
+            passo a passo: o objetivo é que vocês reconheçam
+            <strong>onde</strong> cada conceito de TypeScript se encaixa em um
+            projeto React real.
+          </p>
+        </div>
+
+        <h3>Componentes que devem ter tipos</h3>
+
+        <table>
+          <tr>
+            <th>Onde</th>
+            <th>O que deve ser tipado</th>
+            <th>Conceito do TypeScript</th>
+          </tr>
+          <tr>
+            <td>
+              Todos os componentes com entrada de dados
+              (<code>Button</code>, <code>Input</code>, <code>Label</code>,
+              <code>FormField</code>, <code>ProductCard</code>,
+              <code>Header</code>, <code>PageLayout</code>)
+            </td>
+            <td>Cada propriedade recebida pelo componente</td>
+            <td><strong>Interface</strong> de props (ex.: <code>XxxProps</code>)</td>
+          </tr>
+          <tr>
+            <td>
+              Formulários (<code>LoginForm</code>, <code>RegistrarForm</code>,
+              <code>ProductForm</code>)
+            </td>
+            <td>
+              Estado dos campos (<code>useState</code>), eventos de
+              <code>submit</code> e <code>change</code>
+            </td>
+            <td>
+              <strong>Tipos genéricos</strong> do <code>useState&lt;T&gt;</code>
+              e tipos de evento (<code>FormEvent</code>, <code>ChangeEvent</code>)
+            </td>
+          </tr>
+          <tr>
+            <td>Páginas (<code>Home</code>, <code>Login</code>,
+              <code>Registrar</code>, <code>CriarProduto</code>,
+              <code>EditarProduto</code>)</td>
+            <td>
+              Estados da tela (listagem, carregando, erro) e dados vindos da
+              rota
+            </td>
+            <td>
+              <strong>Union types</strong> e <strong>discriminated
+              unions</strong> (ex.: estado da requisição)
+            </td>
+          </tr>
+          <tr>
+            <td>Contexto de tema (escuro/claro) e de autenticação</td>
+            <td>
+              O valor fornecido pelo contexto e as props do provider
+            </td>
+            <td><strong>Interfaces</strong> do contexto e <strong>generics</strong></td>
+          </tr>
+          <tr>
+            <td>Botão de tema, papéis de usuário e critério de filtro/ordenação</td>
+            <td>Conjuntos de valores fixos e nomeados</td>
+            <td>
+              <strong><code>enum</code></strong> (ex.: tema, papel do usuário,
+              critério de ordenação)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Camada de API (login, cadastro, CRUD de produtos) e arquivos em
+              <code>src/types/</code>
+            </td>
+            <td>
+              Formato de <code>Produto</code>, <code>Usuario</code>,
+              <code>Credenciais</code>, token e respostas de erro
+            </td>
+            <td>
+              <strong>Interfaces</strong> + <strong>módulos</strong>
+              (<code>export/import type</code>)
+            </td>
+          </tr>
+          <tr>
+            <td>Hooks customizados</td>
+            <td>Parâmetros e o que o hook devolve</td>
+            <td>
+              <strong>Funções genéricas</strong> e <strong>tuples</strong>
+              tipadas
+            </td>
+          </tr>
+          <tr>
+            <td>Funções utilitárias e callbacks (onClick, onSubmit, rotas)</td>
+            <td>Parâmetros, valor de retorno e retorno <code>Promise</code></td>
+            <td>
+              <strong>Tipagem de funções</strong> (<code>: void</code>,
+              <code>: Promise&lt;T&gt;</code>)
+            </td>
+          </tr>
+          <tr>
+            <td>Acesso a elementos do DOM (<code>useRef</code>)</td>
+            <td>O tipo real do elemento referenciado</td>
+            <td><strong><code>useRef&lt;T&gt;</code></strong></td>
+          </tr>
+        </table>
+
+        <div class="alert-explicando-codigo">
+          <h2 class="alert-explicando-codigo-title">
+            🤓 Lembrete dos conceitos 📝
+          </h2>
+          <ul>
+            <li>
+              <strong>Interface</strong> — contrato do que um componente
+              recebe; obrigatória para as props de todo componente que recebe
+              dados (Aula 6).
+            </li>
+            <li>
+              <strong>Enum</strong> — nomes fixos para valores fixos: tema
+              claro/escuro, papéis de usuário, critério de filtro. Evita
+              strings soltas pelo código (Aula 2).
+            </li>
+            <li>
+              <strong>Discriminated union</strong> — estados da requisição
+              (carregando / erro / sucesso) em um único tipo (Aula 2).
+            </li>
+            <li>
+              <strong>Generics e tuples</strong> — <code>useState&lt;T&gt;</code>,
+              hooks que devolvem vários valores tipados (Aula 4).
+            </li>
+            <li>
+              <strong>Tipagem de eventos</strong> — saber se o evento veio de
+              um <code>input</code>, de um <code>form</code> ou de um botão
+              (Aula 6).
+            </li>
+          </ul>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PASSO 6 — SUBIR PARA O GIT                                    -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #9c27b0;
+            padding-bottom: 8px;
+          "
+        >
+          📦 PASSO 6 — SUBIR PARA O GIT (main)
+        </h2>
+
+        <p>Com tudo funcionando e sem erros de tipo, envie o projeto final:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git add .
+git commit -m "projeto final: atomic design e tipagem dos componentes"
+git push --set-upstream origin projeto-final</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>
+          Depois, integre a branch do projeto final à <code>main</code>:
+        </p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">git checkout main
+git merge projeto-final
+git push</code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- CHECKLIST                                                      -->
+        <!-- ============================================================ -->
+        <h2
+          style="
+            margin-top: 40px;
+            border-bottom: 3px solid #9c27b0;
+            padding-bottom: 8px;
+          "
+        >
+          ✅ Checklist do Projeto
+        </h2>
+
+        <ol>
+          <li>
+            ✅ Criei o projeto <code>projeto-react-com-typescript</code> com o
+            template <code>react-ts</code> do Vite
+          </li>
+          <li>
+            ✅ <code>npx tsc --noEmit</code> roda sem erros e
+            <code>npm run build</code> gera a pasta <code>dist</code>
+          </li>
+          <li>✅ Entendi os 5 níveis do Atomic Design</li>
+          <li>
+            ✅ Criei os átomos (<code>Button</code>, <code>Input</code>,
+            <code>Label</code>)
+          </li>
+          <li>
+            ✅ Criei as moléculas (<code>FormField</code>,
+            <code>ProductCard</code>)
+          </li>
+          <li>
+            ✅ Criei os organismos (<code>Header</code>, <code>LoginForm</code>,
+            <code>RegistrarForm</code>, <code>ProductForm</code>,
+            <code>ProductList</code>)
+          </li>
+          <li>✅ Criei o template (<code>PageLayout</code>)</li>
+          <li>✅ Criei as páginas em <code>src/components/projeto-final/pages</code></li>
+          <li>
+            ✅ Criei os tipos (interfaces e enums) em <code>src/types</code>
+          </li>
+          <li>
+            ✅ Typei props, estados, eventos, contexto e chamadas de API
+          </li>
+          <li>✅ O CRUD funciona localmente com <code>npm run dev</code></li>
+          <li>✅ Projeto no GitHub na branch <code>projeto-final</code></li>
+          <li>✅ Merge da <code>projeto-final</code> na <code>main</code></li>
+        </ol>
+
+        <!-- ============================================================ -->
+        <!-- ENTREGA DO PROJETO                                            -->
+        <!-- ============================================================ -->
+        <section>
+          <h2
+            style="
+              margin-top: 40px;
+              border-bottom: 3px solid #e91e63;
+              padding-bottom: 8px;
+            "
+          >
+            📤 Entrega do Projeto
+          </h2>
+
+          <p>
+            <strong>Turma 20WOPS20:</strong> ENTREGAR ATÉ O DIA
+            <strong>20/10/2026</strong>
+          </p>
+          <p>
+            <strong>Turma 08SPS11:</strong> ENTREGAR ATÉ O DIA
+            <strong>30/10/2026</strong>
+          </p>
+
+          <div class="alert-explicando-codigo">
+            <ol>
+              <li>
+                <strong>Grave um vídeo</strong> apresentando seu projeto (máximo
+                5 minutos). Mostre o código organizado em Atomic Design, a
+                aplicação funcionando e explique as escolhas que fez —
+                incluindo os tipos, interfaces e enums que vocês aplicaram.
+                <strong>Não precisa aparecer seu rosto</strong> — apenas a tela
+                do computador.
+              </li>
+              <li>
+                <strong>Coloque o vídeo</strong> dentro do repositório do
+                projeto (ex: <code>video-apresentacao.mp4</code> ou
+                <code>video/</code>).
+              </li>
+              <li>
+                <strong>Envie um email</strong> com o link do repositório
+                <code>projeto-react-com-typescript</code>.
+              </li>
+            </ol>
+
+            <p>
+              O assunto do email deve ser:
+              <strong>"Projeto Final React com TypeScript - [SEU NOME]"</strong>.
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../scripts/copy-clipboard.js"></script>
+  </body>
+</html>
