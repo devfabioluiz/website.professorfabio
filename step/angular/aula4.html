@@ -266,7 +266,7 @@ import { Router } from '@angular/router';
 constructor(private router: Router) {}
 
 ngOnInit() {
-  const navigation = this.router.getCurrentNavigation();
+  const navigation = this.router.currentNavigation();
   const produto = navigation?.extras.state?.['produto'];
 
   console.log(produto);
@@ -368,7 +368,7 @@ aula4-navegacao
         <div class="code-container">
           <pre><code class="language-bash"> 
 git fetch
-git checkout aula4-navegacao
+git checkout -b aula4-navegacao
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>

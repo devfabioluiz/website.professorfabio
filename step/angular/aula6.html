@@ -16,19 +16,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-      
   </head>
 
   <body>
-    <button class="back-btn" onclick="history.back()">← Voltar ao índice</button>
+    <button class="back-btn" onclick="history.back()">
+      ← Voltar ao índice
+    </button>
     <header>
       <h1>Aula 6</h1>
       <h4 class="text-center">Angular</h4>
       <h4 class="text-center">Guardiões de Rota (Route Guards)</h4>
-    <div class="topicos-aula"><strong>Tópicos do nosso plano de curso abordados nessa aula:</strong> Navegação e transferência de dados (Route Guards).</div>
+      <div class="topicos-aula">
+        <strong>Tópicos do nosso plano de curso abordados nessa aula:</strong>
+        Navegação e transferência de dados (Route Guards).
+      </div>
     </header>
 
-    <main class="container"><section>
+    <main class="container">
+      <section>
         <h2>O que são Guardiões de Rota?</h2>
 
         <p>
@@ -172,7 +177,7 @@ aula6-guards
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
-git checkout aula6-guards
+git checkout -b aula6-guards
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
@@ -188,7 +193,7 @@ ng g guard guards/auth
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-                <p>Escolha a opção <strong>CanActivate</strong></p>
+        <p>Escolha a opção <strong>CanActivate</strong></p>
 
         <h3>Passo 2 — Implementar o guard</h3>
 
@@ -363,7 +368,11 @@ git push
                 >1. Inserir no localStorage a flag isAdmin no navegador</strong
               >
 
-              <p>Para fazer isso, você precisa clicar com botão direito na página no navegador, clicar em "Inspecionar" e digitar o código abaixo no console</p>
+              <p>
+                Para fazer isso, você precisa clicar com botão direito na página
+                no navegador, clicar em "Inspecionar" e digitar o código abaixo
+                no console
+              </p>
 
               <div class="code-container">
                 <pre>
@@ -373,8 +382,7 @@ git push
               </div>
 
               <strong
-                >2. Criar o guard de role
-                <code>role.guard.ts</code></strong
+                >2. Criar o guard de role <code>role.guard.ts</code></strong
               >
 
               <div class="code-container">
