@@ -310,7 +310,7 @@ var FAIXAS_IRPF_ANUAL = [
   { ate: Infinity, aliquota: 0.275,   deducao: 10904.76 },
 ];
 
-var LIMITE_DESCONTO_SIMPLIFICADO = 16754.34;
+var LIMITE_DESCONTO_SIMPLIFICADO = 17640.00;  // Lei 15.270/2025, art. 10, X — ano-calendário 2026
 
 var TIPO_OUTRA_RENDA = {
   clt: { nome: "CLT (particular)" },

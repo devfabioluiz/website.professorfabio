@@ -116,18 +116,12 @@ guards/
           <strong>aula6-guards</strong>.
         </p>
 
-        <div class="code-container">
-          <pre><code class="language-bash">
-aula6.1-guards-api
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
         <p>No terminal execute:</p>
 
         <div class="code-container">
           <pre><code class="language-bash">
 git fetch
+git checkout aula6-guards
 git checkout -b aula6.1-guards-api
           </code></pre>
           <button class="btn-copy">Copiar Código</button>
@@ -144,26 +138,9 @@ ng g service services/auth
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 2 — Configurar HttpClient</h3>
+        <h3>Passo 3 — Atualizar AuthService</h3>
 
-        <p>No arquivo <code>app.config.ts</code>:</p>
-
-        <div class="code-container">
-          <pre><code class="language-typescript">
-import { provideHttpClient } from '@angular/common/http';
-
-export const appConfig = {
-  providers: [
-    provideHttpClient()
-  ]
-};
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <h3>Passo 3 — Criar AuthService</h3>
-
-        <p>No arquivo <code>auth.service.ts</code>:</p>
+        <p>No arquivo <code>auth.ts</code>:</p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
@@ -174,7 +151,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class Auth {
 
   private http = inject(HttpClient);
 
@@ -211,27 +188,32 @@ export class AuthService {
 
         <h3>Passo 4 — Criar página de login</h3>
 
-        <p>Exemplo simples de login:</p>
+        <p>No terminal digite o seguinte comando:</p>
+
+        <div class="code-container">
+          <pre><code class="language-bash">
+ng g c login
+          </code></pre>
+          <button class="btn-copy">Copiar Código</button>
+        </div>
+
+        <p>Agora no arquivo <code>login.ts</code> coloque o código abaixo:</p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
 import { Component, inject } from '@angular/core';
 
-import { AuthService } from '../../services/auth.service';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-
-  template: `
-    <button (click)="login()">
-      Fazer Login
-    </button>
-  `
+  templateUrl: './login.html',
+  styleUrl: './login.css',
 })
 export class Login {
 
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
 
   login() {
 
@@ -253,32 +235,20 @@ export class Login {
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Usuário de teste da API</h3>
+        <br />
 
-        <p>Utilize os dados abaixo:</p>
+        <p>
+          Por fim, no arquivo <code>login.html</code> coloque o código abaixo:
+        </p>
 
         <div class="code-container">
-          <pre><code class="language-markup">
-Usuário: emilys
-Senha: emilyspass
-          </code></pre>
+          <pre><code class="language-html">&lt;button (click)="login()"&gt;Fazer Login&lt;/button&gt;</code></pre>
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <h3>Passo 5 — Criar Auth Guard</h3>
+        <h3>Passo 5 — Atualizar o Auth Guard</h3>
 
-        <p>No terminal execute:</p>
-
-        <div class="code-container">
-          <pre><code class="language-bash">
-ng g guard guards/auth
-          </code></pre>
-          <button class="btn-copy">Copiar Código</button>
-        </div>
-
-        <p>Escolha a opção <strong>CanActivate</strong></p>
-
-        <p>No arquivo <code>auth.guard.ts</code>:</p>
+        <p>No arquivo <code>auth.guard.ts</code> coloque o código abaixo :</p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
@@ -322,7 +292,16 @@ ng g guard guards/admin
           <button class="btn-copy">Copiar Código</button>
         </div>
 
-        <p>No arquivo <code>admin.guard.ts</code>:</p>
+        <p>
+          <b>Escolha a opção <code>CanActivate</code></b>
+        </p>
+
+        <br />
+
+        <p>
+          Agora atualize o arquivo <code>admin.guard.ts</code>com o seguinte
+          código:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
@@ -335,11 +314,11 @@ import {
 
 import { map, catchError, of } from 'rxjs';
 
-import { AuthService } from '../services/auth.service';
+import { Auth } from '../services/auth';
 
 export const adminGuard: CanActivateFn = () => {
 
-  const authService = inject(AuthService);
+  const authService = inject(Auth);
 
   const router = inject(Router);
 
@@ -380,7 +359,10 @@ export const adminGuard: CanActivateFn = () => {
 
         <h3>Passo 7 — Aplicar os guards nas rotas</h3>
 
-        <p>No arquivo <code>app.routes.ts</code>:</p>
+        <p>
+          Agora no arquivo <code>app.routes.ts</code> atualize para o seguinte
+          código:
+        </p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
@@ -396,7 +378,7 @@ export const routes: Routes = [
     path: 'login',
 
     loadComponent: () =>
-      import('./pages/login/login').then(
+      import('./login/login').then(
         (m) => m.Login
       ),
   },

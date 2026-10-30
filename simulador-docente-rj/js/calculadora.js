@@ -18,14 +18,17 @@ function calcularIRRF(baseCalculo) {
   }
   if (irrfBruto < 0) irrfBruto = 0;
 
+  // Lei 15.270/2025, art. 3º-A (a partir de 2026): a faixa até R$ 5.000 não é
+  // isenta — a lei concede uma REDUÇÃO de até R$ 312,89. De R$ 5.000,01 a
+  // R$ 7.350,00 a redução decai linearmente até zerar; acima de R$ 7.350 não
+  // há redução (§2º). O §1º limita a redução ao imposto da tabela progressiva.
+  var reducao = 0;
   if (baseCalculo <= 5000.00) {
-    return 0;
+    reducao = 312.89;
   } else if (baseCalculo <= 7350.00) {
-    var reducao = 978.62 - (0.133145 * baseCalculo);
-    return Math.max(0, round2(irrfBruto - reducao));
-  } else {
-    return round2(irrfBruto);
+    reducao = 978.62 - (0.133145 * baseCalculo);
   }
+  return round2(Math.max(0, irrfBruto - Math.min(reducao, irrfBruto)));
 }
 
 function getTrienioPercentual(trienios) {
@@ -151,7 +154,22 @@ function calcularVencimentos(params) {
   var auxAlimentacao = ALIMENTACAO[cargaParaAuxilios];
   var auxilios = round2(auxTransporte + auxAlimentacao);
 
-  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + diespValor + gratFuncaoTotal + ajudaCusto + auxilios);
+  // Remuneração bruta: somente rubricas remuneratórias. Auxílios (transporte e
+  // alimentação) são pagamentos separados e não sofrem descontos de RPPS/IRRF,
+  // por isso ficam fora da bruta e entram apenas no total recebido.
+  var bruta = round2(total + trienioValor + aqValor + glpValor + dpValor + daValor + diespValor + gratFuncaoTotal + ajudaCusto);
+  var totalReceber = round2(bruta + auxilios);
+
+  // Base tributável do IRPF. A escolha de incluir a gratificação na
+  // previdência (média vs paridade) é sobre a aposentadoria e não muda o
+  // IRPF: gratificação de função, GLP e DIESP (GEE) são rendimentos
+  // tributáveis mesmo quando fora da base do RPPS. DP e DA ficam fora por
+  // natureza indenizatória (sentença do 1º Juizado Especial de Fazenda
+  // Pública da Capital/RJ, abr/2026) e a ajuda de custo é indenizatória
+  // (Lei 8.112/90, art. 46).
+  var rendaTributavelIRRF = round2(
+    total + trienioValor + aqValor + glpValor + diespValor + gratFuncaoTotal
+  );
 
   return {
     cargo: cargo,
@@ -180,6 +198,8 @@ function calcularVencimentos(params) {
     auxAlimentacao: auxAlimentacao,
     auxilios: auxilios,
     bruta: bruta,
+    totalReceber: totalReceber,
+    rendaTributavelIRRF: rendaTributavelIRRF,
     previdencia: previdencia,
     basePrev: basePrev,
     abonoPermanenciaValor: abonoPermanenciaValor,
@@ -229,11 +249,16 @@ function calcular(params) {
   });
 
   var pensao = params.pensaoAlimenticia || 0;
-  var baseIRRF = round2(r.basePrev + r.glpValor - r.previdencia - pensao - (params.dependentes * DEDUCAO_DEPENDENTE));
+  var baseIRRF = round2(
+    r.rendaTributavelIRRF - r.previdencia - pensao - (params.dependentes * DEDUCAO_DEPENDENTE),
+  );
   if (baseIRRF < 0) baseIRRF = 0;
 
   var irrf = round2(calcularIRRF(baseIRRF));
-  var liquido = round2(r.bruta - r.previdencia - irrf - pensao + (r.abonoPermanenciaValor || 0));
+  var liquidoRemuneracao = round2(
+    r.bruta - r.previdencia - irrf - pensao + (r.abonoPermanenciaValor || 0),
+  );
+  var liquido = round2(liquidoRemuneracao + r.auxilios);
   var aliquotaEfetivaIR = baseIRRF > 0 ? round2((irrf / baseIRRF) * 100) : 0;
 
   return {
@@ -261,13 +286,16 @@ function calcular(params) {
     auxAlimentacao: r.auxAlimentacao,
     auxilios: r.auxilios,
     bruta: r.bruta,
+    totalReceber: r.totalReceber,
     previdencia: r.previdencia,
     basePrev: r.basePrev,
+    rendaTributavelIRRF: r.rendaTributavelIRRF,
     abonoPermanenciaValor: r.abonoPermanenciaValor,
     exibeAbonoPermanencia: r.exibeAbonoPermanencia,
     baseIRRF: baseIRRF,
     irrf: irrf,
     liquido: liquido,
+    liquidoRemuneracao: liquidoRemuneracao,
     pensaoAlimenticia: pensao,
     aliquotaEfetivaIR: aliquotaEfetivaIR,
     ref: r.ref,
@@ -337,8 +365,8 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     incluirGratPrev: params2.incluirGratPrev,
   });
 
-  var baseIRRF_semDep1 = round2(r1.basePrev + r1.glpValor - r1.previdencia);
-  var baseIRRF_semDep2 = round2(r2.basePrev + r2.glpValor - r2.previdencia);
+  var baseIRRF_semDep1 = round2(r1.rendaTributavelIRRF - r1.previdencia);
+  var baseIRRF_semDep2 = round2(r2.rendaTributavelIRRF - r2.previdencia);
 
   var combinedBaseIRRF = Math.max(0, round2(baseIRRF_semDep1 + baseIRRF_semDep2 - pensaoAlimenticia - (dependentes * DEDUCAO_DEPENDENTE)));
   var combinedIRRF = round2(calcularIRRF(combinedBaseIRRF));
@@ -358,8 +386,6 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
     var r2AjusteAlim = r2.auxAlimentacao;
     r1.auxAlimentacao = auxAlimentacaoCap;
     r2.auxAlimentacao = 0;
-    r1.bruta = round2(r1.bruta - r1AjusteAlim);
-    r2.bruta = round2(r2.bruta - r2AjusteAlim);
     r1.auxilios = round2(r1.auxilios - r1AjusteAlim);
     r2.auxilios = round2(r2.auxilios - r2AjusteAlim);
   }
@@ -369,17 +395,24 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
   var auxTransporteUnico = TRANSPORTE.demais;
   var auxTransporteAjuste1 = round2(r1.auxTransporte - auxTransporteUnico);
   r1.auxTransporte = auxTransporteUnico;
-  r1.bruta = round2(r1.bruta - auxTransporteAjuste1);
   r1.auxilios = round2(r1.auxilios - auxTransporteAjuste1);
   var auxTransporteAjuste2 = r2.auxTransporte;
   r2.auxTransporte = 0;
-  r2.bruta = round2(r2.bruta - auxTransporteAjuste2);
   r2.auxilios = round2(r2.auxilios - auxTransporteAjuste2);
   var auxTransporteDiff = round2(auxTransporteAjuste1 + auxTransporteAjuste2);
 
+  var combinedAuxilios = sum("auxilios");
   var combinedBruta = round2(r1.bruta + r2.bruta);
   var combinedPrevidencia = round2(r1.previdencia + r2.previdencia);
-  var combinedLiquido = round2(combinedBruta - combinedPrevidencia - combinedIRRF - pensaoAlimenticia + (r1.abonoPermanenciaValor || 0) + (r2.abonoPermanenciaValor || 0));
+  var combinedLiquidoRemuneracao = round2(
+    combinedBruta -
+      combinedPrevidencia -
+      combinedIRRF -
+      pensaoAlimenticia +
+      (r1.abonoPermanenciaValor || 0) +
+      (r2.abonoPermanenciaValor || 0),
+  );
+  var combinedLiquido = round2(combinedLiquidoRemuneracao + combinedAuxilios);
   var cargaTotal = r1.cargaParaGLP + r2.cargaParaGLP + r1.glpTempos + r2.glpTempos;
   var excede65h = cargaTotal > MAX_CARGA_SEMANAL;
 
@@ -409,14 +442,19 @@ function calcularDupla(params1, params2, dataSimulacao, dependentes, pensaoAlime
       auxTransporteDiff: auxTransporteDiff,
       auxAlimentacao: auxAlimentacaoCap,
       auxAlimentacaoDiff: auxAlimentacaoDiff,
-      auxilios: sum('auxilios'),
+      auxilios: combinedAuxilios,
       bruta: combinedBruta,
+      totalReceber: round2(combinedBruta + combinedAuxilios),
       previdencia: combinedPrevidencia,
       basePrev: sum('basePrev'),
+      // Só "não inclui" a grat na base previdenciária se nenhuma matrícula inclui
+      // (usado pelo aviso de que a grat segue tributada pelo IRPF).
+      incluirGratPrev: r1.incluirGratPrev && r2.incluirGratPrev,
       baseIRRF: combinedBaseIRRF,
       irrf: combinedIRRF,
       irrfSeparado: irrfTotalSeparado,
       liquido: combinedLiquido,
+      liquidoRemuneracao: combinedLiquidoRemuneracao,
       pensaoAlimenticia: pensaoAlimenticia,
       cargaTotal: cargaTotal,
       cargaParaGLP1: r1.cargaParaGLP,

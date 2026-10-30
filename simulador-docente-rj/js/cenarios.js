@@ -176,7 +176,7 @@ function montarCardOutraRenda(resultadoOutraRenda) {
   );
 }
 
-function montarCardCombinado(resultadoOutraRenda, liquidoSeeduc, brutoSeeduc, totalBaseSeeduc) {
+function montarCardCombinado(resultadoOutraRenda, liquidoSeeduc) {
   if (!resultadoOutraRenda) {
     return '<div class="text-xs text-gray-400 italic p-4 text-center">Preencha a renda adicional acima</div>';
   }
@@ -200,8 +200,6 @@ function montarCardCombinado(resultadoOutraRenda, liquidoSeeduc, brutoSeeduc, to
 function montarComparacao(seeducResult, outraRendaResult) {
   if (!seeducResult) return "";
   var liquidoSeeduc = seeducResult.liquido;
-  var brutoSeeduc = seeducResult.bruta;
-  var totalBaseSeeduc = seeducResult.total;
 
   var html = "";
 
@@ -217,7 +215,7 @@ function montarComparacao(seeducResult, outraRendaResult) {
   html += '</div>';
 
   html += '<div>';
-  html += montarCardCombinado(outraRendaResult, liquidoSeeduc, brutoSeeduc, totalBaseSeeduc);
+  html += montarCardCombinado(outraRendaResult, liquidoSeeduc);
   html += '</div>';
 
   html += '</div>';
