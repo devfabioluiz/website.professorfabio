@@ -248,7 +248,7 @@ export class Login {
 
         <h3>Passo 5 — Atualizar o Auth Guard</h3>
 
-        <p>No arquivo <code>auth.guard.ts</code> coloque o código abaixo :</p>
+        <p>No arquivo <code>auth-guard.ts</code> coloque o código abaixo :</p>
 
         <div class="code-container">
           <pre><code class="language-typescript">
@@ -299,7 +299,7 @@ ng g guard guards/admin
         <br />
 
         <p>
-          Agora atualize o arquivo <code>admin.guard.ts</code>com o seguinte
+          Agora atualize o arquivo <code>admin-guard.ts</code>com o seguinte
           código:
         </p>
 
@@ -368,9 +368,9 @@ export const adminGuard: CanActivateFn = () => {
           <pre><code class="language-typescript">
 import { Routes } from '@angular/router';
 
-import { authGuard } from './guards/auth.guard';
+import { authGuard } from './guards/auth-guard';
 
-import { adminGuard } from './guards/admin.guard';
+import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
 
